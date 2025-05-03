@@ -31,7 +31,8 @@ Commands:
 
 ~~~
 
-## Straights.Solver
+## Straights.Solver ![NuGet Version](https://img.shields.io/nuget/v/Straights.Solver)
+
 
 Straights.Solver is the core library behind the straights command line app and the straights webapp. It solves, generates, and converts
 straights puzzles.
@@ -39,7 +40,7 @@ straights puzzles.
 Straights.Solver theoretically supports grid sizes up to 64 x 64, but
 I have not generated a grid larger than 12 x 12 yet.
 
-## Straights.Image
+## Straights.Image ![NuGet Version](https://img.shields.io/nuget/v/Straights.Image)
 
 Straights.Image is a library that reads screenshots of Straights and Sudoku grids.
 It has no dependency on Straights.Solver or the Straights command line application (it is used by the latter).
