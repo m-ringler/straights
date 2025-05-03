@@ -12,13 +12,13 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     
     <!-- Version -->
-    <VersionPrefix>0.6.0</VersionPrefix>
+    <VersionPrefix>0.6.1</VersionPrefix>
 
     <!-- Nuget Properties -->
     <Authors>m-ringler</Authors>
     <Copyright>2025, M. Ringler</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <ProjectUrl>https://github.com/m-ringler/straights</ProjectUrl>
+    <PackageProjectUrl>https://github.com/m-ringler/straights</PackageProjectUrl>
     <RepositoryUrl>https://github.com/m-ringler/straights.git</RepositoryUrl>
   </PropertyGroup>
 </Project>
