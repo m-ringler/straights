@@ -97,7 +97,6 @@ For Straights.Web, you need to download and activate the
 ## Backlog
 
 * Increase test coverage
-* Nugetize the libs
 * Add more XML doc(use Copilot?)
 * Microsoft.CodeAnalysis.PublicApiAnalyzers
 * Migrate to slnx format
