@@ -33,7 +33,6 @@ Commands:
 
 ## Straights.Solver ![NuGet Version](https://img.shields.io/nuget/v/Straights.Solver)
 
-
 Straights.Solver is the core library behind the straights command line app and the straights webapp. It solves, generates, and converts
 straights puzzles.
 
@@ -54,6 +53,8 @@ Straights.Image supports grid sizes up to 9 x 9.
 
 [Straights.Web](./Straights.Web/Readme.md) is a Straights webapp that uses Straights.Solver to generate new grids.
 Try it online at <http://mospace.de/str8ts/>.
+
+With Straights.Web, you can generate up to 10 x 10 grids, play up to 12 x 12 grids (generated with the web app or with the command line app).
 
 ## Status
 
