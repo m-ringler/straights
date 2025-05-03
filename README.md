@@ -62,7 +62,7 @@ In particular:
 
 * Different releases of the command line app may produce different grids for the same arguments even if you pass an explicit random seed.
 * The library APIs are not stable, and may change in every release.
-* The data formats uses by the webapp may still change.
+* The data formats used by the webapp may still change.
 
 ## Installation
 
