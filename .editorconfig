@@ -30,6 +30,10 @@ csharp_style_namespace_declarations = file_scoped
 dotnet_diagnostic.IDE0001.severity = suggestion
 
 # Verify settings
+
+# IDE0305: Initialisierung der Sammlung vereinfachen
+dotnet_diagnostic.IDE0305.severity = suggestion
+
 [*.{received,verified}.{json,txt,xml}]
 charset = "utf-8-bom"
 end_of_line = lf

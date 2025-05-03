@@ -10,7 +10,7 @@ internal sealed class SolverColumnBuilder()
 {
     private readonly ImmutableArray<SolverBlock>.Builder column = ImmutableArray.CreateBuilder<SolverBlock>();
 
-    private ImmutableArray<WhiteFieldData>.Builder currentBlock = ImmutableArray.CreateBuilder<WhiteFieldData>();
+    private readonly ImmutableArray<WhiteFieldData>.Builder currentBlock = ImmutableArray.CreateBuilder<WhiteFieldData>();
 
     public ImmutableArray<SolverColumn> CreateMany(
         IEnumerable<IEnumerable<SolverField>> columns)

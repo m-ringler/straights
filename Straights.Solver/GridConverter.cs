@@ -99,7 +99,7 @@ public static class GridConverter
     public static ConvertibleGrid Convert(this BuilderField?[][] builderFields)
     {
         int size = builderFields.Length;
-        var builder = new GridBuilder(builderFields.Length);
+        var builder = new GridBuilder(size);
         var allFields = from row in builderFields
                         from field in row
                         where field != null

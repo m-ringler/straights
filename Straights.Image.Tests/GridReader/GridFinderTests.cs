@@ -45,8 +45,6 @@ public class GridFinderTests
 
         if (!skewed)
         {
-            var v0 = grid.VerticalLines[0];
-            var h0 = grid.HorizontalLines[0];
             var v = grid.VerticalLines;
             var h = grid.HorizontalLines;
             float cw = grid.MedianCellSize.W;
