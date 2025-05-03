@@ -33,15 +33,16 @@ public sealed class DigitClassifierOnnx(string modelName) : IDisposable, IDigitC
 
         using var inputOrtValue = OrtValue.CreateTensorValueFromMemory(
             data,
-            inputSize.Select(x => (long)x).ToArray());
+            [.. inputSize.Select(x => (long)x)]);
 
         var inputs = new Dictionary<string, OrtValue>
         {
             { this.Session.InputNames[0],  inputOrtValue },
         };
 
+        using RunOptions ro = new();
         using var output = this.Session.Run(
-            new RunOptions(),
+            ro,
             inputs,
             [this.Session.OutputNames[0]]);
 
@@ -62,7 +63,7 @@ public sealed class DigitClassifierOnnx(string modelName) : IDisposable, IDigitC
 
     private static string GetData(string name)
     {
-        var dir = System.AppContext.BaseDirectory;
+        var dir = AppContext.BaseDirectory;
         var result = Path.Combine(dir, name);
         return !File.Exists(result)
             ? throw new FileNotFoundException($"File not found: {result}")
@@ -71,31 +72,23 @@ public sealed class DigitClassifierOnnx(string modelName) : IDisposable, IDigitC
 
     private static float[] GetData(Mat grayImage, int[] dimensions)
     {
-        Mat? convertedImage = null;
-        try
+        using Mat convertedImage = new();
+        grayImage.ConvertTo(convertedImage, MatType.CV_32FC1, 1.0 / 255.0);
+        var resizeImage = convertedImage;
+
+        using Mat src28 = resizeImage.Resize(
+            new Size(dimensions[^2], dimensions[^1]));
+
+        if (!src28.GetArray<float>(out var data))
         {
-            convertedImage = new Mat();
-            grayImage.ConvertTo(convertedImage, MatType.CV_32FC1, 1.0 / 255.0);
-            var resizeImage = convertedImage;
-
-            using Mat src28 = resizeImage.Resize(
-                new Size(dimensions[^2], dimensions[^1]));
-
-            if (!src28.GetArray<float>(out var data))
-            {
-                throw new ArgumentException(
-                    $"Failed to get float array out of {src28}.");
-            }
-
-            int numChannels = dimensions[1];
-            return numChannels == 1
-                    ? data
-                    : Repeat(data, numChannels);
+            throw new ArgumentException(
+                $"Failed to get float array out of {src28}.");
         }
-        finally
-        {
-            convertedImage?.Dispose();
-        }
+
+        int numChannels = dimensions[1];
+        return numChannels == 1
+                ? data
+                : Repeat(data, numChannels);
     }
 
     private static float[] Repeat(float[] data, int numChannels)

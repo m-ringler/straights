@@ -30,7 +30,7 @@ internal static class BinaryGameSerializer
 
             bool black = field is not SolverField.WhiteField;
             bool isKnown = field is SolverField.BlackNumber ||
-                (field is SolverField.WhiteField && unsolved.GetField(index) is SolverField.WhiteField wf && wf.Data.IsSolved);
+                (field is SolverField.WhiteField && unsolvedField is SolverField.WhiteField wf && wf.Data.IsSolved);
             var value = field.GetWhiteFieldData();
             uint number = value switch
             {

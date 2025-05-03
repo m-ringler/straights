@@ -31,7 +31,7 @@ Commands:
 
 ~~~
 
-## Straights.Solver
+## Straights.Solver ![NuGet Version](https://img.shields.io/nuget/v/Straights.Solver)
 
 Straights.Solver is the core library behind the straights command line app and the straights webapp. It solves, generates, and converts
 straights puzzles.
@@ -39,7 +39,7 @@ straights puzzles.
 Straights.Solver theoretically supports grid sizes up to 64 x 64, but
 I have not generated a grid larger than 12 x 12 yet.
 
-## Straights.Image
+## Straights.Image ![NuGet Version](https://img.shields.io/nuget/v/Straights.Image)
 
 Straights.Image is a library that reads screenshots of Straights and Sudoku grids.
 It has no dependency on Straights.Solver or the Straights command line application (it is used by the latter).
@@ -53,6 +53,8 @@ Straights.Image supports grid sizes up to 9 x 9.
 
 [Straights.Web](./Straights.Web/Readme.md) is a Straights webapp that uses Straights.Solver to generate new grids.
 Try it online at <http://mospace.de/str8ts/>.
+
+With Straights.Web, you can generate up to 10 x 10 grids, play up to 12 x 12 grids (generated with the web app or with the command line app).
 
 ## Status
 
@@ -69,18 +71,17 @@ In particular:
 ### Windows
 
 Everything should work out of the box.
-To use the command line app put it somewhere on your $env:Path,
-to use any of the libraries just add a package reference to the nuget package.
+To use the command line app put it somewhere on your $env:Path. And type `straights` at the command prompt.
+
+The libraries Straights.Image and Straights.Solver are available on nuget.org, and you can use them by adding a package reference to your project.
 
 ### Linux
 
 Essentially the same as for windows.
 
-But the Linux native runtimes of OpenCvSharp used by Straights.Image depend on libraries that need to be installed on the system. These libraries are different for different distributions, e. g. for ubuntu-22.04 and ubuntu-24-04.
+Howeveeer, the Linux native runtimes of OpenCvSharp used by Straights.Image depend on libraries that need to be installed on the system. These libraries are different for different distributions, e. g. for ubuntu-22.04 and ubuntu-24-04.
 
-If Straights.Image fails with an "Unable to load shared library 'OpenCvSharpExtern' or one of its dependencies." error, you can [check which dependencies are missing](https://github.com/shimat/opencvsharp/issues/1618#issuecomment-1846537140), and install them. Alternatively, you can simply install all the libraries used to build it:
-
-<https://github.com/m-ringler/opencvsharp/blob/40c5fd3f8e56382eddd77cf9ada780ffd2932cef/.github/workflows/ubuntu24.yml#L28C1-L51C30>
+If Straights.Image fails with an "Unable to load shared library 'OpenCvSharpExtern' or one of its dependencies." error, you can [check which dependencies are missing](https://github.com/shimat/opencvsharp/issues/1618#issuecomment-1846537140), and install them. Alternatively, you can simply [install all the libraries used to build it](https://github.com/m-ringler/opencvsharp/blob/3bd0b5259f19816f2b35ae02b91303bfee3a04ed/.github/workflows/ubuntu24.yml#L28C1-L51C30).
 
 If you are neither on Ubuntu-22 nor on Ubuntu 24, you may have to build your own OpenCvSharpExtern.so.
 
@@ -96,7 +97,6 @@ For Straights.Web, you need to download and activate the
 ## Backlog
 
 * Increase test coverage
-* Nugetize the libs
 * Add more XML doc(use Copilot?)
 * Microsoft.CodeAnalysis.PublicApiAnalyzers
 * Migrate to slnx format
