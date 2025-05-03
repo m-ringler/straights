@@ -50,10 +50,10 @@ jobs:
           queries: security-and-quality
 
       - name: Restore dependencies
-        run: dotnet restore
+        run: dotnet restore straights-commandline.slnf
 
       - name: Build
-        run: dotnet build --no-restore -c Release
+        run: dotnet build --no-restore -c Release straights-commandline.slnf
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
