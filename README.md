@@ -60,7 +60,7 @@ Straights.Image supports grid sizes up to 9 x 9.
 [Straights.Web](./Straights.Web/Readme.md) is a Straights webapp that uses Straights.Solver to generate new grids.
 Try it online at <http://mospace.de/str8ts/>.
 
-With Straights.Web, you can generate up to 10 x 10 grids, play up to 12 x 12 grids (generated with the web app or with the command line app).
+With Straights.Web, you can generate up to 10 x 10 grids, and play up to 12 x 12 grids (generated with the web app or with the command line app).
 
 ## Status
 
@@ -85,7 +85,7 @@ The libraries Straights.Image and Straights.Solver are available on nuget.org, a
 
 Essentially the same as for windows.
 
-Howeveeer, the Linux native runtimes of OpenCvSharp used by Straights.Image depend on libraries that need to be installed on the system. These libraries are different for different distributions, e. g. for ubuntu-22.04 and ubuntu-24-04.
+However, the Linux native runtimes of OpenCvSharp used by Straights.Image depend on libraries that need to be installed on the system. These libraries are different for different distributions, e. g. for ubuntu-22.04 and ubuntu-24-04.
 
 If Straights.Image fails with an "Unable to load shared library 'OpenCvSharpExtern' or one of its dependencies." error, you can [check which dependencies are missing](https://github.com/shimat/opencvsharp/issues/1618#issuecomment-1846537140), and install them. Alternatively, you can simply [install all the libraries used to build it](https://github.com/m-ringler/opencvsharp/blob/3bd0b5259f19816f2b35ae02b91303bfee3a04ed/.github/workflows/ubuntu24.yml#L28C1-L51C30).
 
@@ -103,7 +103,7 @@ For Straights.Web, you need to download and activate the
 ## Backlog
 
 * Increase test coverage
-* Add more XML doc(use Copilot?)
+* Add more XML doc (use Copilot?)
 * Microsoft.CodeAnalysis.PublicApiAnalyzers
 * Migrate to slnx format
 
