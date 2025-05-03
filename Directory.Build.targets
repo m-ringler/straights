@@ -1,0 +1,12 @@
+<Project>
+	<ItemGroup>
+		<PackageReference Include="StyleCop.Analyzers.Unstable">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+        <PackageReference Include="TestableIO.System.IO.Abstractions.Analyzers">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
+</Project>

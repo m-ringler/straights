@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<!--
+SPDX-FileCopyrightText: 2020 Luis Walter, 2025 Moritz Ringler
+
+SPDX-License-Identifier: GPL-3.0-or-later
+-->
+
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <meta name="author" content="Moritz Ringler">
+    <meta name="keywords" content="Straights, Str8ts, Puzzle, Game, Grid">
+    <meta name="description" content="Play Straights online without ads.">
+    <title>Str8ts</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="./str8ts.css">
+</head>
+<body>
+    <script src="jquery-3.7.1.min.js" ></script>
+    <script type="text/javascript" src="generate-str8ts.js"></script>
+    <div class="wrapper">
+        <table class="container" cellspacing="0"></table>
+        <div class="controls">
+            <table cellspacing="5" id="buttons-small">
+                <tr>
+                    <td class="button num-small" data-button="bn1"  id="sbn1" >1</td>
+                    <td class="button num-small" data-button="bn2"  id="sbn2" >2</td>
+                    <td class="button num-small" data-button="bn3"  id="sbn3" >3</td>
+                    <td class="button num-small" data-button="bn4"  id="sbn4" >4</td>
+                    <td class="button num-small" data-button="bn5"  id="sbn5" >5</td>
+                    <td class="button num-small" data-button="bn6"  id="sbn6" >6</td>
+                    <td class="button num-small" data-button="bn7"  id="sbn7" >7</td>
+                    <td class="button num-small" data-button="bn8"  id="sbn8" >8</td>
+                    <td class="button num-small" data-button="bn9"  id="sbn9" >9</td>
+                    <td class="button num-small" data-button="bn10" id="sbn10">10</td>
+                    <td class="button num-small" data-button="bn11" id="sbn11">11</td>
+                    <td class="button num-small" data-button="bn12" id="sbn12">12</td>
+                </tr>
+            </table>
+            <table cellspacing="7" id="buttons-large">
+                <tr>
+                    <td class="button num" data-button="bn1" id="bn1">1</td>
+                    <td class="button num" data-button="bn2" id="bn2">2</td>
+                    <td class="button num" data-button="bn3" id="bn3">3</td>
+                </tr>
+                <tr>
+                    <td class="button num" data-button="bn4" id="bn4">4</td>
+                    <td class="button num" data-button="bn5" id="bn5">5</td>
+                    <td class="button num" data-button="bn6" id="bn6">6</td>
+                </tr>
+                <tr>
+                    <td class="button num" data-button="bn7" id="bn7">7</td>
+                    <td class="button num" data-button="bn8" id="bn8">8</td>
+                    <td class="button num" data-button="bn9" id="bn9">9</td>
+                </tr>
+                <tr>
+                    <td class="button num" data-button="bn10" id="bn10">10</td>
+                    <td class="button num" data-button="bn11" id="bn11">11</td>
+                    <td class="button num" data-button="bn12" id="bn12">12</td>
+                </tr>
+            </table>
+            <table cellspacing="7px">
+                <tr>
+                    <td class="button set" id="undo" title="Undo [Ctrl+Z]" onclick="undo()">⎌</td>
+                    <td class="button set" id="notes" title="Notes Mode [N]" onclick="toggleNoteMode()">📝</td>
+                </tr>
+            </table>
+            <table cellspacing="7px">
+                <tr>
+                    <td class="button set" id="check" title="Check" onclick="check()">✅️</td>
+                    <td class="button set" id="delete" title="Show solution" onclick="showDialog(dialogs.SOLUTION)">👀</td>
+                </tr>
+                <tr>
+                    <td class="counter-text set" id="counter">0</td>
+                    <td class="counter-text set" id="time">00:00</td>
+                </tr>
+                <tr>
+                    <td class="button set" id="new" title="New game" onclick="loadNewGameAgain()">✨</td>
+                    <td class="button set" id="empty" title="Start over" onclick="showDialog(dialogs.EMPTY)">⟳</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="dialog-outer-container">
+        <div class="dialog-background"></div>
+        <div class="dialog-inner-container">
+            <div class="dialog" id="welcome-dialog">
+                <div class="dialog-title">New Str8ts-Game</div>
+                <div class="dialog-new">
+                    <label for="grid-size-slider">Grid Size:</label>
+                    <span id="grid-size">9</span>
+                    <br/>
+                    <input type="range" id="grid-size-slider" min="4" max="10" value="9"  class="slider" autocomplete="off" oninput="changeGenerateSize()"/>
+                    <br/>
+                    <label for="difficulty-slider">Difficulty:</label>
+                    <span id="difficulty" class="difficulty">3</span>
+                    <br>
+                    <input type="range" min="1" max="4" value="3" id="difficulty-slider" class="slider" autocomplete="off" oninput="changeDifficulty()">
+                </div>
+                <span class="start-game-button" id="generate-button" onclick="loadNewGame()">Generate new game</span>
+                <span class="start-game-button" id="cancel-new-game" onclick="showDialog(false)" style="display: none;">Cancel</span>
+            </div>
+            <div class="dialog" id="solution-dialog">
+                <div class="dialog-title">Show Solution</div>
+                <div class="dialog-text">Reveal the complete solution?</div>
+                <span class="start-game-button" onclick="solution()">Reveal</span>
+                <span class="start-game-button" onclick="showDialog(false)">Cancel</span>
+            </div>
+            <div class="dialog" id="empty-dialog">
+                <div class="dialog-title">Start Over</div>
+                <div class="dialog-text">Clear all numbers and notes?</div>
+                <span class="start-game-button" onclick="restart()">Clear</span>
+                <span class="start-game-button" onclick="showDialog(false)">Cancel</span>
+            </div>
+            <div class="dialog loading-dialog" id="loading-dialog">
+                <div class="loading-ring"></div>
+                <div style="margin-top: 10px;">Generating new game,<br>please wait.</div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="str8ts.js" ></script>
+</body>
+</html>

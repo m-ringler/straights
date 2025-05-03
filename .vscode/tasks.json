@@ -1,0 +1,115 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Quick build",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "build",
+        "--no-restore",
+        "${workspaceFolder}/straights-commandline.slnf",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "build",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "build",
+        "${workspaceFolder}/straights-commandline.slnf",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "pack",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "pack",
+        "${workspaceFolder}/straights-nuget.slnf",
+        "--output",
+        "${workspaceFolder}/publish/NuGetPackages"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "Publish straights",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "publish",
+        "${workspaceFolder}/Straights/Straights.csproj",
+        "-c",
+        "Release",
+        "--use-current-runtime",
+        "true"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "Publish Straights.Web",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "publish",
+        "${workspaceFolder}/Straights.Web/Straights.Web.csproj",
+        "-c",
+        "Release",
+        "-r",
+        "browser-wasm"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "Run Straights.Web",
+      "command": "emrun",
+      "type": "shell",
+      "args": ["${workspaceFolder}/Straights.Web/publish/index.html"],
+      "problemMatcher": []
+    },
+    {
+      "label": "test",
+      "command": "dotnet",
+      "type": "process",
+      "args": ["test"],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "Quick Test",
+      "command": "dotnet",
+      "type": "process",
+      "args": ["test", "--no-build"],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "Test with Coverage",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "test",
+        "/p:CollectCoverage=true",
+        "/p:CoverletOutputFormat=lcov%2ccobertura",
+        "/p:CoverletOutput=${workspaceFolder}/coverage/",
+        "/p:ExcludeByAttribute=GeneratedCodeAttribute%2cObsoleteAttribute",
+        "/p:ExcludeByFile=**/*.axaml%2c**/*.g.cs"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "Generate coverage report",
+      "command": "reportgenerator",
+      "type": "shell",
+      "args": [
+        "-reports:${workspaceFolder}/coverage/coverage.info",
+        "-targetdir:${workspaceFolder}/coverage/covstats"
+      ],
+      "problemMatcher": []
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+---
+name: "CodeQL"
+
+on:
+  workflow_dispatch: {}
+
+permissions: read-all
+
+jobs:
+  analyze:
+    name: Analyze Straights
+    defaults:
+      run:
+        working-directory: .
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Get dotnet version from global.json
+        id: get_dotnet_version
+        run: |
+          $global_json = Get-Content -Path "./global.json" | ConvertFrom-Json
+          $dotnetversion = $global_json.sdk.version
+          "dotnetversion=$dotnetversion" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+        shell: pwsh
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Cache nugets
+        uses: actions/cache@v4
+        with:
+          path: ${{ github.workspace }}/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('Directory.Packages.props') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: csharp
+          queries: security-and-quality
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore -c Release
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3

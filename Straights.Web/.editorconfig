@@ -1,0 +1,6 @@
+[*.cs]
+dotnet_analyzer_diagnostic.severity = warning
+
+dotnet_diagnostic.IDE0002.severity = suggestion
+
+dotnet_diagnostic.SA0001.severity = none

@@ -1,0 +1,46 @@
+[*.cs]
+dotnet_analyzer_diagnostic.severity = warning
+
+dotnet_diagnostic.CA1859.severity = none
+dotnet_diagnostic.CA1710.severity = none
+dotnet_diagnostic.CA1822.severity = suggestion
+
+dotnet_diagnostic.CS1591.severity = suggestion
+
+dotnet_diagnostic.IDE0003.severity = none
+dotnet_diagnostic.IDE0008.severity = none
+dotnet_diagnostic.IDE0025.severity = silent
+dotnet_diagnostic.IDE0027.severity = suggestion
+dotnet_diagnostic.IDE0046.severity = suggestion
+dotnet_diagnostic.IDE0061.severity = suggestion
+dotnet_diagnostic.IDE0065.severity = none
+dotnet_diagnostic.IDE0072.severity = silent
+dotnet_diagnostic.IDE0270.severity = suggestion
+
+dotnet_diagnostic.SA1600.severity = suggestion
+dotnet_diagnostic.SA1601.severity = suggestion
+dotnet_diagnostic.SA1602.severity = suggestion
+dotnet_diagnostic.SA1603.severity = suggestion
+dotnet_diagnostic.SA1633.severity = none
+
+csharp_using_directive_placement = inside_namespace
+csharp_style_namespace_declarations = file_scoped
+
+# IDE0001: Namen vereinfachen
+dotnet_diagnostic.IDE0001.severity = suggestion
+
+# Verify settings
+[*.{received,verified}.{json,txt,xml}]
+charset = "utf-8-bom"
+end_of_line = lf
+indent_size = unset
+indent_style = unset
+tab_width = unset
+trim_trailing_whitespace = false
+
+[*.js]
+indent_size = 2
+tab_width = 2
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space

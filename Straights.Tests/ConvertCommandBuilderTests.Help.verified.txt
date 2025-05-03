@@ -1,0 +1,18 @@
+﻿Description:
+  Converts a straights puzzle
+
+Usage:
+  convert <imageOrTextFile> [options]
+
+Arguments:
+  <imageOrTextFile>  An image file with a Straights grid, or a Straights grid saved as .txt or .json.
+
+Options:
+  --output <output> (REQUIRED)  Write the generated grid to the specified file.
+                                Currently the following formats are supported:
+                                * HTML (.htm, .html)
+                                * TEXT (.txt)
+                                * JSON (.json)
+                                More formats may be supported in the future.
+  --version                     Show version information
+  -?, -h, --help                Show help and usage information

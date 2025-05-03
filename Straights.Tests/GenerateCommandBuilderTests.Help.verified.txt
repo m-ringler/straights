@@ -1,0 +1,49 @@
+﻿Description:
+  Generates a straights puzzle
+
+Usage:
+  generate [options]
+
+Options:
+  --output <output>                                                                                                                                             Write the generated grid to the specified file.
+                                                                                                                                                                Currently the following formats are supported:
+                                                                                                                                                                * HTML (.htm, .html)
+                                                                                                                                                                * TEXT (.txt)
+                                                                                                                                                                * JSON (.json)
+                                                                                                                                                                More formats may be supported in the future.
+                                                                                                                                                                 []
+  --size <size>                                                                                                                                                 The size of the grid to generate. [default: 9]
+  --black-blanks <black-blanks>                                                                                                                                 The number of black blanks to generate. Must be less than or equal to
+                                                                                                                                                                25 % of the number of fields.
+                                                                                                                                                                The default value of this option depends on the size and layout. []
+  --black-numbers <black-numbers>                                                                                                                               The number of black numbers to generate. Must be less than or equal to
+                                                                                                                                                                10 % of the number of fields.
+                                                                                                                                                                The default value of this option depends on the size and layout. []
+  --layout <DiagonallySymmetric|HorizontallyAndVerticallySymmetric|HorizontallySymmetric|PointSymmetric|Random|Uniform|UniformIndependent|VerticallySymmetric>  The strategy used to place the black fields on the grid. [default: Uniform]
+  --template <template>                                                                                                                                         A file (.png, .jpg, .txt, .json) with a straights grid
+                                                                                                                                                                to use as a template. The numbers in the grid will be ignored,
+                                                                                                                                                                but its layout will be reused. []
+  --seed <seed>                                                                                                                                                 The seed to use for the pseudo-random number generator.
+                                                                                                                                                                Use this if you want repeatable results. The command
+                                                                                                                                                                prints the used seed value for each generated grid.
+                                                                                                                                                                Currently, grid generation results for a given seed may
+                                                                                                                                                                change between program versions, because of changes in the
+                                                                                                                                                                grid generation algorithm. Store the generated grids,
+                                                                                                                                                                not the seed values.
+                                                                                                                                                                 []
+  --attempts <attempts>                                                                                                                                         The maximum number of attempts to generate a grid
+                                                                                                                                                                with the specified parameters.
+                                                                                                                                                                 [default: 10]
+  --failure-threshold <failure-threshold>                                                                                                                       A positive number indicating a threshold when to regard
+                                                                                                                                                                a generation attempt as failed. Increasing this number
+                                                                                                                                                                will increase the average time it takes to generate a grid.
+                                                                                                                                                                 [default: 50]
+  --difficulty <difficulty>                                                                                                                                     The difficulty of the generated grid, in the range 0 to 3.
+                                                                                                                                                                A higher value means you need to apply more and more complex
+                                                                                                                                                                rules to solve the generated grid.
+                                                                                                                                                                This option determines which white numbers are revealed
+                                                                                                                                                                from the start. The overall difficulty is also influenced
+                                                                                                                                                                by the number of black blanks and the number of black numbers.
+                                                                                                                                                                 [default: 3]
+  --version                                                                                                                                                     Show version information
+  -?, -h, --help                                                                                                                                                Show help and usage information

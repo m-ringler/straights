@@ -1,0 +1,6 @@
+<ifModule mod_deflate.c>
+  <filesMatch "\.(css|js|x?html?|wasm)$">
+    SetOutputFilter DEFLATE
+  </filesMatch>
+</ifModule>
+AddType application/wasm .wasm

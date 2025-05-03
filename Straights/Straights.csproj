@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <PublishTrimmed>false</PublishTrimmed>
+    <IsPackable>false</IsPackable>
+    <AssemblyName>straights</AssemblyName>
+    <PublishDir>../publish/straights</PublishDir>
+    <PublishReadyToRun>true</PublishReadyToRun>
+    <PublishReadyToRunShowWarnings>true</PublishReadyToRunShowWarnings>
+    <InvariantGlobalization>true</InvariantGlobalization>
+
+    <!-- For the time being we do not localize.-->
+    <InvariantGlobalization>true</InvariantGlobalization>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Straights.Solver/Straights.Solver.csproj" />
+    <ProjectReference Include="..\Straights.Image\Straights.Image.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="RandN" />
+    <PackageReference Include="System.CommandLine" />
+    <PackageReference Include="System.IO.Abstractions" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Play/html/*.*" >
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Straights.Tests" />
+  </ItemGroup>
+</Project>

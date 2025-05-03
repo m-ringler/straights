@@ -1,0 +1,16 @@
+﻿Description:
+  Plays a straights puzzle in the default browser
+
+Usage:
+  play [<imageOrTextFile>] [options]
+
+Arguments:
+  <imageOrTextFile>  An image file with a Straights grid, or a Straights grid saved as .txt or .json;
+                     when omitted a new grid is generated.
+                      []
+
+Options:
+  --offline                      Serve the game on localhost, instead of using the default website. [default: False]
+  --offline-port <offline-port>  Serve the game on localhost on the specified port (implies --offline). [default: 7138]
+  --version                      Show version information
+  -?, -h, --help                 Show help and usage information

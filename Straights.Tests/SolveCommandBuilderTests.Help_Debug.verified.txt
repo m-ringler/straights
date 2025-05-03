@@ -1,0 +1,32 @@
+﻿Description:
+  Solves a straights puzzle
+
+Usage:
+  solve [<imageOrTextFile>] [options]
+
+Arguments:
+  <imageOrTextFile>  An image file with a Straights grid, or a Straights grid saved as .txt or .json.
+                     When this argument is omitted, the grid editor is started.
+                      []
+
+Options:
+  --mode <AnySolution|SimplifyOnly|UniqueSolution>  The solver mode to use.
+                                                    SimplifyOnly:   reason about single rows and columns.
+                                                    UniqueSolution: find a unique solution.
+                                                    AnySolution:    find any solution (even if it is not unique).
+                                                    In AnySolution mode, the solver uses random numbers,
+                                                    and results may vary from run to run.
+                                                     [default: UniqueSolution]
+  --output <output>                                 Write the final grid (after solving) to the specified file.
+                                                    Currently the following formats are supported:
+                                                    * HTML (.htm, .html)
+                                                    * JSON (.json)
+                                                    More formats may be supported in the future.
+                                                     []
+  --interactive                                     Flag that turns on interactive mode. [default: False]
+  --multi-threaded                                  Flag that turns on multi-threading. [default: False]
+  --write-debug-data-to <write-debug-data-to>       When this option is provided, debug data is written to the specified directory.
+                                                    Existing data in the directory will be overwritten without warning.
+                                                     []
+  --version                                         Show version information
+  -?, -h, --help                                    Show help and usage information

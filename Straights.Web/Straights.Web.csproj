@@ -1,0 +1,50 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+
+    <PublishTrimmed>true</PublishTrimmed>
+    <SelfContained>true</SelfContained>
+    <IlcOptimizationPreference>Speed</IlcOptimizationPreference>
+    <IlcDisableReflection>true</IlcDisableReflection>
+
+    <!-- Note that the wasm-tools workload is identified as a dependency
+      even though its not used, and this confuses the toolchain. Hence ...-->
+    <MSBuildEnableWorkloadResolver>false</MSBuildEnableWorkloadResolver>
+
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <PublishDir>../publish/Straights.Web</PublishDir>
+    <OutputType>library</OutputType>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <DebugType>None</DebugType>
+    <DebugSymbols>False</DebugSymbols>
+    <NoWarn>SA0001</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.DotNet.ILCompiler.LLVM" />
+    <PackageReference Include="runtime.$(NETCoreSdkPortableRuntimeIdentifier).Microsoft.DotNet.ILCompiler.LLVM" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Straights.Solver\Straights.Solver.csproj" />
+  </ItemGroup>
+
+  <!-- Emscripten arguments -->
+  <ItemGroup>
+    <LinkerArg Include="-sEXPORTED_RUNTIME_METHODS=['stringToNewUTF8','UTF8ToString','HEAPU8','HEAP32','HEAP16']" />
+    <LinkerArg Include="-sMODULARIZE"/>
+    <LinkerArg Include="-sEXPORT_NAME=createWasmModule"/>
+  </ItemGroup>
+
+  <ItemGroup>
+  <Content Include="*.js;*.html;*.htaccess">
+    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+  </Content>
+  <Content
+    Include="..\Straights\Play\html\*.*"
+    Exclude="..\Straights\Play\html\generate-str8ts.js"
+    LinkBase="." >
+    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+  </Content>
+</ItemGroup>
+</Project>

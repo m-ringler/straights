@@ -1,0 +1,24 @@
+<Project>
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <MSBuildCopyContentTransitively>True</MSBuildCopyContentTransitively>
+    <Nullable>enable</Nullable>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+
+    <!-- Nuget -->
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    
+    <!-- Version -->
+    <VersionPrefix>0.5.0</VersionPrefix>
+
+    <!-- Nuget Properties -->
+    <Authors>m-ringler</Authors>
+    <Copyright>2025, M. Ringler</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <ProjectUrl>https://github.com/m-ringler/straights</ProjectUrl>
+    <RepositoryUrl>https://github.com/m-ringler/straights.git</RepositoryUrl>
+  </PropertyGroup>
+</Project>

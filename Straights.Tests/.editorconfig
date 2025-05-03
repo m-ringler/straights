@@ -1,0 +1,5 @@
+﻿[*.cs]
+dotnet_diagnostic.IDE0058.severity = silent
+dotnet_diagnostic.IDE0072.severity = silent
+dotnet_diagnostic.CA1707.severity = none
+dotnet_diagnostic.SA1600.severity = none

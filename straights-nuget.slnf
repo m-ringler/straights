@@ -1,0 +1,11 @@
+{
+  "solution": {
+    "path": "straights.sln",
+    "projects": [
+      "Straights.Tests\\Straights.Tests.csproj",
+      "Straights.Solver\\Straights.Solver.csproj",
+      "Straights.Image\\Straights.Image.csproj",
+      "Straights.Image.Tests\\Straights.Image.Tests.csproj"
+    ]
+  }
+}

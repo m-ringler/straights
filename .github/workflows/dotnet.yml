@@ -1,0 +1,155 @@
+---
+# Builds straights command line app and nuget packages
+# Both are uploaded as build artifacts.
+permissions:
+  pull-requests: write
+  contents: read
+
+name: .NET Build
+
+on:
+  # push:
+  #   branches: ["main"]
+  # pull_request:
+  #   branches: ["main"]
+  workflow_dispatch: {}
+
+jobs:
+  build:
+    defaults:
+      run:
+        working-directory: .
+    name: ${{matrix.config.os}}-${{matrix.build}}
+    runs-on: ${{matrix.config.os}}
+    env:
+      NUGET_PACKAGES: ${{ github.workspace }}/.nuget/packages
+
+    strategy:
+      fail-fast: false
+      matrix:
+        build: [Release]
+        config:
+          - {os: windows-latest, osfamily: win}
+          - {os: ubuntu-22.04, osfamily: linux}
+          - {os: ubuntu-24.04, osfamily: linux}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Print .NET version
+        run: dotnet --version
+
+      - name: Set environment variable for native binary selection
+        run: echo "STRAIGHTS_TARGET_OS=${{ matrix.config.os }}" >> "$GITHUB_ENV"
+
+      - name: Cache nugets
+        uses: actions/cache@v4
+        with:
+          path: ${{ github.workspace }}/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('Directory.Packages.props') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore -c ${{ matrix.build }} straights-commandline.slnf
+
+      - name: Install Dependencies
+        if: matrix.config.os == 'ubuntu-22.04' || matrix.config.os == 'ubuntu-24.04'
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install  -y  --no-install-recommends \
+            apt-transport-https \
+            software-properties-common \
+            ca-certificates \
+            g++ \
+            make \
+            cmake \
+            libtbb-dev \
+            libatlas-base-dev \
+            libgtk2.0-dev \
+            libavcodec-dev \
+            libavformat-dev \
+            libswscale-dev \
+            libdc1394-dev \
+            libxine2-dev \
+            libv4l-dev \
+            libtheora-dev \
+            libvorbis-dev \
+            libxvidcore-dev \
+            libopencore-amrnb-dev \
+            libopencore-amrwb-dev \
+            x264 \
+            libtesseract-dev
+
+      - name: Test
+        run: >
+          dotnet test
+          -c ${{ matrix.build }}
+          --no-build
+          --verbosity normal
+          --logger trx
+          --results-directory "TestResults"
+          -p:CollectCoverage=true
+          -p:CoverletOutputFormat=cobertura
+          -p:CoverletOutput=${{ github.workspace }}/TestResults/coverage.cobertura.xml
+          -p:ExcludeByAttribute=GeneratedCodeAttribute%2cObsoleteAttribute
+          -p:ExcludeByFile=**/*.axaml%2c**/*.g.cs
+          -p:Exclude='[netczicompress]netczicompress.Views.*'
+
+      - name: Upload dotnet test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ matrix.config.os }}-${{ matrix.build }}
+          path: TestResults
+        # Use always() to also publish test results when there are test failures
+        if: ${{ always() }}
+
+      - name: Upload Verify Received Files
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: verify-test-results-${{ matrix.config.os }}-${{ matrix.build }}
+          path: |
+            **/*.received.*
+
+      - name: Publish Straights (command line app)
+        if: matrix.build == 'Release'
+        run: >
+          dotnet publish Straights/Straights.csproj
+          -c ${{ matrix.build }}
+          -a x64
+          --self-contained
+          -p:PublishSingleFile=true
+          -p:PublishReadyToRun=true
+          -p:PublishReadyToRunShowWarnings=true
+
+      - name: Upload published binaries
+        uses: actions/upload-artifact@v4
+        if: ${{ (github.event_name != 'pull_request') && (matrix.build == 'Release') }}
+        with:
+          name: Straights_${{ matrix.config.os}}-x64
+          path: publish
+
+
+      - name: Pack nugets
+        if: ${{ (matrix.config.os == 'ubuntu-22.04' && github.event_name != 'pull_request') && (matrix.build == 'Release') }}
+        run: |
+          dotnet pack --no-build straights-nuget.slnf -o ${{ github.workspace }}/nuget
+
+
+      - name: Upload nuget artifacts
+        uses: actions/upload-artifact@v4
+        if: ${{ (matrix.config.os == 'ubuntu-22.04' && github.event_name != 'pull_request') && (matrix.build == 'Release') }}
+        with:
+          name: Straights_Nugets
+          path: publish

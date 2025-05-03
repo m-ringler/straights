@@ -1,0 +1,16 @@
+﻿Description:
+  Straights Puzzle Toolkit
+
+Usage:
+  testhost [command] [options]
+
+Options:
+  --version       Show version information
+  -?, -h, --help  Show help and usage information
+
+Commands:
+  generate                   Generates a straights puzzle
+  play <imageOrTextFile>     Plays a straights puzzle in the default browser []
+  solve <imageOrTextFile>    Solves a straights puzzle []
+  edit <imageOrTextFile>     Edits a straights puzzle []
+  convert <imageOrTextFile>  Converts a straights puzzle

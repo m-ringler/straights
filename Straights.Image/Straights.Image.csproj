@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>Read Straights and Sudoku grids from images (screenshots).</Description>
+    <PackageTags>Straights;Str8ts;Sudoku;Computer Vision</PackageTags>
+  </PropertyGroup>
+
+  <PropertyGroup>
+      <EnablePackageValidation>true</EnablePackageValidation>
+
+    <!-- Optional: Detect breaking changes from a previous version -->
+    <!-- <PackageValidationBaselineVersion>1.0.0</PackageValidationBaselineVersion> -->
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <Content Include="..\onnx\bekhzod-olimov-printed-digits.onnx" Link="bekhzod-olimov-printed-digits.onnx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Numerics.Tensors" />
+    <PackageReference Include="Microsoft.ML.OnnxRuntime" />
+    <PackageReference Include="OpenCvSharp4" />
+    <PackageReference Include="OpenCvSharp4.runtime.win" />
+    <PackageReference Include="m-ringler.OpenCvSharp4.ubuntu24.runtime.linux-x64" Condition="'$(STRAIGHTS_TARGET_OS)' != 'ubuntu-22.04'" />
+    <PackageReference Include="OpenCvSharp4.official.runtime.linux-x64" Condition="'$(STRAIGHTS_TARGET_OS)' == 'ubuntu-22.04'" />
+  </ItemGroup>
+</Project>
