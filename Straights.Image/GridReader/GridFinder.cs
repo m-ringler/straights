@@ -139,11 +139,19 @@ public class GridFinder(IDebugInfoWriter debug)
     private Mat FindEdges(Mat img)
     {
         Mat edges = img.Canny(90, 150);
-        debug.Save(edges, "canny.png");
+        try
+        {
+            debug.Save(edges, "canny.png");
 
-        const int closeKernelSize = 2;
-        edges.Close(closeKernelSize);
-        return edges;
+            const int closeKernelSize = 2;
+            edges.Close(closeKernelSize);
+            return edges;
+        }
+        catch
+        {
+            edges.Dispose();
+            throw;
+        }
     }
 
     public record class LineWithCoordinate(LineSegmentPolar Line, float Coord);

@@ -28,4 +28,8 @@
     <PackageVersion Include="xunit.runner.visualstudio" Version="3.0.2" />
     <PackageVersion Include="xunit" Version="2.9.3" />
   </ItemGroup>
+  <ItemGroup Condition="'$(UseStraightsNugetPackagesVersion)' != ''">
+    <PackageVersion Include="Straights.Solver" Version="$(UseStraightsNugetPackagesVersion)" />
+    <PackageVersion Include="Straights.Image" Version="$(UseStraightsNugetPackagesVersion)" />
+  </ItemGroup>
 </Project>

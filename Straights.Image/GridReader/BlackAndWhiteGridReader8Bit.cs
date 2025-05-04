@@ -30,9 +30,17 @@ public class BlackAndWhiteGridReader8Bit(
     private static Mat GetNormalized8BitImage(Mat img)
     {
         var imgFloat = new Mat();
-        img.MinMaxLoc(out double minVal, out double maxVal);
-        img.ConvertTo(imgFloat, MatType.CV_8UC1, 255 / maxVal, -minVal / maxVal);
-        return imgFloat;
+        try
+        {
+            img.MinMaxLoc(out double minVal, out double maxVal);
+            img.ConvertTo(imgFloat, MatType.CV_8UC1, 255 / maxVal, -minVal / maxVal);
+            return imgFloat;
+        }
+        catch
+        {
+            imgFloat.Dispose();
+            throw;
+        }
     }
 
     private Cell GetCell(Mat cellMat, CellType cellType)

@@ -18,14 +18,18 @@
     </Content>
   </ItemGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(UseStraightsNugetPackagesVersion)' == ''">
     <ProjectReference Include="..\Straights.Image\Straights.Image.csproj" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(UseStraightsNugetPackagesVersion)' != ''">
+    <PackageReference Include="Straights.Image" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="AwesomeAssertions" />
     <PackageReference Include="Moq" />
+    <PackageReference Include="Verify.Xunit" />
     <PackageReference Include="xunit" />
     <PackageReference Include="xunit.runner.visualstudio">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -43,5 +47,9 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="m-ringler.OpenCvSharp4.ubuntu24.runtime.linux-x64" Condition="'$(STRAIGHTS_TARGET_OS)' != 'ubuntu-22.04'" />
+    <PackageReference Include="OpenCvSharp4.official.runtime.linux-x64" Condition="'$(STRAIGHTS_TARGET_OS)' == 'ubuntu-22.04'" />
   </ItemGroup>
 </Project>

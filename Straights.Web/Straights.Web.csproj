@@ -25,8 +25,11 @@
     <PackageReference Include="runtime.$(NETCoreSdkPortableRuntimeIdentifier).Microsoft.DotNet.ILCompiler.LLVM" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Straights.Solver\Straights.Solver.csproj" />
+  <ItemGroup Condition="'$(UseStraightsNugetPackagesVersion)' == ''">
+    <ProjectReference Include="../Straights.Solver/Straights.Solver.csproj" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(UseStraightsNugetPackagesVersion)' != ''">
+    <PackageReference Include="Straights.Solver" />
   </ItemGroup>
 
   <!-- Emscripten arguments -->
@@ -37,7 +40,7 @@
   </ItemGroup>
 
   <ItemGroup>
-  <Content Include="*.js;*.html;*.htaccess">
+  <Content Include="*.js;*.html;*.htaccess;LICENSE">
     <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
   </Content>
   <Content
