@@ -9,8 +9,8 @@ generating large grids (greater than about 10 x 10) is computationally expensive
 
 ### Solving
 
-TODO: Add sample code link
+<https://github.com/m-ringler/straights/blob/e0e96afdbc5e27a45c576f134499e21abb3945cd/Straights.Tests/Solver/SolverTests.cs#L18C1-L32C67>
 
 ### Generating
 
-TODO: Add sample code link
+https://github.com/m-ringler/straights/blob/e0e96afdbc5e27a45c576f134499e21abb3945cd/Straights.Tests/Solver/GeneratorBuilderTests.cs#L18C1-L33C78
