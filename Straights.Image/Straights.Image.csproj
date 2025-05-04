@@ -16,6 +16,7 @@
     <Content Include="..\onnx\bekhzod-olimov-printed-digits.onnx" Link="bekhzod-olimov-printed-digits.onnx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <ItemGroup>
