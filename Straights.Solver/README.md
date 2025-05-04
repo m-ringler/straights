@@ -1,5 +1,7 @@
 # Straights.Solver
 
+[![NuGet Version](https://img.shields.io/nuget/v/Straights.Solver)](https://www.nuget.org/packages/Straights.Solver/) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 Straights.Solver is a pure dotnet library that solves, generates, and converts str8s puzzles.
 
 Straights.Solver theoretically supports grid sizes up to 64 x 64.
