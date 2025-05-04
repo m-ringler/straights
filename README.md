@@ -45,7 +45,7 @@ Straights.Solver theoretically supports grid sizes up to 64 x 64, but generating
 
  [![NuGet Version](https://img.shields.io/nuget/v/Straights.Image?label=Straights.Image)](https://www.nuget.org/packages/Straights.Image/) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Straights.Image is a library that reads screenshots of Straights and Sudoku grids.
+[Straights.Image](./Straights.Image/Readme.md) is a library that reads screenshots of Straights and Sudoku grids.
 It has no dependency on Straights.Solver or the Straights command line application (it is used by the latter).
 
 It uses [OpenCvSharp](https://github.com/shimat/opencvsharp) to detect the grids, and - on Linux - you may have to build
@@ -89,7 +89,7 @@ However, the Linux native runtimes of OpenCvSharp used by Straights.Image depend
 
 If Straights.Image fails with an "Unable to load shared library 'OpenCvSharpExtern' or one of its dependencies." error, you can [check which dependencies are missing](https://github.com/shimat/opencvsharp/issues/1618#issuecomment-1846537140), and install them. Alternatively, you can simply [install all the libraries used to build it](https://github.com/m-ringler/opencvsharp/blob/3bd0b5259f19816f2b35ae02b91303bfee3a04ed/.github/workflows/ubuntu24.yml#L28C1-L51C30).
 
-If you are neither on Ubuntu-22 nor on Ubuntu 24, you may have to build your own OpenCvSharpExtern.so.
+If you are neither on Ubuntu-22 nor on Ubuntu 24, you may have to build your own OpenCvSharpExtern.so and replace the one shipped with straights.
 
 As there is no official OpenCvSharp nuget package for Ubuntu-24, we're using [our own nuget](https://www.nuget.org/packages/m-ringler.OpenCvSharp4.ubuntu24.runtime.linux-x64/) built from [a fork of the OpenCvSharp repo](https://github.com/m-ringler/opencvsharp/) for the Ubuntu-24 build of the straights command line app.
 
@@ -106,6 +106,8 @@ For Straights.Web, you need to download and activate the
 * Add more XML doc (use Copilot?)
 * Microsoft.CodeAnalysis.PublicApiAnalyzers
 * Migrate to slnx format
+* Github workflow to build Straights.Web
+* See if we can find a better solution for the Linux OpenSvSharp runtime.
 
 * Issues/Bugs
   * Digit recognition sometimes fails on 3/5

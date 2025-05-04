@@ -40,7 +40,7 @@
   </ItemGroup>
 
   <ItemGroup>
-  <Content Include="*.js;*.html;*.htaccess">
+  <Content Include="*.js;*.html;*.htaccess;LICENSE">
     <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
   </Content>
   <Content
