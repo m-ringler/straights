@@ -18,8 +18,8 @@ public class GridReaderFactory
         var digitClassifier = new DigitClassifierOnnx(
             this.ModelName);
 
-        var infoWriter = debugFolder == null
-            ? (IDebugInfoWriter)new NullDebugInfoWriter()
+        IDebugInfoWriter infoWriter = debugFolder == null
+            ? new NullDebugInfoWriter()
             : new DebugInfoWriter(debugFolder);
 
         IGridCellExtractor cellExtractor

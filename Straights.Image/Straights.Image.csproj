@@ -22,5 +22,9 @@
     <PackageReference Include="Microsoft.ML.OnnxRuntime" />
     <PackageReference Include="OpenCvSharp4" />
     <PackageReference Include="OpenCvSharp4.runtime.win" />
+    <!-- 
+    We don't know which linux runtime to include, so this must be done in application project files
+    and in test project files.
+     -->
   </ItemGroup>
 </Project>
