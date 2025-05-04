@@ -13,14 +13,22 @@
     <!-- For the time being we do not localize.-->
     <InvariantGlobalization>true</InvariantGlobalization>
   </PropertyGroup>
-  <ItemGroup>
+  <ItemGroup Condition="'$(UseStraightsNugetPackagesVersion)' == ''">
     <ProjectReference Include="../Straights.Solver/Straights.Solver.csproj" />
     <ProjectReference Include="..\Straights.Image\Straights.Image.csproj" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(UseStraightsNugetPackagesVersion)' != ''">
+    <PackageReference Include="Straights.Solver" />
+    <PackageReference Include="Straights.Image" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="RandN" />
     <PackageReference Include="System.CommandLine" />
     <PackageReference Include="System.IO.Abstractions" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="m-ringler.OpenCvSharp4.ubuntu24.runtime.linux-x64" Condition="'$(STRAIGHTS_TARGET_OS)' != 'ubuntu-22.04'" />
+    <PackageReference Include="OpenCvSharp4.official.runtime.linux-x64" Condition="'$(STRAIGHTS_TARGET_OS)' == 'ubuntu-22.04'" />
   </ItemGroup>
 
   <ItemGroup>
