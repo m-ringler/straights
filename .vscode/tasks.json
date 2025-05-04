@@ -34,7 +34,8 @@
         "pack",
         "${workspaceFolder}/straights-nuget.slnf",
         "--output",
-        "${workspaceFolder}/publish/NuGetPackages"
+        "${workspaceFolder}/publish/NuGetPackages",
+        "-p:VersionSuffix=beta"
       ],
       "problemMatcher": "$msCompile"
     },

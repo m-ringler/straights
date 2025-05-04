@@ -443,9 +443,6 @@ coverage
 test/local/*
 !test/local/Readme.md
 
-# Be able to commit local nupkg
-!packages_local/*.nupkg
-
 # publish dirs
 Straights.Web/publish/
 publish/
