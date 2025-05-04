@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Description>Solve and generate Straights puzzles.</Description>
     <PackageTags>Straights;Str8ts;Solver</PackageTags>
-    <PackageReadmeFile>Readme.md</PackageReadmeFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <PropertyGroup>
