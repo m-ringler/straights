@@ -13,8 +13,12 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <Content Include="..\onnx\bekhzod-olimov-printed-digits.onnx" Link="bekhzod-olimov-printed-digits.onnx">
+    <Content
+      Include="..\onnx\bekhzod-olimov-printed-digits.onnx"
+      Link="bekhzod-olimov-printed-digits.onnx"
+      Pack="true">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <PackageCopyToOutput>true</PackageCopyToOutput>
     </Content>
     <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
