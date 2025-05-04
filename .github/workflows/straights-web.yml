@@ -1,0 +1,47 @@
+---
+name: Build Straights.Web
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Install Emscripten SDK
+        run: |
+          git clone https://github.com/emscripten-core/emsdk.git
+          cd emsdk
+          git pull
+          ./emsdk install latest
+          ./emsdk activate latest
+          source ./emsdk_env.sh
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Publish Straights.Web
+        run: |
+          dotnet publish "${{ github.workspace }}/Straights.Web/Straights.Web.csproj" \
+          -c Release \
+          -r browser-wasm
+
+      - name: Create zip of publish directory
+        run: |
+          cd "${{ github.workspace }}/publish"
+          rm ./Straights.Web/*.pdb
+          zip -r Straights.Web.zip ./Straights.Web
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Straights.Web
+          path: ${{ github.workspace }}/publish/Straights.Web.zip
