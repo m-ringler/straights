@@ -1,0 +1,301 @@
+﻿[
+  [
+    {
+      "$id": "1",
+      "$type": "Straights.Image.GridReader.Cell+BlackNumber, Straights.Image",
+      "Number": 5
+    },
+    {
+      "$id": "2",
+      "$type": "Straights.Image.GridReader.Cell+WhiteBlank, Straights.Image"
+    },
+    {
+      "$id": "3",
+      "$type": "Straights.Image.GridReader.Cell+BlackBlank, Straights.Image"
+    },
+    {
+      "$ref": "2"
+    },
+    {
+      "$ref": "2"
+    },
+    {
+      "$ref": "2"
+    },
+    {
+      "$ref": "2"
+    },
+    {
+      "$ref": "2"
+    },
+    {
+      "$ref": "3"
+    }
+  ],
+  [
+    {
+      "$ref": "2"
+    },
+    {
+      "$ref": "2"
+    },
+    {
+      "$ref": "3"
+    },
+    {
+      "$id": "4",
+      "$type": "Straights.Image.GridReader.Cell+WhiteNumber, Straights.Image",
+      "Number": 9
+    },
+    {
+      "$ref": "2"
+    },
+    {
+      "$id": "5",
+      "$type": "Straights.Image.GridReader.Cell+WhiteNumber, Straights.Image",
+      "Number": 8
+    },
+    {
+      "$ref": "2"
+    },
+    {
+      "$ref": "2"
+    },
+    {
+      "$id": "6",
+      "$type": "Straights.Image.GridReader.Cell+BlackNumber, Straights.Image",
+      "Number": 6
+    }
+  ],
+  [
+    {
+      "$ref": "2"
+    },
+    {
+      "$id": "7",
+      "$type": "Straights.Image.GridReader.Cell+BlackNumber, Straights.Image",
+      "Number": 1
+    },
+    {
+      "$ref": "2"
+    },
+    {
+      "$id": "8",
+      "$type": "Straights.Image.GridReader.Cell+WhiteNumber, Straights.Image",
+      "Number": 7
+    },
+    {
+      "$ref": "2"
+    },
+    {
+      "$ref": "2"
+    },
+    {
+      "$ref": "3"
+    },
+    {
+      "$ref": "3"
+    },
+    {
+      "$ref": "3"
+    }
+  ],
+  [
+    {
+      "$id": "9",
+      "$type": "Straights.Image.GridReader.Cell+WhiteNumber, Straights.Image",
+      "Number": 1
+    },
+    {
+      "$ref": "2"
+    },
+    {
+      "$ref": "2"
+    },
+    {
+      "$id": "10",
+      "$type": "Straights.Image.GridReader.Cell+BlackNumber, Straights.Image",
+      "Number": 2
+    },
+    {
+      "$ref": "2"
+    },
+    {
+      "$id": "11",
+      "$type": "Straights.Image.GridReader.Cell+BlackNumber, Straights.Image",
+      "Number": 9
+    },
+    {
+      "$ref": "2"
+    },
+    {
+      "$ref": "2"
+    },
+    {
+      "$ref": "2"
+    }
+  ],
+  [
+    {
+      "$ref": "2"
+    },
+    {
+      "$id": "12",
+      "$type": "Straights.Image.GridReader.Cell+WhiteNumber, Straights.Image",
+      "Number": 2
+    },
+    {
+      "$ref": "2"
+    },
+    {
+      "$ref": "3"
+    },
+    {
+      "$ref": "2"
+    },
+    {
+      "$ref": "2"
+    },
+    {
+      "$ref": "2"
+    },
+    {
+      "$id": "13",
+      "$type": "Straights.Image.GridReader.Cell+BlackNumber, Straights.Image",
+      "Number": 3
+    },
+    {
+      "$ref": "3"
+    }
+  ],
+  [
+    {
+      "$ref": "2"
+    },
+    {
+      "$ref": "2"
+    },
+    {
+      "$id": "14",
+      "$type": "Straights.Image.GridReader.Cell+WhiteNumber, Straights.Image",
+      "Number": 3
+    },
+    {
+      "$ref": "2"
+    },
+    {
+      "$id": "15",
+      "$type": "Straights.Image.GridReader.Cell+BlackNumber, Straights.Image",
+      "Number": 8
+    },
+    {
+      "$ref": "2"
+    },
+    {
+      "$id": "16",
+      "$type": "Straights.Image.GridReader.Cell+BlackNumber, Straights.Image",
+      "Number": 7
+    },
+    {
+      "$ref": "2"
+    },
+    {
+      "$ref": "2"
+    }
+  ],
+  [
+    {
+      "$ref": "2"
+    },
+    {
+      "$ref": "2"
+    },
+    {
+      "$ref": "2"
+    },
+    {
+      "$id": "17",
+      "$type": "Straights.Image.GridReader.Cell+WhiteNumber, Straights.Image",
+      "Number": 4
+    },
+    {
+      "$ref": "3"
+    },
+    {
+      "$ref": "2"
+    },
+    {
+      "$ref": "2"
+    },
+    {
+      "$ref": "2"
+    },
+    {
+      "$ref": "2"
+    }
+  ],
+  [
+    {
+      "$ref": "2"
+    },
+    {
+      "$id": "18",
+      "$type": "Straights.Image.GridReader.Cell+BlackNumber, Straights.Image",
+      "Number": 4
+    },
+    {
+      "$ref": "2"
+    },
+    {
+      "$ref": "2"
+    },
+    {
+      "$id": "19",
+      "$type": "Straights.Image.GridReader.Cell+WhiteNumber, Straights.Image",
+      "Number": 5
+    },
+    {
+      "$ref": "2"
+    },
+    {
+      "$ref": "2"
+    },
+    {
+      "$ref": "3"
+    },
+    {
+      "$ref": "2"
+    }
+  ],
+  [
+    {
+      "$ref": "2"
+    },
+    {
+      "$ref": "2"
+    },
+    {
+      "$ref": "2"
+    },
+    {
+      "$ref": "2"
+    },
+    {
+      "$ref": "2"
+    },
+    {
+      "$id": "20",
+      "$type": "Straights.Image.GridReader.Cell+WhiteNumber, Straights.Image",
+      "Number": 6
+    },
+    {
+      "$ref": "2"
+    },
+    {
+      "$ref": "2"
+    },
+    {
+      "$ref": "3"
+    }
+  ]
+]

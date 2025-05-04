@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Description>Read Straights and Sudoku grids from images (screenshots).</Description>
     <PackageTags>Straights;Str8ts;Sudoku;Computer Vision</PackageTags>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageReadmeFile>Readme.md</PackageReadmeFile>
   </PropertyGroup>
 
   <PropertyGroup>

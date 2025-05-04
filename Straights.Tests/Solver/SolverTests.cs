@@ -13,6 +13,28 @@ using Straights.Solver;
 public class SolverTests
 {
     [Fact]
+    public Task ReadmeSampleCode()
+    {
+        var unsolvedGridText =
+        """
+        5
+        _,b,b1,_,w4
+        _,w4,_,_,_
+        b,_,b,_,_
+        b,w5,_,_,_
+        w3,_,_,_,w1
+
+        """;
+
+        var unsolvedGrid = GridConverter.ParseBuilderText(unsolvedGridText);
+        var solver = new EliminatingSolver();
+        var solvedGrid = solver.Solve(unsolvedGrid.SolverGrid);
+        var solvedGridText = solvedGrid.Convert().ToBuilderText();
+
+        return Verify(solvedGridText);
+    }
+
+    [Fact]
     public void RecursiveTrialAndErrorSolver_SolvesGrid()
     {
         var solver = new RecursiveTrialAndErrorSolver

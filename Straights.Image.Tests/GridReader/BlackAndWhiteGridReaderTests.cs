@@ -4,6 +4,7 @@
 
 namespace Straights.Image.Tests.GridReader;
 
+using Argon;
 using OpenCvSharp;
 
 using Straights.Image.DigitReader;
@@ -100,6 +101,24 @@ _____#__b
                 cells => cells.OfType<Cell.IHasNumber>().Select(x => x.Number))
                 .ToArray();
         _ = numbers.Should().Equal([5, 9, 8, 6, 1, 7, 1, 2, 9, 2, 3, 3, 8, 7, 4, 4, 5, 6]);
+    }
+
+    [Fact]
+    public Task ReadmeSampleCode()
+    {
+        var pathToPng = TestData.GetPath("GridReader/grid-numbers1.png");
+
+        IBlackAndWhiteGridReader reader = new GridReaderFactory().CreateGridReader();
+        Cell[][] grid = reader.ReadGrid(pathToPng);
+
+        var serializerSettings = new JsonSerializerSettings
+        {
+            Formatting = Formatting.Indented,
+            TypeNameHandling = TypeNameHandling.Objects,
+            PreserveReferencesHandling = PreserveReferencesHandling.Objects,
+            ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+        };
+        return Verify(JsonConvert.SerializeObject(grid, serializerSettings));
     }
 
     private static char ToChar(Cell cell)
