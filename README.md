@@ -106,7 +106,6 @@ For Straights.Web, you need to download and activate the
 * Add more XML doc (use Copilot?)
 * Microsoft.CodeAnalysis.PublicApiAnalyzers
 * Migrate to slnx format
-* Github workflow to build Straights.Web
 * See if we can find a better solution for the Linux OpenSvSharp runtime.
 
 * Issues/Bugs

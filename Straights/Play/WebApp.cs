@@ -5,6 +5,7 @@
 namespace Straights.Play;
 
 using System.IO.Abstractions;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Primitives;

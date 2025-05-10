@@ -5,6 +5,7 @@
 namespace Straights.Solver.Converter;
 
 using System.Globalization;
+
 using Straights.Solver.Builder;
 
 /// <summary>

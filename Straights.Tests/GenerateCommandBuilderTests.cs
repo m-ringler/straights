@@ -12,6 +12,7 @@ using RandN.Rngs;
 
 using Straights.Solver.Generator;
 using Straights.Solver.Simplification;
+
 using XFS = System.IO.Abstractions.TestingHelpers.MockUnixSupport;
 
 /// <summary>

@@ -5,6 +5,7 @@
 namespace Straights.Solver.Converter;
 
 using System.Numerics;
+
 using Straights.Solver.Data;
 
 internal static class BinaryGameSerializer

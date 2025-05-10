@@ -2,7 +2,7 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Quick build",
+      "label": "build (no-restore)",
       "command": "dotnet",
       "type": "process",
       "args": [
@@ -35,12 +35,12 @@
         "${workspaceFolder}/straights-nuget.slnf",
         "--output",
         "${workspaceFolder}/publish/NuGetPackages",
-        "-p:VersionSuffix=beta"
+        "-p:VersionSuffix=beta${input:betaVersionNumber}"
       ],
       "problemMatcher": "$msCompile"
     },
     {
-      "label": "Publish straights",
+      "label": "publish straights",
       "command": "dotnet",
       "type": "process",
       "args": [
@@ -54,7 +54,7 @@
       "problemMatcher": "$msCompile"
     },
     {
-      "label": "Publish Straights.Web",
+      "label": "publish Straights.Web",
       "command": "dotnet",
       "type": "process",
       "args": [
@@ -68,7 +68,7 @@
       "problemMatcher": "$msCompile"
     },
     {
-      "label": "Run Straights.Web",
+      "label": "run Straights.Web",
       "command": "emrun",
       "type": "shell",
       "args": ["${workspaceFolder}/Straights.Web/publish/index.html"],
@@ -82,14 +82,21 @@
       "problemMatcher": "$msCompile"
     },
     {
-      "label": "Quick Test",
+      "label": "test nugets",
+      "command": "dotnet",
+      "type": "process",
+      "args": ["test", "-p:UseStraightsNugetPackagesVersion=${input:nugetVersion}"],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "test (no-build)",
       "command": "dotnet",
       "type": "process",
       "args": ["test", "--no-build"],
       "problemMatcher": "$msCompile"
     },
     {
-      "label": "Test with Coverage",
+      "label": "test (coverage)",
       "command": "dotnet",
       "type": "process",
       "args": [
@@ -103,7 +110,7 @@
       "problemMatcher": "$msCompile"
     },
     {
-      "label": "Generate coverage report",
+      "label": "generate coverage report",
       "command": "reportgenerator",
       "type": "shell",
       "args": [
@@ -111,6 +118,18 @@
         "-targetdir:${workspaceFolder}/coverage/covstats"
       ],
       "problemMatcher": []
+    }
+  ],
+  "inputs": [
+    {
+      "description": "The nuget version to use.",
+      "id": "nugetVersion",
+      "type": "promptString"
+    },
+    {
+      "description": "The beta version number to use.",
+      "id": "betaVersionNumber",
+      "type": "promptString"
     }
   ]
 }

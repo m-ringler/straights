@@ -1,0 +1,5 @@
+﻿Do you want to save the grid? [y/n]:y
+Enter path or press return to use "c:\path\to\foo.txt":
+
+
+Grid written to c:\path\to\foo.txt

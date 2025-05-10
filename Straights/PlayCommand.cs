@@ -5,6 +5,7 @@
 namespace Straights;
 
 using System.IO.Abstractions;
+
 using Straights.Console;
 using Straights.Play;
 using Straights.Solver;
