@@ -47,10 +47,12 @@ internal sealed class HorizontallyAndVerticallySymmetricEmptyGridGenerator(GridP
         List<FieldIndex> result = [];
         var all = allIndices.ToList();
 
+        // Odd grid size ...
         int center = -1;
         if (size % 2 == 1)
         {
-            // center cell
+            // Odd total number of black fields
+            // => add center cell
             if (n % 2 == 1)
             {
                 result.Add(all[^1]);

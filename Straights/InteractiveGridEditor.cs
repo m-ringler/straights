@@ -85,7 +85,7 @@ public sealed partial class InteractiveGridEditor(
         return modified;
     }
 
-    [GeneratedRegex(@"\s*(\d+)[\s,]+(\d+)(?:[\s,]+([wW])?(\d+))?", RegexOptions.Compiled)]
+    [GeneratedRegex(@"^\s*(\d+)[\s,]+(\d+)(?:[\s,]+([wW])?(\d+))?\s*$", RegexOptions.Compiled)]
     private static partial Regex MyRegex();
 
     private Action BuildPrinter(GridBuilder b)
