@@ -49,7 +49,7 @@ w4,_,b,_,_,_,_,b9,_
                 " n\n",
             ];
 
-        var sut = CreateSut(userInput, out var fs, out var getConsoleOutput);
+        var sut = CreateSut(userInput.GetEnumerator(), out var fs, out var getConsoleOutput);
         var fsBefore = fs.AllNodes.OrderBy(x => x).ToList();
 
         // ACT
@@ -85,7 +85,7 @@ w4,_,b,_,_,_,_,b9,_
             "\n",
         ];
 
-        var sut = CreateSut(userInput, out var fs, out var getConsoleOutput);
+        var sut = CreateSut(userInput.GetEnumerator(), out var fs, out var getConsoleOutput);
         var fsBefore = fs.AllNodes.OrderBy(x => x).ToList();
 
         // ACT
@@ -116,7 +116,7 @@ w4,_,b,_,_,_,_,b9,_
             userPathAnswer,
         ];
 
-        var sut = CreateSut(userInput, out var fs, out var getConsoleOutput);
+        var sut = CreateSut(userInput.GetEnumerator(), out var fs, out var getConsoleOutput);
         var fsBefore = fs.AllNodes.ToList();
 
         // ACT
@@ -146,7 +146,7 @@ w4,_,b,_,_,_,_,b9,_
             userPathAnswer,
         ];
 
-        var sut = CreateSut(userInput, out var fs, out _, home);
+        var sut = CreateSut(userInput.GetEnumerator(), out var fs, out _, home);
         var fsBefore = fs.AllNodes.ToList();
 
         // ACT
@@ -161,7 +161,7 @@ w4,_,b,_,_,_,_,b9,_
     }
 
     private static InteractiveGridSaver CreateSut(
-        IReadOnlyList<string?> userInput,
+        IEnumerator<string?> userInput,
         out MockFileSystem fs,
         out Func<string> getConsoleOutput,
         string? homeFolder = null)
@@ -169,10 +169,9 @@ w4,_,b,_,_,_,_,b9,_
         fs = new(new MockFileSystemOptions { CreateDefaultTempDir = false, });
         var console = new StringBuilderConsole();
         getConsoleOutput = console.ToString;
-        using var e = userInput.GetEnumerator();
         string? ReadNextLine()
         {
-            var result = e.MoveNext() ? e.Current : string.Empty;
+            var result = userInput.MoveNext() ? userInput.Current : string.Empty;
             console.Write(result ?? "<null>");
             console.WriteLine();
             return result;
@@ -193,7 +192,7 @@ w4,_,b,_,_,_,_,b9,_
             userPathAnswer,
         ];
 
-        var sut = CreateSut(userInput, out var fs, out var getConsoleOutput);
+        var sut = CreateSut(userInput.GetEnumerator(), out var fs, out var getConsoleOutput);
         var fsBefore = fs.AllNodes.ToList();
 
         // ACT
