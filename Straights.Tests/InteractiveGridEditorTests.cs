@@ -4,6 +4,7 @@
 
 namespace Straights.Tests;
 
+using Straights.Console;
 using Straights.Solver;
 using Straights.Solver.Builder;
 using Straights.Tests.Console;
@@ -74,13 +75,12 @@ public class InteractiveGridEditorTests
                 "9 1"
             ];
 
-        var stringConsole = new StringBuilderConsole();
+        IWriteOnlyConsole stringConsole = new StringBuilderConsole();
         using var e = lines.GetEnumerator();
         string ReadNextLine()
         {
             var result = e.MoveNext() ? e.Current : string.Empty;
-            stringConsole.Write(result);
-            stringConsole.WriteLine();
+            stringConsole.WriteLine(result);
             return result;
         }
 

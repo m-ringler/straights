@@ -9,6 +9,7 @@ using System.IO.Abstractions.TestingHelpers;
 
 using Moq;
 
+using Straights.Console;
 using Straights.Play;
 using Straights.Tests.Console;
 
@@ -104,8 +105,8 @@ w4,_,b,_,_,_,_,b9,_
                 new MockFileData(GridAsText));
         }
 
-        var console = new StringBuilderConsole();
-        getConsoleOutput = console.ToString;
+        IWriteOnlyConsole console = new StringBuilderConsole();
+        getConsoleOutput = () => console.ToString()!;
 
         var webApp = new Mock<IWebApp>();
         webApp
@@ -113,8 +114,7 @@ w4,_,b,_,_,_,_,b9,_
             .Returns<string, IDirectoryInfo>(
                 (url, folder) =>
                 {
-                    console.Write($"WebApp serving {folder} at {url}");
-                    console.WriteLine();
+                    console.WriteLine($"WebApp serving {folder} at {url}");
                     return webAppTask ?? Task.CompletedTask;
                 });
 

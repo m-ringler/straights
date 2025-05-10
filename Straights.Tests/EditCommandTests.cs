@@ -6,6 +6,7 @@ namespace Straights.Tests;
 
 using System.IO.Abstractions.TestingHelpers;
 
+using Straights.Console;
 using Straights.Tests.Console;
 
 using XFS = System.IO.Abstractions.TestingHelpers.MockUnixSupport;
@@ -95,15 +96,14 @@ public class EditCommandTests
         out Func<string> getConsoleOutput,
         string? fileName = null)
     {
-        var console = new StringBuilderConsole();
-        getConsoleOutput = console.ToString;
+        IWriteOnlyConsole console = new StringBuilderConsole();
+        getConsoleOutput = () => console.ToString()!;
 
         var e = userInput;
         string? ReadNextLine()
         {
             var result = e.MoveNext() ? e.Current : string.Empty;
-            console.Write(result ?? "<null>");
-            console.WriteLine();
+            console.WriteLine(result ?? "<null>");
             return result;
         }
 

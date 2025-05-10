@@ -15,15 +15,9 @@ public interface IWriteOnlyConsole
 
     void Write(string s);
 
-    void Write(char c)
-    {
-        this.Write(c.ToString());
-    }
+    void Write(char c);
 
-    void WriteLine()
-    {
-        this.Write(Environment.NewLine);
-    }
+    void WriteLine();
 
     void WriteLine(string s)
     {

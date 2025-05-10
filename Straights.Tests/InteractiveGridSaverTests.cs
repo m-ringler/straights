@@ -7,6 +7,7 @@ namespace Straights.Tests;
 using System.IO.Abstractions.TestingHelpers;
 using System.Runtime.CompilerServices;
 
+using Straights.Console;
 using Straights.Solver;
 using Straights.Solver.Builder;
 using Straights.Tests.Console;
@@ -167,13 +168,12 @@ w4,_,b,_,_,_,_,b9,_
         string? homeFolder = null)
     {
         fs = new(new MockFileSystemOptions { CreateDefaultTempDir = false, });
-        var console = new StringBuilderConsole();
-        getConsoleOutput = console.ToString;
+        IWriteOnlyConsole console = new StringBuilderConsole();
+        getConsoleOutput = () => console.ToString()!;
         string? ReadNextLine()
         {
             var result = userInput.MoveNext() ? userInput.Current : string.Empty;
-            console.Write(result ?? "<null>");
-            console.WriteLine();
+            console.WriteLine(result ?? "<null>");
             return result;
         }
 
