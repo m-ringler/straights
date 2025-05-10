@@ -5,6 +5,7 @@
 namespace Straights.Play;
 
 using System;
+
 using Straights.Console;
 using Straights.Solver;
 using Straights.Solver.Data;

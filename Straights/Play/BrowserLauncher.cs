@@ -6,6 +6,7 @@ namespace Straights;
 
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+
 using Straights.Play;
 
 internal class BrowserLauncher : IBrowserLauncher
