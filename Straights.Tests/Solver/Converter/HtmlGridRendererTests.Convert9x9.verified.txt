@@ -27,7 +27,7 @@ table.grid {
    font-size: 21pt;
 }
 
-tr.grid_row td
+tr.grid-row td
 {
    border: solid 1px #909090;
    margin: 0;
@@ -36,25 +36,25 @@ tr.grid_row td
    min-width: 50pt;
 }
 
-tr.grid_row
+tr.grid-row
 {
    margin: 0;
 }
 
-td.white_field_solved
+td.white-field-solved
 {
    background-color: white;
    color: black;
 }
 
-td.white_field_unsolved
+td.white-field-unsolved
 {
    font-size: 8pt;
    padding-left: 0.37em;
    padding-right: 0.37em;
 }
 
-td.black_field
+td.black-field
 {
     background-color: black;
     color: white;
@@ -62,269 +62,269 @@ td.black_field
 </style>
 </head>
 <body><table class="grid">
-<tr class="grid_row">
-<td class="white_field_solved">1</td>
-<td class="white_field_unsolved"><div class="col"><div>&nbsp;</div><div>2</div><div>3</div></div>
+<tr class="grid-row">
+<td class="white-field-solved">1</td>
+<td class="white-field-unsolved"><div class="col"><div>&nbsp;</div><div>2</div><div>3</div></div>
 <div class="col"><div>4</div><div>5</div><div>6</div></div>
 <div class="col"><div>7</div><div>8</div><div>9</div></div>
 </td>
-<td class="white_field_unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
 <div class="col"><div>4</div><div>5</div><div>6</div></div>
 <div class="col"><div>7</div><div>8</div><div>9</div></div>
 </td>
-<td class="black_field">&nbsp;</td>
-<td class="white_field_unsolved"><div class="col"><div>&nbsp;</div><div>2</div><div>3</div></div>
+<td class="black-field">&nbsp;</td>
+<td class="white-field-unsolved"><div class="col"><div>&nbsp;</div><div>2</div><div>3</div></div>
 <div class="col"><div>4</div><div>5</div><div>6</div></div>
 <div class="col"><div>7</div><div>8</div><div>9</div></div>
 </td>
-<td class="white_field_unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
 <div class="col"><div>4</div><div>&nbsp;</div><div>6</div></div>
 <div class="col"><div>7</div><div>8</div><div>9</div></div>
 </td>
-<td class="white_field_unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
 <div class="col"><div>4</div><div>5</div><div>6</div></div>
 <div class="col"><div>7</div><div>8</div><div>&nbsp;</div></div>
 </td>
-<td class="black_field">&nbsp;</td>
-<td class="black_field">&nbsp;</td>
+<td class="black-field">&nbsp;</td>
+<td class="black-field">&nbsp;</td>
 </tr>
-<tr class="grid_row">
-<td class="white_field_unsolved"><div class="col"><div>&nbsp;</div><div>2</div><div>3</div></div>
+<tr class="grid-row">
+<td class="white-field-unsolved"><div class="col"><div>&nbsp;</div><div>2</div><div>3</div></div>
 <div class="col"><div>4</div><div>5</div><div>6</div></div>
 <div class="col"><div>&nbsp;</div><div>8</div><div>9</div></div>
 </td>
-<td class="white_field_unsolved"><div class="col"><div>&nbsp;</div><div>2</div><div>3</div></div>
+<td class="white-field-unsolved"><div class="col"><div>&nbsp;</div><div>2</div><div>3</div></div>
 <div class="col"><div>4</div><div>5</div><div>6</div></div>
 <div class="col"><div>7</div><div>8</div><div>9</div></div>
 </td>
-<td class="white_field_unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
 <div class="col"><div>4</div><div>5</div><div>6</div></div>
 <div class="col"><div>7</div><div>8</div><div>9</div></div>
 </td>
-<td class="white_field_unsolved"><div class="col"><div>1</div><div>&nbsp;</div><div>3</div></div>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>&nbsp;</div><div>3</div></div>
 <div class="col"><div>4</div><div>5</div><div>6</div></div>
 <div class="col"><div>7</div><div>8</div><div>&nbsp;</div></div>
 </td>
-<td class="white_field_unsolved"><div class="col"><div>&nbsp;</div><div>2</div><div>3</div></div>
+<td class="white-field-unsolved"><div class="col"><div>&nbsp;</div><div>2</div><div>3</div></div>
 <div class="col"><div>4</div><div>5</div><div>6</div></div>
 <div class="col"><div>7</div><div>8</div><div>9</div></div>
 </td>
-<td class="white_field_unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
 <div class="col"><div>4</div><div>&nbsp;</div><div>6</div></div>
 <div class="col"><div>7</div><div>8</div><div>9</div></div>
 </td>
-<td class="white_field_unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
 <div class="col"><div>4</div><div>5</div><div>6</div></div>
 <div class="col"><div>7</div><div>8</div><div>&nbsp;</div></div>
 </td>
-<td class="white_field_solved">9</td>
-<td class="white_field_unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<td class="white-field-solved">9</td>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
 <div class="col"><div>4</div><div>5</div><div>6</div></div>
 <div class="col"><div>7</div><div>&nbsp;</div><div>9</div></div>
 </td>
 </tr>
-<tr class="grid_row">
-<td class="black_field">&nbsp;</td>
-<td class="white_field_unsolved"><div class="col"><div>&nbsp;</div><div>2</div><div>3</div></div>
+<tr class="grid-row">
+<td class="black-field">&nbsp;</td>
+<td class="white-field-unsolved"><div class="col"><div>&nbsp;</div><div>2</div><div>3</div></div>
 <div class="col"><div>4</div><div>5</div><div>6</div></div>
 <div class="col"><div>7</div><div>8</div><div>9</div></div>
 </td>
-<td class="white_field_unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
 <div class="col"><div>4</div><div>5</div><div>6</div></div>
 <div class="col"><div>7</div><div>8</div><div>9</div></div>
 </td>
-<td class="white_field_unsolved"><div class="col"><div>1</div><div>&nbsp;</div><div>3</div></div>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>&nbsp;</div><div>3</div></div>
 <div class="col"><div>4</div><div>5</div><div>6</div></div>
 <div class="col"><div>7</div><div>8</div><div>&nbsp;</div></div>
 </td>
-<td class="white_field_solved">1</td>
-<td class="black_field">&nbsp;</td>
-<td class="black_field">9</td>
-<td class="white_field_unsolved"><div class="col"><div>1</div><div>2</div><div>&nbsp;</div></div>
+<td class="white-field-solved">1</td>
+<td class="black-field">&nbsp;</td>
+<td class="black-field">9</td>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>&nbsp;</div></div>
 <div class="col"><div>4</div><div>5</div><div>6</div></div>
 <div class="col"><div>&nbsp;</div><div>8</div><div>&nbsp;</div></div>
 </td>
-<td class="white_field_unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
 <div class="col"><div>4</div><div>5</div><div>6</div></div>
 <div class="col"><div>7</div><div>&nbsp;</div><div>9</div></div>
 </td>
 </tr>
-<tr class="grid_row">
-<td class="white_field_unsolved"><div class="col"><div>&nbsp;</div><div>2</div><div>3</div></div>
+<tr class="grid-row">
+<td class="white-field-unsolved"><div class="col"><div>&nbsp;</div><div>2</div><div>3</div></div>
 <div class="col"><div>4</div><div>5</div><div>6</div></div>
 <div class="col"><div>&nbsp;</div><div>8</div><div>9</div></div>
 </td>
-<td class="white_field_unsolved"><div class="col"><div>&nbsp;</div><div>2</div><div>3</div></div>
+<td class="white-field-unsolved"><div class="col"><div>&nbsp;</div><div>2</div><div>3</div></div>
 <div class="col"><div>4</div><div>5</div><div>6</div></div>
 <div class="col"><div>7</div><div>8</div><div>9</div></div>
 </td>
-<td class="black_field">&nbsp;</td>
-<td class="black_field">2</td>
-<td class="white_field_unsolved"><div class="col"><div>&nbsp;</div><div>2</div><div>3</div></div>
+<td class="black-field">&nbsp;</td>
+<td class="black-field">2</td>
+<td class="white-field-unsolved"><div class="col"><div>&nbsp;</div><div>2</div><div>3</div></div>
 <div class="col"><div>4</div><div>5</div><div>6</div></div>
 <div class="col"><div>7</div><div>8</div><div>9</div></div>
 </td>
-<td class="white_field_unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
 <div class="col"><div>4</div><div>&nbsp;</div><div>6</div></div>
 <div class="col"><div>7</div><div>8</div><div>9</div></div>
 </td>
-<td class="white_field_unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
 <div class="col"><div>4</div><div>5</div><div>6</div></div>
 <div class="col"><div>7</div><div>8</div><div>&nbsp;</div></div>
 </td>
-<td class="white_field_solved">7</td>
-<td class="white_field_unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<td class="white-field-solved">7</td>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
 <div class="col"><div>4</div><div>5</div><div>6</div></div>
 <div class="col"><div>7</div><div>&nbsp;</div><div>9</div></div>
 </td>
 </tr>
-<tr class="grid_row">
-<td class="white_field_unsolved"><div class="col"><div>&nbsp;</div><div>2</div><div>3</div></div>
+<tr class="grid-row">
+<td class="white-field-unsolved"><div class="col"><div>&nbsp;</div><div>2</div><div>3</div></div>
 <div class="col"><div>4</div><div>5</div><div>6</div></div>
 <div class="col"><div>&nbsp;</div><div>8</div><div>9</div></div>
 </td>
-<td class="black_field">1</td>
-<td class="white_field_unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<td class="black-field">1</td>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
 <div class="col"><div>4</div><div>5</div><div>6</div></div>
 <div class="col"><div>7</div><div>8</div><div>9</div></div>
 </td>
-<td class="white_field_solved">9</td>
-<td class="white_field_unsolved"><div class="col"><div>&nbsp;</div><div>2</div><div>3</div></div>
+<td class="white-field-solved">9</td>
+<td class="white-field-unsolved"><div class="col"><div>&nbsp;</div><div>2</div><div>3</div></div>
 <div class="col"><div>4</div><div>5</div><div>6</div></div>
 <div class="col"><div>7</div><div>8</div><div>9</div></div>
 </td>
-<td class="white_field_unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
 <div class="col"><div>4</div><div>&nbsp;</div><div>6</div></div>
 <div class="col"><div>7</div><div>8</div><div>9</div></div>
 </td>
-<td class="white_field_unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
 <div class="col"><div>4</div><div>5</div><div>6</div></div>
 <div class="col"><div>7</div><div>8</div><div>&nbsp;</div></div>
 </td>
-<td class="black_field">&nbsp;</td>
-<td class="white_field_unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<td class="black-field">&nbsp;</td>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
 <div class="col"><div>4</div><div>5</div><div>6</div></div>
 <div class="col"><div>7</div><div>&nbsp;</div><div>9</div></div>
 </td>
 </tr>
-<tr class="grid_row">
-<td class="white_field_solved">7</td>
-<td class="white_field_unsolved"><div class="col"><div>&nbsp;</div><div>2</div><div>3</div></div>
+<tr class="grid-row">
+<td class="white-field-solved">7</td>
+<td class="white-field-unsolved"><div class="col"><div>&nbsp;</div><div>2</div><div>3</div></div>
 <div class="col"><div>4</div><div>5</div><div>6</div></div>
 <div class="col"><div>7</div><div>8</div><div>9</div></div>
 </td>
-<td class="white_field_unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
 <div class="col"><div>4</div><div>5</div><div>6</div></div>
 <div class="col"><div>7</div><div>8</div><div>9</div></div>
 </td>
-<td class="white_field_unsolved"><div class="col"><div>1</div><div>&nbsp;</div><div>3</div></div>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>&nbsp;</div><div>3</div></div>
 <div class="col"><div>4</div><div>5</div><div>6</div></div>
 <div class="col"><div>7</div><div>8</div><div>&nbsp;</div></div>
 </td>
-<td class="white_field_unsolved"><div class="col"><div>&nbsp;</div><div>2</div><div>3</div></div>
+<td class="white-field-unsolved"><div class="col"><div>&nbsp;</div><div>2</div><div>3</div></div>
 <div class="col"><div>4</div><div>5</div><div>6</div></div>
 <div class="col"><div>7</div><div>8</div><div>9</div></div>
 </td>
-<td class="black_field">&nbsp;</td>
-<td class="black_field">&nbsp;</td>
-<td class="white_field_unsolved"><div class="col"><div>1</div><div>2</div><div>&nbsp;</div></div>
+<td class="black-field">&nbsp;</td>
+<td class="black-field">&nbsp;</td>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>&nbsp;</div></div>
 <div class="col"><div>4</div><div>5</div><div>6</div></div>
 <div class="col"><div>&nbsp;</div><div>8</div><div>&nbsp;</div></div>
 </td>
-<td class="white_field_unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
 <div class="col"><div>4</div><div>5</div><div>6</div></div>
 <div class="col"><div>7</div><div>&nbsp;</div><div>9</div></div>
 </td>
 </tr>
-<tr class="grid_row">
-<td class="white_field_unsolved"><div class="col"><div>&nbsp;</div><div>2</div><div>3</div></div>
+<tr class="grid-row">
+<td class="white-field-unsolved"><div class="col"><div>&nbsp;</div><div>2</div><div>3</div></div>
 <div class="col"><div>4</div><div>5</div><div>6</div></div>
 <div class="col"><div>&nbsp;</div><div>8</div><div>9</div></div>
 </td>
-<td class="white_field_unsolved"><div class="col"><div>&nbsp;</div><div>2</div><div>3</div></div>
+<td class="white-field-unsolved"><div class="col"><div>&nbsp;</div><div>2</div><div>3</div></div>
 <div class="col"><div>4</div><div>5</div><div>6</div></div>
 <div class="col"><div>7</div><div>8</div><div>9</div></div>
 </td>
-<td class="black_field">&nbsp;</td>
-<td class="black_field">&nbsp;</td>
-<td class="white_field_unsolved"><div class="col"><div>&nbsp;</div><div>2</div><div>3</div></div>
+<td class="black-field">&nbsp;</td>
+<td class="black-field">&nbsp;</td>
+<td class="white-field-unsolved"><div class="col"><div>&nbsp;</div><div>2</div><div>3</div></div>
 <div class="col"><div>4</div><div>5</div><div>6</div></div>
 <div class="col"><div>7</div><div>8</div><div>9</div></div>
 </td>
-<td class="white_field_unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
 <div class="col"><div>4</div><div>&nbsp;</div><div>6</div></div>
 <div class="col"><div>7</div><div>8</div><div>9</div></div>
 </td>
-<td class="white_field_unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
 <div class="col"><div>4</div><div>5</div><div>6</div></div>
 <div class="col"><div>7</div><div>8</div><div>&nbsp;</div></div>
 </td>
-<td class="white_field_solved">3</td>
-<td class="black_field">8</td>
+<td class="white-field-solved">3</td>
+<td class="black-field">8</td>
 </tr>
-<tr class="grid_row">
-<td class="white_field_unsolved"><div class="col"><div>&nbsp;</div><div>2</div><div>3</div></div>
+<tr class="grid-row">
+<td class="white-field-unsolved"><div class="col"><div>&nbsp;</div><div>2</div><div>3</div></div>
 <div class="col"><div>4</div><div>5</div><div>6</div></div>
 <div class="col"><div>&nbsp;</div><div>8</div><div>9</div></div>
 </td>
-<td class="white_field_unsolved"><div class="col"><div>&nbsp;</div><div>2</div><div>3</div></div>
+<td class="white-field-unsolved"><div class="col"><div>&nbsp;</div><div>2</div><div>3</div></div>
 <div class="col"><div>4</div><div>5</div><div>6</div></div>
 <div class="col"><div>7</div><div>8</div><div>9</div></div>
 </td>
-<td class="white_field_unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
 <div class="col"><div>4</div><div>5</div><div>6</div></div>
 <div class="col"><div>7</div><div>8</div><div>9</div></div>
 </td>
-<td class="white_field_unsolved"><div class="col"><div>1</div><div>&nbsp;</div><div>3</div></div>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>&nbsp;</div><div>3</div></div>
 <div class="col"><div>4</div><div>5</div><div>6</div></div>
 <div class="col"><div>7</div><div>8</div><div>&nbsp;</div></div>
 </td>
-<td class="white_field_unsolved"><div class="col"><div>&nbsp;</div><div>2</div><div>3</div></div>
+<td class="white-field-unsolved"><div class="col"><div>&nbsp;</div><div>2</div><div>3</div></div>
 <div class="col"><div>4</div><div>5</div><div>6</div></div>
 <div class="col"><div>7</div><div>8</div><div>9</div></div>
 </td>
-<td class="white_field_unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
 <div class="col"><div>4</div><div>&nbsp;</div><div>6</div></div>
 <div class="col"><div>7</div><div>8</div><div>9</div></div>
 </td>
-<td class="white_field_unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
 <div class="col"><div>4</div><div>5</div><div>6</div></div>
 <div class="col"><div>7</div><div>8</div><div>&nbsp;</div></div>
 </td>
-<td class="white_field_unsolved"><div class="col"><div>1</div><div>2</div><div>&nbsp;</div></div>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>&nbsp;</div></div>
 <div class="col"><div>4</div><div>5</div><div>6</div></div>
 <div class="col"><div>&nbsp;</div><div>8</div><div>&nbsp;</div></div>
 </td>
-<td class="white_field_unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
 <div class="col"><div>4</div><div>5</div><div>6</div></div>
 <div class="col"><div>7</div><div>&nbsp;</div><div>9</div></div>
 </td>
 </tr>
-<tr class="grid_row">
-<td class="black_field">&nbsp;</td>
-<td class="black_field">&nbsp;</td>
-<td class="white_field_unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<tr class="grid-row">
+<td class="black-field">&nbsp;</td>
+<td class="black-field">&nbsp;</td>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
 <div class="col"><div>4</div><div>5</div><div>6</div></div>
 <div class="col"><div>7</div><div>8</div><div>9</div></div>
 </td>
-<td class="white_field_unsolved"><div class="col"><div>1</div><div>&nbsp;</div><div>3</div></div>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>&nbsp;</div><div>3</div></div>
 <div class="col"><div>4</div><div>5</div><div>6</div></div>
 <div class="col"><div>7</div><div>8</div><div>&nbsp;</div></div>
 </td>
-<td class="white_field_unsolved"><div class="col"><div>&nbsp;</div><div>2</div><div>3</div></div>
+<td class="white-field-unsolved"><div class="col"><div>&nbsp;</div><div>2</div><div>3</div></div>
 <div class="col"><div>4</div><div>5</div><div>6</div></div>
 <div class="col"><div>7</div><div>8</div><div>9</div></div>
 </td>
-<td class="black_field">5</td>
-<td class="white_field_unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<td class="black-field">5</td>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
 <div class="col"><div>4</div><div>5</div><div>6</div></div>
 <div class="col"><div>7</div><div>8</div><div>&nbsp;</div></div>
 </td>
-<td class="white_field_unsolved"><div class="col"><div>1</div><div>2</div><div>&nbsp;</div></div>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>&nbsp;</div></div>
 <div class="col"><div>4</div><div>5</div><div>6</div></div>
 <div class="col"><div>&nbsp;</div><div>8</div><div>&nbsp;</div></div>
 </td>
-<td class="white_field_unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
 <div class="col"><div>4</div><div>5</div><div>6</div></div>
 <div class="col"><div>7</div><div>&nbsp;</div><div>9</div></div>
 </td>

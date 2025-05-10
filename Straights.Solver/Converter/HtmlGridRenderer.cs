@@ -45,7 +45,7 @@ public sealed class HtmlGridRenderer
                font-size: 21pt;
             }
             
-            tr.grid_row td
+            tr.grid-row td
             {
                border: solid 1px #909090;
                margin: 0;
@@ -54,25 +54,25 @@ public sealed class HtmlGridRenderer
                min-width: 50pt;
             }
             
-            tr.grid_row
+            tr.grid-row
             {
                margin: 0;
             }
             
-            td.white_field_solved
+            td.white-field-solved
             {
                background-color: white;
                color: black;
             }
             
-            td.white_field_unsolved
+            td.white-field-unsolved
             {
                font-size: 8pt;
                padding-left: 0.37em;
                padding-right: 0.37em;
             }
             
-            td.black_field
+            td.black-field
             {
                 background-color: black;
                 color: white;
@@ -93,7 +93,7 @@ public sealed class HtmlGridRenderer
         writer.WriteLine("<body><table class=\"grid\">");
         foreach (var row in grid.GetRows())
         {
-            writer.WriteLine("<tr class=\"grid_row\">");
+            writer.WriteLine("<tr class=\"grid-row\">");
             foreach (var field in row)
             {
                 writer.Write($"<td class=\"{GetClass(field)}\">");
@@ -149,9 +149,9 @@ public sealed class HtmlGridRenderer
     {
         return field switch
         {
-            SolverField.WhiteField wf when wf.Data.IsSolved => "white_field_solved",
-            SolverField.WhiteField => "white_field_unsolved",
-            SolverField.BlackBlank or SolverField.BlackNumber => "black_field",
+            SolverField.WhiteField wf when wf.Data.IsSolved => "white-field-solved",
+            SolverField.WhiteField => "white-field-unsolved",
+            SolverField.BlackBlank or SolverField.BlackNumber => "black-field",
             _ => throw UnknownFieldType(field),
         };
     }
