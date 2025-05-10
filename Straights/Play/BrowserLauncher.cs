@@ -2,12 +2,10 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-namespace Straights;
+namespace Straights.Play;
 
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-
-using Straights.Play;
 
 internal class BrowserLauncher : IBrowserLauncher
 {

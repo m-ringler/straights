@@ -1,0 +1,3 @@
+﻿WebApp serving {CurrentDirectory}Play\html at http://localhost:3556/
+Launching http://localhost:3556/?code=gEi3ggBB3jrXjBhIiICj3iBAh4bjajC37gAhCBkXijKBB3gjhiCjcXghXgX3irCJ3qAjBsLipXphXiDijcAA
+Opening browser at http://localhost:3556/?code=gEi3ggBB3jrXjBhIiICj3iBAh4bjajC37gAhCBkXijKBB3gjhiCjcXghXgX3irCJ3qAjBsLipXphXiDijcAA

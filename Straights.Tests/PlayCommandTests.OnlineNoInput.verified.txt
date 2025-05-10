@@ -1,0 +1,2 @@
+﻿Launching http://mospace.de/str8ts/?code=
+Opening browser at http://mospace.de/str8ts/?code=

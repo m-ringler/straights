@@ -12,9 +12,9 @@ using Microsoft.Extensions.Primitives;
 
 using PlayCore = Straights.Solver.Play;
 
-internal class WebApp
+internal class WebApp : IWebApp
 {
-    public static Task Run(string url, IDirectoryInfo folder)
+    public Task Run(string url, IDirectoryInfo folder)
     {
         var builder = WebApplication.CreateBuilder(new WebApplicationOptions
         {

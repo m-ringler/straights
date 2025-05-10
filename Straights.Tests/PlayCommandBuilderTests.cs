@@ -8,6 +8,9 @@ using System.CommandLine;
 using System.IO.Abstractions;
 using System.IO.Abstractions.TestingHelpers;
 
+using Straights.Console;
+using Straights.Play;
+
 using XFS = System.IO.Abstractions.TestingHelpers.MockUnixSupport;
 
 /// <summary>
@@ -46,6 +49,8 @@ public class PlayCommandBuilderTests
         var c = runner.InvokedCommand;
         c.Should().NotBeNull();
         c.PortOnLocalHost.Should().Be(expectedPort);
+        c.WebApp.Should().BeOfType<WebApp>();
+        c.Terminal.Should().BeOfType<Terminal>();
         (c.InputFile?.FullName).Should().Be(args[0]);
         ShouldHaveFileSystem(c.InputFile, fileSystem);
     }

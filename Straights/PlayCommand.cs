@@ -19,6 +19,8 @@ public sealed class PlayCommand(
 
     public int? PortOnLocalHost { get; init; }
 
+    internal IWebApp WebApp { get; init; } = new WebApp();
+
     public int Run()
     {
         Uri baseUri = PlayUrl.DefaultBaseUri;
@@ -27,9 +29,8 @@ public sealed class PlayCommand(
         {
             var url = $"http://localhost:{this.PortOnLocalHost}/";
             var folder = this.GetWebRoot();
-            this.Terminal.WriteLine(folder.ToString() ?? string.Empty);
 
-            serverTask = WebApp.Run(url, folder);
+            serverTask = this.WebApp.Run(url, folder);
 
             baseUri = new Uri($"{url}?code=");
         }
@@ -65,12 +66,7 @@ public sealed class PlayCommand(
 
     private IDirectoryInfo GetWebRoot()
     {
-        var baseDir = AppContext.BaseDirectory;
-        if (baseDir == null)
-        {
-            throw new InvalidOperationException("Failed to get the assembly directory.");
-        }
-
+        string baseDir = AppContext.BaseDirectory;
         var webRoot = fs.Path.Combine(baseDir, "Play", "html");
         return fs.DirectoryInfo.New(webRoot);
     }
