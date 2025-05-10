@@ -10,8 +10,13 @@ using Straights.Console;
 using Straights.Solver.Builder;
 using Straights.Solver.Converter;
 
-internal sealed class InteractiveGridSaver(IFileSystem fileSystem, ReadWriteConsole console)
+internal sealed class InteractiveGridSaver(
+    IFileSystem fileSystem,
+    ReadWriteConsole console,
+    string? homeFolder = null)
 {
+    private string HomeFolder { get; } = homeFolder ?? Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+
     public void SaveGrid(GridBuilder builder, string? suggestedPath)
     {
         console.Terminal.Write("Do you want to save the grid? [y/n]:");
@@ -51,8 +56,7 @@ internal sealed class InteractiveGridSaver(IFileSystem fileSystem, ReadWriteCons
             var grid = new ConvertibleGrid(builder);
             if (!grid.CanWriteTo(file))
             {
-                file = fileSystem.FileInfo.New(
-                    fileSystem.Path.ChangeExtension(answer, ".txt"));
+                file = fileSystem.FileInfo.New(answer + ".txt");
             }
 
             grid.WriteTo(file);
@@ -65,8 +69,7 @@ internal sealed class InteractiveGridSaver(IFileSystem fileSystem, ReadWriteCons
         if (answer.StartsWith("~/", StringComparison.Ordinal)
             && !fileSystem.Directory.Exists("./~"))
         {
-            answer = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)
-                + answer[1..];
+            answer = this.HomeFolder + answer[1..];
         }
 
         return Environment.ExpandEnvironmentVariables(answer);
