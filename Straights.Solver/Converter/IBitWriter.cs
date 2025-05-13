@@ -9,12 +9,4 @@ internal interface IBitWriter
     void WriteBit(bool bit);
 
     void WriteNumber(uint number, int numBits);
-
-    void WriteBits(IEnumerable<bool> bits)
-    {
-        foreach (var bit in bits)
-        {
-            this.WriteBit(bit);
-        }
-    }
 }

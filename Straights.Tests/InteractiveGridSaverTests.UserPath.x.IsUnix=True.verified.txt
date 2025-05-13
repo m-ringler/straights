@@ -1,0 +1,3 @@
+﻿Do you want to save the grid? [y/n]:y
+Enter path: /user/wants/bar.x
+Grid written to /user/wants/bar.x.txt

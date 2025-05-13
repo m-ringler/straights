@@ -119,6 +119,7 @@ public sealed class WhiteFieldData
         return new WhiteFieldData(this);
     }
 
+#if UNUSED
     public WhiteFieldData Intersect(WhiteFieldData other)
     {
         if (this.Size != other.Size)
@@ -130,6 +131,7 @@ public sealed class WhiteFieldData
         result.bitField &= other.bitField;
         return result;
     }
+#endif
 
     public WhiteFieldData Union(WhiteFieldData other)
     {

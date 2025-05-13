@@ -1,0 +1,317 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Straights</title>
+<meta name="description" content="Straights Puzzle for Printing">
+<meta name="keywords" content="Straights, Str8ts, Puzzle">
+<style>
+* {
+  box-sizing: border-box;
+}
+
+div.col {
+    float: left;
+}
+
+div.col div {
+  float: left;
+  clear: left;
+  padding-left: 4.5pt;
+  padding-top: 2pt;
+  padding-right: 4.5pt;
+  padding-bottom: 2pt;
+  color: #404090;
+}
+
+table.grid {
+   border-collapse: collapse;
+   font-family: LucidaSans, Helvetica, Arial, sans-serif;
+   font-size: 21pt;
+}
+
+tr.grid-row td
+{
+   border: solid 1px #909090;
+   margin: 0;
+   text-align: center;
+   height: 50pt;
+   min-width: 50pt;
+}
+
+tr.grid-row
+{
+   margin: 0;
+}
+
+td.white-field-solved
+{
+   background-color: white;
+   color: black;
+}
+
+td.white-field-unsolved
+{
+   font-size: 8pt;
+   padding-left: 0.37em;
+   padding-right: 0.37em;
+}
+
+td.black-field
+{
+    background-color: black;
+    color: white;
+}
+</style>
+</head>
+<body><table class="grid">
+<tr class="grid-row">
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<div class="col"><div>4</div><div>5</div><div>6</div></div>
+<div class="col"><div>7</div><div>8</div><div>9</div></div>
+</td>
+<td class="black-field">&nbsp;</td>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<div class="col"><div>4</div><div>5</div><div>6</div></div>
+<div class="col"><div>7</div><div>8</div><div>9</div></div>
+</td>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<div class="col"><div>4</div><div>5</div><div>6</div></div>
+<div class="col"><div>7</div><div>8</div><div>9</div></div>
+</td>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<div class="col"><div>4</div><div>5</div><div>6</div></div>
+<div class="col"><div>7</div><div>8</div><div>9</div></div>
+</td>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<div class="col"><div>4</div><div>5</div><div>6</div></div>
+<div class="col"><div>7</div><div>8</div><div>9</div></div>
+</td>
+<td class="black-field">&nbsp;</td>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<div class="col"><div>4</div><div>5</div><div>6</div></div>
+<div class="col"><div>7</div><div>8</div><div>9</div></div>
+</td>
+<td class="white-field-solved">7</td>
+</tr>
+<tr class="grid-row">
+<td class="black-field">&nbsp;</td>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<div class="col"><div>4</div><div>5</div><div>6</div></div>
+<div class="col"><div>7</div><div>8</div><div>9</div></div>
+</td>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<div class="col"><div>4</div><div>5</div><div>6</div></div>
+<div class="col"><div>7</div><div>8</div><div>9</div></div>
+</td>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<div class="col"><div>4</div><div>5</div><div>6</div></div>
+<div class="col"><div>7</div><div>8</div><div>9</div></div>
+</td>
+<td class="white-field-solved">2</td>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<div class="col"><div>4</div><div>5</div><div>6</div></div>
+<div class="col"><div>7</div><div>8</div><div>9</div></div>
+</td>
+<td class="white-field-solved">1</td>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<div class="col"><div>4</div><div>5</div><div>6</div></div>
+<div class="col"><div>7</div><div>8</div><div>9</div></div>
+</td>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<div class="col"><div>4</div><div>5</div><div>6</div></div>
+<div class="col"><div>7</div><div>8</div><div>9</div></div>
+</td>
+</tr>
+<tr class="grid-row">
+<td class="black-field">&nbsp;</td>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<div class="col"><div>4</div><div>5</div><div>6</div></div>
+<div class="col"><div>7</div><div>8</div><div>9</div></div>
+</td>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<div class="col"><div>4</div><div>5</div><div>6</div></div>
+<div class="col"><div>7</div><div>8</div><div>9</div></div>
+</td>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<div class="col"><div>4</div><div>5</div><div>6</div></div>
+<div class="col"><div>7</div><div>8</div><div>9</div></div>
+</td>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<div class="col"><div>4</div><div>5</div><div>6</div></div>
+<div class="col"><div>7</div><div>8</div><div>9</div></div>
+</td>
+<td class="black-field">1</td>
+<td class="black-field">8</td>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<div class="col"><div>4</div><div>5</div><div>6</div></div>
+<div class="col"><div>7</div><div>8</div><div>9</div></div>
+</td>
+<td class="black-field">6</td>
+</tr>
+<tr class="grid-row">
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<div class="col"><div>4</div><div>5</div><div>6</div></div>
+<div class="col"><div>7</div><div>8</div><div>9</div></div>
+</td>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<div class="col"><div>4</div><div>5</div><div>6</div></div>
+<div class="col"><div>7</div><div>8</div><div>9</div></div>
+</td>
+<td class="black-field">&nbsp;</td>
+<td class="black-field">8</td>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<div class="col"><div>4</div><div>5</div><div>6</div></div>
+<div class="col"><div>7</div><div>8</div><div>9</div></div>
+</td>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<div class="col"><div>4</div><div>5</div><div>6</div></div>
+<div class="col"><div>7</div><div>8</div><div>9</div></div>
+</td>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<div class="col"><div>4</div><div>5</div><div>6</div></div>
+<div class="col"><div>7</div><div>8</div><div>9</div></div>
+</td>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<div class="col"><div>4</div><div>5</div><div>6</div></div>
+<div class="col"><div>7</div><div>8</div><div>9</div></div>
+</td>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<div class="col"><div>4</div><div>5</div><div>6</div></div>
+<div class="col"><div>7</div><div>8</div><div>9</div></div>
+</td>
+</tr>
+<tr class="grid-row">
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<div class="col"><div>4</div><div>5</div><div>6</div></div>
+<div class="col"><div>7</div><div>8</div><div>9</div></div>
+</td>
+<td class="black-field">&nbsp;</td>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<div class="col"><div>4</div><div>5</div><div>6</div></div>
+<div class="col"><div>7</div><div>8</div><div>9</div></div>
+</td>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<div class="col"><div>4</div><div>5</div><div>6</div></div>
+<div class="col"><div>7</div><div>8</div><div>9</div></div>
+</td>
+<td class="white-field-solved">5</td>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<div class="col"><div>4</div><div>5</div><div>6</div></div>
+<div class="col"><div>7</div><div>8</div><div>9</div></div>
+</td>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<div class="col"><div>4</div><div>5</div><div>6</div></div>
+<div class="col"><div>7</div><div>8</div><div>9</div></div>
+</td>
+<td class="black-field">&nbsp;</td>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<div class="col"><div>4</div><div>5</div><div>6</div></div>
+<div class="col"><div>7</div><div>8</div><div>9</div></div>
+</td>
+</tr>
+<tr class="grid-row">
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<div class="col"><div>4</div><div>5</div><div>6</div></div>
+<div class="col"><div>7</div><div>8</div><div>9</div></div>
+</td>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<div class="col"><div>4</div><div>5</div><div>6</div></div>
+<div class="col"><div>7</div><div>8</div><div>9</div></div>
+</td>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<div class="col"><div>4</div><div>5</div><div>6</div></div>
+<div class="col"><div>7</div><div>8</div><div>9</div></div>
+</td>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<div class="col"><div>4</div><div>5</div><div>6</div></div>
+<div class="col"><div>7</div><div>8</div><div>9</div></div>
+</td>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<div class="col"><div>4</div><div>5</div><div>6</div></div>
+<div class="col"><div>7</div><div>8</div><div>9</div></div>
+</td>
+<td class="black-field">9</td>
+<td class="black-field">&nbsp;</td>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<div class="col"><div>4</div><div>5</div><div>6</div></div>
+<div class="col"><div>7</div><div>8</div><div>9</div></div>
+</td>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<div class="col"><div>4</div><div>5</div><div>6</div></div>
+<div class="col"><div>7</div><div>8</div><div>9</div></div>
+</td>
+</tr>
+<tr class="grid-row">
+<td class="black-field">&nbsp;</td>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<div class="col"><div>4</div><div>5</div><div>6</div></div>
+<div class="col"><div>7</div><div>8</div><div>9</div></div>
+</td>
+<td class="black-field">&nbsp;</td>
+<td class="black-field">&nbsp;</td>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<div class="col"><div>4</div><div>5</div><div>6</div></div>
+<div class="col"><div>7</div><div>8</div><div>9</div></div>
+</td>
+<td class="white-field-solved">7</td>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<div class="col"><div>4</div><div>5</div><div>6</div></div>
+<div class="col"><div>7</div><div>8</div><div>9</div></div>
+</td>
+<td class="white-field-solved">4</td>
+<td class="black-field">&nbsp;</td>
+</tr>
+<tr class="grid-row">
+<td class="white-field-solved">5</td>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<div class="col"><div>4</div><div>5</div><div>6</div></div>
+<div class="col"><div>7</div><div>8</div><div>9</div></div>
+</td>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<div class="col"><div>4</div><div>5</div><div>6</div></div>
+<div class="col"><div>7</div><div>8</div><div>9</div></div>
+</td>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<div class="col"><div>4</div><div>5</div><div>6</div></div>
+<div class="col"><div>7</div><div>8</div><div>9</div></div>
+</td>
+<td class="white-field-solved">9</td>
+<td class="white-field-solved">8</td>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<div class="col"><div>4</div><div>5</div><div>6</div></div>
+<div class="col"><div>7</div><div>8</div><div>9</div></div>
+</td>
+<td class="white-field-solved">3</td>
+<td class="black-field">&nbsp;</td>
+</tr>
+<tr class="grid-row">
+<td class="white-field-solved">4</td>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<div class="col"><div>4</div><div>5</div><div>6</div></div>
+<div class="col"><div>7</div><div>8</div><div>9</div></div>
+</td>
+<td class="black-field">&nbsp;</td>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<div class="col"><div>4</div><div>5</div><div>6</div></div>
+<div class="col"><div>7</div><div>8</div><div>9</div></div>
+</td>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<div class="col"><div>4</div><div>5</div><div>6</div></div>
+<div class="col"><div>7</div><div>8</div><div>9</div></div>
+</td>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<div class="col"><div>4</div><div>5</div><div>6</div></div>
+<div class="col"><div>7</div><div>8</div><div>9</div></div>
+</td>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<div class="col"><div>4</div><div>5</div><div>6</div></div>
+<div class="col"><div>7</div><div>8</div><div>9</div></div>
+</td>
+<td class="black-field">9</td>
+<td class="white-field-unsolved"><div class="col"><div>1</div><div>2</div><div>3</div></div>
+<div class="col"><div>4</div><div>5</div><div>6</div></div>
+<div class="col"><div>7</div><div>8</div><div>9</div></div>
+</td>
+</tr>
+</table></body>
+</html>

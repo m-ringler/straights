@@ -1,0 +1,22 @@
+﻿│ ⠏ │   │ 3 │   │
+│ ⠏ │ ⠏ │ ⠏ │ 1 │
+│ ⠏ │ 2 │ ⠏ │ ⠏ │
+│ 3 │ ⠏ │ ⠏ │ ⠏ │
+Add black field [<y> <x> <n>?] or white field [<y> <x> w<n>]
+or [<x> <y> 0] to clear a field
+or press ENTER when done: 
+4 1 w4
+│ ⠏ │   │ 3 │   │
+│ ⠏ │ ⠏ │ ⠏ │ 1 │
+│ ⠏ │ 2 │ ⠏ │ ⠏ │
+│ 4 │ ⠏ │ ⠏ │ ⠏ │
+Add black field [<y> <x> <n>?] or white field [<y> <x> w<n>]
+or [<x> <y> 0] to clear a field
+or press ENTER when done: 
+
+Do you want to save the grid? [y/n]:y
+Enter path or press return to use "/grid.txt":
+/foo/grid.txt
+Grid written to /foo/grid.txt
+Play this grid at:
+http://mospace.de/str8ts/?code=gCDbWRigKZOQC

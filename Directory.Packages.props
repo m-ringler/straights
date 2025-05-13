@@ -2,18 +2,18 @@
   <ItemGroup>
     <PackageVersion Include="coverlet.collector" Version="6.0.4" />
     <PackageVersion Include="coverlet.msbuild" Version="6.0.4" />
-    <PackageVersion Include="AwesomeAssertions" Version="8.1.0" />
-    <PackageVersion Include="AwesomeAssertions.Analyzers" Version="0.34.2" />
+    <PackageVersion Include="AwesomeAssertions" Version="8.2.0" />
+    <PackageVersion Include="AwesomeAssertions.Analyzers" Version="8.0.0" />
     <PackageVersion Include="m-ringler.OpenCvSharp4.ubuntu24.runtime.linux-x64" Version="4.10.0.20250426" />
     <PackageVersion Include="Microsoft.AspNetCore" Version="2.3.0" />
     <PackageVersion Include="Microsoft.AspNetCore.StaticFiles" Version="2.3.0" />
     <PackageVersion Include="Microsoft.DotNet.ILCompiler.LLVM" Version="10.0.0-preview.2.25228.1" />
-    <PackageVersion Include="Microsoft.ML.OnnxRuntime" Version="1.21.0" />
+    <PackageVersion Include="Microsoft.ML.OnnxRuntime" Version="1.22.0" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
     <PackageVersion Include="Moq" Version="4.20.72" />
-    <PackageVersion Include="OpenCvSharp4.official.runtime.linux-x64" Version="4.10.0.20241108" />
-    <PackageVersion Include="OpenCvSharp4.runtime.win" Version="4.10.0.20241108" />
-    <PackageVersion Include="OpenCvSharp4" Version="4.10.0.20241108" />
+    <PackageVersion Include="OpenCvSharp4.official.runtime.linux-x64" Version="4.11.0.20250507" />
+    <PackageVersion Include="OpenCvSharp4.runtime.win" Version="4.11.0.20250507" />
+    <PackageVersion Include="OpenCvSharp4" Version="4.11.0.20250507" />
     <PackageVersion Include="RandN" Version="0.5.0" />
     <PackageVersion Include="runtime.browser-wasm.Microsoft.DotNet.ILCompiler.LLVM" Version="10.0.0-preview.2.25214.1" />
     <PackageVersion Include="runtime.$(NETCoreSdkPortableRuntimeIdentifier).Microsoft.DotNet.ILCompiler.LLVM" Version="10.0.0-preview.2.25214.1" />
@@ -21,11 +21,11 @@
     <PackageVersion Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
     <PackageVersion Include="System.IO.Abstractions" Version="22.0.14" />
     <PackageVersion Include="System.IO.Abstractions.TestingHelpers" Version="22.0.14" />
-    <PackageVersion Include="System.Numerics.Tensors" Version="9.0.4" />
+    <PackageVersion Include="System.Numerics.Tensors" Version="9.0.5" />
     <PackageVersion Include="TestableIO.System.IO.Abstractions.Analyzers" Version="2022.0.0" />
     <PackageVersion Include="Verify" Version="29.3.1" />
-    <PackageVersion Include="Verify.Xunit" Version="30.0.0" />
-    <PackageVersion Include="xunit.runner.visualstudio" Version="3.0.2" />
+    <PackageVersion Include="Verify.Xunit" Version="30.1.0" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.0" />
     <PackageVersion Include="xunit" Version="2.9.3" />
   </ItemGroup>
   <ItemGroup Condition="'$(UseStraightsNugetPackagesVersion)' != ''">

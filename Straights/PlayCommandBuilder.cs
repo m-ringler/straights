@@ -8,6 +8,8 @@ using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.IO.Abstractions;
 
+using Straights.Play;
+
 internal sealed class PlayCommandBuilder(
         IFileSystem fs,
         Func<PlayCommand, int> execute)

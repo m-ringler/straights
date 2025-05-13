@@ -5,6 +5,7 @@
 namespace Straights.Play;
 
 using System;
+
 using Straights.Console;
 using Straights.Solver;
 using Straights.Solver.Data;
@@ -45,12 +46,18 @@ internal class PlayUrl
     {
         if (IsGridSizeSupported(unsolved.Grid.Size))
         {
-            var url = this.GetPlayUri(unsolved, solved);
-            if (url is not null)
+            Uri url;
+            try
             {
-                terminal.WriteLine("Play this grid at:");
-                terminal.WriteLine(url.ToString());
+                url = this.GetPlayUri(unsolved, solved);
             }
+            catch (NotSolvableException)
+            {
+                return;
+            }
+
+            terminal.WriteLine("Play this grid at:");
+            terminal.WriteLine(url.ToString());
         }
     }
 

@@ -1,0 +1,60 @@
+﻿Size: 4
+│ ⠏ │ ⠏ │ ⠏ │ ⠏ │
+│ ⠏ │ ⠏ │ ⠏ │ ⠏ │
+│ ⠏ │ ⠏ │ ⠏ │ ⠏ │
+│ ⠏ │ ⠏ │ ⠏ │ ⠏ │
+Add black field [<y> <x> <n>?] or white field [<y> <x> w<n>]
+or [<x> <y> 0] to clear a field
+or press ENTER when done: 
+1 1 w2
+│ 2 │ ⠏ │ ⠏ │ ⠏ │
+│ ⠏ │ ⠏ │ ⠏ │ ⠏ │
+│ ⠏ │ ⠏ │ ⠏ │ ⠏ │
+│ ⠏ │ ⠏ │ ⠏ │ ⠏ │
+Add black field [<y> <x> <n>?] or white field [<y> <x> w<n>]
+or [<x> <y> 0] to clear a field
+or press ENTER when done: 
+1 3
+│ 2 │ ⠏ │   │ ⠏ │
+│ ⠏ │ ⠏ │ ⠏ │ ⠏ │
+│ ⠏ │ ⠏ │ ⠏ │ ⠏ │
+│ ⠏ │ ⠏ │ ⠏ │ ⠏ │
+Add black field [<y> <x> <n>?] or white field [<y> <x> w<n>]
+or [<x> <y> 0] to clear a field
+or press ENTER when done: 
+2 1 w3
+│ 2 │ ⠏ │   │ ⠏ │
+│ 3 │ ⠏ │ ⠏ │ ⠏ │
+│ ⠏ │ ⠏ │ ⠏ │ ⠏ │
+│ ⠏ │ ⠏ │ ⠏ │ ⠏ │
+Add black field [<y> <x> <n>?] or white field [<y> <x> w<n>]
+or [<x> <y> 0] to clear a field
+or press ENTER when done: 
+3 2 w1
+│ 2 │ ⠏ │   │ ⠏ │
+│ 3 │ ⠏ │ ⠏ │ ⠏ │
+│ ⠏ │ 1 │ ⠏ │ ⠏ │
+│ ⠏ │ ⠏ │ ⠏ │ ⠏ │
+Add black field [<y> <x> <n>?] or white field [<y> <x> w<n>]
+or [<x> <y> 0] to clear a field
+or press ENTER when done: 
+3 4 w3
+│ 2 │ ⠏ │   │ ⠏ │
+│ 3 │ ⠏ │ ⠏ │ ⠏ │
+│ ⠏ │ 1 │ ⠏ │ 3 │
+│ ⠏ │ ⠏ │ ⠏ │ ⠏ │
+Add black field [<y> <x> <n>?] or white field [<y> <x> w<n>]
+or [<x> <y> 0] to clear a field
+or press ENTER when done: 
+3 3
+│ 2 │ ⠏ │   │ ⠏ │
+│ 3 │ ⠏ │ ⠏ │ ⠏ │
+│ ⠏ │ 1 │   │ 3 │
+│ ⠏ │ ⠏ │ ⠏ │ ⠏ │
+Add black field [<y> <x> <n>?] or white field [<y> <x> w<n>]
+or [<x> <y> 0] to clear a field
+or press ENTER when done: 
+
+Do you want to save the grid? [y/n]:y
+Enter path: C:\foo\grid.txt
+Grid written to C:\foo\grid.txt

@@ -15,6 +15,7 @@ public class GridReaderFactory
     public IBlackAndWhiteGridReader CreateGridReader(
         string? debugFolder = null)
     {
+        // Relying on finalizer to clean up the InferenceSession.
         var digitClassifier = new DigitClassifierOnnx(
             this.ModelName);
 

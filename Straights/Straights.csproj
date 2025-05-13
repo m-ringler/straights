@@ -39,5 +39,6 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="Straights.Tests" />
+    <InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
   </ItemGroup>
 </Project>

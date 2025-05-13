@@ -1,0 +1,4 @@
+﻿Do you want to save the grid? [y/n]:y
+Enter path or press return to use "/path/to/foo.txt":
+<null>
+Grid written to /path/to/foo.txt

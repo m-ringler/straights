@@ -1,0 +1,3 @@
+﻿WebApp serving {CurrentDirectory}Play\html at http://localhost:2114/
+Launching http://localhost:2114/?code=
+Opening browser at http://localhost:2114/?code=

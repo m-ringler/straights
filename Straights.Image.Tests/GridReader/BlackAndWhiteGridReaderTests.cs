@@ -5,6 +5,7 @@
 namespace Straights.Image.Tests.GridReader;
 
 using Argon;
+
 using OpenCvSharp;
 
 using Straights.Image.DigitReader;
