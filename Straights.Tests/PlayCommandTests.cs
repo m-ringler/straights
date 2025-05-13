@@ -74,7 +74,8 @@ w4,_,b,_,_,_,_,b9,_
 
         // ASSERT
         exitCode.Should().Be(0);
-        return Verify(getConsoleOutput());
+        return Verify(getConsoleOutput()).UseFileName(
+            $"{nameof(PlayCommandTests)}.{nameof(this.OfflineNoInput)}.IsUnix={XFS.IsUnixPlatform()}");
     }
 
     [Fact]
@@ -88,7 +89,8 @@ w4,_,b,_,_,_,_,b9,_
 
         // ASSERT
         exitCode.Should().Be(0);
-        return Verify(getConsoleOutput());
+        return Verify(getConsoleOutput()).UseFileName(
+            $"{nameof(PlayCommandTests)}.{nameof(this.OfflineWithInput)}.IsUnix={XFS.IsUnixPlatform()}");
     }
 
     private static PlayCommand CreateSut(
