@@ -20,6 +20,8 @@ public sealed class HtmlGridRenderer
     private const string HtmlHead = """
             <head>
             <title>Straights</title>
+            <meta name="description" content="Straights Puzzle for Printing">
+            <meta name="keywords" content="Straights, Str8ts, Puzzle">
             <style>
             * {
               box-sizing: border-box;
@@ -86,7 +88,7 @@ public sealed class HtmlGridRenderer
         writer.WriteLine(
             """
             <!DOCTYPE html>
-            <html>
+            <html lang="en">
             """);
         writer.WriteLine(HtmlHead);
 

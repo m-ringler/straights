@@ -105,7 +105,7 @@ w4,_,b,_,_,_,_,b9,_
     [InlineData(false, "html")]
     [InlineData(true, "json")]
     [InlineData(false, "x", "txt")]
-    public Task UserPath(bool withSuggestedPath, string extension, string? expectedExtension = null)
+    public async Task UserPath(bool withSuggestedPath, string extension, string? expectedExtension = null)
     {
         // ARRANGE
         var suggestedPath = withSuggestedPath ? XFS.Path(@"c:\path\to\foo.txt") : null;
@@ -129,10 +129,14 @@ w4,_,b,_,_,_,_,b9,_
         var addedNodes = fs.AllNodes.OrderBy(x => x).Except(fsBefore).Should().Equal([
             expectedPath]);
         bool isUnix = XFS.IsUnixPlatform();
-        return Verify(getConsoleOutput())
-        .UseFileName(
-                $"{nameof(InteractiveGridSaverTests)}.{nameof(this.UserPath)}.{extension}.IsUnix={isUnix}")
-        .AppendContentAsFile(fs.File.ReadAllText(expectedPath), expectedExtension ?? extension);
+        await Verify(getConsoleOutput())
+            .UseFileName(
+                $"{nameof(InteractiveGridSaverTests)}.{nameof(this.UserPath)}.{extension}.IsUnix={isUnix}");
+        await Verify(
+                fs.File.ReadAllText(expectedPath),
+                extension: expectedExtension ?? extension)
+            .UseFileName(
+                $"{nameof(InteractiveGridSaverTests)}.{nameof(this.UserPath)}.{extension}");
     }
 
     [Fact]
