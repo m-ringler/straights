@@ -1,4 +1,10 @@
 ---
+# This workflow builds the Straights.Web project
+# and publishes it to a zip file.
+permissions:
+  pull-requests: write
+  contents: read
+
 name: Build Straights.Web
 
 on:
