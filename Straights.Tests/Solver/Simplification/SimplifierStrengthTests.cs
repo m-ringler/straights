@@ -49,8 +49,8 @@ public class SimplifierStrengthTests
         var strength1 = new SimplifierStrength(2);
         var strength2 = new SimplifierStrength(3);
 
-        strength1.CompareTo(strength2).Should().BeLessThan(0);
-        strength2.CompareTo(strength1).Should().BeGreaterThan(0);
+        strength1.CompareTo(strength2).Should().BeNegative();
+        strength2.CompareTo(strength1).Should().BePositive();
         strength1.CompareTo(strength1).Should().Be(0);
     }
 
