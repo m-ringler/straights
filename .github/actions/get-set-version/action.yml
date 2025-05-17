@@ -15,9 +15,16 @@ runs:
       run: |
         $xml = [xml](Get-Content -Path "Directory.Build.props")
         $version = $xml.SelectSingleNode('//VersionPrefix').'#text'
-        echo "version=$version" >> $GITHUB_ENV
-        echo "version=$version" >> $GITHUB_OUTPUT
+        echo "version=$version"
+        echo "version=$version" >> "$env:GITHUB_ENV"
+        echo "version=$version" >> "$env:GITHUB_OUTPUT"
       shell: pwsh
+
+    - name: Print version
+      env:
+        VERSION: ${{ steps.getversion.outputs.version }}
+      run: echo "Version is $VERSION"
+      shell: bash
 
     - name: Add build ID to version in Directory.Build.props
       run: |
