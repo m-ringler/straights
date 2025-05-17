@@ -38,7 +38,8 @@ jobs:
         run: |
           dotnet publish "${{ github.workspace }}/Straights.Web/Straights.Web.csproj" \
           -c Release \
-          -r browser-wasm
+          -r browser-wasm \
+          -p MSBuildEnableWorkloadResolver=false
 
       - name: Create zip of publish directory
         run: |
