@@ -15,10 +15,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           lfs: true
+
+      - name: Get Version
+        id: get-set-version
+        uses: ./.github/actions/get-set-version
 
       - name: Install Emscripten SDK
         run: |
@@ -41,14 +44,14 @@ jobs:
           -r browser-wasm \
           -p MSBuildEnableWorkloadResolver=false
 
-      - name: Create zip of publish directory
+      - name: Remove PDB and XML files
         run: |
           cd "${{ github.workspace }}/publish"
           rm ./Straights.Web/*.pdb
-          zip -r Straights.Web.zip ./Straights.Web
+          rm ./Straights.Web/*.xml
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Straights.Web
-          path: ${{ github.workspace }}/publish/Straights.Web.zip
+          name: Straights.Web_${{ steps.get-set-version.outputs.version }}
+          path: ${{ github.workspace }}/publish/Straights.Web
