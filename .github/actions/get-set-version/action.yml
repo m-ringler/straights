@@ -1,6 +1,6 @@
 ---
-name: Get Source and Version
-description: Checkout the repository and extract the version from Directory.Build.props.
+name: Get Version
+description: Extract the version from Directory.Build.props and add the build ID.
 
 outputs:
   version:
@@ -15,8 +15,6 @@ runs:
       run: |
         $xml = [xml](Get-Content -Path "Directory.Build.props")
         $version = $xml.SelectSingleNode('//VersionPrefix').'#text'
-        echo "version=$version"
-        echo "version=$version" >> "$env:GITHUB_ENV"
         echo "version=$version" >> "$env:GITHUB_OUTPUT"
       shell: pwsh
 
