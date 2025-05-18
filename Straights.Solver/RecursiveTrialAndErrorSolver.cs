@@ -157,7 +157,16 @@ public sealed class RecursiveTrialAndErrorSolver(
             // The current guess has resulted in an unsolvable grid.
             // Remove the value from the field and simplify.
             _ = GetField(data, fieldIndex).Remove(trialGuess);
-            this.GridSimplifier.Simplify(data);
+            try
+            {
+                this.GridSimplifier.Simplify(data);
+            }
+            catch (NotSolvableException)
+            {
+                // The dataIn grid is not solvable.
+                // Terminate the loop and return to caller.
+                break;
+            }
 
             if (data.IsSolved)
             {
