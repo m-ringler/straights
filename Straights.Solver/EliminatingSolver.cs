@@ -15,8 +15,8 @@ using Straights.Solver.Simplification;
 /// The simplifier to use.
 /// </param>
 /// <remarks>
-/// Use this solver for grids that have a unique solution
-/// and that cannot be solved with just a simplifier.
+/// This solver can solve all grids that have a unique solution,
+/// and fails to solve grids that have multiple solutions.
 /// </remarks>
 public sealed class EliminatingSolver(
         ISimplify<SolverGrid> gridSimplifier)
@@ -31,6 +31,9 @@ public sealed class EliminatingSolver(
     {
     }
 
+    /// <summary>
+    /// Gets the grid simplifier used by the current instance.
+    /// </summary>
     public ISimplify<SolverGrid> GridSimplifier { get; } = gridSimplifier;
 
     /// <summary>
