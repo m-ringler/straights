@@ -106,6 +106,7 @@ For Straights.Web, you need to download and activate the
 * Microsoft.CodeAnalysis.PublicApiAnalyzers
 * Migrate to slnx format
 * See if we can find a better solution for the Linux OpenSvSharp runtime.
+* publish symbol nuget packages
 
 * Issues/Bugs
   * Digit recognition sometimes fails on 3/5
