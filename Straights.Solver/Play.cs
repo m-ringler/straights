@@ -3,8 +3,20 @@ namespace Straights.Solver;
 using Straights.Solver.Generator;
 using Straights.Solver.Simplification;
 
+/// <summary>
+/// Generates game codes for Straights.Web.
+/// </summary>
 public static class Play
 {
+    /// <summary>
+    /// Generates a game code for the given size and difficulty.
+    /// </summary>
+    /// <param name="size">The size of the grid, must be greater than or equal to 4.</param>
+    /// <param name="difficulty">The difficulty level, must be grater than zero.</param>
+    /// <returns>A game code.</returns>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when a grid could not be generated.
+    /// </exception>
     public static string GenerateGameCode(int size, int difficulty)
     {
         var difficultyLevel = (SimplifierStrength)difficulty;
