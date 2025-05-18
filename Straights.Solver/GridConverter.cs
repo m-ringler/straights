@@ -211,6 +211,12 @@ public static class GridConverter
         return FromBinary(reader, encodingVersion);
     }
 
+    /// <summary>
+    /// Converts a binary string representation back into a game object.
+    /// </summary>
+    /// <param name="reader">The binary string reader.</param>
+    /// <param name="encodingVersion">The encoding version to use.</param>
+    /// <returns>A game object.</returns>
     internal static Game FromBinary(
         BinaryStringReader reader,
         byte encodingVersion)
@@ -224,6 +230,12 @@ public static class GridConverter
         };
     }
 
+    /// <summary>
+    /// Converts a game object into a binary string representation.
+    /// </summary>
+    /// <param name="game">The game object to convert.</param>
+    /// <param name="encodingVersion">The encoding version to use.</param>
+    /// <param name="writer">The binary string writer.</param>
     internal static void ToBinary(
         Game game,
         byte encodingVersion,

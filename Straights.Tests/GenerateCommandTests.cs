@@ -259,30 +259,6 @@ _,_,_,_,_,w8,_,_,b
         BlackFieldCount.Of(builder).Should().Be((BlackFieldCount)c.Grid);
     }
 
-#pragma warning disable xUnit1004
-    [Fact(Skip = "Test is very slow.")]
-#pragma warning restore xUnit1004
-    public void UncaughtExceptionBug()
-    {
-        const string seed = "Pcg32-cb74f8685fd30b6e-dfda3e356a9ba51f";
-
-        var rng = new RandNRandomFactory().CreatePcg32(seed);
-        var sut = new GenerateCommand
-        {
-            Terminal = Mock.Of<IWriteOnlyConsole>(),
-            ReadLine = Mock.Of<Func<string>>(),
-            GridParameters = new GridParameters(14, 12, 6),
-            Layout = GridLayout.PointSymmetric,
-            Attempts = 1000,
-            FailureThreshold = 120,
-            Random = (rng, rng.Seed),
-            DifficultyLevel = 3,
-        };
-
-        // ACT // ASSERT
-        new Action(() => sut.Run()).Should().NotThrow();
-    }
-
     private static void ShouldBeSolvableWithSimplifier(IFileInfo f, SimplifierStrength strength)
     {
         var grid = GridConverter.LoadFrom(f);

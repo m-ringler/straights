@@ -15,6 +15,10 @@ using Straights.Solver.Data;
 /// <param name="console">The console to write to.</param>
 public sealed class ConsoleGridRenderer(IWriteOnlyConsole console)
 {
+    /// <summary>
+    /// Writes the specified grid to the console.
+    /// </summary>
+    /// <param name="grid">The grid fields.</param>
     public void WriteToConsole(
         IReadOnlyCollection<SolverField> grid)
     {
