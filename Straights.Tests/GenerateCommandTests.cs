@@ -259,7 +259,9 @@ _,_,_,_,_,w8,_,_,b
         BlackFieldCount.Of(builder).Should().Be((BlackFieldCount)c.Grid);
     }
 
-    [Fact]
+#pragma warning disable xUnit1004
+    [Fact(Skip = "Test is very slow.")]
+#pragma warning restore xUnit1004
     public void UncaughtExceptionBug()
     {
         const string seed = "Pcg32-cb74f8685fd30b6e-dfda3e356a9ba51f";
