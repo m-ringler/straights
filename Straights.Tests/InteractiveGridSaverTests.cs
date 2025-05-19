@@ -126,8 +126,9 @@ w4,_,b,_,_,_,_,b9,_
             suggestedPath);
 
         // ASSERT
-        var addedNodes = fs.AllNodes.OrderBy(x => x).Except(fsBefore).Should().Equal([
-            expectedPath]);
+        var addedNodes = fs.AllNodes.OrderBy(x => x).Except(fsBefore);
+        addedNodes.Should().Equal([expectedPath]);
+
         bool isUnix = XFS.IsUnixPlatform();
         await Verify(getConsoleOutput())
             .UseFileName(
@@ -160,8 +161,9 @@ w4,_,b,_,_,_,_,b9,_
             null);
 
         // ASSERT
-        var addedNodes = fs.AllNodes.OrderBy(x => x).Except(fsBefore).Should().Equal([
-            expectedPath]);
+        var addedNodes = fs.AllNodes.OrderBy(x => x).Except(fsBefore);
+        addedNodes.Should().Equal([expectedPath]);
+
         fs.File.ReadAllText(expectedPath).Should().Be(GridAsText);
     }
 
@@ -205,8 +207,8 @@ w4,_,b,_,_,_,_,b9,_
             suggestedPath);
 
         // ASSERT
-        var addedNodes = fs.AllNodes.OrderBy(x => x).Except(fsBefore).Should().Equal([
-            suggestedPath]);
+        var addedNodes = fs.AllNodes.OrderBy(x => x).Except(fsBefore);
+        addedNodes.Should().Equal([suggestedPath]);
 
         fs.File.ReadAllText(suggestedPath).Should().Be(GridAsText);
         bool isUnix = XFS.IsUnixPlatform();

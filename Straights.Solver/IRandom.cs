@@ -5,8 +5,17 @@
 namespace Straights.Solver;
 
 /// <summary>
-/// Represents a random number generator interface.
+/// Interface of a random number generator
+/// or pseudo-random number generator.
 /// </summary>
+/// <remarks>
+/// You can use this interface to supply your own custom random number generator
+/// instead of the default <see cref="SystemRandom"/> which may produce different
+/// results for different major releases of .NET. The straights command line
+/// app uses a PCG32 pseudo random number generator from the RandN library for better
+/// reproducibility.
+/// </remarks>
+/// <seealso cref="SystemRandom" />
 public interface IRandom
 {
     /// <summary>

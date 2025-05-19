@@ -32,6 +32,13 @@ public static class GridConverter
     /// </summary>
     /// <param name="json">The JSON string to parse.</param>
     /// <returns>A convertible grid.</returns>
+    /// <remarks>
+    /// The JSON representation can represent unsolved, solved, or
+    /// partially solved grids.
+    /// <para/>
+    /// The JSON representation is a text rendering of the
+    /// <see cref="Convert(int[][][])"> 3D integer array representation</see>.
+    /// </remarks>
     public static ConvertibleGrid ParseJson(string json)
     {
         var grid = GridToIntArraysConverter.GridFromJson(json);
@@ -43,6 +50,22 @@ public static class GridConverter
     /// </summary>
     /// <param name="intArrays">The 3D integer array to convert.</param>
     /// <returns>A convertible grid.</returns>
+    /// <remarks>
+    /// The integer array representation can represent unsolved, solved, or
+    /// partially solved grids.
+    /// <para/>
+    /// In the integer array representaion, each field is represented as
+    /// an integer array.
+    /// A solved white field is represented as an array containing a single
+    /// positive number.
+    /// A partially solved white field is represented as an array containing
+    /// all remaining possible numbers.
+    /// An unsolved white field is represented as an empty array or as an array
+    /// containing all possible numbers.
+    /// A black number field is represented as an array containing a single
+    /// negative number.
+    /// A black blank field is represented as an array containing a single zero.
+    /// </remarks>
     public static ConvertibleGrid Convert(int[][][] intArrays)
     {
         var unsolved = GridToIntArraysConverter.GridFromIntArrays(intArrays);
@@ -117,7 +140,19 @@ public static class GridConverter
     /// </summary>
     /// <param name="file">The file to load the grid from.</param>
     /// <returns>A convertible grid.</returns>
-    /// <exception cref="ArgumentException">Thrown if the file format is unsupported.</exception>
+    /// <remarks>
+    /// The file format is determined by the file extension.
+    /// Supported formats are:
+    /// <list type="bullet">
+    /// <item>.txt</item>
+    /// <description>The builder text format.</description>
+    /// <item>.json</item>
+    /// <description>The JSON format.</description>
+    /// </list>
+    /// </remarks>
+    /// <exception cref="ArgumentException">
+    /// Thrown if the file format is unsupported.
+    /// </exception>
     public static ConvertibleGrid LoadFrom(IFileInfo file)
     {
         var fs = file.FileSystem;
@@ -149,8 +184,12 @@ public static class GridConverter
     /// </summary>
     /// <param name="solved">The solved grid.</param>
     /// <param name="unsolved">The unsolved grid.</param>
-    /// <param name="encodingVersion">The encoding version to use.</param>
-    /// <returns>A URL-safe parameter string.</returns>
+    /// <param name="encodingVersion">
+    /// The encoding version to use. The default value is 0b10000000, which is
+    /// the standard encoding of Straights.Web.
+    /// </param>
+    /// <returns>An URL-safe parameter string.</returns>
+    /// <seealso cref="ConvertUrlParameter"/>
     public static string ToUrlParameter(
         Grid<SolverField> solved,
         Grid<SolverField> unsolved,
@@ -167,8 +206,12 @@ public static class GridConverter
     /// Converts a URL-safe parameter string back into solved and unsolved grids.
     /// </summary>
     /// <param name="urlParameter">The URL parameter string to convert.</param>
-    /// <param name="encodingVersion">The encoding version to use.</param>
+    /// <param name="encodingVersion">
+    /// The encoding version to use. The default value is 0b10000000, which is
+    /// the standard encoding of Straights.Web.
+    /// </param>
     /// <returns>A tuple containing the solved and unsolved grids.</returns>
+    /// <seealso cref="ToUrlParameter"/>
     public static
         (Grid<SolverField> Solved, Grid<SolverField> Unsolved)
             ConvertUrlParameter(
@@ -184,8 +227,12 @@ public static class GridConverter
     /// </summary>
     /// <param name="solved">The solved grid.</param>
     /// <param name="unsolved">The unsolved grid.</param>
-    /// <param name="encodingVersion">The encoding version to use.</param>
+    /// <param name="encodingVersion">
+    /// The encoding version to use. The default value is 0b10000000, which is
+    /// the standard encoding of Straights.Web.
+    /// </param>
     /// <returns>A binary string representation of the grids.</returns>
+    /// <seealso cref="ConvertBinaryString"/>
     public static string ToBinaryString(
         Grid<SolverField> solved,
         Grid<SolverField> unsolved,
@@ -201,8 +248,12 @@ public static class GridConverter
     /// Converts a binary string representation back into solved and unsolved grids.
     /// </summary>
     /// <param name="binaryString">The binary string to convert.</param>
-    /// <param name="encodingVersion">The encoding version to use.</param>
+    /// <param name="encodingVersion">
+    /// The encoding version to use. The default value is 0b10000000, which is
+    /// the standard encoding of Straights.Web.
+    /// </param>
     /// <returns>A tuple containing the solved and unsolved grids.</returns>
+    /// <seealso cref="ToBinaryString"/>
     public static (Grid<SolverField> Solved, Grid<SolverField> Unsolved) ConvertBinaryString(
         string binaryString,
         byte encodingVersion = BinaryGameSerializer.EncodingVersion)
@@ -211,6 +262,16 @@ public static class GridConverter
         return FromBinary(reader, encodingVersion);
     }
 
+    /// <summary>
+    /// Converts a binary string representation back into a game object.
+    /// </summary>
+    /// <param name="reader">The binary string reader.</param>
+    /// <param name="encodingVersion">
+    /// The encoding version to use. The default value is 0b10000000, which is
+    /// the standard encoding of Straights.Web.
+    /// </param>
+    /// <returns>A game object.</returns>
+    /// <seealso cref="ToBinary"/>
     internal static Game FromBinary(
         BinaryStringReader reader,
         byte encodingVersion)
@@ -224,6 +285,13 @@ public static class GridConverter
         };
     }
 
+    /// <summary>
+    /// Converts a game object into a binary string representation.
+    /// </summary>
+    /// <param name="game">The game object to convert.</param>
+    /// <param name="encodingVersion">The encoding version to use.</param>
+    /// <param name="writer">The binary string writer.</param>
+    /// <seealso cref="FromBinary"/>
     internal static void ToBinary(
         Game game,
         byte encodingVersion,

@@ -6,6 +6,9 @@ namespace Straights.Solver;
 
 using Straights.Solver.Data;
 
+/// <summary>
+/// The contract of an object that can solve a straights grid.
+/// </summary>
 public interface ISolver
 {
     /// <summary>

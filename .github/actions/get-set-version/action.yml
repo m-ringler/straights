@@ -1,0 +1,35 @@
+---
+name: Get Version
+description: Extract the version from Directory.Build.props and add the build ID.
+
+outputs:
+  version:
+    description: The version extracted from Directory.Build.props.
+    value: ${{ steps.getversion.outputs.version }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Get Version from Directory.Build.props
+      id: getversion
+      run: |
+        $xml = [xml](Get-Content -Path "Directory.Build.props")
+        $version = $xml.SelectSingleNode('//VersionPrefix').'#text'
+        echo "version=$version" >> "$env:GITHUB_OUTPUT"
+      shell: pwsh
+
+    - name: Print version
+      env:
+        VERSION: ${{ steps.getversion.outputs.version }}
+      run: echo "Version is $VERSION"
+      shell: bash
+
+    - name: Add build ID to version in Directory.Build.props
+      run: |
+        Write-Output "Add build ID ${{ github.run_id }} to VersionPrefix in Directory.Build.props"
+        $file = Get-Item "Directory.Build.props"
+        $xml = [xml](Get-Content -Path $file.FullName)
+        $versionElement = $xml.SelectSingleNode('//VersionPrefix')
+        $versionElement.'#text' += '+${{ github.run_id }}'
+        $xml.Save($file.FullName)
+      shell: pwsh

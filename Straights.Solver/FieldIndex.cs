@@ -18,6 +18,10 @@ namespace Straights.Solver;
 /// </param>
 public readonly record struct FieldIndex(int X, int Y)
 {
+    /// <summary>
+    /// Returns the transposed field index.
+    /// </summary>
+    /// <returns>A field index with swapped X and Y.</returns>
     public FieldIndex Transpose()
     {
         return new(this.Y, this.X);

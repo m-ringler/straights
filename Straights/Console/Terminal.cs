@@ -12,43 +12,51 @@ using Core = System.Console;
 /// </summary>
 public sealed class Terminal : IWriteOnlyConsole
 {
+    /// <inheritdoc/>
     public ConsoleColor ForegroundColor
     {
         get => Core.ForegroundColor;
         set => Core.ForegroundColor = value;
     }
 
+    /// <inheritdoc/>
     public ConsoleColor BackgroundColor
     {
         get => Core.BackgroundColor;
         set => Core.BackgroundColor = value;
     }
 
+    /// <inheritdoc/>
     public void Write(string s)
     {
         Core.Write(s);
     }
 
+    /// <inheritdoc/>
     public void Write(char c)
     {
         Core.Write(c);
     }
 
+    /// <inheritdoc/>
     public void WriteLine()
     {
         Core.WriteLine();
     }
 
+    /// <inheritdoc/>
     public void WriteLine(string s)
     {
         Core.WriteLine(s);
     }
 
+    /// <inheritdoc/>
     public void WriteError(string s)
     {
         Core.Error.Write(s);
     }
 
+    /// <inheritdoc/>
     public void WriteErrorLine(string s)
     {
         Core.Error.WriteLine(s);

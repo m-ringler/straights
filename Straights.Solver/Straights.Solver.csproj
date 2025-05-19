@@ -21,6 +21,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Using Include="System.Collections.Immutable" />
+  </ItemGroup>
+
+  <ItemGroup>
     <InternalsVisibleTo Include="Straights.Tests"/>
   </ItemGroup>
 </Project>
