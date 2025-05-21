@@ -1,2 +1,2 @@
-﻿Launching http://mospace.de/str8ts/?code=
-Opening browser at http://mospace.de/str8ts/?code=
+﻿Launching https://m-ringler.github.io/straights/?code=
+Opening browser at https://m-ringler.github.io/straights/?code=

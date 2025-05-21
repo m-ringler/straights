@@ -12,7 +12,7 @@ using Straights.Solver.Data;
 
 internal class PlayUrl
 {
-    public static readonly Uri DefaultBaseUri = new("http://mospace.de/str8ts/?code=");
+    public static readonly Uri DefaultBaseUri = new("https://m-ringler.github.io/straights/?code=");
 
     public Uri BaseUri { get; init; } = DefaultBaseUri;
 

@@ -1,6 +1,6 @@
 # straights
 
-[![.NET Build](https://github.com/m-ringler/straights/actions/workflows/dotnet.yml/badge.svg)](https://github.com/m-ringler/straights/actions/workflows/dotnet.yml)
+[![.NET Build](https://m-ringler.github.io/straights/actions/workflows/dotnet.yml/badge.svg)](https://m-ringler.github.io/straights/actions/workflows/dotnet.yml)
 
 Solves and generates Straights (or Str8ts) puzzles.
 
@@ -58,7 +58,7 @@ Straights.Image supports grid sizes up to 9 x 9.
 [![License: GPL](https://img.shields.io/badge/License-GPL%203+-yellow.svg)](https://spdx.org/licenses/GPL-3.0-or-later.html)
 
 [Straights.Web](./Straights.Web/Readme.md) is a Straights webapp that uses Straights.Solver to generate new grids.
-Try it online at <http://mospace.de/str8ts/>.
+Try it online at <https://m-ringler.github.io/straights/>.
 
 With Straights.Web, you can generate up to 10 x 10 grids, and play up to 12 x 12 grids (generated with the web app or with the command line app).
 
