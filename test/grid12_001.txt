@@ -1,6 +1,6 @@
 # straights 0.2.0+860dfb6bb9df1064014b786945dfb5040e1a3975
 # straights generate --difficulty 1 --layout PointSymmetric --size 12 --attempts 50 --failure-threshold 75 --seed Pcg32-923f19fbc6abfd0b-863fab88ed1f5280 --output test/grid12_001.txt
-# http://mospace.de/str8ts/?code=gGIdhXjrXg33kM3qhjCBXgYlklCkCDkgjBB3lFjD3tkMlXhCB33slELDil3hI6MJMlNqpjjAiX3gkElBhCDqoLXlF4iqLskBjYXjDi3lFsE3hJogXiBkEjNDihBiC3hYMFFkj3hB7Xg3iK4EXjg
+# https://m-ringler.github.io/straights/?code=gGIdhXjrXg33kM3qhjCBXgYlklCkCDkgjBB3lFjD3tkMlXhCB33slELDil3hI6MJMlNqpjjAiX3gkElBhCDqoLXlF4iqLskBjYXjDi3lFsE3hJogXiBkEjNDihBiC3hYMFFkj3hB7Xg3iK4EXjg
 12
 w1,b12,_,b,_,w7,b,_,b,b,_,w10
 b,w6,_,_,_,_,b,_,b2,_,_,_

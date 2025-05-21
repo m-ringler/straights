@@ -164,7 +164,7 @@ public class GenerateCommandBuilderTests
         c.FailureThreshold.Should().Be(GenerateCommandBuilder.DefaultFailureThreshold);
         c.Layout.Should().Be(GenerateCommandBuilder.DefaultLayout);
         c.Template.Should().BeNull();
-        c.PlayUri.Should().Be(new Uri("http://mospace.de/str8ts/?code="));
+        c.PlayUri.Should().Be(new Uri("https://m-ringler.github.io/straights/?code="));
         errorOutput.Should().BeEmpty();
     }
 

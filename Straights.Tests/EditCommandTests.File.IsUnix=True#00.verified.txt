@@ -19,4 +19,4 @@ Enter path or press return to use "/grid.txt":
 /foo/grid.txt
 Grid written to /foo/grid.txt
 Play this grid at:
-http://mospace.de/str8ts/?code=gCDbWRigKZOQC
+https://m-ringler.github.io/straights/?code=gCDbWRigKZOQC
