@@ -19,8 +19,8 @@ For Linux, there is no single runtime library because the runtime library depend
 Users may have to install distribution packages that the runtime library depends on.
 See also
 
-* <https://m-ringler.github.io/straights/blob/main/README.md#linux>
+* <https://github.com/m-ringler/straights/blob/main/README.md#linux>
 
 ## Usage
 
-<https://m-ringler.github.io/straights/blob/17de5c3811c085044720280c893b5c0ccb642e7d/Straights.Image.Tests/GridReader/BlackAndWhiteGridReaderTests.cs#L111-L112>
+<https://github.com/m-ringler/straights/blob/17de5c3811c085044720280c893b5c0ccb642e7d/Straights.Image.Tests/GridReader/BlackAndWhiteGridReaderTests.cs#L111-L112>
