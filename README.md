@@ -1,6 +1,6 @@
 # straights
 
-[![.NET Build](https://m-ringler.github.io/straights/actions/workflows/dotnet.yml/badge.svg)](https://m-ringler.github.io/straights/actions/workflows/dotnet.yml)
+[![.NET Build](https://github.com/m-ringler/straights/actions/workflows/dotnet.yml/badge.svg)](https://github.com/m-ringler/straights/actions/workflows/dotnet.yml)
 
 Solves and generates Straights (or Str8ts) puzzles.
 
