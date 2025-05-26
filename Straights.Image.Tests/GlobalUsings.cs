@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 #pragma warning disable SA1200 // Using directives should be placed correctly
-global using FluentAssertions;
+global using AwesomeAssertions;
 
 global using Moq;
 
