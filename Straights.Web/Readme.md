@@ -1,5 +1,7 @@
 # Straights.Web
 
+[![Straights.Web Build](https://github.com/m-ringler/straights/actions/workflows/straights-web.yml/badge.svg)](https://github.com/m-ringler/straights/actions/workflows/straights-web.yml)
+
 Straights.Web is a client-only web application that lets you generate and play straights puzzles.
 
 The C# project builds a web assembly module that is used to generate straight puzzles; this web assembly module is then integrated with static web content from [straights play](../Straights/Play/html).
