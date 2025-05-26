@@ -103,10 +103,10 @@ For Straights.Web, you need to download and activate the
 ## Backlog
 
 * Add more XML doc (use Copilot?)
-* Microsoft.CodeAnalysis.PublicApiAnalyzers
+* Microsoft.CodeAnalncremeysis.PublicApiAnalyzers
 * Migrate to slnx format
-* See if we can find a better solution for the Linux OpenSvSharp runtime.
-* publish symbol nuget packages
+* See if we can find a better solution for the Linux OpenCvSharp runtime
+* Publish symbol nuget packages
 
 * Issues/Bugs
   * Digit recognition sometimes fails on 3/5
