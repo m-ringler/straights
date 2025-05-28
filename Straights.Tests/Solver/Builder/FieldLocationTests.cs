@@ -4,11 +4,7 @@
 
 namespace Straights.Tests.Solver.Builder;
 
-using FluentAssertions;
-
 using Straights.Solver.Builder;
-
-using Xunit;
 
 /// <summary>
 /// Tests for <see cref="FieldLocation"/>.

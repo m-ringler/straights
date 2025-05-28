@@ -28,11 +28,11 @@ public class GridGenerator(
 
     public IEmptyGridGenerator EmptyGridGenerator { get; } = emptyGridGenerator;
 
-    public int MaxNumTries { get; init; } = 10;
+    public int MaximumNumberOfAttempts { get; init; } = 10;
 
     public GridBuilder? GenerateGrid()
     {
-        for (int i = 0; i < this.MaxNumTries; i++)
+        for (int i = 0; i < this.MaximumNumberOfAttempts; i++)
         {
             try
             {

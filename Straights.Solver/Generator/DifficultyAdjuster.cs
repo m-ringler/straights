@@ -84,12 +84,16 @@ public class DifficultyAdjuster(ISolver solver)
     private sealed class GridGeneratorDecorator(IGridGenerator core, DifficultyAdjuster hintRemover)
         : IGridGenerator
     {
+        public IGridGenerator Core { get; } = core;
+
+        public DifficultyAdjuster HintRemover { get; } = hintRemover;
+
         public GridBuilder? GenerateGrid()
         {
-            var result = core.GenerateGrid();
+            var result = this.Core.GenerateGrid();
             if (result != null)
             {
-                result = hintRemover.AdjustDifficulty(result);
+                result = this.HintRemover.AdjustDifficulty(result);
             }
 
             return result;

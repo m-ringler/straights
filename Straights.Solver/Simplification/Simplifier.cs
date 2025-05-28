@@ -71,4 +71,11 @@ public static class Simplifier
     {
         return new DelegateSimplifier<T>(simplify);
     }
+
+    public static ISimplify<T> WithName<T>(
+        this ISimplify<T> simplifier,
+        string name)
+    {
+        return new NamedSimplifier<T>(simplifier, name);
+    }
 }

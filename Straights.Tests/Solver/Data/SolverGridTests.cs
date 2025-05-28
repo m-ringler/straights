@@ -4,7 +4,7 @@
 
 namespace Straights.Tests.Solver.Data;
 
-using FluentAssertions.Equivalency;
+using AwesomeAssertions.Equivalency;
 
 using Straights.Solver;
 using Straights.Solver.Data;

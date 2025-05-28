@@ -37,7 +37,7 @@ public class PlayTests
             .ToSolver();
         var solved2 = solver.Solve(unsolved.Convert().SolverGrid);
         solved2.IsSolved.Should().BeTrue(
-            because: "A grid of difficulty {difficulty} should be solvable with a strength-{difficulty} solver.");
+            because: $"A grid of difficulty {difficulty} should be solvable with a strength-{difficulty} solver.");
 
         solved2.Convert().ToBuilderText()
             .Should().Be(
