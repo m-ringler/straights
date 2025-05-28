@@ -47,7 +47,7 @@
         "--attempts",
         "1000",
         "--failure-threshold",
-        "100",
+        "100"
       ],
       "cwd": "${workspaceFolder}",
       "console": "integratedTerminal",
