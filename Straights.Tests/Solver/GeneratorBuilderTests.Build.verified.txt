@@ -8,8 +8,8 @@
         $type: GeneratorBuilderTests.RandomNumberGeneratorStub
       },
       GridSimplifier: {
-        $type: Simplifier.NamedSimplifier<ISolverGrid>,
-        Simplifier: {
+        $type: NamedSimplifier<ISolverGrid>,
+        Core: {
           $type: DelegateSimplifier<ISolverGrid>
         },
         Name: Strength-3 Iterative Grid Simplifier
@@ -39,11 +39,11 @@
     Solver: {
       $type: SolverAdapter.SimplifierSolver,
       Simplifier: {
-        $type: Simplifier.NamedSimplifier<ISolverGrid>,
-        Simplifier: {
+        $type: NamedSimplifier<ISolverGrid>,
+        Core: {
           $type: DelegateSimplifier<ISolverGrid>
         },
-        Name: Strength-3 Iterative Grid Simplifier
+        Name: Strength-1 Iterative Grid Simplifier
       }
     }
   }
