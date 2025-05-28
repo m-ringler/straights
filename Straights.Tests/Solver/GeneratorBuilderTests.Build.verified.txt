@@ -1,0 +1,50 @@
+﻿{
+  $type: DifficultyAdjuster.GridGeneratorDecorator,
+  Core: {
+    $type: GridGenerator,
+    Solver: {
+      $type: RecursiveTrialAndErrorSolver,
+      RandomNumberGenerator: {
+        $type: GeneratorBuilderTests.RandomNumberGeneratorStub
+      },
+      GridSimplifier: {
+        $type: Simplifier.NamedSimplifier<ISolverGrid>,
+        Simplifier: {
+          $type: DelegateSimplifier<ISolverGrid>
+        },
+        Name: Strength-3 Iterative Grid Simplifier
+      },
+      MaximumNumberOfRecursions: 100
+    },
+    EmptyGridGenerator: {
+      $type: UniformEmptyGridGenerator,
+      RandomNumberGenerator: {
+        $type: GeneratorBuilderTests.RandomNumberGeneratorStub
+      },
+      GridParameters: {
+        $type: GridParameters,
+        Size: 5,
+        NumberOfBlackBlanks: 2,
+        NumberOfBlackNumbers: 1,
+        TotalNumberOfBlackFields: 3
+      }
+    },
+    MaximumNumberOfAttempts: 200
+  },
+  HintRemover: {
+    $type: DifficultyAdjuster,
+    RandomNumberGenerator: {
+      $type: GeneratorBuilderTests.RandomNumberGeneratorStub
+    },
+    Solver: {
+      $type: SolverAdapter.SimplifierSolver,
+      Simplifier: {
+        $type: Simplifier.NamedSimplifier<ISolverGrid>,
+        Simplifier: {
+          $type: DelegateSimplifier<ISolverGrid>
+        },
+        Name: Strength-3 Iterative Grid Simplifier
+      }
+    }
+  }
+}

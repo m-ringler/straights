@@ -44,7 +44,8 @@ public sealed class GridSimplifierFactory(SimplifierOptions options)
             iterativeGridSimplifier.Simplify(data);
         }
 
-        return Simplifier.Create<ISolverGrid>(Simplify);
+        return Simplifier.Create<ISolverGrid>(Simplify).WithName(
+            $"Strength-{strength.Value} Iterative Grid Simplifier");
     }
 
     private static Func<IChangeDetector>

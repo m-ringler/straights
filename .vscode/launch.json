@@ -34,6 +34,26 @@
       "stopAtEntry": false
     },
     {
+      "name": "Straights Generate 13",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      "program": "${workspaceFolder}/Straights/bin/Debug/net9.0/straights",
+      "args": [
+        "generate",
+        "--layout",
+        "PointSymmetric",
+        "--size", "13",
+        "--attempts",
+        "1000",
+        "--failure-threshold",
+        "100",
+      ],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "stopAtEntry": false
+    },
+    {
       "name": "Straights Solve TXT",
       "type": "coreclr",
       "request": "launch",
