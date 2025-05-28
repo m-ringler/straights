@@ -42,7 +42,7 @@ public class GeneratorBuilderTests
     {
         var generator = new GeneratorBuilder
         {
-            DifficultyLevel = (SimplifierStrength)3,
+            DifficultyLevel = (SimplifierStrength)1,
             Layout = GridLayout.Uniform,
             GridParameters = new GridParameters(
                 size: 5,
