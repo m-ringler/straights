@@ -146,7 +146,10 @@ public class GeneratorBuilder(GeneratorBuilder.BuildEmptyGridGenerator empty)
             difficultyTuner.Decorate(
                 new GridGenerator(
                     solver,
-                    empty(this.Random, this.Layout, this.GridParameters)));
+                    empty(this.Random, this.Layout, this.GridParameters))
+                {
+                    MaximumNumberOfAttempts = this.Attempts,
+                });
 
         return generator;
     }
