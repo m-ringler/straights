@@ -21,7 +21,7 @@ using Straights.Solver.Simplification;
 /// </remarks>.
 public sealed class RecursiveTrialAndErrorSolver(
         ISimplify<SolverGrid> gridSimplifier)
-    : ISolver
+    : ISolver, ISolverWithCancellation
 {
     /// <summary>
     /// Initializes a new instance of the
@@ -64,6 +64,12 @@ public sealed class RecursiveTrialAndErrorSolver(
     /// <inheritdoc/>
     public SolverGrid Solve(SolverGrid data)
     {
+        return this.Solve(data, CancellationToken.None);
+    }
+
+    /// <inheritdoc/>
+    public SolverGrid Solve(SolverGrid data, CancellationToken cancellationToken)
+    {
         SolverGrid workingData = data.CreateCopy();
         try
         {
@@ -74,14 +80,17 @@ public sealed class RecursiveTrialAndErrorSolver(
             return workingData;
         }
 
+        cancellationToken.ThrowIfCancellationRequested();
         int remainingRecursions = this.MaximumNumberOfRecursions;
         try
         {
             return this.GuessAndSimplify(
                     workingData,
+                    cancellationToken,
                     ref remainingRecursions);
         }
-        catch (SolvingAttemptFailedException)
+        catch (Exception ex)
+        when (ex is SolvingAttemptFailedException or OperationCanceledException)
         {
             return workingData;
         }
@@ -103,8 +112,10 @@ public sealed class RecursiveTrialAndErrorSolver(
 
     private SolverGrid GuessAndSimplify(
         SolverGrid dataIn,
+        CancellationToken cancellationToken,
         ref int remainingNumRecurse)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         if (remainingNumRecurse-- <= 0)
         {
             throw new SolvingAttemptFailedException();
@@ -142,6 +153,7 @@ public sealed class RecursiveTrialAndErrorSolver(
 
                 var result = this.GuessAndSimplify(
                     trialData,
+                    cancellationToken,
                     ref remainingNumRecurse);
 
                 if (result.IsSolved)
