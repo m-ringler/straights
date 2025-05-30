@@ -10,8 +10,7 @@ using Straights.Solver.Data;
 
 /// <summary>
 /// Generates straights grids by attempting to solve
-/// empty grids and using the guesses made as
-/// hints in the result grid.
+/// empty grids.
 /// </summary>
 /// <param name="solver">
 /// The solver to use.
@@ -34,25 +33,18 @@ public class GridGenerator(
     {
         for (int i = 0; i < this.MaximumNumberOfAttempts; i++)
         {
-            try
+            BuilderField?[][] emptyGrid = this.EmptyGridGenerator.GenerateGrid();
+            var solverGrid = this.Solver.Solve(ToSolverGrid(emptyGrid));
+            if (solverGrid.IsSolved)
             {
-                BuilderField?[][] emptyGrid = this.EmptyGridGenerator.GenerateGrid();
-                var solverGrid = this.Solver.Solve(ToSolverGrid(emptyGrid));
-                if (solverGrid.IsSolved)
-                {
-                    return solverGrid.Convert().Builder;
-                }
-            }
-            catch (OperationCanceledException ex) when (ex.Message == "MaxNumRecursions")
-            {
-                // start over
+                return solverGrid.Convert().Builder;
             }
         }
 
         return null;
     }
 
-    private static SolverGrid ToSolverGrid(BuilderField?[][] unsolvedGrid)
+    internal static SolverGrid ToSolverGrid(BuilderField?[][] unsolvedGrid)
     {
         // Circumnavigate the validation in unsolvedGrid.Convert()
         return SolverGrid.FromFieldGrid(
