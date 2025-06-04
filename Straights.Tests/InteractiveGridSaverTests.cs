@@ -61,7 +61,9 @@ w4,_,b,_,_,_,_,b9,_
         // ASSERT
         var fsAfter = fs.AllNodes.OrderBy(x => x).ToList();
         fsAfter.Should().Equal(fsBefore);
-        return Verify(getConsoleOutput()).DisableRequireUniquePrefix();
+        return Verify(getConsoleOutput())
+            .IgnoreParameters()
+            .DisableRequireUniquePrefix();
     }
 
     [Fact]

@@ -24,11 +24,14 @@ public class ProgramTests
         // ACT
         int exitCode = command.Invoke(args, console);
         var errorOutput = console.Error.Buffer.ToString();
+        console.Out.Buffer.Replace("testhost", "straights");
+        console.Out.Buffer.Replace("Straights.Tests", "straights");
+        console.Out.Buffer.TrimEnd();
         var stdOutput = console.Out.Buffer.ToString();
 
         // ASSERT
         exitCode.Should().Be(0);
         errorOutput.Should().BeEmpty();
-        return Verify(stdOutput.TrimEnd());
+        return Verify(stdOutput);
     }
 }

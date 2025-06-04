@@ -41,7 +41,7 @@ public class ImageReadingTests
             TheoryData<TestImage?> data = [.. result];
             if (data.Count == 0)
             {
-                data.Add(null);
+                data.Add(new(null));
             }
 
             return data;
