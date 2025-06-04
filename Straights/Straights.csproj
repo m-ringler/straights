@@ -32,7 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Play/html/*.*;LICENSE" >
+    <Content Include="Play/html/*.*;Play/html/favicon/*.*;LICENSE" >
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
