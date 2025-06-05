@@ -57,10 +57,12 @@ Straights.Image supports grid sizes up to 9 x 9.
 
 [![License: GPL](https://img.shields.io/badge/License-GPL%203+-yellow.svg)](https://spdx.org/licenses/GPL-3.0-or-later.html)
 
-[Straights.Web](./Straights.Web/Readme.md) is a Straights webapp that uses Straights.Solver to generate new grids.
+[Straights.Web](./Straights.Web/Readme.md) is a web app for playing Str8ts that uses Straights.Solver to generate new grids.
 Try it online at <https://m-ringler.github.io/straights/>.
 
 With Straights.Web, you can generate up to 10 x 10 grids, and play up to 12 x 12 grids (generated with the web app or with the command line app).
+
+Straights.Web is a [progressive web app](https://en.wikipedia.org/wiki/Progressive_web_app) that can be installed on users' devices (Add to home sceen), and that is fully functional when offline.
 
 ## Status
 
