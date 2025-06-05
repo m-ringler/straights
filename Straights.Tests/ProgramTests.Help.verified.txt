@@ -2,7 +2,7 @@
   Straights Puzzle Toolkit
 
 Usage:
-  testhost [command] [options]
+  straights [command] [options]
 
 Options:
   --version       Show version information

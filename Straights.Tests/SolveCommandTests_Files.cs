@@ -15,7 +15,7 @@ using Straights.Tests.Console;
 /// </summary>
 public partial class SolveCommandTests
 {
-    private static readonly ImmutableArray<string> ImageExtensions = [".png", ".jpg", ".jpeg", ".txt"];
+    private static readonly ImmutableArray<string> GridFileExtensions = [".png", ".jpg", ".jpeg", ".txt"];
 
     public static TheoryData<TestDataItem?> SolverTestData
     {
@@ -49,7 +49,7 @@ public partial class SolveCommandTests
             TheoryData<TestDataItem?> data = [.. result];
             if (data.Count == 0)
             {
-                data.Add(null);
+                data.Add(new(null));
             }
 
             return data;
@@ -68,7 +68,7 @@ public partial class SolveCommandTests
 
     private static bool IsGridFile(IFileInfo x)
     {
-        return ImageExtensions.Contains(x.Extension.ToLowerInvariant());
+        return GridFileExtensions.Contains(x.Extension.ToLowerInvariant());
     }
 
     private static bool IsSolutionFile(IFileInfo x)

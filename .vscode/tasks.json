@@ -63,7 +63,9 @@
         "-c",
         "Release",
         "-r",
-        "browser-wasm"
+        "browser-wasm",
+        "-p",
+        "MSBuildEnableWorkloadResolver=false"
       ],
       "problemMatcher": "$msCompile"
     },

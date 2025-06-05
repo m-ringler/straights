@@ -8,6 +8,8 @@ The C# project builds a web assembly module that is used to generate straight pu
 
 The result is a webapp that can be deployed as a static website.
 
+When served via HTTPS, Straights.Web is a [progressive web app](https://en.wikipedia.org/wiki/Progressive_web_app) that can be installed on users' devices as a standalone app (Add to home sceen). It will then remain fully functional when offline.
+
 ## WebAssembly from C&#35;
 
 WebAssembly is generated using NativeAOT via LLVM and Emscripten. This approach is documented at the dotnet runtimelab's github project site:

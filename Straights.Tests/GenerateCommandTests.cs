@@ -14,8 +14,7 @@ using Straights.Solver;
 using Straights.Solver.Generator;
 using Straights.Solver.Simplification;
 
-using Xunit.Abstractions;
-
+using Xunit.Sdk;
 using XFS = System.IO.Abstractions.TestingHelpers.MockUnixSupport;
 
 /// <summary>
@@ -287,13 +286,15 @@ _,_,_,_,_,w8,_,_,b
         public void Deserialize(IXunitSerializationInfo info)
         {
             this.Layout = (GridLayout)info.GetValue<int>(nameof(this.Layout));
-            this.Seed = info.GetValue<string>(nameof(this.Seed));
+            this.Seed = info.GetValue<string>(nameof(this.Seed))
+             ?? throw new ArgumentException($"{nameof(this.Seed)} cannot be null.", nameof(info));
             this.Grid = new GridParameters(
                 info.GetValue<int>(nameof(GridParameters.Size)),
                 info.GetValue<int>(nameof(GridParameters.NumberOfBlackBlanks)),
                 info.GetValue<int>(nameof(GridParameters.NumberOfBlackNumbers)));
             this.Difficulty = info.GetValue<int>(nameof(this.Difficulty));
-            this.ExpectedBuilderText = info.GetValue<string>(nameof(this.ExpectedBuilderText));
+            this.ExpectedBuilderText = info.GetValue<string>(nameof(this.ExpectedBuilderText))
+             ?? throw new ArgumentException($"{nameof(this.ExpectedBuilderText)} cannot be null.", nameof(info));
         }
 
         public readonly void Serialize(IXunitSerializationInfo info)
