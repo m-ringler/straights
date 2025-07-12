@@ -17,7 +17,8 @@ const urlsToCache = [
     './favicon/favicon-64x64.png',
     './favicon/favicon-128x128.png',
     './favicon/favicon-256x256.png',
-    './favicon/android-chrome-192x192.png',
+    './favicon/maskable_icon_x192.png',
+    './favicon/maskable_icon_x512.png',
     './site.webmanifest',
     'https://fonts.googleapis.com/css2?family=Nunito:wght@400;600&display=swap'
 ];
@@ -37,12 +38,17 @@ self.addEventListener('fetch', event => {
                 return response;
             }
 
-            return fetch(event.request).then(networkResponse => {
-                return caches.open(CACHE_NAME).then(cache => {
-                    cache.put(event.request, networkResponse.clone());
-                    return networkResponse;
+            // Only cache http(s) requests
+            if (event.request.url.startsWith('http://') || event.request.url.startsWith('https://')) {
+                return fetch(event.request).then(networkResponse => {
+                    return caches.open(CACHE_NAME).then(cache => {
+                        cache.put(event.request, networkResponse.clone());
+                        return networkResponse;
+                    });
                 });
-            });
+            } else {
+                return fetch(event.request);
+            }
         })
     );
 });
