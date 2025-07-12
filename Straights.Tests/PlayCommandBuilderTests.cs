@@ -4,7 +4,6 @@
 
 namespace Straights.Tests;
 
-using System.CommandLine;
 using System.IO.Abstractions;
 using System.IO.Abstractions.TestingHelpers;
 
@@ -29,7 +28,6 @@ public class PlayCommandBuilderTests
     {
         // ARRANGE
         var fileSystem = FileSystem();
-        var console = Console();
         var runner = new RunCommandFunction<PlayCommand>(5);
         var sut = new PlayCommandBuilder(fileSystem, runner.Invoke);
 
@@ -40,8 +38,11 @@ public class PlayCommandBuilderTests
 
         // ACT
         var command = sut.Build();
-        int exitCode = command.Invoke(args, console);
-        var errorOutput = console.Error.Buffer.ToString();
+        var parseResult = command.Parse(args);
+        using var errorWriter = new StringWriter();
+        parseResult.Configuration.Error = errorWriter;
+        int exitCode = parseResult.Invoke();
+        var errorOutput = errorWriter.ToString();
 
         // ASSERT
         errorOutput.Should().BeEmpty();
@@ -60,7 +61,6 @@ public class PlayCommandBuilderTests
     {
         // ARRANGE
         var fileSystem = FileSystem();
-        var console = Console();
         var runner = new RunCommandFunction<PlayCommand>(0);
         var sut = new PlayCommandBuilder(fileSystem, runner.Invoke);
 
@@ -68,8 +68,11 @@ public class PlayCommandBuilderTests
 
         // ACT
         var command = sut.Build();
-        int exitCode = command.Invoke(args, console);
-        var errorOutput = console.Error.Buffer.ToString();
+        var parseResult = command.Parse(args);
+        using var errorWriter = new StringWriter();
+        parseResult.Configuration.Error = errorWriter;
+        int exitCode = parseResult.Invoke();
+        var errorOutput = errorWriter.ToString();
 
         // ASSERT
         errorOutput.Should().BeEmpty();
@@ -96,10 +99,5 @@ public class PlayCommandBuilderTests
     private static IFileSystem FileSystem()
     {
         return new MockFileSystem();
-    }
-
-    private static ConsoleStub Console()
-    {
-        return new();
     }
 }

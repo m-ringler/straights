@@ -5,7 +5,7 @@
 namespace Straights;
 
 using System.CommandLine;
-using System.CommandLine.Invocation;
+using System.CommandLine.Help;
 using System.CommandLine.Parsing;
 using System.IO.Abstractions;
 
@@ -77,40 +77,47 @@ internal sealed class GenerateCommandBuilder(
         """;
 
     private readonly Option<FileInfo?> outputOption = new(
-        name: "--output",
-        getDefaultValue: () => null,
-        description: OutputOptionDescription);
+        name: "--output")
+    {
+        Description = OutputOptionDescription,
+        DefaultValueFactory = _ => null,
+        HelpName = "file",
+    };
 
     private readonly Option<string?> seedOption = new(
-        name: "--seed",
-        getDefaultValue: () => null,
-        description: SeedOptionDescription)
+        name: "--seed")
     {
+        Description = SeedOptionDescription,
         Arity = ArgumentArity.ExactlyOne,
+        DefaultValueFactory = _ => null,
+        HelpName = "seed",
     };
 
     private readonly Option<int> attemptsOption = new(
-        name: "--attempts",
-        getDefaultValue: () => DefaultAttempts,
-        description: AttemptsOptionDescription)
+        name: "--attempts")
     {
+        Description = AttemptsOptionDescription,
         Arity = ArgumentArity.ExactlyOne,
+        DefaultValueFactory = _ => DefaultAttempts,
+        HelpName = "positive number",
     };
 
     private readonly Option<int> failureThresholdOption = new(
-        name: "--failure-threshold",
-        getDefaultValue: () => DefaultFailureThreshold,
-        description: FailureThresholdOptionDescription)
+        name: "--failure-threshold")
     {
+        Description = FailureThresholdOptionDescription,
         Arity = ArgumentArity.ExactlyOne,
+        DefaultValueFactory = _ => DefaultFailureThreshold,
+        HelpName = "positive number",
     };
 
     private readonly Option<int> difficultyOption = new(
-        name: "--difficulty",
-        getDefaultValue: () => DefaultDifficulty.Value,
-        description: DifficultyOptionDescription)
+        name: "--difficulty")
     {
+        Description = DifficultyOptionDescription,
         Arity = ArgumentArity.ExactlyOne,
+        DefaultValueFactory = _ => DefaultDifficulty.Value,
+        HelpName = "0-3",
     };
 
     private readonly EmptyGrid emptyGrid = new();
@@ -129,7 +136,8 @@ internal sealed class GenerateCommandBuilder(
             this.seedOption,
             this.attemptsOption,
             this.failureThresholdOption,
-            this.difficultyOption
+            this.difficultyOption,
+            new HelpOption(),
         ];
 
         var command = new Command("generate", "Generates a straights puzzle");
@@ -138,15 +146,14 @@ internal sealed class GenerateCommandBuilder(
             command.Add(option);
         }
 
-        command.AddValidator(this.Validate);
-        command.SetHandler(this.RunProgram);
+        command.Validators.Add(this.Validate);
+        command.SetAction(this.RunProgram);
 
         return command;
     }
 
-    private void RunProgram(InvocationContext context)
+    private int RunProgram(ParseResult pr)
     {
-        var pr = context.ParseResult;
         this.emptyGrid.GetGridParameters(
             pr.CommandResult,
             out GridParameters? gridParameters,
@@ -160,34 +167,34 @@ internal sealed class GenerateCommandBuilder(
             GridParameters = gridParameters ?? GridParameters.DefaultParameters,
             Layout = layout,
             Template = fs.Wrap(template),
-            OutputFile = fs.Wrap(pr.GetValueForOption(this.outputOption)),
+            OutputFile = fs.Wrap(pr.GetValue(this.outputOption)),
             Random = (random, random.Seed),
-            Attempts = pr.GetValueForOption(this.attemptsOption),
-            FailureThreshold = pr.GetValueForOption(this.failureThresholdOption),
-            DifficultyLevel = (SimplifierStrength)pr.GetValueForOption(this.difficultyOption),
+            Attempts = pr.GetValue(this.attemptsOption),
+            FailureThreshold = pr.GetValue(this.failureThresholdOption),
+            DifficultyLevel = (SimplifierStrength)pr.GetValue(this.difficultyOption),
         };
 
-        context.ExitCode = runCommand(program);
+        return runCommand(program);
     }
 
     private RandNRandom<Pcg32> CreateRandomNumberGenerator(ParseResult pr)
     {
-        var seed = pr.GetValueForOption(this.seedOption);
+        var seed = pr.GetValue(this.seedOption);
 
         var factory = new RandNRandomFactory();
         var random = factory.CreatePcg32(seed);
         return random;
     }
 
-    private void Validate(SymbolResult symbolResult)
+    private void Validate(CommandResult symbolResult)
     {
         IReadOnlyCollection<string> errors = [
             .. this.emptyGrid.GetValidationMessages(symbolResult),
             .. this.GetOutOfRangeErrors(symbolResult)];
 
-        if (errors.Count != 0)
+        foreach (var error in errors)
         {
-            symbolResult.ErrorMessage = string.Join(Environment.NewLine, errors);
+            symbolResult.AddError(error);
         }
     }
 
@@ -202,8 +209,12 @@ internal sealed class GenerateCommandBuilder(
 
         IEnumerable<string> RequireMinimum(Option<int> option, int min)
         {
-            int value = r.GetValueForOption(option);
-            return option.RequireMin(value, min);
+            var result = r.GetResult(option);
+            return result == null
+                ? []
+                : option.RequireMin(
+                    result.GetValueOrDefault<int>(),
+                    min);
         }
     }
 }

@@ -5,7 +5,7 @@
 namespace Straights;
 
 using System.CommandLine;
-using System.CommandLine.Invocation;
+using System.CommandLine.Help;
 using System.CommandLine.Parsing;
 using System.IO.Abstractions;
 
@@ -52,43 +52,51 @@ internal sealed class SolveCommandBuilder(
         """;
 
     private readonly Option<bool> multiThreadedOption = new(
-        name: "--multi-threaded",
-        getDefaultValue: () => false,
-        description: "Flag that turns on multi-threading.")
+        name: "--multi-threaded")
     {
+        Description = "Flag that turns on multi-threading.",
         Arity = ArgumentArity.Zero,
+        DefaultValueFactory = _ => false,
     };
 
     private readonly Option<bool> interactiveOption = new(
-        name: "--interactive",
-        getDefaultValue: () => false,
-        description: "Flag that turns on interactive mode.")
+        name: "--interactive")
     {
+        Description = "Flag that turns on interactive mode.",
         Arity = ArgumentArity.Zero,
+        DefaultValueFactory = _ => false,
     };
 
     private readonly Option<Mode> modeOption = new(
-        name: "--mode",
-        getDefaultValue: () => Mode.UniqueSolution,
-        description: ModeOptionDescription)
+        name: "--mode")
     {
+        Description = ModeOptionDescription,
         Arity = ArgumentArity.ExactlyOne,
+        DefaultValueFactory = _ => Mode.UniqueSolution,
     };
 
     private readonly Option<FileInfo?> outputOption = new(
-        name: "--output",
-        getDefaultValue: () => null,
-        description: OutputOptionDescription);
+        name: "--output")
+    {
+        Description = OutputOptionDescription,
+        DefaultValueFactory = _ => null,
+        HelpName = "file",
+    };
 
     private readonly Option<DirectoryInfo?> debugDataOption = new(
-        name: "--write-debug-data-to",
-        getDefaultValue: () => null,
-        description: DebugDataOptionDescription);
+        name: "--write-debug-data-to")
+    {
+        Description = DebugDataOptionDescription,
+        DefaultValueFactory = _ => null,
+        HelpName = "directory",
+    };
 
     private readonly Argument<FileInfo?> fileArgument = new(
-        name: "imageOrTextFile",
-        description: FileArgumentDescription,
-        getDefaultValue: () => null);
+        name: "imageOrTextFile")
+    {
+        Description = FileArgumentDescription,
+        DefaultValueFactory = _ => null,
+    };
 
     public SolveCommandBuilder(
         IFileSystem fs)
@@ -107,6 +115,8 @@ internal sealed class SolveCommandBuilder(
             this.multiThreadedOption,
             this.debugDataOption,
 #endif
+            new HelpOption(),
+            this.fileArgument,
         };
 
 #if !DEBUG
@@ -114,40 +124,38 @@ internal sealed class SolveCommandBuilder(
         _ = this.debugDataOption;
 #endif
 
-        command.AddArgument(this.fileArgument);
-        command.AddValidator(this.ValidateInteractive);
+        command.Validators.Add(this.ValidateInteractive);
 
-        command.SetHandler(this.RunProgram);
+        command.SetAction(this.RunProgram);
 
         return command;
     }
 
-    private void RunProgram(InvocationContext context)
+    private int RunProgram(ParseResult pr)
     {
-        var pr = context.ParseResult;
-        var file = pr.GetValueForArgument(this.fileArgument);
+        var file = pr.GetValue(this.fileArgument);
 
         var program = new SolveCommand(fs)
         {
-            MultiThreaded = pr.GetValueForOption(this.multiThreadedOption),
-            Interactive = pr.GetValueForOption(this.interactiveOption),
-            DebugDataFolder = fs.Wrap(pr.GetValueForOption(this.debugDataOption)),
-            Mode = pr.GetValueForOption(this.modeOption),
-            OutputFile = fs.Wrap(pr.GetValueForOption(this.outputOption)),
+            MultiThreaded = pr.GetValue(this.multiThreadedOption),
+            Interactive = pr.GetValue(this.interactiveOption),
+            DebugDataFolder = fs.Wrap(pr.GetValue(this.debugDataOption)),
+            Mode = pr.GetValue(this.modeOption),
+            OutputFile = fs.Wrap(pr.GetValue(this.outputOption)),
             File = fs.Wrap(file),
         };
 
         int returnCode = execute(program);
-        context.ExitCode = returnCode;
+        return returnCode;
     }
 
     private void ValidateInteractive(CommandResult pr)
     {
-        if (!pr.GetValueForOption(this.interactiveOption) &&
-            pr.GetValueForArgument(this.fileArgument) == null)
+        if (!pr.GetValue(this.interactiveOption) &&
+            pr.GetValue(this.fileArgument) == null)
         {
-            pr.ErrorMessage =
-            $"You must either provide an {this.fileArgument.Name} or use --{this.interactiveOption.Name}.";
+            pr.AddError(
+            $"You must either provide an {this.fileArgument.Name} or use {this.interactiveOption.Name}.");
         }
     }
 }

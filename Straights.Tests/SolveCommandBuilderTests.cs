@@ -4,7 +4,6 @@
 
 namespace Straights.Tests;
 
-using System.CommandLine;
 using System.IO.Abstractions;
 using System.IO.Abstractions.TestingHelpers;
 
@@ -20,7 +19,6 @@ public class SolveCommandBuilderTests
     {
         // ARRANGE
         var fileSystem = FileSystem();
-        var console = Console();
         var runner = new RunCommandFunction<SolveCommand>(5);
         var sut = new SolveCommandBuilder(fileSystem, runner.Invoke);
 
@@ -30,8 +28,11 @@ public class SolveCommandBuilderTests
 
         // ACT
         var command = sut.Build();
-        int exitCode = command.Invoke(args, console);
-        var errorOutput = console.Error.Buffer.ToString();
+        var parseResult = command.Parse(args);
+        using var errorWriter = new StringWriter();
+        parseResult.Configuration.Error = errorWriter;
+        int exitCode = parseResult.Invoke();
+        var errorOutput = errorWriter.ToString();
 
         // ASSERT
         errorOutput.Should().BeEmpty();
@@ -47,7 +48,6 @@ public class SolveCommandBuilderTests
     {
         // ARRANGE
         var fileSystem = FileSystem();
-        var console = Console();
         var runner = new RunCommandFunction<SolveCommand>(0);
         var sut = new SolveCommandBuilder(fileSystem, runner.Invoke);
 
@@ -55,8 +55,11 @@ public class SolveCommandBuilderTests
 
         // ACT
         var command = sut.Build();
-        int exitCode = command.Invoke(args, console);
-        var errorOutput = console.Error.Buffer.ToString();
+        var parseResult = command.Parse(args);
+        using var errorWriter = new StringWriter();
+        parseResult.Configuration.Error = errorWriter;
+        int exitCode = parseResult.Invoke();
+        var errorOutput = errorWriter.ToString();
 
         // ASSERT
         errorOutput.Trim().Should().Be("You must either provide an imageOrTextFile or use --interactive.");
@@ -86,10 +89,5 @@ public class SolveCommandBuilderTests
     private static IFileSystem FileSystem()
     {
         return new MockFileSystem();
-    }
-
-    private static ConsoleStub Console()
-    {
-        return new();
     }
 }

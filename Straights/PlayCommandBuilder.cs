@@ -5,7 +5,7 @@
 namespace Straights;
 
 using System.CommandLine;
-using System.CommandLine.Invocation;
+using System.CommandLine.Help;
 using System.IO.Abstractions;
 
 using Straights.Play;
@@ -25,24 +25,27 @@ internal sealed class PlayCommandBuilder(
         """;
 
     private readonly Argument<FileInfo?> fileArgument = new(
-        name: "imageOrTextFile",
-        description: FileArgumentDescription,
-        getDefaultValue: () => null);
+        name: "imageOrTextFile")
+    {
+        Description = FileArgumentDescription,
+        DefaultValueFactory = _ => null,
+    };
 
     private readonly Option<bool> offlineOption = new(
-        name: "--offline",
-        getDefaultValue: () => false,
-        description: "Serve the game on localhost, instead of using the default website.")
+        name: "--offline")
     {
+        Description = "Serve the game on localhost, instead of using the default website.",
         Arity = ArgumentArity.Zero,
+        DefaultValueFactory = _ => false,
     };
 
     private readonly Option<int> offlinePortOption = new(
-        name: "--offline-port",
-        getDefaultValue: () => DefaultPort,
-        description: "Serve the game on localhost on the specified port (implies --offline).")
+        name: "--offline-port")
     {
+        Description = "Serve the game on localhost on the specified port (implies --offline).",
         Arity = ArgumentArity.ExactlyOne,
+        DefaultValueFactory = _ => DefaultPort,
+        HelpName = "offline-port",
     };
 
     public PlayCommandBuilder(
@@ -53,26 +56,26 @@ internal sealed class PlayCommandBuilder(
 
     public Command Build()
     {
-        var command = new Command("play", "Plays a straights puzzle in the default browser");
+        var command = new Command("play", "Plays a straights puzzle in the default browser")
+        {
+            this.fileArgument,
+            this.offlineOption,
+            this.offlinePortOption,
+            new HelpOption(),
+        };
 
-        command.AddArgument(this.fileArgument);
-        command.AddOption(this.offlineOption);
-        command.AddOption(this.offlinePortOption);
-
-        command.SetHandler(this.RunProgram);
+        command.SetAction(this.RunProgram);
 
         return command;
     }
 
-    private void RunProgram(InvocationContext context)
+    private int RunProgram(ParseResult pr)
     {
-        var pr = context.ParseResult;
-
-        FileInfo? file = pr.GetValueForArgument(this.fileArgument);
-        bool offline = pr.GetValueForOption(this.offlineOption)
-            || pr.FindResultFor(this.offlinePortOption)?.IsImplicit == false;
+        FileInfo? file = pr.GetValue(this.fileArgument);
+        bool offline = pr.GetValue(this.offlineOption)
+            || pr.GetResult(this.offlinePortOption)?.Implicit == false;
         int? port = offline
-            ? pr.GetValueForOption(this.offlinePortOption)
+            ? pr.GetValue(this.offlinePortOption)
             : null;
 
         var inputFile = fs.Wrap(file);
@@ -86,6 +89,6 @@ internal sealed class PlayCommandBuilder(
         };
 
         int returnCode = execute(program);
-        context.ExitCode = returnCode;
+        return returnCode;
     }
 }
