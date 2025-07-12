@@ -4,15 +4,12 @@
 
 namespace Straights.Tests;
 
-using System.CommandLine;
-
 internal static class HelpVerifier
 {
     public static Task VerifyHelp<TCommand>(
         Func<Func<TCommand, int>, ICommandBuilder> builderFactory)
     {
         // ARRANGE
-        ConsoleStub console = new();
         var runner = new RunCommandFunction<TCommand>(0);
         var sut = builderFactory(runner.Invoke);
 
@@ -20,9 +17,14 @@ internal static class HelpVerifier
 
         // ACT
         var command = sut.Build();
-        int exitCode = command.Invoke(args, console);
-        var errorOutput = console.Error.Buffer.ToString();
-        var stdOutput = console.Out.Buffer.ToString();
+        var pr = command.Parse(args);
+        using var outputWriter = new StringWriter();
+        using var errorWriter = new StringWriter();
+        pr.Configuration.Output = outputWriter;
+        pr.Configuration.Error = errorWriter;
+        int exitCode = pr.Invoke();
+        var errorOutput = errorWriter.ToString();
+        var stdOutput = outputWriter.ToString();
 
         // ASSERT
         exitCode.Should().Be(0);

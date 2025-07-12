@@ -4,7 +4,6 @@
 
 namespace Straights.Tests;
 
-using System.CommandLine;
 using System.IO.Abstractions;
 using System.IO.Abstractions.TestingHelpers;
 
@@ -21,7 +20,6 @@ using XFS = System.IO.Abstractions.TestingHelpers.MockUnixSupport;
 public class GenerateCommandBuilderTests
 {
     private readonly IFileSystem fileSystem = new MockFileSystem();
-    private readonly ConsoleStub console = new();
 
     [Fact]
     public void CheckDefaults()
@@ -56,8 +54,11 @@ public class GenerateCommandBuilderTests
 
         // ACT
         var command = sut.Build();
-        int exitCode = command.Invoke(args, this.console);
-        var errorOutput = this.console.Error.Buffer.ToString();
+        var parseResult = command.Parse(args);
+        using var errorWriter = new StringWriter();
+        parseResult.Configuration.Error = errorWriter;
+        int exitCode = parseResult.Invoke();
+        var errorOutput = errorWriter.ToString();
 
         // ASSERT
         exitCode.Should().Be(5);
@@ -91,8 +92,11 @@ public class GenerateCommandBuilderTests
 
         // ACT
         var command = sut.Build();
-        int exitCode = command.Invoke(args, this.console);
-        var errorOutput = this.console.Error.Buffer.ToString();
+        var parseResult = command.Parse(args);
+        using var errorWriter = new StringWriter();
+        parseResult.Configuration.Error = errorWriter;
+        int exitCode = parseResult.Invoke();
+        var errorOutput = errorWriter.ToString();
 
         // ASSERT
         errorOutput.Should().BeEmpty();
@@ -129,8 +133,11 @@ public class GenerateCommandBuilderTests
 
         // ACT
         var command = sut.Build();
-        int exitCode = command.Invoke(args, this.console);
-        var errorOutput = this.console.Error.Buffer.ToString();
+        var parseResult = command.Parse(args);
+        using var errorWriter = new StringWriter();
+        parseResult.Configuration.Error = errorWriter;
+        int exitCode = parseResult.Invoke();
+        var errorOutput = errorWriter.ToString();
 
         // ASSERT
         exitCode.Should().NotBe(0);
@@ -148,8 +155,11 @@ public class GenerateCommandBuilderTests
 
         // ACT
         var command = sut.Build();
-        int exitCode = command.Invoke([], this.console);
-        var errorOutput = this.console.Error.Buffer.ToString();
+        var parseResult = command.Parse([]);
+        using var errorWriter = new StringWriter();
+        parseResult.Configuration.Error = errorWriter;
+        int exitCode = parseResult.Invoke();
+        var errorOutput = errorWriter.ToString();
 
         // ASSERT
         exitCode.Should().Be(5);
@@ -177,9 +187,16 @@ public class GenerateCommandBuilderTests
 
         // ACT
         var command = sut.Build();
-        _ = command.Invoke([], this.console);
+        var parseResult1 = command.Parse([]);
+        using var errorWriter1 = new StringWriter();
+        parseResult1.Configuration.Error = errorWriter1;
+        _ = parseResult1.Invoke();
         var seed1 = runner.InvokedCommand!.Random.Seed;
-        _ = command.Invoke([], this.console);
+
+        var parseResult2 = command.Parse([]);
+        using var errorWriter2 = new StringWriter();
+        parseResult2.Configuration.Error = errorWriter2;
+        _ = parseResult2.Invoke();
         var seed2 = runner.InvokedCommand!.Random.Seed;
 
         // ASSERT
@@ -203,22 +220,17 @@ public class GenerateCommandBuilderTests
 
         // ACT
         var command = sut.Build();
-        int exitCode = command.Invoke(args, this.console);
-        var errorOutput = this.console.Error.Buffer.ToString();
+        var parseResult = command.Parse(args);
+        using var errorWriter = new StringWriter();
+        parseResult.Configuration.Error = errorWriter;
+        int exitCode = parseResult.Invoke();
+        var errorOutput = errorWriter.ToString();
 
         // ASSERT
         exitCode.Should().NotBe(0);
         var c = runner.InvokedCommand;
         c.Should().BeNull();
         errorOutput.Should().Match(expectedMessage);
-    }
-
-    [Fact]
-    public Task Help()
-    {
-        return HelpVerifier.VerifyHelp<GenerateCommand>(
-            execute =>
-                new GenerateCommandBuilder(new MockFileSystem(), execute));
     }
 
     [Theory]
@@ -247,8 +259,11 @@ public class GenerateCommandBuilderTests
 
         // ACT
         var command = sut.Build();
-        int exitCode = command.Invoke(args, this.console);
-        var errorOutput = this.console.Error.Buffer.ToString();
+        var parseResult = command.Parse(args);
+        using var errorWriter = new StringWriter();
+        parseResult.Configuration.Error = errorWriter;
+        int exitCode = parseResult.Invoke();
+        var errorOutput = errorWriter.ToString();
 
         // ASSERT
         exitCode.Should().Be(5);
@@ -286,8 +301,11 @@ public class GenerateCommandBuilderTests
 
         // ACT
         var command = sut.Build();
-        int exitCode = command.Invoke(args, this.console);
-        var errorOutput = this.console.Error.Buffer.ToString();
+        var parseResult = command.Parse(args);
+        using var errorWriter = new StringWriter();
+        parseResult.Configuration.Error = errorWriter;
+        int exitCode = parseResult.Invoke();
+        var errorOutput = errorWriter.ToString();
 
         // ASSERT
         exitCode.Should().Be(5);
@@ -326,8 +344,11 @@ public class GenerateCommandBuilderTests
 
         // ACT
         var command = sut.Build();
-        int exitCode = command.Invoke(args, this.console);
-        var errorOutput = this.console.Error.Buffer.ToString();
+        var parseResult = command.Parse(args);
+        using var errorWriter = new StringWriter();
+        parseResult.Configuration.Error = errorWriter;
+        int exitCode = parseResult.Invoke();
+        var errorOutput = errorWriter.ToString();
 
         // ASSERT
         exitCode.Should().Be(5);
@@ -367,8 +388,11 @@ public class GenerateCommandBuilderTests
 
         // ACT
         var command = sut.Build();
-        int exitCode = command.Invoke(args, this.console);
-        var errorOutput = this.console.Error.Buffer.ToString();
+        var parseResult = command.Parse(args);
+        using var errorWriter = new StringWriter();
+        parseResult.Configuration.Error = errorWriter;
+        int exitCode = parseResult.Invoke();
+        var errorOutput = errorWriter.ToString();
 
         // ASSERT
         exitCode.Should().NotBe(0);

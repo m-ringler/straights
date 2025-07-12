@@ -5,13 +5,10 @@
 namespace Straights;
 
 using System.CommandLine;
-using System.CommandLine.Invocation;
+using System.CommandLine.Help;
 using System.IO.Abstractions;
 
-internal sealed class ConvertCommandBuilder(
-        IFileSystem fs,
-        Func<ConvertCommand, int> runCommand)
-    : ICommandBuilder
+internal sealed class ConvertCommandBuilder : ICommandBuilder
 {
     private const string FileArgumentDescription =
 """
@@ -28,16 +25,30 @@ An image file with a Straights grid, or a Straights grid saved as .txt or .json.
         More formats may be supported in the future.
         """;
 
-    private readonly Option<FileInfo> outputOption = new(
-        name: "--output",
-        description: OutputOptionDescription)
+    private readonly IFileSystem fs;
+    private readonly Func<ConvertCommand, int> runCommand;
+
+    private readonly Option<FileInfo> outputOption = new("--output")
     {
-        IsRequired = true,
+        Description = OutputOptionDescription,
+        Required = true,
+        HelpName = "file",
     };
 
-    private readonly Argument<FileInfo> fileArgument = new(
-        name: "imageOrTextFile",
-        description: FileArgumentDescription);
+    private readonly Argument<FileInfo> fileArgument = new("imageOrTextFile")
+    {
+        Description = FileArgumentDescription,
+    };
+
+    public ConvertCommandBuilder(
+            IFileSystem fs,
+            Func<ConvertCommand, int> runCommand)
+    {
+        this.fs = fs;
+        this.runCommand = runCommand;
+        _ = this.outputOption.AcceptLegalFilePathsOnly();
+        _ = this.fileArgument.AcceptLegalFilePathsOnly();
+    }
 
     public ConvertCommandBuilder(IFileSystem fs)
         : this(fs, program => program.Run())
@@ -50,24 +61,25 @@ An image file with a Straights grid, or a Straights grid saved as .txt or .json.
         {
             this.outputOption,
             this.fileArgument,
+            new HelpOption(),
         };
 
-        command.SetHandler(this.RunProgram);
+        command.SetAction(this.RunProgram);
 
         return command;
     }
 
-    private void RunProgram(InvocationContext context)
+    private int RunProgram(ParseResult pr)
     {
-        var pr = context.ParseResult;
+        var file = this.fs.Wrap(pr.GetRequiredValue(this.fileArgument));
 
         var program = new ConvertCommand
         {
-            OutputFile = pr.GetValueForOption(this.outputOption)!.Wrap(fs),
-            InputFile = pr.GetValueForArgument(this.fileArgument).Wrap(fs),
+            OutputFile = pr.GetValue(this.outputOption)!.Wrap(this.fs),
+            InputFile = file!,
         };
 
-        int returnCode = runCommand(program);
-        context.ExitCode = returnCode;
+        int returnCode = this.runCommand(program);
+        return returnCode;
     }
 }

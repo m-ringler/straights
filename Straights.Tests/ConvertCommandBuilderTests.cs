@@ -4,7 +4,6 @@
 
 namespace Straights.Tests;
 
-using System.CommandLine;
 using System.IO.Abstractions;
 using System.IO.Abstractions.TestingHelpers;
 
@@ -16,7 +15,6 @@ using XFS = System.IO.Abstractions.TestingHelpers.MockUnixSupport;
 public class ConvertCommandBuilderTests
 {
     private readonly IFileSystem fileSystem = new MockFileSystem();
-    private readonly ConsoleStub console = new();
 
     [Fact]
     public void BuildAndInvoke_WhenBothArgumentsProvided_ExecutesExpected()
@@ -29,8 +27,11 @@ public class ConvertCommandBuilderTests
 
         // ACT
         var command = sut.Build();
-        int exitCode = command.Invoke(args, this.console);
-        var errorOutput = this.console.Error.Buffer.ToString();
+        using var errorWriter = new StringWriter();
+        var pr = command.Parse(args);
+        pr.Configuration.Error = errorWriter;
+        int exitCode = pr.Invoke();
+        var errorOutput = errorWriter.ToString();
 
         // ASSERT
         exitCode.Should().Be(5);
@@ -54,8 +55,11 @@ public class ConvertCommandBuilderTests
 
         // ACT
         var command = sut.Build();
-        int exitCode = command.Invoke(args, this.console);
-        var errorOutput = this.console.Error.Buffer.ToString();
+        var parseResult = command.Parse(args);
+        using var errorWriter = new StringWriter();
+        parseResult.Configuration.Error = errorWriter;
+        int exitCode = parseResult.Invoke();
+        var errorOutput = errorWriter.ToString();
 
         // ASSERT
         exitCode.Should().NotBe(0);
@@ -74,8 +78,11 @@ public class ConvertCommandBuilderTests
 
         // ACT
         var command = sut.Build();
-        int exitCode = command.Invoke(args, this.console);
-        var errorOutput = this.console.Error.Buffer.ToString();
+        var parseResult = command.Parse(args);
+        using var errorWriter = new StringWriter();
+        parseResult.Configuration.Error = errorWriter;
+        int exitCode = parseResult.Invoke();
+        var errorOutput = errorWriter.ToString();
 
         // ASSERT
         exitCode.Should().NotBe(0);

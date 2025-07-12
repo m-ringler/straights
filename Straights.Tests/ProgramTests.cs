@@ -16,18 +16,18 @@ public class ProgramTests
     public Task Help()
     {
         // ARRANGE
-        ConsoleStub console = new();
         RootCommand command = Program.Build(new MockFileSystem());
-
         var args = new[] { "--help" };
 
         // ACT
-        int exitCode = command.Invoke(args, console);
-        var errorOutput = console.Error.Buffer.ToString();
-        console.Out.Buffer.Replace("testhost", "straights");
-        console.Out.Buffer.Replace("Straights.Tests", "straights");
-        console.Out.Buffer.TrimEnd();
-        var stdOutput = console.Out.Buffer.ToString();
+        var parseResult = command.Parse(args);
+        using var outputWriter = new StringWriter();
+        using var errorWriter = new StringWriter();
+        parseResult.Configuration.Output = outputWriter;
+        parseResult.Configuration.Error = errorWriter;
+        int exitCode = parseResult.Invoke();
+        var errorOutput = errorWriter.ToString();
+        var stdOutput = outputWriter.ToString().Replace("testhost", "straights").Replace("Straights.Tests", "straights").TrimEnd();
 
         // ASSERT
         exitCode.Should().Be(0);

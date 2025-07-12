@@ -5,7 +5,6 @@
 namespace Straights;
 
 using System.CommandLine;
-using System.CommandLine.Invocation;
 using System.IO.Abstractions;
 
 internal sealed class EditCommandBuilder(
@@ -14,9 +13,11 @@ internal sealed class EditCommandBuilder(
     : ICommandBuilder
 {
     private readonly Argument<FileInfo?> fileArgument = new(
-        name: "imageOrTextFile",
-        description: "An image file with a Straights grid, or a Straights grid saved as .txt or .json.",
-        getDefaultValue: () => null);
+        name: "imageOrTextFile")
+    {
+        Description = "An image file with a Straights grid, or a Straights grid saved as .txt or .json.",
+        DefaultValueFactory = _ => null,
+    };
 
     public EditCommandBuilder(
         IFileSystem fs)
@@ -26,20 +27,19 @@ internal sealed class EditCommandBuilder(
 
     public Command Build()
     {
-        var command = new Command("edit", "Edits a straights puzzle");
+        var command = new Command("edit", "Edits a straights puzzle")
+        {
+            this.fileArgument,
+        };
 
-        command.AddArgument(this.fileArgument);
-
-        command.SetHandler(this.RunProgram);
+        command.SetAction(this.RunProgram);
 
         return command;
     }
 
-    private void RunProgram(InvocationContext context)
+    private int RunProgram(ParseResult pr)
     {
-        var pr = context.ParseResult;
-
-        var file = pr.GetValueForArgument(this.fileArgument);
+        var file = pr.GetValue(this.fileArgument);
 
         var program = new EditCommand(fs)
         {
@@ -47,6 +47,6 @@ internal sealed class EditCommandBuilder(
         };
 
         int returnCode = execute(program);
-        context.ExitCode = returnCode;
+        return returnCode;
     }
 }

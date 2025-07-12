@@ -51,47 +51,49 @@ internal class EmptyGrid
         """;
 
     private readonly Option<int> sizeOption = new(
-        name: "--size",
-        getDefaultValue: () => DefaultSize,
-        description: SizeOptionDescription)
+        name: "--size")
     {
+        Description = SizeOptionDescription,
+        DefaultValueFactory = _ => DefaultSize,
         Arity = ArgumentArity.ExactlyOne,
     };
 
     private readonly Option<int?> blackBlanksOption = new(
-        name: "--black-blanks",
-        getDefaultValue: () => null,
-        description: BlackBlanksOptionDescription)
+        name: "--black-blanks")
     {
+        Description = BlackBlanksOptionDescription,
+        DefaultValueFactory = _ => null,
         Arity = ArgumentArity.ExactlyOne,
     };
 
     private readonly Option<int?> blackNumbersOption = new(
-        name: "--black-numbers",
-        getDefaultValue: () => null,
-        description: BlackNumbersOptionDescription)
+        name: "--black-numbers")
     {
+        Description = BlackNumbersOptionDescription,
+        DefaultValueFactory = _ => null,
         Arity = ArgumentArity.ExactlyOne,
     };
 
     private readonly Option<FileInfo?> templateOption = new(
-        name: "--template",
-        getDefaultValue: () => null,
-        description: TemplateOptionDescription)
+        name: "--template")
     {
+        Description = TemplateOptionDescription,
+        DefaultValueFactory = _ => null,
         Arity = ArgumentArity.ExactlyOne,
     };
 
     private readonly Option<GridLayout> layoutOption = new(
-        name: "--layout",
-        getDefaultValue: () => DefaultLayout,
-        description: LayoutOptionDescription)
+        name: "--layout")
     {
+        Description = LayoutOptionDescription,
+        DefaultValueFactory = _ => DefaultLayout,
         Arity = ArgumentArity.ExactlyOne,
     };
 
     public EmptyGrid()
     {
+        var defaultSize = this.sizeOption.GetDefaultValue();
+        _ = defaultSize;
         this.NonTemplateOptions =
         [
             this.sizeOption,
@@ -117,7 +119,7 @@ internal class EmptyGrid
         out GridLayout layout,
         out FileInfo? template)
     {
-        template = r.GetValueForOption(this.templateOption);
+        template = r.GetValue(this.templateOption);
         if (template != null)
         {
             layout = DefaultLayout;
@@ -125,14 +127,14 @@ internal class EmptyGrid
         }
         else
         {
-            layout = r.GetValueForOption(this.layoutOption);
+            layout = r.GetValue(this.layoutOption);
 
             gridParameters = (GridParameters)GridConfigurationBuilder
                 .GetUnvalidatedGridParameters(
                     layout: layout,
-                    size: r.GetValueForOption(this.sizeOption),
-                    blackBlanksRaw: r.GetValueForOption(this.blackBlanksOption),
-                    blackNumbersRaw: r.GetValueForOption(this.blackNumbersOption));
+                    size: r.GetValue(this.sizeOption),
+                    blackBlanksRaw: r.GetValue(this.blackBlanksOption),
+                    blackNumbersRaw: r.GetValue(this.blackNumbersOption));
         }
     }
 
@@ -146,7 +148,13 @@ internal class EmptyGrid
         out UnvalidatedGridConfiguration? gridParameters,
         out FileInfo? template)
     {
-        T? GetValue<T>(Option<T> o) => r.GetValueForOption(o);
+        T? GetValue<T>(Option<T> o)
+        {
+            var result = r.GetResult(o);
+            return result == null
+                ? (T?)o.GetDefaultValue()
+                : result.GetValueOrDefault<T>();
+        }
 
         template = GetValue(this.templateOption);
         gridParameters = template != null
@@ -212,12 +220,12 @@ internal class EmptyGrid
             from o in owner.NonTemplateOptions
             where this.IsUserOption(o)
             select
-            $"You cannot use the --{o.Name} and --{owner.templateOption.Name} options together."];
+            $"You cannot use the {o.Name} and {owner.templateOption.Name} options together."];
         }
 
         private bool IsUserOption(Option o)
         {
-            return r.FindResultFor(o)?.Tokens.Count > 0;
+            return r.GetResult(o)?.Tokens.Count > 0;
         }
     }
 }

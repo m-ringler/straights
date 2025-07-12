@@ -12,5 +12,4 @@ Arguments:
 Options:
   --offline                      Serve the game on localhost, instead of using the default website. [default: False]
   --offline-port <offline-port>  Serve the game on localhost on the specified port (implies --offline). [default: 7138]
-  --version                      Show version information
   -?, -h, --help                 Show help and usage information

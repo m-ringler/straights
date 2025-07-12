@@ -38,7 +38,7 @@ public sealed class Program
 
         try
         {
-            return command.Invoke(args);
+            return command.Parse(args).Invoke();
         }
         catch (Exception ex)
         {

@@ -15,7 +15,7 @@ internal static class OptionValidator
         if (value < minInclusive)
         {
             yield return
-                $"--{option.Name} must be greater than or equal to {minInclusive}.";
+                $"{option.Name} must be greater than or equal to {minInclusive}.";
         }
     }
 
@@ -28,7 +28,7 @@ internal static class OptionValidator
         if (value > maxInclusive)
         {
             yield return
-                $"--{option.Name} must be less than or equal to {maxInclusive}{when}.";
+                $"{option.Name} must be less than or equal to {maxInclusive}{when}.";
         }
     }
 
