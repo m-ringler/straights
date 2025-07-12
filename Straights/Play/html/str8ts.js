@@ -687,7 +687,13 @@ function saveGameStateToLocalStorage (key) {
 
 function loadGameStateFromLocalStorage (key) {
   const gameStateString = localStorage.getItem(key)
-  return gameStateString ? JSON.parse(gameStateString) : null
+  if (!gameStateString) return null
+  try {
+    return JSON.parse(gameStateString)
+  } catch (e) {
+    console.error('Error parsing game state from localStorage for key:', key, e)
+    return null
+  }
 }
 
 function getLatestGameKeyFromLocalStorage () {
