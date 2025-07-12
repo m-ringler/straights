@@ -81,6 +81,7 @@ internal sealed class GenerateCommandBuilder(
     {
         Description = OutputOptionDescription,
         DefaultValueFactory = _ => null,
+        HelpName = "file",
     };
 
     private readonly Option<string?> seedOption = new(
@@ -89,6 +90,7 @@ internal sealed class GenerateCommandBuilder(
         Description = SeedOptionDescription,
         Arity = ArgumentArity.ExactlyOne,
         DefaultValueFactory = _ => null,
+        HelpName = "seed",
     };
 
     private readonly Option<int> attemptsOption = new(
@@ -97,6 +99,7 @@ internal sealed class GenerateCommandBuilder(
         Description = AttemptsOptionDescription,
         Arity = ArgumentArity.ExactlyOne,
         DefaultValueFactory = _ => DefaultAttempts,
+        HelpName = "positive number",
     };
 
     private readonly Option<int> failureThresholdOption = new(
@@ -105,6 +108,7 @@ internal sealed class GenerateCommandBuilder(
         Description = FailureThresholdOptionDescription,
         Arity = ArgumentArity.ExactlyOne,
         DefaultValueFactory = _ => DefaultFailureThreshold,
+        HelpName = "positive number",
     };
 
     private readonly Option<int> difficultyOption = new(
@@ -113,6 +117,7 @@ internal sealed class GenerateCommandBuilder(
         Description = DifficultyOptionDescription,
         Arity = ArgumentArity.ExactlyOne,
         DefaultValueFactory = _ => DefaultDifficulty.Value,
+        HelpName = "0-3",
     };
 
     private readonly EmptyGrid emptyGrid = new();

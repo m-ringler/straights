@@ -233,6 +233,14 @@ public class GenerateCommandBuilderTests
         errorOutput.Should().Match(expectedMessage);
     }
 
+    [Fact]
+    public Task Help()
+    {
+        return HelpVerifier.VerifyHelp<GenerateCommand>(
+            execute =>
+                new GenerateCommandBuilder(new MockFileSystem(), execute));
+    }
+
     [Theory]
     [InlineData(GridLayout.HorizontallySymmetric, 4, 1)]
     [InlineData(GridLayout.PointSymmetric, 4, 1)]

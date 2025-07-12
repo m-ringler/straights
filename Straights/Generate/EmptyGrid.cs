@@ -56,6 +56,7 @@ internal class EmptyGrid
         Description = SizeOptionDescription,
         DefaultValueFactory = _ => DefaultSize,
         Arity = ArgumentArity.ExactlyOne,
+        HelpName = "number greater than 3",
     };
 
     private readonly Option<int?> blackBlanksOption = new(
@@ -64,6 +65,7 @@ internal class EmptyGrid
         Description = BlackBlanksOptionDescription,
         DefaultValueFactory = _ => null,
         Arity = ArgumentArity.ExactlyOne,
+        HelpName = "non-negative number",
     };
 
     private readonly Option<int?> blackNumbersOption = new(
@@ -72,6 +74,7 @@ internal class EmptyGrid
         Description = BlackNumbersOptionDescription,
         DefaultValueFactory = _ => null,
         Arity = ArgumentArity.ExactlyOne,
+        HelpName = "non-negative number",
     };
 
     private readonly Option<FileInfo?> templateOption = new(
@@ -80,6 +83,7 @@ internal class EmptyGrid
         Description = TemplateOptionDescription,
         DefaultValueFactory = _ => null,
         Arity = ArgumentArity.ExactlyOne,
+        HelpName = "file",
     };
 
     private readonly Option<GridLayout> layoutOption = new(
