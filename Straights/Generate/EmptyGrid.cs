@@ -96,8 +96,6 @@ internal class EmptyGrid
 
     public EmptyGrid()
     {
-        var defaultSize = this.sizeOption.GetDefaultValue();
-        _ = defaultSize;
         this.NonTemplateOptions =
         [
             this.sizeOption,
