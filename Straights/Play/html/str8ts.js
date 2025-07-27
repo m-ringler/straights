@@ -295,6 +295,7 @@ function solution () {
 function undo () {
   if (undoStack.length > 0 && !showSolution) {
     const field = undoStack.pop()
+    console.log(`Undo restores field[${field.row}, ${field.col}] to ${field.user}/[${field.notes}]`)
     gameField = game.get(field.row, field.col)
     gameField.copyFrom(field)
     selectCell(field.row, field.col)
@@ -730,25 +731,39 @@ function handleNumberInput (num) {
     return
   }
 
-  if (!showSolution && typeof activeRow !== 'undefined' &&
-        game.get(activeRow, activeCol).mode == modes.USER) {
-    undoStack.push(game.get(activeRow, activeCol).copy())
-    if (noteMode) {
-      game.get(activeRow, activeCol).setNote(num)
-    } else {
-      game.get(activeRow, activeCol).setUser(num)
-      let finished = true
-      game.forEach(field => {
-        if (!field.checkUser(setColor = false)) finished = false
-      })
-      if (finished) {
-        showSolution = true
-        $('.container').addClass('finished')
-        onResize()
-        clearInterval(timer)
-      }
+  if (showSolution) {
+    return
+  }
+
+  if (typeof activeRow == 'undefined')
+  {
+    return;
+  }
+    
+  activeField = game.get(activeRow, activeCol)
+  if (activeField.mode != modes.USER) {
+    return
+  }
+
+  undoStack.push(activeField.copy())
+
+  if (noteMode) {
+    activeField.setNote(num)
+  } else {
+    activeField.setUser(num)
+    let finished = true
+    game.forEach(field => {
+      if (!field.checkUser(setColor = false)) finished = false
+    })
+
+    if (finished) {
+      showSolution = true
+      $('.container').addClass('finished')
+      onResize()
+      clearInterval(timer)
     }
   }
+
   saveGameStateToLocalStorage(gameCode)
 }
 
