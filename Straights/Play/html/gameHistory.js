@@ -15,8 +15,10 @@ export function saveGameState(key, game) {
   // Ensure only the latest MAX_NUMBER_OF_STORED_GAMES are kept
   const keys = Object.keys(localStorage)
   if (keys.length > MAX_NUMBER_OF_STORED_GAMES) {
-    const oldestKey = keys.sort((a, b) => JSON.parse(localStorage.getItem(a)).timestamp - JSON.parse(localStorage.getItem(b)).timestamp)[0]
-    localStorage.removeItem(oldestKey)
+    const keysByAge = keys.sort((a, b) => JSON.parse(localStorage.getItem(a)).timestamp - JSON.parse(localStorage.getItem(b)).timestamp)
+    for (let i = 0; i < keysByAge.length - MAX_NUMBER_OF_STORED_GAMES; i++) {
+      localStorage.removeItem(keysByAge[i])
+    }
   }
 }
 
@@ -33,15 +35,13 @@ export function getLatestGameKey() {
   let latestTimestamp = 0
 
   keys.forEach(key => {
-    const gameStateString = localStorage.getItem(key)
-    if (gameStateString) {
-      const gameState = JSON.parse(gameStateString)
-      if (gameState.timestamp > latestTimestamp) {
+      const gameState = loadGameStateData(key)
+      if (gameState && gameState.timestamp > latestTimestamp) {
         latestTimestamp = gameState.timestamp
         latestKey = key
       }
     }
-  })
+  )
 
   return latestKey
 }
