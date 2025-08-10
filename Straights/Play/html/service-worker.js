@@ -1,16 +1,24 @@
-const CACHE_NAME = 'v0.6.14';
+// SPDX-FileCopyrightText: 2025 Moritz Ringler
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+const CACHE_NAME = 'v0.6.14-beta1';
 const urlsToCache = [
     './',
-    './index.html',
-    './LICENSE',
-    './str8ts.css',
-    './jquery-3.7.1.min.js',
+    './favicon.ico',
+    './game.js',
+    './gameHistory.js',
     './generate-str8ts.js',
     './generate-worker.js',
+    './index.html',
+    './jquery-3.7.1.min.js',
+    './service-worker.js',
+    './LICENSE',
+    './str8ts.css',
     './str8ts.js',
     './Straights.Web.js',
     './Straights.Web.wasm',
-    './favicon.ico',
+    './undoStack.js',
     './favicon/favicon-16x16.png',
     './favicon/favicon-32x32.png',
     './favicon/favicon-48x48.png',
