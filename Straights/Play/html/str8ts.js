@@ -80,7 +80,7 @@ class Field {
 
     // working data, edited by the user
     this.user = undefined
-    this.notes = []
+    this.notes = new Set()
   }
 
   getSelector()
@@ -107,10 +107,8 @@ class Field {
   setNote (value) {
     if (this.mode === modes.USER) {
       this.user = undefined
-      if (this.notes.indexOf(value) > -1) {
-        this.notes.splice(this.notes.indexOf(value), 1)
-      } else {
-        this.notes.push(value)
+      if (!this.notes.delete(value)) {
+        this.notes.add(value)
       }
       this.render()
     }
@@ -120,9 +118,8 @@ class Field {
     if (this.mode === modes.USER) {
       if (this.user) {
         this.user = undefined
-      } else if (this.notes.length != 0) {
-        // remove last note
-        this.notes.splice(this.notes.length - 1, 1)
+      } else {
+        this.notes.clear()
       }
 
       this.wrong = false
@@ -148,7 +145,7 @@ class Field {
 
   restart () {
     this.user = undefined
-    this.notes = []
+    this.notes.clear()
     this.render()
   }
 
@@ -168,7 +165,10 @@ class Field {
 
   copyFrom(field) {
     this.user = field.user
-    this.notes = [...field.notes]
+    this.notes.clear()
+    for (const note of field.notes) {
+      this.notes.add(note)
+    }
   }
 
   getElement () {
@@ -202,12 +202,12 @@ class Field {
             this.getElement().css('color', colors.USER)
           }
           this.getElement().text(this.user)
-        } else if (this.notes.length > 0) {
+        } else if (this.notes.size > 0) {
           this.getElement().css('color', colors.USER)
           let notes = '<table class="mini" cellspacing="0">'
           for (let i = 1; i <= currentGridSize; i++) {
             if ((i - 1) % 3 === 0) notes += '<tr>'
-            if (this.notes.indexOf(i) >= 0) {
+            if (this.notes.has(i)) {
               notes += `<td>${i}</td>`
             } else {
               notes += `<td class="transparent">${i}</td>`
@@ -669,7 +669,7 @@ function saveGameStateToLocalStorage (key) {
       row.map(field => ({
         value: field.value,
         user: field.user,
-        notes: field.notes,
+        notes: Array.from(field.notes),
         mode: field.mode,
         wrong: field.wrong
       }))
