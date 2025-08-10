@@ -272,11 +272,13 @@ function restart () {
     field.restart()
   })
 }
+
 function toggleNoteMode () {
   noteMode = !noteMode
   const color = (noteMode) ? colors.BUTTONDOWN : colors.BUTTONUP
   $('#notes').css('background-color', color)
 }
+
 function check () {
   count++
   $('#counter').text(count)
@@ -284,6 +286,7 @@ function check () {
     field.checkUser(setColor = true)
   })
 }
+
 function solution () {
   showDialog(false)
   showSolution = true
@@ -292,6 +295,7 @@ function solution () {
     field.showSolution()
   })
 }
+
 function undo () {
   if (undoStack.length > 0 && !showSolution) {
     const field = undoStack.pop()
