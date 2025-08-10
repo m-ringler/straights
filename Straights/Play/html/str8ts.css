@@ -95,6 +95,13 @@ body, html {
   background-color: var(--color-button-background);
 }
 
+.button[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+  filter: grayscale(60%);
+}
+
 @media (prefers-color-scheme: dark) {
   .button {
     opacity: 0.8;

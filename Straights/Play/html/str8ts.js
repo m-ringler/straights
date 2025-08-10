@@ -57,12 +57,12 @@ let noteMode = false
 let game
 let activeRow; let activeCol
 let showSolution = false
-let undoStack = []
 let gameCode
 let gameUrl
 let difficulty = 3
 let currentGridSize = 12
 let generateGridSize = 9
+let undoStack // <-- move declaration here, initialization after class definition
 
 // Element class
 class Field {
@@ -271,6 +271,8 @@ function restart () {
   game.forEach(field => {
     field.restart()
   })
+
+  undoStack.clear()
 }
 
 function toggleNoteMode () {
@@ -305,6 +307,54 @@ function undo () {
     selectCell(field.row, field.col)
   }
 }
+
+function updateUndoButton(length) {
+  const $undo = $('#undo')
+  if (length > 0) {
+    $undo.prop('disabled', false)
+    $undo.removeAttr('disabled') // Ensure attribute is removed for CSS to update
+  } else {
+    $undo.prop('disabled', true)
+    $undo.attr('disabled', 'disabled') // Ensure attribute is present for CSS to update
+  }
+}
+
+class UndoStack {
+  constructor(updateUndoButtonFn) {
+    this.stack = []
+    this.#updateButton = updateUndoButtonFn
+    this.#updateButtonState()
+  }
+
+  #updateButton
+
+  #updateButtonState() {
+    this.#updateButton(this.length)
+  }
+
+  push(item) {
+    this.stack.push(item)
+    this.#updateButtonState()
+  }
+
+  pop() {
+    const item = this.stack.pop()
+    this.#updateButtonState()
+    return item
+  }
+
+  clear() {
+    this.stack = []
+    this.#updateButtonState()
+  }
+
+  get length() {
+    return this.stack.length
+  }
+}
+
+// Initialize undoStack after UndoStack class is defined
+undoStack = new UndoStack(updateUndoButton)
 
 // Parse game
 function parseGameV128 (binary) {
@@ -483,7 +533,7 @@ function changeGenerateSize () {
 async function startGame () {
   if (gameCode && gameCode.length > minCodeSize) {
     showSolution = false
-    undoStack = []
+    undoStack.clear()
     activeCol = undefined
     activeRow = undefined
     count = 0
@@ -743,7 +793,7 @@ function handleNumberInput (num) {
   {
     return;
   }
-    
+
   activeField = game.get(activeRow, activeCol)
   if (activeField.mode != modes.USER) {
     return
