@@ -2,8 +2,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-// Constants
-
 const buttonColorsLight = {
   BUTTONDOWN: '#335',
   BUTTONUP: '#b1cffc'
@@ -45,7 +43,7 @@ async function importModules() {
 
   const gameModule = await import('./game.js');
   game = new gameModule.Game($, darkMode)
-  minCodeSize = gameModule.minCodeSize 
+  minCodeSize = gameModule.minCodeSize
 
   gameHistory = await import('./gameHistory.js');
 
@@ -54,32 +52,32 @@ async function importModules() {
 }
 
 // Button Functions
-function restart () {
+function restart() {
   showDialog(false)
   game.restart()
   undoStack.clear()
 }
 
-function toggleNoteMode () {
+function toggleNoteMode() {
   noteMode = !noteMode
   const color = (noteMode) ? buttonColors.BUTTONDOWN : buttonColors.BUTTONUP
   $('#notes').css('background-color', color)
 }
 
-function check () {
+function check() {
   count++
   $('#counter').text(count)
   game.checkWrong()
 }
 
-function solution () {
+function solution() {
   showDialog(false)
   clearInterval(timer)
   game.showSolution()
   undoStack.clear()
 }
 
-function undo () {
+function undo() {
   if (undoStack.length > 0 && !game.isSolved) {
     const field = undoStack.pop()
     gameField = game.get(field.row, field.col)
@@ -100,7 +98,7 @@ function updateUndoButton(length) {
 }
 
 // General Functions
-function changeGridSize (newGridSize) {
+function changeGridSize(newGridSize) {
   if (newGridSize == currentGridSize) {
     return
   }
@@ -110,7 +108,7 @@ function changeGridSize (newGridSize) {
   showHideButtonsAndCells()
 }
 
-function showHideButtonsAndCells () {
+function showHideButtonsAndCells() {
   for (let i = 1; i <= currentGridSize; i++) {
     $(`td[data-button="bn${i}"]`).show()
   }
@@ -133,7 +131,7 @@ function showHideButtonsAndCells () {
   }
 }
 
-function setup () {
+function setup() {
   for (let r = 0; r < MAX_GRID_SIZE; r++) {
     let row = `<tr class="row" id="r${r}" row="${r}">`
     for (let c = 0; c < MAX_GRID_SIZE; c++) {
@@ -144,7 +142,7 @@ function setup () {
   }
 }
 
-function restartTimer () {
+function restartTimer() {
   starttime = (new Date()).getTime()
   timer = setInterval(function () {
     const diff = (new Date()).getTime() - starttime
@@ -154,13 +152,13 @@ function restartTimer () {
   }, 1000)
 }
 
-function getURLParameter (name) {
+function getURLParameter(name) {
   if (!window.location.search) return null
   const urlParams = new URLSearchParams(window.location.search)
   return urlParams.get(name)
 }
 
-async function loadNewGame () {
+async function loadNewGame() {
   showDialog(dialogs.LOADING)
   clearInterval(timer)
   $('#generate-button').prop('disabled', true)
@@ -182,17 +180,17 @@ async function loadNewGame () {
   $('#generate-button').prop('disabled', false)
 }
 
-function changeDifficulty () {
+function changeDifficulty() {
   difficulty = Number($('#difficulty-slider').val())
   $('#difficulty').text(difficulty)
 }
 
-function changeGenerateSize () {
+function changeGenerateSize() {
   generateGridSize = Number($('#grid-size-slider').val())
   $('#grid-size').text(generateGridSize)
 }
 
-async function startGame () {
+async function startGame() {
   if (gameCode && gameCode.length > minCodeSize) {
     undoStack.clear()
     count = 0
@@ -211,12 +209,12 @@ async function startGame () {
   }
 }
 
-function loadNewGameAgain () {
+function loadNewGameAgain() {
   showDialog(dialogs.WELCOME)
   $('#cancel-new-game').show()
 }
 
-function showDialog (dialog) {
+function showDialog(dialog) {
   $('#welcome-dialog').hide()
   $('#start-dialog').hide()
   $('#loading-dialog').hide()
@@ -255,7 +253,7 @@ function showDialog (dialog) {
   }
 }
 
-function onKeyDown (e) {
+function onKeyDown(e) {
   if (game.isSolved) return
 
   let handled = false
@@ -281,7 +279,7 @@ function onKeyDown (e) {
   }
 }
 
-function handleCursorKey (e) {
+function handleCursorKey(e) {
   switch (e.which) {
     case 37: // left
       game.moveSelection(-1, 0)
@@ -305,7 +303,7 @@ function handleCursorKey (e) {
 let firstDigit = null
 let digitTimer = null
 const twoDigitTimeout = 500
-function handleNumberKey (num) {
+function handleNumberKey(num) {
   if (firstDigit == null) {
     if (currentGridSize < 10 || num !== 1) {
       handleNumberInput(num)
@@ -330,7 +328,7 @@ function handleNumberKey (num) {
   }
 }
 
-function handleNumberInput (num) {
+function handleNumberInput(num) {
   if (num < 1 || num > currentGridSize) {
     return
   }
@@ -359,7 +357,7 @@ function handleNumberInput (num) {
   gameHistory.saveGameState(gameCode, game)
 }
 
-function handleDelete () {
+function handleDelete() {
   const field = game.getActiveField()
   if (!field || !field.isEditable()) {
     return
@@ -397,13 +395,11 @@ function handleGameLoad(popstate = false) {
   if (code && code.length > minCodeSize) {
     gameUrl = currentKey
     gameCode = code
-    if (popstate)
-    {
-        startGame()
+    if (popstate) {
+      startGame()
     }
-    else
-    {
-        showDialog(dialogs.GENERATED)
+    else {
+      showDialog(dialogs.GENERATED)
     }
   } else {
     const latestKey = gameHistory.getLatestGameKey()
@@ -421,7 +417,7 @@ function handleGameLoad(popstate = false) {
 $(document).keydown(onKeyDown)
 
 $(window).resize(onResize)
-function onResize () {
+function onResize() {
   if (window.innerWidth / 2 - 45 < $('.controls').position().left) { // Large screen
     $('#buttons-small').hide()
     $('#buttons-large').show()

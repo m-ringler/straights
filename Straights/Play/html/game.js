@@ -8,14 +8,14 @@ const MIN_GRID_SIZE_V128 = 4
 const minCodeSizeV2 = 82
 const minCodeSizeV128 = (
   8 /* ENCODINGVERSION */ +
-    5 /* size */ +
-    2 * MIN_GRID_SIZE_V128 * MIN_GRID_SIZE_V128 /* black, known */
+  5 /* size */ +
+  2 * MIN_GRID_SIZE_V128 * MIN_GRID_SIZE_V128 /* black, known */
 ) / 6
 
 export const minCodeSize = Math.min(minCodeSizeV2, minCodeSizeV128)
 
 class Field {
-  constructor (row, col, game) {
+  constructor(row, col, game) {
     this.row = row
     this.col = col
     this.game = game
@@ -33,12 +33,11 @@ class Field {
     this.notes = new Set()
   }
 
-  getSelector()
-  {
+  getSelector() {
     return `#ce${this.row}_${this.col}`;
   }
 
-  setUser (input) {
+  setUser(input) {
     if (this.isEditable()) {
       this.wrong = false
       if (this.user === input) {
@@ -50,17 +49,17 @@ class Field {
     }
   }
 
-  isActive () {
-    return this.game.activeFieldIndex && 
-           this.game.activeFieldIndex.col === this.col && 
-           this.game.activeFieldIndex.row === this.row;
+  isActive() {
+    return this.game.activeFieldIndex &&
+      this.game.activeFieldIndex.col === this.col &&
+      this.game.activeFieldIndex.row === this.row;
   }
 
-  isEditable () {
+  isEditable() {
     return this.mode === modes.USER;
   }
 
-  setNote (value) {
+  setNote(value) {
     if (this.isEditable()) {
       this.user = undefined
       if (!this.notes.delete(value)) {
@@ -70,7 +69,7 @@ class Field {
     }
   }
 
-  clear () {
+  clear() {
     if (this.isEditable()) {
       if (this.user) {
         this.user = undefined
@@ -83,48 +82,45 @@ class Field {
     }
   }
 
-  #isSolvedCorrectly () {
+  #isSolvedCorrectly() {
     if (!this.isEditable()) {
-        return 1
+      return 1
     }
 
     if (!this.user) {
-        return 0
+      return 0
     }
 
-    if (this.user === this.value)
-    {
-        return 1
+    if (this.user === this.value) {
+      return 1
     }
 
     return -1
   }
 
-  isSolved ()
-  {
+  isSolved() {
     return this.#isSolvedCorrectly() === 1
   }
 
-  checkWrong()
-  {
+  checkWrong() {
     if (this.#isSolvedCorrectly() === -1) {
       this.wrong = true
       this.render()
     }
   }
 
-  showSolution () {
+  showSolution() {
     this.solution = true
     this.render()
   }
 
-  restart () {
+  restart() {
     this.user = undefined
     this.notes.clear()
     this.render()
   }
 
-  copy () {
+  copy() {
     const field = new Field(this.row, this.col, this.game)
 
     field.value = this.value
@@ -146,18 +142,18 @@ class Field {
     }
   }
 
-  getElement () {
+  getElement() {
     return this.game.$(this.getSelector())
   }
 
-  reset () {
+  reset() {
     const element = this.getElement()
     const colors = this.game.colors
     element.empty()
     element.css('background-color', colors.WHITE)
   }
 
-  render () {
+  render() {
     const element = this.getElement()
     const colors = this.game.colors
     element.empty()
@@ -235,7 +231,7 @@ export class Game {
     FIELDUNSELECTED: '#aaaaaa' /* same as WHITE */
   }
 
-  constructor ($, darkMode, size = 0) {
+  constructor($, darkMode, size = 0) {
     this.$ = $
     this.colors = darkMode ? Game.gameColorsDark : Game.gameColorsLight
     this.size = size
@@ -250,11 +246,11 @@ export class Game {
     }
   }
 
-  get (row, col) {
+  get(row, col) {
     return this.data[row][col]
   }
 
-  dumpState () {
+  dumpState() {
     return game.data.map(row =>
       row.map(field => ({
         user: field.user,
@@ -262,17 +258,17 @@ export class Game {
       })))
   }
 
-  restoreState (dumpedState) {
+  restoreState(dumpedState) {
     dumpedState.forEach((row, r) => {
-        row.forEach((field, c) => {
-            const gameField = game.get(r, c)
-            gameField.copyFrom(field)
-            gameField.render()
-        })
+      row.forEach((field, c) => {
+        const gameField = game.get(r, c)
+        gameField.copyFrom(field)
+        gameField.render()
+      })
     })
   }
 
-  #setValues (row, col, mode, value) {
+  #setValues(row, col, mode, value) {
     const field = new Field(row, col, this)
     this.data[row][col] = field
     this.data[row][col].mode = mode
@@ -280,7 +276,7 @@ export class Game {
     field.render()
   }
 
-  #forEachField (iteratorFunction) {
+  #forEachField(iteratorFunction) {
     for (let r = 0; r < this.size; r++) {
       for (let c = 0; c < this.size; c++) {
         iteratorFunction(this.data[r][c], r, c)
@@ -288,29 +284,28 @@ export class Game {
     }
   }
 
-  showSolution () {
+  showSolution() {
     if (this.isSolved) {
-        return
+      return
     }
 
     this.isSolved = true
     this.#unselectActiveField()
     this.#forEachField(field => {
-        field.showSolution()
+      field.showSolution()
     })
   }
 
-  checkWrong () {
+  checkWrong() {
     this.#forEachField(field => {
-        field.checkWrong()
+      field.checkWrong()
     })
   }
 
-  checkSolved () {
+  checkSolved() {
     let finished = true
     this.#forEachField(field => {
-      if (!field.isSolved())
-      {
+      if (!field.isSolved()) {
         finished = false
       }
     })
@@ -321,9 +316,9 @@ export class Game {
     }
   }
 
-  restart () {
+  restart() {
     if (this.isSolved) {
-        return
+      return
     }
 
     this.#forEachField(field => {
@@ -331,13 +326,13 @@ export class Game {
     })
   }
 
-  getActiveField () {
-    return this.activeFieldIndex 
+  getActiveField() {
+    return this.activeFieldIndex
       ? this.get(this.activeFieldIndex.row, this.activeFieldIndex.col)
       : null;
   }
 
-  #unselectActiveField () {
+  #unselectActiveField() {
     const activeField = this.getActiveField()
     if (activeField) {
       this.activeFieldIndex = null
@@ -345,7 +340,7 @@ export class Game {
     }
   }
 
-  selectCell (row, col) {
+  selectCell(row, col) {
     if (!this.isSolved && this.get(row, col).isEditable()) {
       // Reset previously selected field
       this.#unselectActiveField()
@@ -356,63 +351,62 @@ export class Game {
     }
   }
 
-  moveSelection (dx, dy)
-  {
+  moveSelection(dx, dy) {
     if (!this.activeFieldIndex) {
-        return
+      return
     }
     const { row, col } = this.activeFieldIndex
     var newCell = this.#findNextEditableCell(row, col, dy, dx)
     this.selectCell(newCell.row, newCell.col)
   }
-  
-  #findNextEditableCell (row, col, rowDelta, colDelta) {
+
+  #findNextEditableCell(row, col, rowDelta, colDelta) {
     let newRow = row
     let newCol = col
     do {
-        newRow = (newRow + rowDelta + currentGridSize) % currentGridSize
-        newCol = (newCol + colDelta + currentGridSize) % currentGridSize
+      newRow = (newRow + rowDelta + currentGridSize) % currentGridSize
+      newCol = (newCol + colDelta + currentGridSize) % currentGridSize
     }
     while (
-        !this.get(newRow, newCol).isEditable() &&
-            (newRow !== row || newCol != col))
+      !this.get(newRow, newCol).isEditable() &&
+      (newRow !== row || newCol != col))
 
-    return { row:newRow, col:newCol }
+    return { row: newRow, col: newCol }
   }
 
   // Parse game
-  #parseGameV128 (binary) {
+  #parseGameV128(binary) {
     const size = parseInt(binary.substring(0, 5), 2)
     const pos = 5
-  
+
     const bitsPerNumber = Math.floor(Math.log2(size - 1)) + 1
     const bitsPerField = 2 + bitsPerNumber // black + known + number
     const game = new Game(this.$, this.darkMode, size)
-  
+
     for (let row = 0; row < size; row++) {
       for (let col = 0; col < size; col++) {
         const fieldStart = pos + (row * size + col) * bitsPerField
         const isBlack = binary[fieldStart] === '1'
         const isKnown = binary[fieldStart + 1] === '1'
-  
+
         const numberBits = binary.substring(
           fieldStart + 2,
           fieldStart + 2 + bitsPerNumber
         )
         const value = parseInt(numberBits, 2) + 1
-  
+
         const mode = isBlack
           ? (isKnown ? modes.BLACKKNOWN : modes.BLACK)
           : (isKnown ? modes.KNOWN : modes.USER)
-  
+
         game.#setValues(row, col, mode, value)
       }
     }
-  
+
     return game
   }
 
-  #parseGameV001 (binary) {
+  #parseGameV001(binary) {
     game = new Game(this.$, darkMode, 9)
     if (binary.length < (6 * 81)) return // Invalid data
     for (let i = 0; i < 81; i++) {
@@ -434,7 +428,7 @@ export class Game {
     return game
   }
 
-  #parseGameV002 (binary) {
+  #parseGameV002(binary) {
     game = new Game(this.$, darkMode, 9)
     if (binary.length < (6 * 81) || binary.length > (6 * 81 + 8)) return // Invalid data
     for (let i = 0; i < 81; i++) {
@@ -447,7 +441,7 @@ export class Game {
     return game
   }
 
-  #decode (code) {
+  #decode(code) {
     const base64urlCharacters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_'
     let binary = ''
     for (let i = 0; i < code.length; i++) {
@@ -460,8 +454,8 @@ export class Game {
 
     return { encodingVersion, binary }
   }
-  
-  parseGame (code) {
+
+  parseGame(code) {
     const decoded = this.#decode(code)
     switch (decoded.encodingVersion) {
       case 1:
