@@ -37,6 +37,8 @@ let undoStack
 let gameHistory
 let generate
 
+const modulePromise = importModules()
+
 async function importModules() {
   const undoStackModule = await import('./undoStack.js');
   undoStack = new undoStackModule.UndoStack(updateUndoButton);
@@ -368,7 +370,7 @@ function handleDelete() {
 }
 
 $(document).ready(async function () {
-  await importModules();
+  await modulePromise
   setup()
   onResize()
   handleGameLoad()
