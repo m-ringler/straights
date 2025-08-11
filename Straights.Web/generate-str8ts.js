@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-function load_generate () {
+export function load_generate () {
   const worker = new Worker('generate-worker.js')
 
   async function generate (size, difficulty) {

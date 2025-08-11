@@ -12,7 +12,7 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     
     <!-- Version -->
-    <VersionPrefix>0.6.13</VersionPrefix>
+    <VersionPrefix>0.6.14</VersionPrefix>
 
     <!-- Nuget Properties -->
     <Authors>m-ringler</Authors>

@@ -22,12 +22,11 @@ SPDX-License-Identifier: GPL-3.0-or-later
     <link rel="icon" type="image/png" sizes="64x64" href="./favicon/favicon-64x64.png">
     <link rel="icon" type="image/png" sizes="128x128" href="./favicon/favicon-128x128.png">
     <link rel="icon" type="image/png" sizes="256x256" href="./favicon/favicon-256x256.png">
-    <link rel="apple-touch-icon" sizes="192x192" href="./favicon/android-chrome-192x192.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="./favicon/maskable_icon_x192.png">
     <link rel="manifest" href="./site.webmanifest">
 </head>
 <body>
     <script src="jquery-3.7.1.min.js" ></script>
-    <script type="text/javascript" src="generate-str8ts.js"></script>
     <div class="wrapper">
         <table class="container" cellspacing="0"></table>
         <div class="controls">
@@ -71,7 +70,7 @@ SPDX-License-Identifier: GPL-3.0-or-later
             </table>
             <table cellspacing="7px">
                 <tr>
-                    <td class="button set" id="undo" title="Undo [Ctrl+Z]" onclick="undo()">⎌</td>
+                    <td class="button set" id="undo" title="Undo [Ctrl+Z]" onclick="undo()" disabled>⎌</td>
                     <td class="button set" id="notes" title="Notes Mode [N]" onclick="toggleNoteMode()">📝</td>
                 </tr>
             </table>
