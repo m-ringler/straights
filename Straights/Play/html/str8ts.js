@@ -149,7 +149,7 @@ function restartTimer() {
   timer = setInterval(function () {
     const diff = (new Date()).getTime() - starttime
     const minutes = Math.floor(diff / 60000)
-    const seconds = Math.round(diff / 1000 - minutes * 60)
+    const seconds = Math.floor(diff / 1000 - minutes * 60)
     $('#time').text(((minutes < 10) ? '0' : '') + minutes + ':' + ((seconds < 10) ? '0' : '') + seconds)
   }, 1000)
 }
