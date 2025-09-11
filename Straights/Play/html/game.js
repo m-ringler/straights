@@ -160,9 +160,9 @@ class Field {
     if (this.isEditable()) {
       element.css(
         'background-color',
-        this.isActive() 
-         ? (this.wrong ? colors.ACTIVEWRONG : colors.FIELDSELECTED)
-         : (this.wrong ? colors.WRONG : colors.FIELDUNSELECTED))
+        this.isActive()
+          ? (this.wrong ? colors.ACTIVEWRONG : colors.FIELDSELECTED)
+          : (this.wrong ? colors.WRONG : colors.FIELDUNSELECTED))
 
       if (this.solution) {
         if (this.user === this.value) {
