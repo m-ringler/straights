@@ -160,22 +160,19 @@ class Field {
     if (this.isEditable()) {
       element.css(
         'background-color',
-        this.isActive() ? colors.FIELDSELECTED : colors.FIELDUNSELECTED)
+        this.isActive()
+          ? (this.wrong ? colors.ACTIVEWRONG : colors.FIELDSELECTED)
+          : (this.wrong ? colors.WRONG : colors.FIELDUNSELECTED))
 
       if (this.solution) {
         if (this.user === this.value) {
           element.css('color', colors.SOLUTION)
-        } else {
-          element.css('color', colors.WRONG)
         }
+
         element.text(this.value)
       } else {
         if (this.user) {
-          if (this.wrong) {
-            element.css('color', colors.WRONG)
-          } else {
-            element.css('color', colors.USER)
-          }
+          element.css('color', colors.USER)
           element.text(this.user)
         } else if (this.notes.size > 0) {
           element.css('color', colors.USER)
@@ -210,9 +207,10 @@ class Field {
 // class to store and modify the current game state
 export class Game {
   static gameColorsLight = {
-    WRONG: '#b22222',
+    WRONG: '#ffc7c7',
+    ACTIVEWRONG: '#eeaaff',
     SOLUTION: '#cc9900',
-    USER: '#003366',
+    USER: '#003378',
     KNOWN: '#000000',
     WHITE: '#ffffff',
     BLACK: '#000000',
@@ -221,9 +219,10 @@ export class Game {
   }
 
   static gameColorsDark = {
-    WRONG: '#b22222',
+    WRONG: '#ffc7c7',
+    ACTIVEWRONG: '#eeaaff',
     SOLUTION: '#cc9900',
-    USER: '#222244',
+    USER: '#003378',
     KNOWN: '#000000',
     WHITE: '#aaaaaa',
     BLACK: '#000000',

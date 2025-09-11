@@ -5,7 +5,7 @@
 export function load_generate () {
   const worker = new Worker('generate-worker.js')
 
-  async function generate (size, difficulty) {
+  function generate (size, difficulty) {
     return new Promise((resolve, reject) => {
       worker.onmessage = (event) => {
         resolve(event.data)

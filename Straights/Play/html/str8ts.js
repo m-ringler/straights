@@ -37,6 +37,8 @@ let undoStack
 let gameHistory
 let generate
 
+const modulePromise = importModules()
+
 async function importModules() {
   const undoStackModule = await import('./undoStack.js');
   undoStack = new undoStackModule.UndoStack(updateUndoButton);
@@ -147,7 +149,7 @@ function restartTimer() {
   timer = setInterval(function () {
     const diff = (new Date()).getTime() - starttime
     const minutes = Math.floor(diff / 60000)
-    const seconds = Math.round(diff / 1000 - minutes * 60)
+    const seconds = Math.floor(diff / 1000 - minutes * 60)
     $('#time').text(((minutes < 10) ? '0' : '') + minutes + ':' + ((seconds < 10) ? '0' : '') + seconds)
   }, 1000)
 }
@@ -368,7 +370,7 @@ function handleDelete() {
 }
 
 $(document).ready(async function () {
-  await importModules();
+  await modulePromise
   setup()
   onResize()
   handleGameLoad()
