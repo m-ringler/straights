@@ -84,7 +84,9 @@ function undo() {
     const field = undoStack.pop()
     gameField = game.get(field.row, field.col)
     gameField.copyFrom(field)
+    gameField.wrong = false
     game.selectCell(field.row, field.col)
+    gameField.render()
   }
 }
 

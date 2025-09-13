@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-const CACHE_NAME = 'v0.6.15-final';
+const CACHE_NAME = 'v0.6.16-final';
 const urlsToCache = [
   './',
   './favicon.ico',
@@ -12,7 +12,6 @@ const urlsToCache = [
   './generate-worker.js',
   './index.html',
   './jquery-3.7.1.min.js',
-  './service-worker.js',
   './LICENSE',
   './str8ts.css',
   './str8ts.js',
