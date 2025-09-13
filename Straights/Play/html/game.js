@@ -61,6 +61,7 @@ class Field {
 
     setNote(value) {
         if (this.isEditable()) {
+            this.wrong = false
             this.user = undefined
             if (!this.notes.delete(value)) {
                 this.notes.add(value)
