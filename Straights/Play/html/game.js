@@ -115,12 +115,6 @@ class Field {
         this.render()
     }
 
-    restart() {
-        this.user = undefined
-        this.notes.clear()
-        this.render()
-    }
-
     copy() {
         const field = new Field(this.row, this.col, this.game)
 
@@ -355,7 +349,7 @@ export class Game {
         }
 
         this.#forEachField(field => {
-            field.restart()
+            field.reset()
         })
     }
 
