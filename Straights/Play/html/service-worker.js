@@ -12,7 +12,6 @@ const urlsToCache = [
   './generate-worker.js',
   './index.html',
   './jquery-3.7.1.min.js',
-  './service-worker.js',
   './LICENSE',
   './str8ts.css',
   './str8ts.js',
