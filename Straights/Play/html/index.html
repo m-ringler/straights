@@ -83,9 +83,12 @@ SPDX-License-Identifier: GPL-3.0-or-later
                     <td class="counter-text set" id="counter">0</td>
                     <td class="counter-text set" id="time">00:00</td>
                 </tr>
+            </table>
+            <table cellspacing="7px">
                 <tr>
-                    <td class="button set" id="new" title="New game" onclick="loadNewGameAgain()">✨</td>
-                    <td class="button set" id="empty" title="Start over" onclick="showDialog(dialogs.EMPTY)">⟳</td>
+                    <td class="button set-slim" id="new" title="New game" onclick="loadNewGameAgain()">✨</td>
+                    <td class="button set-slim" id="empty" title="Start over" onclick="showDialog(dialogs.EMPTY)">⟳</td>
+                    <td class="button set-slim" id="about" title="About" onclick="showDialog(dialogs.ABOUT)">❓</td>
                 </tr>
             </table>
         </div>
@@ -115,7 +118,7 @@ SPDX-License-Identifier: GPL-3.0-or-later
                 <span class="start-game-button" onclick="solution()">Reveal</span>
                 <span class="start-game-button" onclick="showDialog(false)">Cancel</span>
             </div>
-            <div class="dialog" id="empty-dialog">
+            <div class="dialog" id="restart-dialog">
                 <div class="dialog-title">Start Over</div>
                 <div class="dialog-text">Clear all numbers and notes?</div>
                 <span class="start-game-button" onclick="restart()">Clear</span>
@@ -125,15 +128,37 @@ SPDX-License-Identifier: GPL-3.0-or-later
                 <div class="loading-ring"></div>
                 <div style="margin-top: 10px;">Generating new game,<br>please wait.</div>
             </div>
+            <div class="dialog" id="about-dialog">
+                <div class="dialog-title">Straights.Web</div>
+                <div>© 2020 Luis Walter, 2025 Moritz Ringler</div>
+                <ul>
+                <li>License: <a href="https://spdx.org/licenses/GPL-3.0-or-later.html">GPL 3 or later</a></li>
+                <li><a href="https://github.com/m-ringler/straights">GitHub</a></li>
+                <li><a href="https://en.wikipedia.org/wiki/Str8ts#Gameplay">How to play</a></li>
+                </ul>
+                <div>
+                <span id="force-update" class="start-game-button" style="display: none;" onclick="showDialog(false)">Update</span></li>
+                <div>
+            </div>
         </div>
     </div>
     <script type="text/javascript" src="str8ts.js" ></script>
     <script>
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('./service-worker.js').then(() => {
-                console.log('Service Worker registered successfully.');
+            navigator.serviceWorker.register('./service-worker.js', {
+                updateViaCache: "none",
+            }).then(
+                registration => {
+                   console.log('Service Worker registered successfully.')
+                   $('#force-update').show()
+                   $('#force-update').on('click', () => {
+                       registration.update().then(() => {
+                           console.log('Service Worker update triggered.')
+                           location.reload()
+                       })
+                   })
             }).catch(error => {
-                console.error('Service Worker registration failed:', error);
+                console.error('Service Worker registration failed:', error)
             });
         }
     </script>

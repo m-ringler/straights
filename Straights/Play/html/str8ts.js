@@ -16,7 +16,7 @@ const darkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
 
 const buttonColors = darkMode ? buttonColorsDark : buttonColorsLight
 
-const dialogs = { WELCOME: 1, GENERATED: 2, LOADING: 3, SOLUTION: 4, EMPTY: 5 }
+const dialogs = { WELCOME: 1, GENERATED: 2, LOADING: 3, SOLUTION: 4, RESTART: 5, ABOUT: 6 }
 const MIN_GRID_SIZE = 4
 const MAX_GRID_SIZE = 12
 const DEFAULT_GRID_SIZE = 9
@@ -223,7 +223,8 @@ function showDialog(dialog) {
   $('#start-dialog').hide()
   $('#loading-dialog').hide()
   $('#solution-dialog').hide()
-  $('#empty-dialog').hide()
+  $('#restart-dialog').hide()
+  $('#about-dialog').hide()
   if (dialog) {
     $('.dialog-outer-container').show()
     switch (dialog) {
@@ -244,12 +245,15 @@ function showDialog(dialog) {
           $('.dialog-outer-container').hide()
         }
         break
-      case dialogs.EMPTY:
+      case dialogs.RESTART:
         if (!game.isSolved) {
-          $('#empty-dialog').show()
+          $('#restart-dialog').show()
         } else {
           $('.dialog-outer-container').hide()
         }
+        break
+      case dialogs.ABOUT:
+        $('#about-dialog').show()
         break
     }
   } else {

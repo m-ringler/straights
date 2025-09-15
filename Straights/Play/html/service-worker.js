@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-const CACHE_NAME = 'v0.6.17-beta1';
+const CACHE_NAME = 'v0.6.17-beta2';
 const urlsToCache = [
   './',
   './favicon.ico',
@@ -40,7 +40,7 @@ self.addEventListener('install', event => {
 
 self.addEventListener('fetch', event => {
   event.respondWith(
-    caches.match(event.request).then(response => {
+    caches.match(event.request, { ignoreSearch: true }).then(response => {
       if (response) {
         return response;
       }
