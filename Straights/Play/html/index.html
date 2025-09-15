@@ -129,6 +129,7 @@ SPDX-License-Identifier: GPL-3.0-or-later
                 <div style="margin-top: 10px;">Generating new game,<br>please wait.</div>
             </div>
             <div class="dialog" id="about-dialog">
+                <span class="close-button" onclick="showDialog(false)">×</span>
                 <div class="dialog-title">Straights.Web</div>
                 <div>© 2020 Luis Walter, 2025 Moritz Ringler</div>
                 <ul>
@@ -143,8 +144,7 @@ SPDX-License-Identifier: GPL-3.0-or-later
                    style="display: none;"
                    onclick="showDialog(false)"
                    title="Force an update of the app. You may need to restart the app afterwards.">Update App</span>
-                <span class="start-game-button" onclick="showDialog(false)">Close</span>
-                <div>
+                </div>
             </div>
         </div>
     </div>
@@ -160,7 +160,6 @@ SPDX-License-Identifier: GPL-3.0-or-later
                    $('#force-update').on('click', () => {
                        registration.update().then(() => {
                            console.log('Service Worker update triggered.')
-                           location.reload()
                        })
                    })
             }).catch(error => {

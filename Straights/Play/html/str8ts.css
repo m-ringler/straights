@@ -203,6 +203,17 @@ body, html {
   padding: 15px;
   padding-bottom: 20px;
   width: 235px;
+  position: relative;
+}
+
+.close-button {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  cursor: pointer;
+  font-size: 20px;
+  line-height: 20px;
+  color: var(--color-foreground);
 }
 
 .dialog-title {
