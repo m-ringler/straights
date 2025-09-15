@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-const CACHE_NAME = 'v0.6.17-beta2';
+const CACHE_NAME = 'v0.6.17-beta3';
 const urlsToCache = [
   './',
   './favicon.ico',
@@ -30,10 +30,20 @@ const urlsToCache = [
   'https://fonts.googleapis.com/css2?family=Nunito:wght@400;600&display=swap'
 ];
 
+async function fetchFresh(url) {
+  return fetch(url, { cache: 'reload' });
+}
+
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => {
-      return cache.addAll(urlsToCache);
+      return Promise.all(
+        urlsToCache.map(url => 
+          fetchFresh(url)
+            .then(response => cache.put(url, response))
+            .catch(error => console.warn(`Failed to fetch ${url}:`, error))
+        )
+      );
     })
   );
 });

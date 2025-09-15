@@ -17,6 +17,8 @@
   --color-background: white;
   --color-foreground: black;
   --color-mini: black;
+  --color-link: #0000EE;
+  --color-visited-link: #551A8B;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -32,6 +34,8 @@
     --color-background: black;
     --color-foreground: #ccc;
     --color-mini: black;
+    --color-link: #4d9eff;
+    --color-visited-link: #aa7dff;
   }
 }
 
@@ -274,4 +278,12 @@ body, html {
   100% {
     transform: rotate(360deg);
   }
+}
+
+a {
+  color: var(--color-link);
+}
+
+a:visited {
+  color: var(--color-visited-link);
 }
