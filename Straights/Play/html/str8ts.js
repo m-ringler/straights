@@ -8,7 +8,7 @@ const buttonColorsLight = {
 }
 
 const buttonColorsDark = {
-  BUTTONDOWN: '#777',/* color-button-active */
+  BUTTONDOWN: '#e7d9cdff',/* color-button-active */
   BUTTONUP: '#555'  /* color-button-background */
 }
 
@@ -20,6 +20,7 @@ const dialogs = { WELCOME: 1, GENERATED: 2, LOADING: 3, SOLUTION: 4, RESTART: 5,
 const MIN_GRID_SIZE = 4
 const MAX_GRID_SIZE = 12
 const DEFAULT_GRID_SIZE = 9
+const DEFAULT_DIFFICULTY = 3
 
 // Variables
 let starttime
@@ -30,9 +31,9 @@ let game
 let minCodeSize
 let gameCode
 let gameUrl
-let difficulty = 3
+let difficulty = DEFAULT_DIFFICULTY
 let currentGridSize = 12
-let generateGridSize = 9
+let generateGridSize = DEFAULT_GRID_SIZE
 let undoStack
 let gameHistory
 let generate
@@ -40,16 +41,16 @@ let generate
 const modulePromise = importModules()
 
 async function importModules() {
-  const undoStackModule = await import('./undoStack.js');
-  undoStack = new undoStackModule.UndoStack(updateUndoButton);
+  const undoStackModule = await import('./undoStack.js')
+  undoStack = new undoStackModule.UndoStack(updateUndoButton)
 
-  const gameModule = await import('./game.js');
+  const gameModule = await import('./game.js')
   game = new gameModule.Game($, darkMode)
   minCodeSize = gameModule.minCodeSize
 
-  gameHistory = await import('./gameHistory.js');
+  gameHistory = await import('./gameHistory.js')
 
-  const generateModule = await import('./generate-str8ts.js');
+  const generateModule = await import('./generate-str8ts.js')
   generate = generateModule.load_generate()
 }
 
@@ -184,14 +185,48 @@ async function loadNewGame() {
   $('#generate-button').prop('disabled', false)
 }
 
+function loadSettings() {
+    function loadSetting(sliderId, storageKey, defaultValue) {
+        const slider = $(`#${sliderId}`)
+        const storedValue = localStorage.getItem(storageKey)
+
+        let validatedValue = defaultValue
+        if (storedValue !== null) {
+            const value = Number(storedValue)
+            const min = Number(slider.attr('min'))
+            const max = Number(slider.attr('max'))
+
+            if (value >= min && value <= max)
+            {
+                validatedValue = value
+            }
+        }
+        
+        slider.val(validatedValue)
+        $(`#${sliderId.replace('-slider', '')}`).text(validatedValue)
+        return validatedValue
+    }
+
+    try {
+        generateGridSize = loadSetting('grid-size-slider', 'gridSize', DEFAULT_GRID_SIZE)
+        difficulty = loadSetting('difficulty-slider', 'difficulty', DEFAULT_DIFFICULTY)
+    } catch (error) {
+        console.warn('Failed to load settings:', error, "Using defaults.")
+        generateGridSize = DEFAULT_GRID_SIZE
+        difficulty = DEFAULT_DIFFICULTY
+    }
+}
+
 function changeDifficulty() {
   difficulty = Number($('#difficulty-slider').val())
   $('#difficulty').text(difficulty)
+  localStorage.setItem('difficulty', difficulty)
 }
 
 function changeGenerateSize() {
   generateGridSize = Number($('#grid-size-slider').val())
   $('#grid-size').text(generateGridSize)
+  localStorage.setItem('gridSize', generateGridSize)
 }
 
 async function startGame() {
@@ -391,6 +426,7 @@ $(document).ready(async function () {
   await modulePromise
   setup()
   onResize()
+  loadSettings()
   handleGameLoad()
   $('td[id^="ce"]').click(function () { // Game fields
     const row = Number($(this).attr('row'))

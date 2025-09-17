@@ -26,7 +26,7 @@
     --color-border: #aaa;
     --color-dialog-background: #333;
     --color-button-background: #555;
-    --color-button-active: #777;
+    --color-button-active: #e7d9cdff;
     --color-button-hover-shadow: #888;
     --color-counter-text: #ccc;
     --color-finished-border: #0f0;
@@ -208,8 +208,8 @@ body, html {
 
 .close-button {
   position: absolute;
-  right: 10px;
-  top: 10px;
+  right: 15px;
+  top: 15px;
   cursor: pointer;
   font-size: 20px;
   line-height: 20px;
@@ -226,12 +226,25 @@ body, html {
   padding-bottom: 20px;
 }
 
-.start-game-button {
-  background-color: var(--color-button-background);
+.dialog-button {
+  display: inline-block;
   margin-top: 10px;
   margin-bottom: 10px;
   padding: 5px;
+  border-radius: 3px;
   font-weight: bold;
+  background: linear-gradient(#0000, rgb(0 0 0/10%)) top/100% 800%;
+  background-color: var(--color-button-background);
+  transition: 0.2s;
+}
+
+.dialog-button:hover {
+  background-position: bottom;
+}
+
+.full-width {
+  width: 225px;
+  text-align: center;
 }
 
 .dialog-new {

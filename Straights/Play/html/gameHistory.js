@@ -47,15 +47,15 @@ export function getLatestGameKey() {
 }
 
 function loadGameStateData(key) {
-  const gameStateString = localStorage.getItem(key)
-  if (!gameStateString) {
-    return null
-  }
-
   try {
+    const gameStateString = localStorage.getItem(key)
+    if (!gameStateString) {
+        return null
+    }
+
     return JSON.parse(gameStateString)
   } catch (e) {
-    console.error('Error parsing game state from localStorage for key:', key, e)
+    console.warn('Error loading game state from localStorage for key:', key, e)
     return null
   }
 }
