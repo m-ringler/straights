@@ -201,7 +201,7 @@ function loadSettings() {
                 validatedValue = value
             }
         }
-        
+
         slider.val(validatedValue)
         $(`#${sliderId.replace('-slider', '')}`).text(validatedValue)
         return validatedValue
