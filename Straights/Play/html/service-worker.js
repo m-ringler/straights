@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-const CACHE_NAME = 'v0.6.17-beta14';
+const CACHE_NAME = 'v0.6.17-beta15';
 const urlsToCache = [
     './',
     './favicon.ico',
@@ -84,19 +84,18 @@ self.addEventListener('activate', event => {
     const cacheWhitelist = [CACHE_NAME]
     console.info("Activating service worker", CACHE_NAME)
 
-    event.waitUntil(
-        caches.keys()
-        .then(cacheNames => {
-            return Promise.all(
-                cacheNames.map(cacheName => {
-                    if (!cacheWhitelist.includes(cacheName)) {
-                        console.info("Deleting old cache", cacheName)
-                        return caches.delete(cacheName)
-                    }
-                })
-            )
-        })
-        .then(
-            clients.claim())
-    )
+    event.waitUntil((async () => {
+        const cacheNames = await caches.keys();
+        await Promise.all(
+            cacheNames.map(cacheName => {
+                if (!cacheWhitelist.includes(cacheName)) {
+                    console.info("Deleting old cache", cacheName)
+                    return caches.delete(cacheName)
+                }
+            })
+        )
+        await clients.claim()
+        const clients = await self.clients.matchAll()
+        clients.forEach(client => client.postMessage('reload'))
+    })())
 })

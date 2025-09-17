@@ -163,6 +163,12 @@ SPDX-License-Identifier: GPL-3.0-or-later
                            console.log('Service Worker update triggered.')
                        })
                    })
+            }).then(() => {
+                navigator.serviceWorker.addEventListener('message', event => {
+                    if (event.data === 'reload') {
+                        window.location.reload(true)
+                    }
+                })
             }).catch(error => {
                 console.warn(
                     'Service Worker registration failed:',
