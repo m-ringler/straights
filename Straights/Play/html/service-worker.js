@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-const CACHE_NAME = 'v0.6.17-beta15';
+const CACHE_NAME = 'v0.6.17-beta18';
 const urlsToCache = [
     './',
     './favicon.ico',
@@ -94,7 +94,7 @@ self.addEventListener('activate', event => {
                 }
             })
         )
-        await clients.claim()
+        await self.clients.claim()
         const clients = await self.clients.matchAll()
         clients.forEach(client => client.postMessage('reload'))
     })())
