@@ -253,6 +253,7 @@ function showDialog(dialog) {
         }
         break
       case dialogs.ABOUT:
+        $('#current-game').attr('href', window.location.href)
         $('#about-dialog').show()
         break
     }
@@ -373,6 +374,17 @@ function handleDelete() {
 
   undoStack.push(field.copy())
   field.clear()
+}
+
+async function copyCurrentLink() {
+  try {
+    await navigator.clipboard.writeText(window.location.href)
+    const copyBtn = $('.copy-link')
+    copyBtn.text('Link copied!')
+    setTimeout(() => copyBtn.text('🔗'), 1000)
+  } catch (err) {
+    console.error('Failed to copy:', err)
+  }
 }
 
 $(document).ready(async function () {
