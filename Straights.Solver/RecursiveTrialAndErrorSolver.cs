@@ -166,11 +166,11 @@ public sealed class RecursiveTrialAndErrorSolver(
                 // The current guess has resulted in an unsolvable grid.
             }
 
-            // The current guess has resulted in an unsolvable grid.
-            // Remove the value from the field and simplify.
-            _ = GetField(data, fieldIndex).Remove(trialGuess);
             try
             {
+                // The current guess has resulted in an unsolvable grid.
+                // Remove the value from the field and simplify.
+                _ = GetField(data, fieldIndex).Remove(trialGuess);
                 this.GridSimplifier.Simplify(data);
             }
             catch (NotSolvableException)

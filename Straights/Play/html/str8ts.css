@@ -17,6 +17,8 @@
   --color-background: white;
   --color-foreground: black;
   --color-mini: black;
+  --color-link: #00E;
+  --color-visited-link: #551A8B;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -24,7 +26,7 @@
     --color-border: #aaa;
     --color-dialog-background: #333;
     --color-button-background: #555;
-    --color-button-active: #777;
+    --color-button-active: #e7d9cdff;
     --color-button-hover-shadow: #888;
     --color-counter-text: #ccc;
     --color-finished-border: #0f0;
@@ -32,6 +34,8 @@
     --color-background: black;
     --color-foreground: #ccc;
     --color-mini: black;
+    --color-link: #4d9eff;
+    --color-visited-link: #aa7dff;
   }
 }
 
@@ -123,6 +127,10 @@ body, html {
   width: 123px;
 }
 
+.set-slim {
+  width: 80px;
+}
+
 .button:hover {
   box-shadow: 2px 2px var(--color-button-hover-shadow);
 }
@@ -195,6 +203,17 @@ body, html {
   padding: 15px;
   padding-bottom: 20px;
   width: 235px;
+  position: relative;
+}
+
+.close-button {
+  position: absolute;
+  right: 15px;
+  top: 15px;
+  cursor: pointer;
+  font-size: 20px;
+  line-height: 20px;
+  color: var(--color-foreground);
 }
 
 .dialog-title {
@@ -207,12 +226,25 @@ body, html {
   padding-bottom: 20px;
 }
 
-.start-game-button {
-  background-color: var(--color-button-background);
+.dialog-button {
+  display: inline-block;
   margin-top: 10px;
   margin-bottom: 10px;
   padding: 5px;
+  border-radius: 3px;
   font-weight: bold;
+  background: linear-gradient(#0000, rgb(0 0 0/10%)) top/100% 800%;
+  background-color: var(--color-button-background);
+  transition: 0.2s;
+}
+
+.dialog-button:hover {
+  background-position: bottom;
+}
+
+.full-width {
+  width: 225px;
+  text-align: center;
 }
 
 .dialog-new {
@@ -270,4 +302,12 @@ body, html {
   100% {
     transform: rotate(360deg);
   }
+}
+
+a {
+  color: var(--color-link);
+}
+
+a:visited {
+  color: var(--color-visited-link);
 }

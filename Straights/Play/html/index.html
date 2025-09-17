@@ -83,9 +83,12 @@ SPDX-License-Identifier: GPL-3.0-or-later
                     <td class="counter-text set" id="counter">0</td>
                     <td class="counter-text set" id="time">00:00</td>
                 </tr>
+            </table>
+            <table cellspacing="7px">
                 <tr>
-                    <td class="button set" id="new" title="New game" onclick="loadNewGameAgain()">✨</td>
-                    <td class="button set" id="empty" title="Start over" onclick="showDialog(dialogs.EMPTY)">⟳</td>
+                    <td class="button set-slim" id="new" title="New game" onclick="loadNewGameAgain()">✨</td>
+                    <td class="button set-slim" id="restart" title="Start over" onclick="showDialog(dialogs.RESTART)">⟳</td>
+                    <td class="button set-slim" id="about" title="About" onclick="showDialog(dialogs.ABOUT)">❓</td>
                 </tr>
             </table>
         </div>
@@ -95,7 +98,7 @@ SPDX-License-Identifier: GPL-3.0-or-later
         <div class="dialog-inner-container">
             <div class="dialog" id="welcome-dialog">
                 <div class="dialog-title">New Str8ts-Game</div>
-                <div class="dialog-new">
+                <div style="margin-top: 10px" class="dialog-new">
                     <label for="grid-size-slider">Grid Size:</label>
                     <span id="grid-size">9</span>
                     <br/>
@@ -106,34 +109,71 @@ SPDX-License-Identifier: GPL-3.0-or-later
                     <br>
                     <input type="range" min="1" max="4" value="3" id="difficulty-slider" class="slider" autocomplete="off" oninput="changeDifficulty()">
                 </div>
-                <span class="start-game-button" id="generate-button" onclick="loadNewGame()">Generate new game</span>
-                <span class="start-game-button" id="cancel-new-game" onclick="showDialog(false)" style="display: none;">Cancel</span>
+                <span class="dialog-button full-width" id="generate-button" onclick="loadNewGame()">Generate new game</span>
+                <span class="close-button" id="cancel-new-game" onclick="showDialog(false)" style="display: none;">×</span>
             </div>
             <div class="dialog" id="solution-dialog">
+                <span class="close-button" onclick="showDialog(false)">×</span>
                 <div class="dialog-title">Show Solution</div>
                 <div class="dialog-text">Reveal the complete solution?</div>
-                <span class="start-game-button" onclick="solution()">Reveal</span>
-                <span class="start-game-button" onclick="showDialog(false)">Cancel</span>
+                <span class="dialog-button full-width" onclick="solution()">Reveal</span>
             </div>
-            <div class="dialog" id="empty-dialog">
+            <div class="dialog" id="restart-dialog">
+                <span class="close-button" onclick="showDialog(false)">×</span>
                 <div class="dialog-title">Start Over</div>
                 <div class="dialog-text">Clear all numbers and notes?</div>
-                <span class="start-game-button" onclick="restart()">Clear</span>
-                <span class="start-game-button" onclick="showDialog(false)">Cancel</span>
+                <span class="dialog-button full-width"  onclick="restart()">Clear</span>
             </div>
             <div class="dialog loading-dialog" id="loading-dialog">
                 <div class="loading-ring"></div>
                 <div style="margin-top: 10px;">Generating new game,<br>please wait.</div>
+            </div>
+            <div class="dialog" id="about-dialog">
+                <span class="close-button" onclick="showDialog(false)">×</span>
+                <div class="dialog-title">Straights.Web <span id="version">0.6.17</span></div>
+                <div>© 2020 Luis Walter, 2025 Moritz Ringler</div>
+                <ul>
+                <li>License: <a href="https://spdx.org/licenses/GPL-3.0-or-later.html">GPL 3 or later</a></li>
+                <li><a href="https://github.com/m-ringler/straights">GitHub</a></li>
+                <li><a href="https://en.wikipedia.org/wiki/Str8ts#Gameplay">How to play</a></li>
+                <li><a href="." id="current-game">Current Game</a> <span class="copy-link" onclick="copyCurrentLink()" title="Copy link to clipboard">🔗</span></li>
+                </ul>
+                <div>
+                <span
+                   id="force-update"
+                   class="dialog-button full-width"
+                   style="display: none;"
+                   onclick="showDialog(false)"
+                   title="Force an update of the app. You may need to restart the app afterwards.">Update App</span>
+                </div>
             </div>
         </div>
     </div>
     <script type="text/javascript" src="str8ts.js" ></script>
     <script>
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('./service-worker.js').then(() => {
-                console.log('Service Worker registered successfully.');
+            navigator.serviceWorker.register('./service-worker.js', {
+                updateViaCache: "none",
+            }).then(
+                registration => {
+                   console.log('Service Worker registered successfully.')
+                   $('#force-update').show()
+                   $('#force-update').on('click', () => {
+                       registration.update().then(() => {
+                           console.log('Service Worker update triggered.')
+                       })
+                   })
+            }).then(() => {
+                navigator.serviceWorker.addEventListener('message', event => {
+                    if (event.data === 'reload') {
+                        window.location.reload(true)
+                    }
+                })
             }).catch(error => {
-                console.error('Service Worker registration failed:', error);
+                console.warn(
+                    'Service Worker registration failed:',
+                     error,
+                     'Will run without service worker.')
             });
         }
     </script>
