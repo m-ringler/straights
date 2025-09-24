@@ -8,25 +8,26 @@ using System.IO.Abstractions;
 
 using Straights.Console;
 using Straights.Solver.Builder;
+using Straights.Solver.Converter;
 using Straights.Solver.Data;
 
 internal sealed class InteractiveGridInitializer(ReadWriteConsole console)
 {
     public IDirectoryInfo? DebugDataFolder { get; init; }
 
-    public (GridBuilder Builder, bool IsImage, string? SuggestedSavePath)
+    public (ConvertibleGrid Grid, bool IsImage, string? SuggestedSavePath)
         InitializeGrid(IFileInfo? args)
     {
         string? path = args?.FullName;
 
         return string.IsNullOrWhiteSpace(path)
-            ? this.NewEmptyGridBuilder()
+            ? this.NewEmptyGrid()
             : new GridLoader { DebugDataFolder = this.DebugDataFolder }.LoadGrid(args!);
     }
 
-    public (GridBuilder Builder, bool IsImage, string? SuggestedPath) NewEmptyGridBuilder()
+    public (ConvertibleGrid Grid, bool IsImage, string? SuggestedPath) NewEmptyGrid()
     {
-        return (new GridBuilder(this.ReadSize()), false, null);
+        return (new(new GridBuilder(this.ReadSize())), false, null);
     }
 
     private int ReadSize()

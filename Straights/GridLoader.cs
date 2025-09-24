@@ -9,6 +9,7 @@ using System.IO.Abstractions;
 using Straights.Image.GridReader;
 using Straights.Solver;
 using Straights.Solver.Builder;
+using Straights.Solver.Converter;
 
 internal sealed class GridLoader
 {
@@ -16,7 +17,7 @@ internal sealed class GridLoader
 
     public IDirectoryInfo? DebugDataFolder { get; init; }
 
-    public (GridBuilder Builder, bool IsImage, string? SuggestedSavePath)
+    public (ConvertibleGrid Builder, bool IsImage, string? SuggestedSavePath)
         LoadGrid(IFileInfo args)
     {
         string path = args.FullName;
@@ -24,10 +25,10 @@ internal sealed class GridLoader
         var fs = args.FileSystem;
         var savePath = fs.Path.ChangeExtension(path, ".txt");
         bool isImage = IsImage(args);
-        var builder = isImage
+        var grid = isImage
             ? this.LoadGridFromImage(args)
             : LoadGridFromFile(args);
-        return (builder, isImage, savePath);
+        return (grid, isImage, savePath);
     }
 
     private static bool HasExtension(IFileInfo file, string extension)
@@ -41,17 +42,17 @@ internal sealed class GridLoader
         return ImageExtensions.Any(ext => HasExtension(file, ext));
     }
 
-    private static GridBuilder LoadGridFromFile(IFileInfo file)
+    private static ConvertibleGrid LoadGridFromFile(IFileInfo file)
     {
-        return GridConverter.LoadFrom(file).Builder;
+        return GridConverter.LoadFrom(file);
     }
 
-    private GridBuilder LoadGridFromImage(IFileInfo file)
+    private ConvertibleGrid LoadGridFromImage(IFileInfo file)
     {
         var factory = new GridReaderFactory();
         var cells = factory.CreateGridReader(this.DebugDataFolder?.FullName).ReadGrid(file.FullName);
         GridBuilder builder = CellsToGridBuilderAdapter.ToBuilder(cells);
 
-        return builder;
+        return new ConvertibleGrid(builder);
     }
 }
