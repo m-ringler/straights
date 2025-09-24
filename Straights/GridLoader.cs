@@ -17,7 +17,7 @@ internal sealed class GridLoader
 
     public IDirectoryInfo? DebugDataFolder { get; init; }
 
-    public (ConvertibleGrid Builder, bool IsImage, string? SuggestedSavePath)
+    public (ConvertibleGrid Grid, bool IsImage, string? SuggestedSavePath)
         LoadGrid(IFileInfo args)
     {
         string path = args.FullName;
