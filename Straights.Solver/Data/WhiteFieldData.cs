@@ -7,9 +7,10 @@ namespace Straights.Solver.Data;
 using System.Collections;
 using System.Globalization;
 using System.Numerics;
+using Straights.Solver.Simplification;
 
 public sealed class WhiteFieldData
- : IEquatable<WhiteFieldData>, IReadOnlyCollection<int>
+ : IEquatable<WhiteFieldData>, IReadOnlyCollection<int>, IGetSnapshot<int>
 {
     public const int MaxSize = sizeof(ulong) * 8;
 
@@ -237,6 +238,11 @@ public sealed class WhiteFieldData
     IEnumerator IEnumerable.GetEnumerator()
     {
         return this.GetEnumerator();
+    }
+
+    int IGetSnapshot<int>.GetSnapshot()
+    {
+        return this.Count;
     }
 
     private static ulong GetBitMask(int n)
