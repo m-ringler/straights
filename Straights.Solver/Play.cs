@@ -1,5 +1,6 @@
 namespace Straights.Solver;
 
+using Straights.Solver.Data;
 using Straights.Solver.Generator;
 using Straights.Solver.Simplification;
 
@@ -41,6 +42,22 @@ public static class Play
         return code;
     }
 
+    public static string GenerateHint(string gameAsJson, int strength)
+    {
+        var grid = GridConverter.ParseJson(gameAsJson).SolverGrid;
+        var hintGenerator = new HintGenerator(new SimplifierStrength(strength));
+
+        try
+        {
+            var hint = hintGenerator.GenerateHint(grid);
+            return GetJson(hint);
+        }
+        catch (NotSolvableException)
+        {
+            return "{}";
+        }
+    }
+
     private static GridParameters GetGridParameters(int size)
     {
         var result = GridConfigurationBuilder.GetUnvalidatedGridParameters(
@@ -49,5 +66,20 @@ public static class Play
             blackNumbersRaw: null,
             layout: GridLayout.PointSymmetric);
         return (GridParameters)result;
+    }
+
+    private static string GetJson(Hint hint)
+    {
+        var direction = hint.IsRow ? "horizontal" : "vertical";
+        return
+        $$"""
+        {
+            "x": {{hint.Location.X + 1}},
+            "y": {{hint.Location.Y + 1}},
+            "number": {{hint.NumberToRemove}},
+            rule: "{{hint.Simplifier.Name}}",
+            "direction": {{direction}}
+        }
+        """;
     }
 }

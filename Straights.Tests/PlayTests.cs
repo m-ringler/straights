@@ -6,6 +6,7 @@ namespace Straights.Tests;
 
 using Straights.Solver;
 using Straights.Solver.Simplification;
+using Straights.Tests.Solver.Simplification;
 
 /// <summary>
 /// Tests for the <see cref="Play"/> class.
@@ -42,5 +43,19 @@ public class PlayTests
         solved2.Convert().ToBuilderText()
             .Should().Be(
                 solved.Convert().ToBuilderText());
+    }
+
+    [Fact]
+    public Task GenerateHint_WhenSolvable_ReturnsHint()
+    {
+        var grid = HintGeneratorTests.Grid10;
+        return Verify(Play.GenerateHint(grid, 3));
+    }
+
+    [Fact]
+    public void GenerateHint_WhenNotSolvable_ReturnsEmptyObject()
+    {
+        var grid = HintGeneratorTests.Grid10;
+        Play.GenerateHint(grid, 0).Should().Be("{}");
     }
 }
