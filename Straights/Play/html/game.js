@@ -227,6 +227,18 @@ class Field {
             element.text(this.value)
         }
     }
+
+    toJsonArray() {
+        if (this.mode === modes.BLACK) {
+            return [0]; // black empty field
+        } else if (this.mode === modes.BLACKKNOWN) {
+            return [-this.value]; // black known field
+        } else if (this.user) {
+            return [this.user]; // white field with user guess
+        } else {
+            return Array.from(this.notes); // white field with notes
+        }
+    }
 }
 
 // class to store and modify the current game state
@@ -494,5 +506,11 @@ export class Game {
             default:
                 return this.#parseGameV002(decoded.binary);
         }
+    }
+
+    toJson() {
+        return this.data.map(row =>
+            row.map(field => field.toJsonArray())
+        );
     }
 }
