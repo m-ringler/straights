@@ -37,6 +37,7 @@ let generateGridSize = DEFAULT_GRID_SIZE
 let undoStack
 let gameHistory
 let generate
+let generateHint
 
 const modulePromise = importModules()
 
@@ -51,7 +52,9 @@ async function importModules() {
   gameHistory = await import('./gameHistory.js')
 
   const generateModule = await import('./generate-str8ts.js')
-  generate = generateModule.load_generate()
+  loadedFunctions = generateModule.load_generate()
+  generate = loadedFunctions.generate
+  generateHint = loadedFunctions.generateHint
 }
 
 // Button Functions

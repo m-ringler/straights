@@ -7,6 +7,8 @@ namespace Straights.Web;
 using System.Runtime.InteropServices;
 using System.Text;
 
+using static Straights.Solver.Play;
+
 /// <summary>
 /// Provides methods for generating game codes for the Straights game.
 /// </summary>
@@ -28,44 +30,94 @@ public class Generator
     [UnmanagedCallersOnly(EntryPoint = "Generator_Generate")]
     public static int Generate(int size, int difficulty, nint result, int resultLength)
     {
-        return GenerateAndMarshal(size, difficulty, result, resultLength);
+        return new StringOp(result, resultLength)
+            .RunAndMarshal(
+                () => GenerateGameCode(size, difficulty));
     }
 
-    private static int GenerateAndMarshal(int size, int difficulty, nint result, int resultLength)
+    /// <summary>
+    /// Entry point for generating a hint. This method is intended to be called
+    /// from JavaScript code and marshals the result back to the caller.
+    /// </summary>
+    /// <param name="buffer">
+    /// A pointer to the buffer containing the game json,
+    /// will be reused to store the result hint or the exception message.
+    /// </param>
+    /// <param name="bufferLength">
+    /// The length of the buffer pointed to by <paramref name="buffer"/>.
+    /// </param>
+    /// <param name="gameLength">
+    /// The length of the game json in the buffer pointed to by <paramref name="buffer"/>.
+    /// </param>
+    /// <returns>
+    /// Returns 0 if the game code was successfully generated and marshaled to the buffer.
+    /// Returns -1 if an error occurred during generation or marshaling.
+    /// </returns>
+    /// <seealso cref="Memory.Allocate(nuint)"/>
+    [UnmanagedCallersOnly(EntryPoint = "Generator_Hint")]
+    public static int Hint(nint buffer, int bufferLength, int gameLength)
     {
-        try
-        {
-            var r = GenerateCore(size, difficulty);
-            var bytes = Encoding.UTF8.GetBytes(r);
-            if (bytes.Length > resultLength)
-            {
-                throw new ArgumentException(
-                    $"Buffer size {resultLength} is too small to hold the result, required size: {bytes.Length}.");
-            }
+        var gameAsJson = Marshal.PtrToStringUTF8(buffer, gameLength)
+            ?? throw new ArgumentNullException(nameof(buffer));
 
-            Marshal.Copy(bytes, 0, result, bytes.Length);
-            return 0; // Success
-        }
-        catch (Exception ex)
+        return new StringOp(buffer, bufferLength)
+            .RunAndMarshal(() => GenerateHint(gameAsJson));
+    }
+
+    private sealed class StringOp(nint buffer, int bufferLength)
+    {
+        public int RunAndMarshal(Func<string> operation)
         {
             try
             {
-                var bytes = Encoding.UTF8.GetBytes(ex.Message);
-                if (bytes.Length <= resultLength)
+                this.Clear();
+                this.WriteAsUTF8(operation());
+                return 0; // Success
+            }
+            catch (Exception ex)
+            {
+                this.TryWriteAsUTF8(ex.Message);
+
+                return -1;
+            }
+        }
+
+        private void TryWriteAsUTF8(string s)
+        {
+            try
+            {
+                var bytes = Encoding.UTF8.GetBytes(s);
+                if (bytes.Length <= bufferLength)
                 {
-                    Marshal.Copy(bytes, 0, result, bytes.Length);
+                    Marshal.Copy(bytes, 0, buffer, bytes.Length);
                 }
             }
             catch
             {
             }
-
-            return -1;
         }
-    }
 
-    private static string GenerateCore(int size, int difficulty)
-    {
-        return Straights.Solver.Play.GenerateGameCode(size, difficulty);
+        private void WriteAsUTF8(string r)
+        {
+            var bytes = Encoding.UTF8.GetBytes(r);
+            if (bytes.Length > bufferLength)
+            {
+                throw new ArgumentException(
+                    $"Buffer size {bufferLength} is too small to hold the result, required size: {bytes.Length}.");
+            }
+
+            Marshal.Copy(bytes, 0, buffer, bytes.Length);
+        }
+
+        private unsafe void Clear()
+        {
+            nuint count;
+            checked
+            {
+                count = (nuint)bufferLength;
+            }
+
+            NativeMemory.Clear((void*)buffer, count);
+        }
     }
 }

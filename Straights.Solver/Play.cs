@@ -42,10 +42,15 @@ public static class Play
         return code;
     }
 
-    public static string GenerateHint(string gameAsJson, int strength)
+    public static string GenerateHint(string gameAsJson)
+    {
+        return GenerateHint(gameAsJson, SimplifierStrength.MaxStrength);
+    }
+
+    public static string GenerateHint(string gameAsJson, SimplifierStrength strength)
     {
         var grid = GridConverter.ParseJson(gameAsJson).SolverGrid;
-        var hintGenerator = new HintGenerator(new SimplifierStrength(strength));
+        var hintGenerator = new HintGenerator(strength);
 
         try
         {
