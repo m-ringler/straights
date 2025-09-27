@@ -123,11 +123,10 @@ public sealed class HintGenerator(SimplifierStrength maxStrength)
                 select (bscs, bs.GetType());
 
             var columnSimplifiers =
-                from cs in GetColumnSimplifiers(
-                    this.CurrentStrength, [])
+                from cs in GetColumnSimplifiers(this.CurrentStrength, [])
                 select (cs, cs.GetType());
 
-            var all = blockSimplifiers.Concat(columnSimplifiers);
+            var all = columnSimplifiers.Concat(blockSimplifiers);
             return all;
         }
     }
