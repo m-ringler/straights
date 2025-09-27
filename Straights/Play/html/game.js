@@ -233,6 +233,8 @@ class Field {
             return [0]; // black empty field
         } else if (this.mode === modes.BLACKKNOWN) {
             return [-this.value]; // black known field
+        } else if (this.mode === modes.WHITEKNOWN) {
+            return [this.value]; // white known field
         } else if (this.user) {
             return [this.user]; // white field with user guess
         } else {
