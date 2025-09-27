@@ -5,7 +5,7 @@
 namespace Straights.Play;
 
 using System.IO.Abstractions;
-
+using System.Text;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -99,8 +99,17 @@ internal class WebApp : IWebApp
 
     private static async Task<string> GenerateHint(HttpRequest request)
     {
-        var gameAsJson = await request.ReadFromJsonAsync<string>()
-            ?? throw new InvalidOperationException("Request body cannot be null");
+        if (request.Body == null)
+        {
+            throw new ArgumentException("Request body cannot be null");
+        }
+
+        using var utf8Reader = new StreamReader(
+            request.Body,
+            Encoding.UTF8,
+            detectEncodingFromByteOrderMarks: false,
+            leaveOpen: true);
+        var gameAsJson = await utf8Reader.ReadToEndAsync();
         return PlayCore.GenerateHint(gameAsJson);
     }
 
