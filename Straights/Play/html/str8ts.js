@@ -70,10 +70,12 @@ function toggleNoteMode() {
   $('#notes').css('background-color', color)
 }
 
-function check() {
+async function check() {
   count++
   $('#counter').text(count)
   game.checkWrong()
+  hint = await generateHint(game.toJson())
+  console.info(JSON.stringify(hint))
 }
 
 function solution() {
