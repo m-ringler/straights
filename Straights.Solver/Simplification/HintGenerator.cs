@@ -29,7 +29,7 @@ public sealed class HintGenerator(SimplifierStrength maxStrength)
 
         var changeDetector = new StateComparer<int>([
             grid,
-            ..grid.Rows.SelectMany(c => c.Fields),
+            ..grid.Grid.Fields.OfType<SolverField.WhiteField>(),
         ]);
 
         while (provider.CurrentStrength <= this.maxStrength)
@@ -73,7 +73,7 @@ public sealed class HintGenerator(SimplifierStrength maxStrength)
         var locations =
             from idx in grid.AllFieldIndices()
             let f = grid.GetField(idx)
-            where f is SolverField.WhiteField w && changeDetector.HasChanged(w.Data)
+            where f is SolverField.WhiteField w && changeDetector.HasChanged(w)
             select idx;
 
         return locations.First();

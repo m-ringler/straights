@@ -7,10 +7,9 @@ namespace Straights.Solver.Data;
 using System.Collections;
 using System.Globalization;
 using System.Numerics;
-using Straights.Solver.Simplification;
 
 public sealed class WhiteFieldData
- : IEquatable<WhiteFieldData>, IReadOnlyCollection<int>, IGetSnapshot<int>
+ : IEquatable<WhiteFieldData>, IReadOnlyCollection<int>
 {
     public const int MaxSize = sizeof(ulong) * 8;
 
@@ -97,6 +96,11 @@ public sealed class WhiteFieldData
         if (this.Count == 0)
         {
             throw new NotSolvableException($"Last value {n} cannot be removed");
+        }
+
+        if (result)
+        {
+            System.Diagnostics.Debug.WriteLine($"Removed {n}, now {this}");
         }
 
         return result;
@@ -238,11 +242,6 @@ public sealed class WhiteFieldData
     IEnumerator IEnumerable.GetEnumerator()
     {
         return this.GetEnumerator();
-    }
-
-    int IGetSnapshot<int>.GetSnapshot()
-    {
-        return this.Count;
     }
 
     private static ulong GetBitMask(int n)
