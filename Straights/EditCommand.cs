@@ -64,10 +64,10 @@ public sealed class EditCommand(IFileSystem fileSystem)
     private (GridBuilder Builder, string? SuggestedSavePath)
         InitializeGrid(IFileInfo? args)
     {
-        var (builder, _, suggestedSavePath) =
+        var (grid, _, suggestedSavePath) =
             new InteractiveGridInitializer(this.Console)
             .InitializeGrid(args);
 
-        return (builder, suggestedSavePath);
+        return (grid.Builder, suggestedSavePath);
     }
 }

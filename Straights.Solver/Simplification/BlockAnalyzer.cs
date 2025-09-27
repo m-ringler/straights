@@ -33,8 +33,8 @@ public static class BlockAnalyzer
             return new IntRun(0, -1);
         }
 
-        var maxOfMins = item.Select(f => f.Min).Max();
-        var minOfMaxs = item.Select(f => f.Max).Min();
+        var maxOfMins = item.Max(f => f.Min);
+        var minOfMaxs = item.Min(f => f.Max);
 
         var min = maxOfMins - item.Count + 1;
         var max = minOfMaxs + item.Count - 1;

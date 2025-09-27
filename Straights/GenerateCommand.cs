@@ -102,9 +102,9 @@ public sealed class GenerateCommand
 
     private IEmptyGridGenerator LoadTemplate()
     {
-        var (builder, _, _) = new GridLoader().LoadGrid(this.Template!);
+        var (grid, _, _) = new GridLoader().LoadGrid(this.Template!);
 
-        return new FixedEmptyGridGenerator(builder);
+        return new FixedEmptyGridGenerator(grid.Builder);
     }
 
     private void WriteOutput(ConvertibleGrid grid)

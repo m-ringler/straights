@@ -34,7 +34,7 @@
 
   <!-- Emscripten arguments -->
   <ItemGroup>
-    <LinkerArg Include="-sEXPORTED_RUNTIME_METHODS=['stringToNewUTF8','UTF8ToString','HEAPU8','HEAP32','HEAP16']" />
+    <LinkerArg Include="-sEXPORTED_RUNTIME_METHODS=['stringToUTF8','UTF8ToString','HEAPU8','HEAP32','HEAP16']" />
     <LinkerArg Include="-sMODULARIZE"/>
     <LinkerArg Include="-sEXPORT_NAME=createWasmModule"/>
   </ItemGroup>

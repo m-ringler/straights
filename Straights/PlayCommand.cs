@@ -8,7 +8,6 @@ using System.IO.Abstractions;
 
 using Straights.Console;
 using Straights.Play;
-using Straights.Solver;
 
 public sealed class PlayCommand(
     IBrowserLauncher browserLauncher, IFileSystem fs)
@@ -53,9 +52,8 @@ public sealed class PlayCommand(
             return baseUri;
         }
 
-        var (builder, _, _) = new GridLoader().LoadGrid(inputFile);
+        var (grid, _, _) = new GridLoader().LoadGrid(inputFile);
 
-        var grid = builder.Convert();
         Uri playUrl = new PlayUrl
         {
             BaseUri = baseUri,

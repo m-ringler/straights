@@ -2,25 +2,37 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-export function load_generate () {
-  const worker = new Worker('generate-worker.js')
+export function load_generate() {
+    const worker = new Worker('generate-worker.js')
 
-  function generate (size, difficulty) {
-    return new Promise((resolve, reject) => {
-      worker.onmessage = (event) => {
-        resolve(event.data)
-      }
+    function generate(size, difficulty) {
+        return _run_in_worker({
+            method: 'generate',
+            size,
+            difficulty
+        })
+    }
 
-      worker.onerror = (error) => {
-        reject(error)
-      }
+    function generateHint(gameAsJson) {
+        return _run_in_worker({
+            method: 'hint',
+            gameAsJson: JSON.stringify(gameAsJson)
+        })
+    }
 
-      worker.postMessage({
-        size,
-        difficulty
-      })
-    })
-  }
+    return { generate, generateHint }
 
-  return generate
+    function _run_in_worker(message) {
+        return new Promise((resolve, reject) => {
+            worker.onmessage = (event) => {
+                resolve(event.data)
+            }
+
+            worker.onerror = (error) => {
+                reject(error)
+            }
+
+            worker.postMessage(message)
+        })
+    }
 }

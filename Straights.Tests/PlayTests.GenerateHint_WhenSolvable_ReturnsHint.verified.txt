@@ -1,0 +1,7 @@
+﻿{
+    "x": 1,
+    "y": 3,
+    "number": 9,
+    rule: "ColumnRemoveForeignRanges",
+    "direction": horizontal
+}

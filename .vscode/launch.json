@@ -59,7 +59,18 @@
       "request": "launch",
       "preLaunchTask": "build",
       "program": "${workspaceFolder}/Straights/bin/Debug/net9.0/straights",
-      "args": ["solve", "test/grid09_001.txt", "--non-interactive"],
+      "args": ["solve", "test/grid09_001.txt"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "stopAtEntry": false
+    },
+    {
+      "name": "Straights Solve JSON",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      "program": "${workspaceFolder}/Straights/bin/Debug/net9.0/straights",
+      "args": ["solve", "test/6690.json"],
       "cwd": "${workspaceFolder}",
       "console": "integratedTerminal",
       "stopAtEntry": false
@@ -72,8 +83,7 @@
       "program": "${workspaceFolder}/Straights/bin/Debug/net9.0/straights",
       "args": [
         "solve",
-        "${workspaceFolder}/test/grid09_001.png",
-        "--non-interactive"
+        "${workspaceFolder}/test/grid09_001.png"
       ],
       "cwd": "${workspaceFolder}",
       "console": "integratedTerminal",
