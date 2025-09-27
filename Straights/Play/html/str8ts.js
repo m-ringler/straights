@@ -16,7 +16,7 @@ const darkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
 
 const buttonColors = darkMode ? buttonColorsDark : buttonColorsLight
 
-const dialogs = { WELCOME: 1, GENERATED: 2, LOADING: 3, SOLUTION: 4, RESTART: 5, ABOUT: 6 }
+const dialogs = { WELCOME: 1, GENERATED: 2, LOADING: 3, SOLUTION: 4, RESTART: 5, ABOUT: 6, HINT: 7 }
 const MIN_GRID_SIZE = 4
 const MAX_GRID_SIZE = 12
 const DEFAULT_GRID_SIZE = 9
@@ -25,7 +25,8 @@ const DEFAULT_DIFFICULTY = 3
 // Variables
 let starttime
 let timer
-let count = 0
+let check_count = 0
+let hint_count = 0
 let noteMode = false
 let game
 let minCodeSize
@@ -38,6 +39,7 @@ let undoStack
 let gameHistory
 let generate
 let generateHint
+let hintField
 
 const modulePromise = importModules()
 
@@ -70,13 +72,88 @@ function toggleNoteMode() {
   $('#notes').css('background-color', color)
 }
 
-async function check() {
-  count++
-  $('#counter').text(count)
-  game.checkWrong()
-  hint = await generateHint(game.toJson())
-  console.info(JSON.stringify(hint))
+function check() {
+  game.checkSolved()
+  if (game.isSolved) {
+    return
+  }
+
+  check_count++
+  $('#counter_check').text(check_count)
+  return game.checkWrong()
 }
+
+async function hint() {
+    closeHint()
+
+    game.checkSolved()
+    if (game.isSolved) {
+        return
+    }
+
+    hint_count++
+    $('#counter_hint').text(hint_count)
+    if (game.checkWrong(false))
+    {
+        return
+    }
+
+    if (game.checkWrong(true))
+    {
+        return
+    }
+
+    const hintResponse = await generateHint(game.toJsonArray())
+    if (hintResponse.status === 0 && hintResponse.message) {
+        const hintData = JSON.parse(hintResponse.message)
+        hintField = game.get(hintData.y, hintData.x)
+        hintField.setHint(hintData.number)
+        $('#hint-text').text(`Hint: Remove ${hintData.number} using rule "${hintData.rule}" in the ${hintData.direction} direction.`)
+        positionHintDialog()
+        showDialog(dialogs.HINT)
+    }
+}
+
+function closeHint() {
+    if (hintField) {
+        hintField.setHint(undefined)
+        hintField = null
+        showDialog(false)
+    }
+}
+
+function positionHintDialog() {
+     const field = hintField.getElement()
+     const dialog = $('#hint-dialog');
+
+     // Get the position of the field relative to the viewport
+     const fieldPos = field[0].getBoundingClientRect();
+     const windowHeight = $(window).height();
+     const windowWidth = $(window).width();
+
+     // Determine the vertical position
+     let dialogTop;
+     if (fieldPos.top > windowHeight / 2) {
+         dialogTop = fieldPos.top + window.scrollY - dialog.outerHeight();
+     } else {
+         dialogTop = fieldPos.top + window.scrollY + fieldPos.height;
+     }
+
+     // Determine the horizontal position
+     let dialogLeft;
+     if (fieldPos.left > windowWidth / 2) {
+         dialogLeft = fieldPos.left + window.scrollX - dialog.outerWidth();
+     } else {
+         dialogLeft = fieldPos.left + window.scrollX + fieldPos.width;
+     }
+
+     // Set the position of the dialog
+     dialog.css({
+         position: 'absolute',
+         top: dialogTop,
+         left: dialogLeft
+     });
+ }
 
 function solution() {
   showDialog(false)
@@ -237,8 +314,10 @@ function changeGenerateSize() {
 async function startGame() {
   if (gameCode && gameCode.length > minCodeSize) {
     undoStack.clear()
-    count = 0
-    $('#counter').text(count)
+    check_count = 0
+    hint_count = 0
+    $('#counter_check').text(check_count)
+    $('#counter_hint').text(hint_count)
     $('.container').removeClass('finished')
     showDialog(false)
 
@@ -265,6 +344,11 @@ function showDialog(dialog) {
   $('#solution-dialog').hide()
   $('#restart-dialog').hide()
   $('#about-dialog').hide()
+  $('#hint-dialog').hide()
+  if (dialog != dialogs.HINT) {
+      closeHint()
+  }
+  
   if (dialog) {
     $('.dialog-outer-container').show()
     switch (dialog) {
@@ -295,6 +379,9 @@ function showDialog(dialog) {
       case dialogs.ABOUT:
         $('#current-game').attr('href', window.location.href)
         $('#about-dialog').show()
+        break
+      case dialogs.HINT:
+        $('#hint-dialog').show()
         break
     }
   } else {
@@ -479,6 +566,7 @@ $(document).keydown(onKeyDown)
 
 $(window).resize(onResize)
 function onResize() {
+  closeHint()
   if (window.innerWidth / 2 - 45 < $('.controls').position().left) { // Large screen
     $('#buttons-small').hide()
     $('#buttons-large').show()

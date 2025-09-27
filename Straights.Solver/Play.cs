@@ -79,11 +79,11 @@ public static class Play
         return
         $$"""
         {
-            "x": {{hint.Location.X + 1}},
-            "y": {{hint.Location.Y + 1}},
+            "x": {{hint.Location.X}},
+            "y": {{hint.Location.Y}},
             "number": {{hint.NumberToRemove}},
-            rule: "{{hint.Simplifier.Name}}",
-            "direction": {{direction}}
+            "rule": "{{hint.Simplifier.Name}}",
+            "direction": "{{direction}}"
         }
         """;
     }
