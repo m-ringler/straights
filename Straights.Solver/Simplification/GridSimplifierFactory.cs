@@ -77,7 +77,7 @@ public sealed class GridSimplifierFactory(SimplifierOptions options)
     internal static IEnumerable<ISimplify<SolverBlock>> GetBlockSimplifiers(
         SimplifierStrength strength)
     {
-        yield return new BlockRestrictRange();
+        yield return new BlockMinimumAndMaximum();
 
         if (strength >= 1)
         {
