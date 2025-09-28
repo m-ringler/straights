@@ -1,7 +1,7 @@
 ﻿{
-    "x": 1,
-    "y": 3,
+    "x": 0,
+    "y": 2,
     "number": 9,
-    rule: "ColumnRemoveForeignRanges",
-    "direction": horizontal
+    "rule": "ColumnRemoveForeignRanges",
+    "direction": "horizontal"
 }
