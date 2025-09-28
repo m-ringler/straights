@@ -48,26 +48,9 @@ public sealed class GridSimplifierFactory(SimplifierOptions options)
             $"Strength-{strength.Value} Iterative Grid Simplifier");
     }
 
-    private static Func<IChangeDetector>
-        GetNewSnapshotFunc(ISolverGrid data)
-    {
-        IEnumerable<IGetSnapshot<int>> trackables = [
-                data,
-                ..data.Columns,
-                ..data.Rows,
-                ..data.Rows.SelectMany(x => x.Blocks)];
-
-        IChangeDetector<IGetSnapshot<int>> NewSnapshot()
-        {
-            return new StateComparer<int>(trackables);
-        }
-
-        return NewSnapshot;
-    }
-
-    private static IEnumerable<ISimplify<SolverColumn>> GetColumnSimplifiers(
+    internal static IEnumerable<ISimplify<SolverColumn>> GetColumnSimplifiers(
         SimplifierStrength strength,
-        ISimplify<SolverBlock> blockSimplifier)
+        IEnumerable<ISimplify<SolverBlock>> blockSimplifiers)
     {
         yield return new ColumnRemoveSolvedNumbers();
         if (strength >= 1)
@@ -80,7 +63,10 @@ public sealed class GridSimplifierFactory(SimplifierOptions options)
             yield return new ColumnNFieldsWithNNumbers();
         }
 
-        yield return blockSimplifier.AsAggregateSimplifier();
+        foreach (var blockSimplifier in blockSimplifiers)
+        {
+            yield return blockSimplifier.AsAggregateSimplifier();
+        }
 
         if (strength >= 2)
         {
@@ -88,10 +74,10 @@ public sealed class GridSimplifierFactory(SimplifierOptions options)
         }
     }
 
-    private static IEnumerable<ISimplify<SolverBlock>> GetBlockSimplifiers(
+    internal static IEnumerable<ISimplify<SolverBlock>> GetBlockSimplifiers(
         SimplifierStrength strength)
     {
-        yield return new BlockRestrictRange();
+        yield return new BlockMinimumAndMaximum();
 
         if (strength >= 1)
         {
@@ -110,6 +96,23 @@ public sealed class GridSimplifierFactory(SimplifierOptions options)
         }
     }
 
+    private static Func<IChangeDetector>
+        GetNewSnapshotFunc(ISolverGrid data)
+    {
+        IEnumerable<IGetSnapshot<int>> trackables = [
+                data,
+                ..data.Columns,
+                ..data.Rows,
+                ..data.Rows.SelectMany(x => x.Blocks)];
+
+        IChangeDetector<IGetSnapshot<int>> NewSnapshot()
+        {
+            return new StateComparer<int>(trackables);
+        }
+
+        return NewSnapshot;
+    }
+
     private ISimplify<ISolverGrid> BuildGridSimplifier(
         IChangeDetector changeDetector,
         SimplifierStrength strength)
@@ -122,7 +125,7 @@ public sealed class GridSimplifierFactory(SimplifierOptions options)
 
         var columnSimplifier = Simplifier
         .Combine(
-            GetColumnSimplifiers(strength, blockSimplifier))
+            GetColumnSimplifiers(strength, [blockSimplifier]))
         .WithShortcut(changeDetector);
 
         ISimplify<ISolverGrid> result = options.MultiThreaded

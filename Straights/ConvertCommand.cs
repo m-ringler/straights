@@ -9,7 +9,6 @@ using System.IO.Abstractions;
 
 using Straights.Console;
 using Straights.Play;
-using Straights.Solver;
 using Straights.Solver.Converter;
 
 public sealed class ConvertCommand
@@ -26,8 +25,7 @@ public sealed class ConvertCommand
 
     public int Run()
     {
-        var (grid, _, _) = new GridLoader().LoadGrid(this.InputFile);
-        var convertibleGrid = grid.Convert();
+        var (convertibleGrid, _, _) = new GridLoader().LoadGrid(this.InputFile);
         this.WriteOutput(convertibleGrid);
         this.PrintPlayUrl(
             convertibleGrid);

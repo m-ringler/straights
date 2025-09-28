@@ -45,11 +45,12 @@ public sealed class SolveCommand(IFileSystem fileSystem)
 
     public int Run()
     {
-        var (builder, fromImage, suggestedPath)
+        var (grid, fromImage, suggestedPath)
             = this.GridInitializer().InitializeGrid(this.File);
 
         if (this.Interactive)
         {
+            var builder = grid.Builder;
             bool askToSave = this.EditGrid(builder) || fromImage;
 
             if (askToSave)
@@ -57,9 +58,11 @@ public sealed class SolveCommand(IFileSystem fileSystem)
                 new InteractiveGridSaver(fileSystem, this.Console)
                     .SaveGrid(builder, suggestedPath);
             }
+
+            grid = builder.Convert();
         }
 
-        SolverGrid data = builder.Convert().SolverGrid;
+        SolverGrid data = grid.SolverGrid;
         var gridPrinter = this.BuildGridPrinter(() => data);
         if (!this.Interactive)
         {

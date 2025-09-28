@@ -76,12 +76,14 @@ SPDX-License-Identifier: GPL-3.0-or-later
             </table>
             <table cellspacing="7px">
                 <tr>
-                    <td class="button set" id="check" title="Check" onclick="check()">✅️</td>
-                    <td class="button set" id="delete" title="Show solution" onclick="showDialog(dialogs.SOLUTION)">👀</td>
+                    <td class="button set-slim" id="check" title="Check" onclick="check()">✅️</td>
+                    <td class="button set-slim" id="hint" title="Hint" onclick="hint()">💡</td>
+                    <td class="button set-slim" id="delete" title="Show solution" onclick="showDialog(dialogs.SOLUTION)">👀</td>
                 </tr>
                 <tr>
-                    <td class="counter-text set" id="counter">0</td>
-                    <td class="counter-text set" id="time">00:00</td>
+                    <td class="counter-text set-slim" id="check-counter">0</td>
+                    <td class="counter-text set-slim" id="hint-counter">0</td>
+                    <td class="counter-text set-slim" id="time">00:00</td>
                 </tr>
             </table>
             <table cellspacing="7px">
@@ -130,7 +132,7 @@ SPDX-License-Identifier: GPL-3.0-or-later
             </div>
             <div class="dialog" id="about-dialog">
                 <span class="close-button" onclick="showDialog(false)">×</span>
-                <div class="dialog-title">Straights.Web <span id="version">0.6.17</span></div>
+                <div class="dialog-title">Straights.Web <span id="version">0.6.18</span></div>
                 <div>© 2020 Luis Walter, 2025 Moritz Ringler</div>
                 <ul>
                 <li>License: <a href="https://spdx.org/licenses/GPL-3.0-or-later.html">GPL 3 or later</a></li>
@@ -146,6 +148,10 @@ SPDX-License-Identifier: GPL-3.0-or-later
                    onclick="showDialog(false)"
                    title="Force an update of the app. You may need to restart the app afterwards.">Update App</span>
                 </div>
+            </div>
+            <div class="dialog" id="hint-dialog" onclick="closeHint()">
+                <span class="close-button" onclick="closeHint()">×</span>
+                <div id="hint-text"></div>
             </div>
         </div>
     </div>

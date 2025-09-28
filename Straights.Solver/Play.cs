@@ -1,5 +1,6 @@
 namespace Straights.Solver;
 
+using Straights.Solver.Data;
 using Straights.Solver.Generator;
 using Straights.Solver.Simplification;
 
@@ -41,6 +42,76 @@ public static class Play
         return code;
     }
 
+    /// <summary>
+    /// Generates a hint for the specified game.
+    /// </summary>
+    /// <param name="gameAsJson">
+    /// The game in the JSON array format
+    /// described in <see cref="GridConverter"/>.
+    /// </param>
+    /// <returns>
+    /// A hint in JSON or
+    /// "{}" if no hint could be generated.
+    /// </returns>
+    /// <remarks>
+    /// The returned JSON is described by the following schema:
+    /// <code lang="json">
+    /// {
+    ///   "$schema": "http://json-schema.org/draft-04/schema#",
+    ///   "type": "object",
+    ///   "properties": {
+    ///     "x": { "type": "integer" },
+    ///     "y": { "type": "integer"},
+    ///     "number": { "type": "integer" },
+    ///     "rule": { "type": "string" },
+    ///     "direction": { "enum": ["horizontal", "vertical"] }
+    ///   },
+    ///   "required": [
+    ///     "x",
+    ///     "y",
+    ///     "number",
+    ///     "rule",
+    ///     "direction"
+    ///   ]
+    /// }
+    /// </code>
+    /// x, y are the zero-based column and row index of the field.
+    /// number is a number that can be removed from the field.
+    /// rule is the rule that was used to infer this.
+    /// direction is the direction in which the rule was applied.
+    /// </remarks>
+    /// <seealso cref="GridConverter.ParseJson(string)"/>
+    public static string GenerateHint(string gameAsJson)
+    {
+        return GenerateHint(gameAsJson, SimplifierStrength.MaxStrength);
+    }
+
+    /// <inheritdoc cref="GenerateHint(string)" />
+    /// <param name="gameAsJson">
+    /// The game in the JSON array format
+    /// described in <see cref="GridConverter"/>.
+    /// </param>
+    /// <param name="maxStrength">
+    /// The maximum strength to use for simplification.
+    /// </param>
+    public static string GenerateHint(
+        string gameAsJson,
+        SimplifierStrength maxStrength)
+    {
+        var grid = GridConverter.ParseJson(gameAsJson).SolverGrid;
+        var hintGenerator = new HintGenerator(maxStrength);
+
+        try
+        {
+            var hint = hintGenerator.GenerateHint(grid);
+            return GetJson(hint);
+        }
+        catch (NotSolvableException)
+        {
+            return "{}";
+        }
+    }
+
     private static GridParameters GetGridParameters(int size)
     {
         var result = GridConfigurationBuilder.GetUnvalidatedGridParameters(
@@ -49,5 +120,20 @@ public static class Play
             blackNumbersRaw: null,
             layout: GridLayout.PointSymmetric);
         return (GridParameters)result;
+    }
+
+    private static string GetJson(Hint hint)
+    {
+        var direction = hint.IsHorizontal ? "horizontal" : "vertical";
+        return
+        $$"""
+        {
+            "x": {{hint.Location.X}},
+            "y": {{hint.Location.Y}},
+            "number": {{hint.NumberToRemove}},
+            "rule": "{{hint.Simplifier.Name}}",
+            "direction": "{{direction}}"
+        }
+        """;
     }
 }

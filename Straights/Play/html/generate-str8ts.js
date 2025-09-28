@@ -11,5 +11,17 @@ export function load_generate() {
     return data
   }
 
-  return generate
+  async function generateHint(gameAsJson) {
+    const response = await fetch('/hint', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(gameAsJson)
+    })
+    const data = await response.json()
+    return data
+  }
+
+  return { generate, generateHint }
 }

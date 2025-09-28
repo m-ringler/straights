@@ -99,6 +99,10 @@ body, html {
   background-color: var(--color-button-background);
 }
 
+.hint {
+  text-shadow: 0 0 5px red;
+}
+
 .button[disabled] {
   opacity: 0.5;
   cursor: not-allowed;

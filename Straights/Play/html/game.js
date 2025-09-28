@@ -26,6 +26,7 @@ class Field {
 
         // derived, only used when checking
         this.wrong = false
+        this.hint = undefined
         this.isShowingSolution = false
 
         // working data, edited by the user
@@ -40,6 +41,7 @@ class Field {
     setUser(input) {
         if (this.isEditable()) {
             this.wrong = false
+            this.hint = undefined
             if (this.user === input) {
                 this.user = undefined
             } else {
@@ -62,6 +64,7 @@ class Field {
     setNote(value) {
         if (this.isEditable()) {
             this.wrong = false
+            this.hint = undefined
             this.user = undefined
             if (!this.notes.delete(value)) {
                 this.notes.add(value)
@@ -79,6 +82,7 @@ class Field {
             }
 
             this.wrong = false
+            this.hint = undefined
             this.render()
         }
     }
@@ -103,16 +107,40 @@ class Field {
         return this.#isSolvedCorrectly() === 1
     }
 
-    checkWrong() {
-        if (this.#isSolvedCorrectly() === -1) {
-            this.wrong = true
-            this.render()
+    checkWrong(checkNotes = false) {
+        const correct = this.#isSolvedCorrectly()
+        switch (correct) {
+            case -1:
+                this.wrong = true
+                this.render()
+                break;
+            case 0:
+                if (checkNotes
+                        && this.notes.size != 0
+                        && !this.notes.has(this.value)) {
+                    this.wrong = true
+                    this.render()
+                }
+                break;
+            default:
+                break;
         }
     }
 
     showSolution() {
         this.isShowingSolution = true
         this.wrong = this.#isSolvedCorrectly() === -1
+        this.render()
+    }
+
+    setHint(number) {
+        this.hint = number
+        if (number && this.notes.size === 0) {
+            for (let i = 1; i <= this.game.size; i++) {
+                this.notes.add(i)
+            }
+        }
+
         this.render()
     }
 
@@ -146,6 +174,7 @@ class Field {
         this.user = undefined
         this.notes.clear()
         this.wrong = false
+        this.hint = undefined
         this.isShowingSolution = false
         this.render()
     }
@@ -154,22 +183,26 @@ class Field {
         const colors = this.game.colors
         if (this.mode === modes.BLACK ||
             this.mode === modes.BLACKKNOWN) {
-            return colors.BG_BLACK;
+            return colors.BG_BLACK
         }
 
         if (this.mode === modes.WHITEKNOWN) {
-            return colors.BG_WHITEKNOWN;
+            return colors.BG_WHITEKNOWN
+        }
+
+        if (this.hint) {
+            return colors.BG_HINT
         }
 
         if (this.isActive()) {
             return this.wrong
                 ? colors.BG_USER_WRONG_ACTIVE
-                : colors.BG_USER_ACTIVE;
+                : colors.BG_USER_ACTIVE
         }
 
         return this.wrong
             ? colors.BG_USER_WRONG
-            : colors.BG_USER;
+            : colors.BG_USER
     }
 
     #getTextColor() {
@@ -208,10 +241,11 @@ class Field {
                     element.text(this.user)
                 } else if (this.notes.size > 0) {
                     let notes = '<table class="mini" cellspacing="0">'
-                    for (let i = 1; i <= currentGridSize; i++) {
+                    for (let i = 1; i <= this.game.size; i++) {
                         if ((i - 1) % 3 === 0) notes += '<tr>'
                         if (this.notes.has(i)) {
-                            notes += `<td>${i}</td>`
+                            const class_attribute = this.hint === i ? ' class="hint"' : ''
+                            notes += `<td${class_attribute}>${i}</td>`
                         } else {
                             notes += `<td class="transparent">${i}</td>`
                         }
@@ -225,6 +259,20 @@ class Field {
             element.text(this.value)
         } else if (this.mode === modes.WHITEKNOWN) {
             element.text(this.value)
+        }
+    }
+
+    toJsonArray() {
+        if (this.mode === modes.BLACK) {
+            return [0]; // black empty field
+        } else if (this.mode === modes.BLACKKNOWN) {
+            return [-this.value]; // black known field
+        } else if (this.mode === modes.WHITEKNOWN) {
+            return [this.value]; // white known field
+        } else if (this.user) {
+            return [this.user]; // white field with user guess
+        } else {
+            return Array.from(this.notes); // white field with notes
         }
     }
 }
@@ -242,7 +290,8 @@ export class Game {
         BG_USER_ACTIVE: '#c7ddff',
         BG_USER_WRONG: '#ffc7c7',
         BG_USER_WRONG_ACTIVE: '#eeaaff',
-        BG_WHITEKNOWN: '#ffffff'
+        BG_WHITEKNOWN: '#ffffff',
+        BG_HINT: '#ffff99',
     }
 
     static gameColorsDark = {
@@ -257,6 +306,7 @@ export class Game {
         BG_USER_WRONG: '#ffc7c7',
         BG_USER_WRONG_ACTIVE: '#eeaaff',
         BG_WHITEKNOWN: '#aaaaaa',
+        BG_HINT: '#ffff99',
     }
 
     constructor($, darkMode, size = 0) {
@@ -324,10 +374,16 @@ export class Game {
         })
     }
 
-    checkWrong() {
+    checkWrong(checkNotes = false) {
+        let result = false
         this.#forEachField(field => {
-            field.checkWrong()
+            field.checkWrong(checkNotes)
+            if (field.wrong) {
+                result = true
+            }
         })
+
+        return result
     }
 
     checkSolved() {
@@ -392,8 +448,8 @@ export class Game {
         let newRow = row
         let newCol = col
         do {
-            newRow = (newRow + rowDelta + currentGridSize) % currentGridSize
-            newCol = (newCol + colDelta + currentGridSize) % currentGridSize
+            newRow = (newRow + rowDelta + this.size) % this.size
+            newCol = (newCol + colDelta + this.size) % this.size
         }
         while (
             !this.get(newRow, newCol).isEditable() &&
@@ -494,5 +550,11 @@ export class Game {
             default:
                 return this.#parseGameV002(decoded.binary);
         }
+    }
+
+    toJsonArray() {
+        return this.data.map(row =>
+            row.map(field => field.toJsonArray())
+        );
     }
 }

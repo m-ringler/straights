@@ -11,6 +11,25 @@ using Straights.Solver.Builder;
 /// <summary>
 /// Saves and loads <see cref="GridBuilder"/>s as plain text.
 /// </summary>
+/// <remarks>
+/// <para>
+/// The format consists of
+/// 1. A line containing the grid size and nothing else
+/// 2. For each row of the grid, a line containing the fields
+/// of that row separated by comma.
+/// </para>
+/// <para>
+/// The fields are represented as follows:
+/// black blank: b,
+/// black number N: bN (e. g. b2),
+/// white blank: _,
+/// white number N: wN (e. g. w9).
+/// </para>
+/// <para>
+/// The format has no trailing commas.
+/// Lines starting with the hash character # are ignored.
+/// </para>
+/// </remarks>
 public sealed class GridBuilderTextPersister
     : ITextPersister<GridBuilder>
 {

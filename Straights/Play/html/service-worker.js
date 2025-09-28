@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-const CACHE_NAME = 'v0.6.17';
+const CACHE_NAME = 'v0.6.18';
 const urlsToCache = [
     './',
     './favicon.ico',
@@ -34,11 +34,46 @@ const urlsToCache = [
     'https://fonts.gstatic.com/s/nunito/v31/XRXV3I6Li01BKofINeaBTMnFcQ.woff2'
 ];
 
+const apiEndPoints = new Set([
+    '/generate',
+    '/hint'
+])
+
 async function fetchFresh(url) {
     console.debug("Fetching ", url)
     result = await fetch(url, { cache: 'no-store' })
     console.debug("Response:", result.status, result.statusText)
     return result
+}
+
+async function _fetch(request) {
+    const requestUrl = new URL(request.url);
+
+    if (apiEndPoints.has(requestUrl.pathname)) {
+        // Always fetch from network for local API endpoints
+        return await fetch(request);
+    }
+
+    // Try to match the request in the cache
+    const cachedResponse = await caches.match(
+        request,
+        { ignoreSearch: true })
+    if (cachedResponse) {
+        // Return cached response if found
+        return cachedResponse
+    }
+
+    // HTTP(S) requests: fetch and cache
+    console.debug("Not found in cache, fetching from network: ", request.url);
+    if (request.url.startsWith('http://') || request.url.startsWith('https://')) {
+        const networkResponse = await fetch(request)
+        const cache = await caches.open(CACHE_NAME)
+        await cache.put(request, networkResponse.clone())
+        return networkResponse
+    }
+
+    // Non-HTTP(S) requests: just fetch
+    return await fetch(request)
 }
 
 self.addEventListener('install', event => {
@@ -57,28 +92,7 @@ self.addEventListener('install', event => {
     );
 });
 
-self.addEventListener('fetch', event => {
-    event.respondWith(
-        caches.match(event.request, { ignoreSearch: true }).then(response => {
-            if (response) {
-                return response
-            }
-
-            // Only cache http(s) requests
-            console.debug("Not found in cache, fetching from network: ", event.request.url)
-            if (event.request.url.startsWith('http://') || event.request.url.startsWith('https://')) {
-                return fetch(event.request).then(networkResponse => {
-                    return caches.open(CACHE_NAME).then(cache => {
-                        cache.put(event.request, networkResponse.clone())
-                        return networkResponse;
-                    });
-                });
-            } else {
-                return fetch(event.request)
-            }
-        })
-    )
-})
+self.addEventListener('fetch', event => event.respondWith(_fetch(event.request)));
 
 self.addEventListener('activate', event => {
     const cacheWhitelist = [CACHE_NAME]
