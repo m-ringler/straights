@@ -108,7 +108,16 @@ async function hint() {
         const hintData = JSON.parse(hintResponse.message)
         hintField = game.get(hintData.y, hintData.x)
         hintField.setHint(hintData.number)
-        $('#hint-text').text(`Hint: Remove ${hintData.number} using rule "${hintData.rule}" in the ${hintData.direction} direction.`)
+
+        // hintData.rule is either ColumnNameInPascalCase
+        // or BlockNameInPascalCase.
+        const ruleWords = hintData.rule.split(/(?=[A-Z])/);
+        ruleType = ruleWords[0]
+        ruleName = ruleWords.slice(1).join(" ")
+        ruleTarget = ruleType == 'Block'
+            ? `${hintData.direction} block`
+            : ((hintData.direction == 'horizontal') ? "row" :"column")
+        $('#hint-text').text(`Hint: ${hintData.number} can be removed by applying the "${ruleName}" rule to the ${ruleTarget}.`)
         positionHintDialog()
         showDialog(dialogs.HINT)
     }
@@ -125,35 +134,38 @@ function closeHint() {
 function positionHintDialog() {
      const field = hintField.getElement()
      const dialog = $('#hint-dialog');
+     positionPopup(field, dialog)
+ }
 
+function positionPopup(target, popup) {
      // Get the position of the field relative to the viewport
-     const fieldPos = field[0].getBoundingClientRect();
+     const targetPos = target[0].getBoundingClientRect();
      const windowHeight = $(window).height();
      const windowWidth = $(window).width();
 
      // Determine the vertical position
-     let dialogTop;
-     if (fieldPos.top > windowHeight / 2) {
-         dialogTop = fieldPos.top + window.scrollY - dialog.outerHeight();
+     let popupTop;
+     if ((targetPos.top + targetPos.height / 2) > windowHeight / 2) {
+         popupTop = targetPos.top + window.scrollY - popup.outerHeight();
      } else {
-         dialogTop = fieldPos.top + window.scrollY + fieldPos.height;
+         popupTop = targetPos.top + window.scrollY + targetPos.height;
      }
 
      // Determine the horizontal position
      let dialogLeft;
-     if (fieldPos.left > windowWidth / 2) {
-         dialogLeft = fieldPos.left + window.scrollX - dialog.outerWidth();
+     if ((targetPos.left + targetPos.width / 2) > windowWidth / 2) {
+         dialogLeft = targetPos.left + window.scrollX - popup.outerWidth();
      } else {
-         dialogLeft = fieldPos.left + window.scrollX + fieldPos.width;
+         dialogLeft = targetPos.left + window.scrollX + targetPos.width;
      }
 
      // Set the position of the dialog
-     dialog.css({
+     popup.css({
          position: 'absolute',
-         top: dialogTop,
+         top: popupTop,
          left: dialogLeft
      });
- }
+}
 
 function solution() {
   showDialog(false)
@@ -572,6 +584,7 @@ function onResize() {
     $('#buttons-large').show()
     $('.cell').css({ 'font-size': '22pt', width: '41px', height: '41px' })
     $('.mini').css('font-size', '9pt')
+    $('#hint-dialog').css('width', '235px')
   } else { // Small screen
     const cellwidth = Math.min(Math.floor(window.innerWidth / currentGridSize - 2), 41)
     $('#buttons-small').show()
@@ -580,6 +593,7 @@ function onResize() {
     $('.controls').css({ margin: '0px 2px' })
     $('.cell').css({ 'font-size': '17pt', width: `${cellwidth}px`, height: `${cellwidth}px` })
     $('.mini').css('font-size', '8pt')
+    $('#hint-dialog').css('width', '150px')
   }
 }
 

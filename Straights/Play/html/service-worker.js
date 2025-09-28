@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-const CACHE_NAME = 'v0.6.18-beta15';
+const CACHE_NAME = 'v0.6.18-beta17';
 const urlsToCache = [
     './',
     './favicon.ico',
