@@ -98,11 +98,6 @@ public sealed class WhiteFieldData
             throw new NotSolvableException($"Last value {n} cannot be removed");
         }
 
-        if (result)
-        {
-            System.Diagnostics.Debug.WriteLine($"Removed {n}, now {this}");
-        }
-
         return result;
     }
 
