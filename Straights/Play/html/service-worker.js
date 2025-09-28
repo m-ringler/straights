@@ -46,12 +46,11 @@ async function fetchFresh(url) {
     return result
 }
 
-async function _fetch(request)
-{
+async function _fetch(request) {
     const requestUrl = new URL(request.url);
 
     if (apiEndPoints.has(requestUrl.pathname)) {
-         // Always fetch from network for local API endpoints
+        // Always fetch from network for local API endpoints
         return await fetch(request);
     }
 
@@ -73,7 +72,7 @@ async function _fetch(request)
         return networkResponse
     }
 
-     // Non-HTTP(S) requests: just fetch
+    // Non-HTTP(S) requests: just fetch
     return await fetch(request)
 }
 
