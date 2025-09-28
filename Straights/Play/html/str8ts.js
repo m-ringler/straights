@@ -93,11 +93,7 @@ async function hint() {
 
     hint_count++
     $('#hint-counter').text(hint_count)
-    if (game.checkWrong(false)) {
-        return
-    }
-
-    if (game.checkWrong(true)) {
+    if (game.checkWrong(false) || game.checkWrong(true)) {
         return
     }
 
