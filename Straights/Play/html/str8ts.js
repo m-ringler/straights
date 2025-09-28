@@ -115,6 +115,10 @@ async function hint() {
         positionHintDialog()
         showDialog(dialogs.HINT)
     }
+    else if (hintResponse.message)
+    {
+        console.error("Failed to generate a hint:", hintResponse.message)
+    }
 }
 
 function closeHint() {
