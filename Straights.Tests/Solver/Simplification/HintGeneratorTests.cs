@@ -28,7 +28,8 @@ public class HintGeneratorTests
 
         // Assert
         return Verify(hint)
-            .AddExtraSettings(s => s.DefaultValueHandling = Argon.DefaultValueHandling.Include);
+            .AddExtraSettings(s => s.DefaultValueHandling = Argon.DefaultValueHandling.Include)
+            .UseStrictJson();
     }
 
     [Fact]

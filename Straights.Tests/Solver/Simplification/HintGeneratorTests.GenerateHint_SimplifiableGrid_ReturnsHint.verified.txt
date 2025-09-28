@@ -1,9 +1,0 @@
-﻿{
-  NumberToRemove: 9,
-  Location: {
-    X: 0,
-    Y: 2
-  },
-  Simplifier: ColumnRemoveForeignRanges,
-  IsRow: true
-}
