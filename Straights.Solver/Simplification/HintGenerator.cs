@@ -37,7 +37,7 @@ public sealed class HintGenerator(SimplifierStrength maxStrength)
             var columnSimplifiers = provider.GetNextSimplifiers();
             foreach (var simplifier in columnSimplifiers)
             {
-                foreach (var (data, isRow) in this.GetRowsAndColumns(grid))
+                foreach (var (data, isHorizontal) in GetRowsAndColumns(grid))
                 {
                     simplifier.Simplify(data);
                     bool hasChanged = changeDetector.HasChanged(grid);
@@ -52,7 +52,7 @@ public sealed class HintGenerator(SimplifierStrength maxStrength)
                             removedNumber,
                             index,
                             provider.GetType(simplifier),
-                            isRow);
+                            isHorizontal);
                     }
                 }
             }
@@ -68,7 +68,9 @@ public sealed class HintGenerator(SimplifierStrength maxStrength)
             .FirstOrDefault();
     }
 
-    private static FieldIndex GetChangedFieldIndex(Grid<SolverField> grid, StateComparer<int> changeDetector)
+    private static FieldIndex GetChangedFieldIndex(
+        Grid<SolverField> grid,
+        StateComparer<int> changeDetector)
     {
         var locations =
             from idx in grid.AllFieldIndices()
@@ -79,13 +81,14 @@ public sealed class HintGenerator(SimplifierStrength maxStrength)
         return locations.First();
     }
 
-    private IEnumerable<(SolverColumn Data, bool IsRow)> GetRowsAndColumns(SolverGrid grid)
+    private static IEnumerable<(SolverColumn Data, bool IsHorizontal)> GetRowsAndColumns(
+        SolverGrid grid)
     {
         var rows = from r in grid.Rows
-                   select (r, isRow: true);
+                   select (r, isHorizontal: true);
 
         var columns = from c in grid.Columns
-                      select (c, isRow: false);
+                      select (c, isHorizontal: false);
 
         return rows.Concat(columns);
     }

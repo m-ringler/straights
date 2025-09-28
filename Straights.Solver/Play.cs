@@ -75,7 +75,7 @@ public static class Play
 
     private static string GetJson(Hint hint)
     {
-        var direction = hint.IsRow ? "horizontal" : "vertical";
+        var direction = hint.IsHorizontal ? "horizontal" : "vertical";
         return
         $$"""
         {

@@ -11,9 +11,11 @@ namespace Straights.Solver.Simplification;
 /// <param name="NumberToRemove">The number that can be removed from the field's possibilities.</param>
 /// <param name="Location">The location of the field that can be simplified.</param>
 /// <param name="Simplifier">The simplifier that can be used.</param>
-/// <param name="IsRow">Whether the simplifier was applied to a row (true) or a column (false).</param>
+/// <param name="IsHorizontal">
+/// Whether the simplifier was applied in the horizontal (true) or a vertical (false) direction.
+/// </param>
 public record struct Hint(
     int NumberToRemove,
     FieldIndex Location,
     Type Simplifier,
-    bool IsRow);
+    bool IsHorizontal);
