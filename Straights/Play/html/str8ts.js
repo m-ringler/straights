@@ -150,18 +150,18 @@ function positionPopup(target, popup) {
     }
 
     // Determine the horizontal position
-    let dialogLeft;
+    let popupLeft;
     if ((targetPos.left + targetPos.width / 2) > windowWidth / 2) {
-        dialogLeft = targetPos.left + window.scrollX - popup.outerWidth();
+        popupLeft = targetPos.left + window.scrollX - popup.outerWidth();
     } else {
-        dialogLeft = targetPos.left + window.scrollX + targetPos.width;
+        popupLeft = targetPos.left + window.scrollX + targetPos.width;
     }
 
     // Set the position of the dialog
     popup.css({
         position: 'absolute',
         top: popupTop,
-        left: dialogLeft
+        left: popupLeft
     });
 }
 
