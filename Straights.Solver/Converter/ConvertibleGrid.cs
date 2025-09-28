@@ -62,6 +62,10 @@ public class ConvertibleGrid
             SolverGrid.FromFieldGrid(this.SolverFieldGrid);
     }
 
+    /// <summary>
+    /// Gets the 'square grid of
+    /// <see cref="SolverField"/>s' representation.
+    /// </summary>
     public Grid<SolverField> SolverFieldGrid
     {
         get => this.solverFieldGrid
@@ -69,29 +73,98 @@ public class ConvertibleGrid
             ?? BuilderToSolverGridConverter.ToSolverFields(this.builder!.GetFields());
     }
 
+    /// <summary>
+    /// Gets the text representation of the <see cref="Builder"/>.
+    /// </summary>
+    /// <remarks>
+    /// The builder text format is described
+    /// in <see cref="GridBuilderTextPersister"/>.
+    /// </remarks>
+    /// <returns>
+    /// The grid (excluding notes) as builder text.
+    /// </returns>
     public string ToBuilderText()
     {
         return this.Builder.ToString();
     }
 
+    /// <summary>
+    /// Gets a static HTML representation of the grid.
+    /// </summary>
+    /// <remarks>
+    /// Use this method to get an easily readable visual
+    /// representation of the grid.
+    /// </remarks>
+    /// <returns>
+    /// The grid (including notes if present) as a static
+    /// HTML document.
+    /// </returns>
     public string ToHtml()
     {
         var htmlRenderer = new HtmlGridRenderer();
         return htmlRenderer.GetString(this.SolverGrid.Grid);
     }
 
+    /// <summary>
+    /// Gets the JSON array representation of the grid (including notes).
+    /// </summary>
+    /// <remarks>
+    /// The JSON array representation is the JSON serialization
+    /// of the 3D integer array representation described in
+    /// <see cref="GridConverter.Convert(int[][][])"/>.
+    /// </remarks>
+    /// <returns>
+    /// The JSON array representation of the grid.
+    /// </returns>
     public string ToJson()
     {
         return GridToIntArraysConverter.ToJson(
                 this.SolverGrid.Grid);
     }
 
+    /// <summary>
+    /// Gets the integer array representation of the grid (including notes).
+    /// </summary>
+    /// <remarks>
+    /// The 3D integer array representation is
+    /// described in
+    /// <see cref="GridConverter.Convert(int[][][])"/>.
+    /// </remarks>
+    /// <returns>
+    /// The JSON array representation of the grid.
+    /// </returns>
     public int[][][] ToIntArrays()
     {
         return GridToIntArraysConverter.ToIntArrays(
             this.SolverGrid.Grid);
     }
 
+    /// <summary>
+    /// Gets a value indicating whether the grid can be
+    /// written to the specified file.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// This method looks at the extension of
+    /// <paramref name="file"/> to determine wether the format is
+    /// supported. It does not check whether the file
+    /// is writable.
+    /// </para>
+    /// <para>
+    /// The file format is determined by the file extension.
+    /// Supported formats are:
+    /// <list type="bullet">
+    /// <item>.txt</item>
+    /// <description>The builder text format.</description>
+    /// <item>.json</item>
+    /// <description>The JSON array format.</description>
+    /// </list>
+    /// </para>
+    /// </remarks>
+    /// <param name="file">The file to write to.</param>
+    /// <returns>
+    /// True if the file can be written, false otherwise.
+    /// </returns>
     public virtual bool CanWriteTo(IFileInfo file)
     {
         var fs = file.FileSystem;
@@ -105,6 +178,21 @@ public class ConvertibleGrid
         };
     }
 
+    /// <summary>
+    /// Writes the grid to the specified file.
+    /// </summary>
+    /// <param name="file">
+    /// The file to write to.
+    /// </param>
+    /// <remarks>
+    ///  The file will be overwritten if it exists.
+    /// </remarks>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the file format inferred from the file extension is not supported.
+    /// </exception>
+    /// <exception cref="IOException">
+    /// Thrown when an I/O error occurs.
+    /// </exception>
     public virtual void WriteTo(IFileInfo file)
     {
         var fs = file.FileSystem;

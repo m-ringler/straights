@@ -19,7 +19,12 @@ public static class GridConverter
     /// Parses a grid from a builder text representation.
     /// </summary>
     /// <param name="builderText">The builder text to parse.</param>
+    /// <remarks>
+    /// The builder text format is described
+    /// in <see cref="GridBuilderTextPersister"/>.
+    /// </remarks>
     /// <returns>A convertible grid.</returns>
+    /// <seealso cref="GridBuilderTextPersister"/>
     public static ConvertibleGrid ParseBuilderText(string builderText)
     {
         var loader = new GridBuilderTextPersister();
@@ -51,20 +56,27 @@ public static class GridConverter
     /// <param name="intArrays">The 3D integer array to convert.</param>
     /// <returns>A convertible grid.</returns>
     /// <remarks>
+    /// <para>
     /// The integer array representation can represent unsolved, solved, or
     /// partially solved grids.
-    /// <para/>
-    /// In the integer array representaion, each field is represented as
-    /// an integer array.
+    /// </para>
+    /// <para>
+    /// In the integer array representaion:
+    /// a grid is an array of rows,
+    /// a row is an array of fields,
+    /// and each field is represented as an integer array.
+    /// </para>
+    /// <para>
     /// A solved white field is represented as an array containing a single
     /// positive number.
     /// A partially solved white field is represented as an array containing
     /// all remaining possible numbers.
-    /// An unsolved white field is represented as an empty array or as an array
+    /// An unsolved white field is represented as an empty array, or as an array
     /// containing all possible numbers.
     /// A black number field is represented as an array containing a single
     /// negative number.
     /// A black blank field is represented as an array containing a single zero.
+    /// </para>
     /// </remarks>
     public static ConvertibleGrid Convert(int[][][] intArrays)
     {
