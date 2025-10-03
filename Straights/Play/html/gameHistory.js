@@ -23,7 +23,7 @@ export function saveGameState(key, game) {
 }
 
 export function restoreGameState(key, game) {
-  const savedGameState = loadGameStateData(gameCode)
+  const savedGameState = loadGameStateData(key)
   if (savedGameState) {
     game.restoreState(savedGameState.data)
   }
