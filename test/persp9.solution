@@ -7,7 +7,18 @@
 │ ⠿⠇ │ ⠿⠇ │    │ ⠿⠇ │ ⠿⠇ │ ⠿⠇ │    │ 6  │ ⠿⠇ │
 │    │ ⠿⠇ │ ⠿⠇ │ ⠿⠇ │    │ ⠿⠇ │ ⠿⠇ │    │ ⠿⠇ │
 │ 4  │ ⠿⠇ │ ⠿⠇ │    │    │ ⠿⠇ │ ⠿⠇ │    │    │
-Iteration 1Iteration 2Iteration 3Iteration 4Iteration 5Iteration 6Iteration 7Iteration 8Iteration 9Iteration 10Iteration 11Iteration 12Iteration 13
+
+Iteration 1
+Iteration 2
+Iteration 3
+Iteration 4
+Iteration 5
+Iteration 6
+Iteration 7
+Iteration 8
+Iteration 9
+Iteration 10
+Iteration 11
 │   │   │ 9 │ 8 │ 7 │   │ 5 │ 4 │   │
 │ 2 │ 9 │ 8 │ 7 │   │ 6 │ 4 │ 5 │   │
 │ 3 │ 2 │ 1 │ 5 │ 6 │ 7 │   │ 9 │ 8 │
@@ -17,4 +28,3 @@
 │ 7 │ 8 │   │ 3 │ 2 │ 1 │   │ 6 │ 5 │
 │   │ 3 │ 5 │ 4 │   │ 2 │ 1 │   │ 6 │
 │ 4 │ 7 │ 6 │   │   │ 3 │ 2 │   │   │
-
