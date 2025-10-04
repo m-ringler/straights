@@ -95,10 +95,20 @@ public partial class SolveCommandTests
         actual = actual[..actual.LastIndexOf(Environment.NewLine, StringComparison.Ordinal)].Trim();
 
         // ASSERT
-        var expected = fs.File.ReadAllText(item.ExpectedSolutionPath.FullName).Trim().ReplaceLineEndings();
-        _ = actual.Should().Be(
-            expected,
-            because: $"We expect solving {item.GridPath} to yield the text in {item.ExpectedSolutionPath}");
+        try
+        {
+            var expected = fs.File.ReadAllText(item.ExpectedSolutionPath.FullName).Trim().ReplaceLineEndings();
+            _ = actual.Should().Be(
+                expected,
+                because: $"We expect solving {item.GridPath} to yield the text in {item.ExpectedSolutionPath}");
+        }
+        catch
+        {
+            var received = item.ExpectedSolutionPath.FullName; // + ".received.txt";
+            fs.File.WriteAllText(received, actual);
+            System.Console.WriteLine("Writing actual to " + received);
+            throw;
+        }
     }
 
     private static IDirectoryInfo? GetTestDataFolder([CallerFilePath] string? callerFilePath = null)
