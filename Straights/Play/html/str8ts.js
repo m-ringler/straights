@@ -115,7 +115,7 @@ async function hint() {
             ruleTarget = ruleType == 'Block'
                 ? `${hintData.direction} block`
                 : ((hintData.direction == 'horizontal') ? "row" : "column")
-            $('#hint-text').text(`Hint: ${hintData.number} can be removed by applying the "${ruleName}" rule to the ${ruleTarget}.`)
+            $('#hint-text').html(`Hint: ${hintData.number} can be removed by applying the <a href="https://github.com/m-ringler/straights/wiki/Rules-of-Str8ts#${hintData.rule}" target="rules">${ruleName} rule</a> to the ${ruleTarget}.`)
             _positionHintDialog()
             showDialog(dialogs.HINT)
         }

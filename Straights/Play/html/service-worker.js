@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-const CACHE_NAME = 'v0.6.19-beta1';
+const CACHE_NAME = 'v0.6.19-beta5';
 const urlsToCache = [
     './',
     './favicon.ico',
@@ -29,6 +29,7 @@ const urlsToCache = [
     './favicon/maskable_icon_x192.png',
     './favicon/maskable_icon_x512.png',
     './site.webmanifest',
+    'https://github.com/m-ringler/straights/wiki/Rules-of-Str8ts',
     'https://fonts.googleapis.com/css2?family=Nunito:wght@400;600&display=swap',
     'https://fonts.gstatic.com/s/nunito/v31/XRXV3I6Li01BKofINeaB.woff2',
     'https://fonts.gstatic.com/s/nunito/v31/XRXV3I6Li01BKofINeaBTMnFcQ.woff2'

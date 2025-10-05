@@ -203,13 +203,13 @@ This rule follows directly from the [consecutive numbers](#BlockConsecutiveNumbe
 
 <h3 id="BlockNFieldsWithNValuesInCertainRange">N Fields with N Values in Certain Range</h3>
 
-<h4>Definitions</h4>
+<h4 id="certain-range">Definitions</h4>
 
 For a block $B$ with $k$ fields,
 
 * we define the set of remaining possible values $V$ as the union of the remaining possible values of all fields in the block, and
-* we define the set of possible solution ranges $R$ as the set of all integer intervals of length $k$ that are contained in $V$,
-* we define the <span id="certain-range">certain range</span> $\mathcal{R}$ of the block as the set intersection of all those intervals.
+* we define the set of possible solution ranges $R$ as the set of all integer intervals of length $k$ that are contained in $V$, and
+* we define the _certain range_ $\mathcal{R}$ of the block as the set intersection of all those intervals.
 
 <h4>Applicable if</h4>
 
