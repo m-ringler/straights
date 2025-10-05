@@ -1,6 +1,6 @@
 <h1 id="BasicRulesOfStr8ts">Basic Rules of Str8ts</h1>
 
-A Str8ts grid is a square grid of $n \times n$ **fields**. The fields are either black or white, and initially either blank or filled with a single integer number. A numbered white field is a *known* white field, a blank white field is an *unknown* white field. Initially, the unknown white fields can have any value v in the range from $1$ to $n$ (which we write as $[1, n]$). Only the unknown white fields can be edited, all other fields are fixed.
+A Str8ts grid is a square grid of $n \times n$ **fields**. The fields are either black or white, and initially either blank or filled with a single integer number. A numbered white field is a *known* white field, a blank white field is an *unknown* white field. Initially, the unknown white fields can have any value $v$ in the range from $1$ to $n$ (which we write as $[1, n]$). Only the unknown white fields can be edited, all other fields are fixed.
 
 The goal of the game is to solve the unknown white fields; that is, to reduce the possible values of each white field to a single value. A grid always has a solution; usually a unique solution. We will not use the uniqueness of the solution for our simplification rules below.
 

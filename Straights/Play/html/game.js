@@ -412,6 +412,12 @@ export class Game {
 
         let finished = true
         this.#forEachField(field => {
+            if (!field.user && field.notes.size == 1)
+            {
+                field.user = field.notes.values().next().value
+                field.render()
+            }
+
             if (!field.isSolved()) {
                 finished = false
             }
