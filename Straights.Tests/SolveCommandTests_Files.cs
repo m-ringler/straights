@@ -104,7 +104,7 @@ public partial class SolveCommandTests
         }
         catch
         {
-            var received = item.ExpectedSolutionPath.FullName; // + ".received.txt";
+            var received = item.ExpectedSolutionPath.FullName + ".received.txt";
             fs.File.WriteAllText(received, actual);
             System.Console.WriteLine("Writing actual to " + received);
             throw;
