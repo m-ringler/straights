@@ -303,8 +303,8 @@ function _loadSettings() {
     }
 
     try {
-        _generateGridSize = loadSetting('grid-size-slider', 'gridSize', DEFAULT_GRID_SIZE)
-        _difficulty = loadSetting('difficulty-slider', 'difficulty', DEFAULT_DIFFICULTY)
+        _generateGridSize = loadSetting('grid-size-slider', 'generate.gridSize', DEFAULT_GRID_SIZE)
+        _difficulty = loadSetting('difficulty-slider', 'generate.difficulty', DEFAULT_DIFFICULTY)
     } catch (error) {
         console.warn('Failed to load settings:', error, "Using defaults.")
         _generateGridSize = DEFAULT_GRID_SIZE
@@ -315,13 +315,13 @@ function _loadSettings() {
 function changeDifficulty() {
     _difficulty = Number($('#difficulty-slider').val())
     $('#difficulty').text(_difficulty)
-    localStorage.setItem('difficulty', _difficulty)
+    localStorage.setItem('generate.difficulty', _difficulty)
 }
 
 function changeGenerateSize() {
     _generateGridSize = Number($('#grid-size-slider').val())
     $('#grid-size').text(_generateGridSize)
-    localStorage.setItem('gridSize', _generateGridSize)
+    localStorage.setItem('generate.gridSize', _generateGridSize)
 }
 
 async function _startGame() {
