@@ -409,7 +409,7 @@ and the consistency-refined value set of block 1 is
 W_1 = \bigcup C_1 = [2, 6]
 ~~~
 
-And because $ V_1 \setminus W_1 = \{ 7 \} $, we can remove the number 7 from the first block to get
+And because $V_1 \setminus W_1 = \{ 7 \}$, we can remove the number 7 from the first block to get
 
 ~~~txt
 ┌─────────┬─────┬─────────┐ ┌─────────┬─────┐
