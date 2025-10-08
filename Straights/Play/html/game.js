@@ -312,6 +312,7 @@ export class Game {
     constructor($, darkMode, size = 0) {
         this.$ = $
         this.colors = darkMode ? Game.gameColorsDark : Game.gameColorsLight
+        this.darkMode = darkMode
         this.size = size
         this.data = []
         this.activeFieldIndex = null
@@ -548,7 +549,7 @@ export class Game {
     }
 
     #parseGameV002(binary) {
-        const result = new Game(this.$, _darkMode, 9)
+        const result = new Game(this.$, this.darkMode, 9)
         if (binary.length < (6 * 81) || binary.length > (6 * 81 + 8)) return // Invalid data
         for (let i = 0; i < 81; i++) {
             const subBinary = binary.substring(i * 6, (i + 1) * 6)
