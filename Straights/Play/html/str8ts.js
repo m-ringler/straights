@@ -46,7 +46,7 @@ let _hintField
 let _generate
 let _generateHint
 
-const modulePromise = _importModules()
+const _modulePromise = _importModules()
 
 async function _importModules() {
     const undoStackModule = await import('./undoStack.js')
@@ -536,7 +536,7 @@ async function copyCurrentLink() {
 }
 
 $(document).ready(async function () {
-    await modulePromise
+    await _modulePromise
     _createGrid()
     _onResize()
     _loadSettings()
