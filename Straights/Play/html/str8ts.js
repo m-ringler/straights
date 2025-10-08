@@ -343,7 +343,7 @@ async function _startGame() {
             _renderCounters()
         }
     }
-    
+
     if (!hasGame) {
         await loadNewGame()
     }
