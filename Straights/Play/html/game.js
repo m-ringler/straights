@@ -438,7 +438,7 @@ export class Game {
         }
 
         if (this.isSolved) {
-            return this.result(true, false)
+            return getResult(true, false)
         }
 
         this.hint_count++
