@@ -325,19 +325,26 @@ function changeGenerateSize() {
 }
 
 async function _startGame() {
+    let hasGame = false
     if (_gameCode && _gameCode.length > _minCodeSize) {
         _undoStack.clear()
         $('.container').removeClass('finished')
         showDialog(false)
 
         _game = _game.parseGame(_gameCode)
-        _changeGridSize(_game.size)
+        if (_game) {
+            hasGame = true
 
-        _gameHistory.restoreGameState(_gameCode, _game)
+            _changeGridSize(_game.size)
 
-        _restartTimer()
-        _renderCounters()
-    } else {
+            _gameHistory.restoreGameState(_gameCode, _game)
+
+            _restartTimer()
+            _renderCounters()
+        }
+    }
+    
+    if (!hasGame) {
         await loadNewGame()
     }
 }

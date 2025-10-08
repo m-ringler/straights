@@ -547,28 +547,6 @@ export class Game {
         return result
     }
 
-    #parseGameV001(binary) {
-        const result = new Game(this.$, _darkMode, 9)
-        if (binary.length < (6 * 81)) return // Invalid data
-        for (let i = 0; i < 81; i++) {
-            const subBinary = binary.substring(i * 6, (i + 1) * 6)
-            const mode = parseInt(subBinary.substring(0, 2), 2)
-            const value = parseInt(subBinary.substring(2, 6), 2) + 1
-            result.#setValues(Math.floor(i / 9), i % 9, mode, value)
-        }
-        binary = binary.substring(6 * 81)
-        let counter = 0
-        while (binary.length >= 7 && counter < (4 - str8ts_difficulty) * 3.5) {
-            const position = parseInt(binary.substring(0, 7), 2)
-            result.get(Math.floor(position / 9), position % 9).mode = modes.WHITEKNOWN
-            result.get(Math.floor(position / 9), position % 9).render()
-            binary = binary.substring(7)
-            counter++
-        }
-
-        return result
-    }
-
     #parseGameV002(binary) {
         const result = new Game(this.$, _darkMode, 9)
         if (binary.length < (6 * 81) || binary.length > (6 * 81 + 8)) return // Invalid data
@@ -600,7 +578,8 @@ export class Game {
         const decoded = this.#decode(code)
         switch (decoded.encodingVersion) {
             case 1:
-                return this.#parseGameV001(decoded.binary)
+                // not supported any more
+                return null
             case 128:
                 // 0b10000000: arbitrary size game encoding
                 return this.#parseGameV128(decoded.binary)
