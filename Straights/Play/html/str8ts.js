@@ -2,19 +2,24 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-const buttonColorsLight = {
-    BUTTONDOWN: '#335',
-    BUTTONUP: '#b1cffc'
+// Global Constants
+function _getButtonColors(darkMode) {
+    const buttonColorsLight = {
+        BUTTONDOWN: '#335',
+        BUTTONUP: '#b1cffc'
+    }
+
+    const buttonColorsDark = {
+        BUTTONDOWN: '#e7d9cdff',/* color-button-active */
+        BUTTONUP: '#555'  /* color-button-background */
+    }
+
+    return darkMode ? buttonColorsDark : buttonColorsLight
 }
 
-const buttonColorsDark = {
-    BUTTONDOWN: '#e7d9cdff',/* color-button-active */
-    BUTTONUP: '#555'  /* color-button-background */
-}
+const _darkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
 
-const darkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
-
-const buttonColors = darkMode ? buttonColorsDark : buttonColorsLight
+const _buttonColors = _getButtonColors(_darkMode)
 
 const dialogs = { WELCOME: 1, GENERATED: 2, LOADING: 3, SOLUTION: 4, RESTART: 5, ABOUT: 6, HINT: 7 }
 const MIN_GRID_SIZE = 4
@@ -22,120 +27,119 @@ const MAX_GRID_SIZE = 12
 const DEFAULT_GRID_SIZE = 9
 const DEFAULT_DIFFICULTY = 3
 
-// Variables
-let starttime
-let timer
-let check_count = 0
-let hint_count = 0
-let noteMode = false
-let game
-let minCodeSize
-let gameCode
-let gameUrl
-let difficulty = DEFAULT_DIFFICULTY
-let currentGridSize = 12
-let generateGridSize = DEFAULT_GRID_SIZE
-let undoStack
-let gameHistory
-let generate
-let generateHint
-let hintField
+// Global Variables
+let _starttime
+let _timer
+let _noteMode = false
+let _minCodeSize
+let _game
+let _gameCode
+let _gameHistory
+let _gameUrl
+let _difficulty = DEFAULT_DIFFICULTY
+let _currentGridSize = 12
+let _generateGridSize = DEFAULT_GRID_SIZE
+let _undoStack
+let _hintField
 
-const modulePromise = importModules()
+// imported functions
+let _generate
+let _generateHint
 
-async function importModules() {
+const _modulePromise = _importModules()
+
+async function _importModules() {
     const undoStackModule = await import('./undoStack.js')
-    undoStack = new undoStackModule.UndoStack(updateUndoButton)
+    _undoStack = new undoStackModule.UndoStack(_renderUndoButton)
 
     const gameModule = await import('./game.js')
-    game = new gameModule.Game($, darkMode)
-    minCodeSize = gameModule.minCodeSize
+    _game = new gameModule.Game($, _darkMode)
+    _minCodeSize = gameModule.minCodeSize
 
-    gameHistory = await import('./gameHistory.js')
+    _gameHistory = await import('./gameHistory.js')
 
     const generateModule = await import('./generate-str8ts.js')
     loadedFunctions = generateModule.load_generate()
-    generate = loadedFunctions.generate
-    generateHint = loadedFunctions.generateHint
+    _generate = loadedFunctions.generate
+    _generateHint = loadedFunctions.generateHint
 }
 
 // Button Functions
 function restart() {
     showDialog(false)
-    game.restart()
-    undoStack.clear()
+    _game.restart()
+    _undoStack.clear()
 }
 
 function toggleNoteMode() {
-    noteMode = !noteMode
-    const color = (noteMode) ? buttonColors.BUTTONDOWN : buttonColors.BUTTONUP
+    _noteMode = !_noteMode
+    const color = (_noteMode) ? _buttonColors.BUTTONDOWN : _buttonColors.BUTTONUP
     $('#notes').css('background-color', color)
 }
 
-function check() {
-    game.checkSolved()
-    if (game.isSolved) {
-        return
-    }
+function _renderCounters() {
+    $('#check-counter').text(_game.check_count)
+    $('#hint-counter').text(_game.hint_count)
+}
 
-    check_count++
-    $('#check-counter').text(check_count)
-    return game.checkWrong()
+function check() {
+    _game.check()
+    _renderCounters()
+    _saveState()
 }
 
 async function hint() {
     closeHint()
 
-    game.checkSolved()
-    if (game.isSolved) {
-        return
+    const checkResult = _game.checkForHint()
+    _renderCounters()
+
+    if (!(checkResult.isSolved || checkResult.isWrong)) {
+        await generateAndDisplayHint()
     }
 
-    hint_count++
-    $('#hint-counter').text(hint_count)
-    if (game.checkWrong(false) || game.checkWrong(true)) {
-        return
-    }
+    _saveState()
 
-    const hintResponse = await generateHint(game.toJsonArray())
-    if (hintResponse.status === 0 && hintResponse.message) {
-        const hintData = JSON.parse(hintResponse.message)
-        hintField = game.get(hintData.y, hintData.x)
-        hintField.setHint(hintData.number)
+    async function generateAndDisplayHint() {
+        const hintResponse = await _generateHint(_game.toJsonArray())
+        if (hintResponse.status === 0 && hintResponse.message) {
+            const hintData = JSON.parse(hintResponse.message)
+            _hintField = _game.get(hintData.y, hintData.x)
+            _hintField.setHint(hintData.number)
 
-        // hintData.rule is either ColumnNameInPascalCase
-        // or BlockNameInPascalCase.
-        const ruleWords = hintData.rule.split(/(?=[A-Z])/);
-        ruleType = ruleWords[0]
-        ruleName = ruleWords.slice(1).join(" ")
-        ruleTarget = ruleType == 'Block'
-            ? `${hintData.direction} block`
-            : ((hintData.direction == 'horizontal') ? "row" : "column")
-        $('#hint-text').text(`Hint: ${hintData.number} can be removed by applying the "${ruleName}" rule to the ${ruleTarget}.`)
-        positionHintDialog()
-        showDialog(dialogs.HINT)
-    }
-    else if (hintResponse.message)
-    {
-        console.error("Failed to generate a hint:", hintResponse.message)
+            // hintData.rule is either ColumnNameInPascalCase
+            // or BlockNameInPascalCase.
+            const ruleWords = hintData.rule.split(/(?=[A-Z])/)
+            ruleType = ruleWords[0]
+            ruleName = ruleWords.slice(1).join(" ")
+            ruleTarget = ruleType == 'Block'
+                ? `${hintData.direction} block`
+                : ((hintData.direction == 'horizontal') ? "row" : "column")
+            $('#hint-text').html(`Hint: ${hintData.number} can be removed by applying the <a href="https://github.com/m-ringler/straights/wiki/Rules-of-Str8ts#${hintData.rule}" target="rules">${ruleName} rule</a> to the ${ruleTarget}.`)
+            _positionHintDialog()
+            showDialog(dialogs.HINT)
+        }
+        else if (hintResponse.message) {
+            console.error("Failed to generate a hint:", hintResponse.message)
+        }
     }
 }
 
 function closeHint() {
-    if (hintField) {
-        hintField.setHint(undefined)
-        hintField = null
+    if (_hintField) {
+        _hintField.setHint(undefined)
+        _hintField = null
         showDialog(false)
     }
 }
 
-function positionHintDialog() {
-    const field = hintField.getElement()
+function _positionHintDialog() {
+    const field = _hintField.getElement()
     const dialog = $('#hint-dialog');
-    positionPopup(field, dialog)
+    _positionPopup(field, dialog)
 }
 
-function positionPopup(target, popup) {
+function _positionPopup(target, popup) {
     // Get the position of the field relative to the viewport
     const targetPos = target[0].getBoundingClientRect();
     const windowHeight = $(window).height();
@@ -167,68 +171,68 @@ function positionPopup(target, popup) {
 
 function solution() {
     showDialog(false)
-    clearInterval(timer)
-    game.showSolution()
-    undoStack.clear()
+    clearInterval(_timer)
+    _game.showSolution()
+    _undoStack.clear()
 }
 
 function undo() {
-    if (undoStack.length > 0 && !game.isSolved) {
-        const field = undoStack.pop()
-        gameField = game.get(field.row, field.col)
+    if (_undoStack.length > 0 && !_game.isSolved) {
+        const field = _undoStack.pop()
+        const gameField = _game.get(field.row, field.col)
         gameField.copyFrom(field)
         gameField.wrong = false
-        game.selectCell(field.row, field.col)
+        _game.selectCell(field.row, field.col)
         gameField.render()
     }
 }
 
-function updateUndoButton(length) {
-    const $undo = $('#undo')
-    if (length == 0 || game.isSolved) {
-        $undo.prop('disabled', true)
-        $undo.attr('disabled', 'disabled') // Ensure attribute is present for CSS to update
+function _renderUndoButton(length) {
+    const undoButton = $('#undo')
+    if (length == 0 || _game.isSolved) {
+        undoButton.prop('disabled', true)
+        undoButton.attr('disabled', 'disabled') // Ensure attribute is present for CSS to update
     } else {
-        $undo.prop('disabled', false)
-        $undo.removeAttr('disabled') // Ensure attribute is removed for CSS to update
+        undoButton.prop('disabled', false)
+        undoButton.removeAttr('disabled') // Ensure attribute is removed for CSS to update
     }
 }
 
 // General Functions
-function changeGridSize(newGridSize) {
-    if (newGridSize == currentGridSize) {
+function _changeGridSize(newGridSize) {
+    if (newGridSize == _currentGridSize) {
         return
     }
 
-    currentGridSize = Math.min(newGridSize, MAX_GRID_SIZE)
-    currentGridSize = Math.max(currentGridSize, MIN_GRID_SIZE)
-    showHideButtonsAndCells()
+    _currentGridSize = Math.min(newGridSize, MAX_GRID_SIZE)
+    _currentGridSize = Math.max(_currentGridSize, MIN_GRID_SIZE)
+    _showHideButtonsAndCells()
 }
 
-function showHideButtonsAndCells() {
-    for (let i = 1; i <= currentGridSize; i++) {
+function _showHideButtonsAndCells() {
+    for (let i = 1; i <= _currentGridSize; i++) {
         $(`td[data-button="bn${i}"]`).show()
     }
 
-    for (let i = currentGridSize + 1; i <= MAX_GRID_SIZE; i++) {
+    for (let i = _currentGridSize + 1; i <= MAX_GRID_SIZE; i++) {
         $(`td[data-button="bn${i}"]`).hide()
     }
 
-    for (let r = 0; r < currentGridSize; r++) {
+    for (let r = 0; r < _currentGridSize; r++) {
         $('#r' + r).show()
-        for (let c = 0; c < currentGridSize; c++) {
+        for (let c = 0; c < _currentGridSize; c++) {
             $(`#ce${r}_${c}`).show()
         }
-        for (let c = currentGridSize; c < MAX_GRID_SIZE; c++) {
+        for (let c = _currentGridSize; c < MAX_GRID_SIZE; c++) {
             $(`#ce${r}_${c}`).hide()
         }
     }
-    for (let r = currentGridSize; r < MAX_GRID_SIZE; r++) {
+    for (let r = _currentGridSize; r < MAX_GRID_SIZE; r++) {
         $('#r' + r).hide()
     }
 }
 
-function setup() {
+function _createGrid() {
     for (let r = 0; r < MAX_GRID_SIZE; r++) {
         let row = `<tr class="row" id="r${r}" row="${r}">`
         for (let c = 0; c < MAX_GRID_SIZE; c++) {
@@ -239,17 +243,17 @@ function setup() {
     }
 }
 
-function restartTimer() {
-    starttime = (new Date()).getTime()
-    timer = setInterval(function () {
-        const diff = (new Date()).getTime() - starttime
+function _restartTimer() {
+    _starttime = (new Date()).getTime()
+    _timer = setInterval(function () {
+        const diff = (new Date()).getTime() - _starttime
         const minutes = Math.floor(diff / 60000)
         const seconds = Math.floor(diff / 1000 - minutes * 60)
         $('#time').text(((minutes < 10) ? '0' : '') + minutes + ':' + ((seconds < 10) ? '0' : '') + seconds)
     }, 1000)
 }
 
-function getURLParameter(name) {
+function _getURLParameter(name) {
     if (!window.location.search) return null
     const urlParams = new URLSearchParams(window.location.search)
     return urlParams.get(name)
@@ -257,14 +261,14 @@ function getURLParameter(name) {
 
 async function loadNewGame() {
     showDialog(dialogs.LOADING)
-    clearInterval(timer)
+    clearInterval(_timer)
     $('#generate-button').prop('disabled', true)
     try {
-        const data = await generate(generateGridSize, difficulty)
-        if (data.status === 0 && data.message.length > minCodeSize) {
+        const data = await _generate(_generateGridSize, _difficulty)
+        if (data.status === 0 && data.message.length > _minCodeSize) {
             console.log('Game:', data.message)
-            gameUrl = window.location.href.split('?')[0] + '?code=' + data.message
-            gameCode = data.message
+            _gameUrl = window.location.href.split('?')[0] + '?code=' + data.message
+            _gameCode = data.message
             showDialog(dialogs.GENERATED)
             return
         } else {
@@ -277,7 +281,7 @@ async function loadNewGame() {
     $('#generate-button').prop('disabled', false)
 }
 
-function loadSettings() {
+function _loadSettings() {
     function loadSetting(sliderId, storageKey, defaultValue) {
         const slider = $(`#${sliderId}`)
         const storedValue = localStorage.getItem(storageKey)
@@ -299,44 +303,48 @@ function loadSettings() {
     }
 
     try {
-        generateGridSize = loadSetting('grid-size-slider', 'gridSize', DEFAULT_GRID_SIZE)
-        difficulty = loadSetting('difficulty-slider', 'difficulty', DEFAULT_DIFFICULTY)
+        _generateGridSize = loadSetting('grid-size-slider', 'generate.gridSize', DEFAULT_GRID_SIZE)
+        _difficulty = loadSetting('difficulty-slider', 'generate.difficulty', DEFAULT_DIFFICULTY)
     } catch (error) {
         console.warn('Failed to load settings:', error, "Using defaults.")
-        generateGridSize = DEFAULT_GRID_SIZE
-        difficulty = DEFAULT_DIFFICULTY
+        _generateGridSize = DEFAULT_GRID_SIZE
+        _difficulty = DEFAULT_DIFFICULTY
     }
 }
 
 function changeDifficulty() {
-    difficulty = Number($('#difficulty-slider').val())
-    $('#difficulty').text(difficulty)
-    localStorage.setItem('difficulty', difficulty)
+    _difficulty = Number($('#difficulty-slider').val())
+    $('#difficulty').text(_difficulty)
+    localStorage.setItem('generate.difficulty', _difficulty)
 }
 
 function changeGenerateSize() {
-    generateGridSize = Number($('#grid-size-slider').val())
-    $('#grid-size').text(generateGridSize)
-    localStorage.setItem('gridSize', generateGridSize)
+    _generateGridSize = Number($('#grid-size-slider').val())
+    $('#grid-size').text(_generateGridSize)
+    localStorage.setItem('generate.gridSize', _generateGridSize)
 }
 
-async function startGame() {
-    if (gameCode && gameCode.length > minCodeSize) {
-        undoStack.clear()
-        check_count = 0
-        hint_count = 0
-        $('#check-counter').text(check_count)
-        $('#hint-counter').text(hint_count)
+async function _startGame() {
+    let hasGame = false
+    if (_gameCode && _gameCode.length > _minCodeSize) {
+        _undoStack.clear()
         $('.container').removeClass('finished')
         showDialog(false)
 
-        game = game.parseGame(gameCode)
-        changeGridSize(game.size)
+        _game = _game.parseGame(_gameCode)
+        if (_game) {
+            hasGame = true
 
-        gameHistory.restoreGameState(gameCode, game)
+            _changeGridSize(_game.size)
 
-        restartTimer()
-    } else {
+            _gameHistory.restoreGameState(_gameCode, _game)
+
+            _restartTimer()
+            _renderCounters()
+        }
+    }
+
+    if (!hasGame) {
         await loadNewGame()
     }
 }
@@ -368,18 +376,18 @@ function showDialog(dialog) {
                 $('#welcome-dialog').show()
                 break
             case dialogs.GENERATED:
-                window.history.pushState({}, '', gameUrl)
-                startGame()
+                window.history.pushState({}, '', _gameUrl)
+                _startGame()
                 break
             case dialogs.SOLUTION:
-                if (!game.isSolved) {
+                if (!_game.isSolved) {
                     $('#solution-dialog').show()
                 } else {
                     $('.dialog-outer-container').hide()
                 }
                 break
             case dialogs.RESTART:
-                if (!game.isSolved) {
+                if (!_game.isSolved) {
                     $('#restart-dialog').show()
                 } else {
                     $('.dialog-outer-container').hide()
@@ -398,15 +406,15 @@ function showDialog(dialog) {
     }
 }
 
-function onKeyDown(e) {
-    if (game.isSolved) return
+function _onKeyDown(e) {
+    if (_game.isSolved) return
 
     let handled = false
     const key = e.key
-    if (handleCursorKey(e)) {
+    if (_handleCursorKey(e)) {
         handled = true
     } else if (key >= '0' && key <= '9') {
-        handleNumberKey(Number(key))
+        _handleNumberKey(Number(key))
         handled = true
     } else if (key == 'n') {
         toggleNoteMode()
@@ -415,7 +423,7 @@ function onKeyDown(e) {
         undo()
         handled = true
     } else if (key === 'Backspace' || key === 'Delete') {
-        handleDelete()
+        _handleDelete()
         handled = true
     }
 
@@ -424,19 +432,19 @@ function onKeyDown(e) {
     }
 }
 
-function handleCursorKey(e) {
+function _handleCursorKey(e) {
     switch (e.which) {
         case 37: // left
-            game.moveSelection(-1, 0)
+            _game.moveSelection(-1, 0)
             break
         case 38: // up
-            game.moveSelection(0, -1)
+            _game.moveSelection(0, -1)
             break
         case 39: // right
-            game.moveSelection(1, 0)
+            _game.moveSelection(1, 0)
             break
         case 40: // down
-            game.moveSelection(0, 1)
+            _game.moveSelection(0, 1)
             break
         default:
             return false
@@ -445,70 +453,74 @@ function handleCursorKey(e) {
     return true
 }
 
-let firstDigit = null
-let digitTimer = null
-const twoDigitTimeout = 500
-function handleNumberKey(num) {
-    if (firstDigit == null) {
-        if (currentGridSize < 10 || num !== 1) {
-            handleNumberInput(num)
+let _firstDigit = null
+let _digitTimer = null
+const _twoDigitTimeout = 500
+function _handleNumberKey(num) {
+    if (_firstDigit == null) {
+        if (_currentGridSize < 10 || num !== 1) {
+            _handleNumberInput(num)
         } else {
-            firstDigit = num
-            digitTimer = setTimeout(() => {
-                handleNumberInput(firstDigit)
-                firstDigit = null
-            }, twoDigitTimeout)
+            _firstDigit = num
+            _digitTimer = setTimeout(() => {
+                _handleNumberInput(_firstDigit)
+                _firstDigit = null
+            }, _twoDigitTimeout)
         }
     } else {
-        clearTimeout(digitTimer)
-        const firstNum = firstDigit
-        const combinedNum = firstDigit * 10 + num
-        firstDigit = null
-        if (combinedNum <= currentGridSize) {
-            handleNumberInput(combinedNum)
+        clearTimeout(_digitTimer)
+        const firstNum = _firstDigit
+        const combinedNum = _firstDigit * 10 + num
+        _firstDigit = null
+        if (combinedNum <= _currentGridSize) {
+            _handleNumberInput(combinedNum)
         } else {
-            handleNumberInput(firstNum)
-            handleNumberKey(num)
+            _handleNumberInput(firstNum)
+            _handleNumberKey(num)
         }
     }
 }
 
-function handleNumberInput(num) {
-    if (num < 1 || num > currentGridSize) {
+function _handleNumberInput(num) {
+    if (num < 1 || num > _currentGridSize) {
         return
     }
 
-    const activeField = game.getActiveField()
+    const activeField = _game.getActiveField()
     if (!activeField || !activeField.isEditable()) {
         return
     }
 
-    undoStack.push(activeField.copy())
+    _undoStack.push(activeField.copy())
 
-    if (noteMode) {
+    if (_noteMode) {
         activeField.setNote(num)
     } else {
         activeField.setUser(num)
-        game.checkSolved()
+        _game.checkSolved()
 
-        if (game.isSolved) {
-            undoStack.clear()
+        if (_game.isSolved) {
+            _undoStack.clear()
             $('.container').addClass('finished')
-            onResize()
-            clearInterval(timer)
+            _onResize()
+            clearInterval(_timer)
         }
     }
 
-    gameHistory.saveGameState(gameCode, game)
+    _saveState()
 }
 
-function handleDelete() {
-    const field = game.getActiveField()
+function _saveState() {
+    _gameHistory.saveGameState(_gameCode, _game)
+}
+
+function _handleDelete() {
+    const field = _game.getActiveField()
     if (!field || !field.isEditable()) {
         return
     }
 
-    undoStack.push(field.copy())
+    _undoStack.push(field.copy())
     field.clear()
 }
 
@@ -524,42 +536,41 @@ async function copyCurrentLink() {
 }
 
 $(document).ready(async function () {
-    await modulePromise
-    setup()
-    onResize()
-    loadSettings()
-    handleGameLoad()
+    await _modulePromise
+    _createGrid()
+    _onResize()
+    _loadSettings()
+    _handleGameLoad()
     $('td[id^="ce"]').click(function () { // Game fields
         const row = Number($(this).attr('row'))
         const col = Number($(this).attr('col'))
-        game.selectCell(row, col)
+        _game.selectCell(row, col)
     })
     $('td[data-button^="bn"]').click(function () { // Number buttons
         const num = Number($(this).text())
-        handleNumberInput(num)
+        _handleNumberInput(num)
     })
-    onResize()
+    _onResize()
 })
 
 window.addEventListener('popstate', function () {
-    handleGameLoad(popstate = true)
+    _handleGameLoad(popstate = true)
 })
 
-function handleGameLoad(popstate = false) {
-    const code = getURLParameter('code')
+function _handleGameLoad(popstate = false) {
+    const code = _getURLParameter('code')
     const currentKey = window.location.href
 
-    if (code && code.length > minCodeSize) {
-        gameUrl = currentKey
-        gameCode = code
+    if (code && code.length > _minCodeSize) {
+        _gameUrl = currentKey
+        _gameCode = code
         if (popstate) {
-            startGame()
-        }
-        else {
+            _startGame()
+        } else {
             showDialog(dialogs.GENERATED)
         }
     } else {
-        const latestKey = gameHistory.getLatestGameKey()
+        const latestKey = _gameHistory.getLatestGameKey()
         if (latestKey) {
             // Reload the current page with the latest game code
             window.location.href = window.location.href.split('?')[0] + '?code=' + latestKey
@@ -571,10 +582,10 @@ function handleGameLoad(popstate = false) {
     }
 }
 
-$(document).keydown(onKeyDown)
+$(document).keydown(_onKeyDown)
 
-$(window).resize(onResize)
-function onResize() {
+$(window).resize(_onResize)
+function _onResize() {
     closeHint()
     if (window.innerWidth / 2 - 45 < $('.controls').position().left) { // Large screen
         $('#buttons-small').hide()
@@ -583,7 +594,7 @@ function onResize() {
         $('.mini').css('font-size', '9pt')
         $('#hint-dialog').css('width', '235px')
     } else { // Small screen
-        const cellwidth = Math.min(Math.floor(window.innerWidth / currentGridSize - 2), 41)
+        const cellwidth = Math.min(Math.floor(window.innerWidth / _currentGridSize - 2), 41)
         $('#buttons-small').show()
         $('#buttons-large').hide()
         $('.container').css({ margin: '5px 2px' })

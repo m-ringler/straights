@@ -104,8 +104,9 @@ For Straights.Web, you need to download and activate the
 
 ## Backlog
 
+* Add tests for the javascript code
 * Add more XML doc (use Copilot?)
-* Microsoft.CodeAnalncremeysis.PublicApiAnalyzers
+* Microsoft.CodeAnalysis.PublicApiAnalyzers
 * Migrate to slnx format
 * See if we can find a better solution for the Linux OpenCvSharp runtime
 * Publish symbol nuget packages

@@ -80,15 +80,15 @@ _,b,_,_,_,_,b,_,b
 """,
 """
 9
-b5,b,_,_,b,_,w7,_,_
-b,_,_,_,w3,w8,_,_,b
+b5,b,_,w3,b,_,w7,_,_
+b,_,_,_,w3,_,_,_,b
 _,_,b,_,_,b1,_,_,_
 _,_,_,b,_,_,_,_,w5
 b1,_,_,_,_,w6,_,_,_
 _,_,b,_,w7,b,_,_,_
-_,_,_,_,_,_,b1,b,b3
+_,_,_,_,_,w4,b1,b,b3
 _,w5,_,_,w4,_,b,_,w2
-w9,b,_,_,_,_,b,_,b
+_,b,_,_,_,_,b,_,b
 
 """,
 """
@@ -252,7 +252,11 @@ _,_,_,_,_,w8,_,_,b
         ShouldBeSolvableWithSimplifier(output, SimplifierStrength.DefaultStrength);
 
         var generatedGrid = output.FileSystem.File.ReadAllText(output.FullName);
-        _ = generatedGrid.Should().Be(c.ExpectedBuilderText);
+        _ = generatedGrid
+            .Should()
+            .Be(
+                c.ExpectedBuilderText,
+                because: $"expected {c.ExpectedBuilderText},\ngot {generatedGrid}");
 
         var builder = GridConverter.ParseBuilderText(generatedGrid).Builder;
         BlackFieldCount.Of(builder).Should().Be((BlackFieldCount)c.Grid);

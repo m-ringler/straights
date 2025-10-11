@@ -18,12 +18,7 @@ public static class BlockAnalyzer
         var lowerRange = new IntRun(min, min + b.Count - 1);
         var upperRange = new IntRun(max - b.Count + 1, max);
         var result = lowerRange.Intersect(upperRange).Intersect(fullRange);
-        if (result.Count < b.Count)
-        {
-            return result;
-        }
-
-        return new IntRun(0, -1);
+        return result;
     }
 
     public static IntRun GetMaxRange(this SolverBlock item)

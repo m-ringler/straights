@@ -449,3 +449,6 @@ publish/
 
 # Verify received files
 *.received.*
+
+# Python
+.venv/*

@@ -116,8 +116,8 @@ class Field {
                 break;
             case 0:
                 if (checkNotes
-                        && this.notes.size != 0
-                        && !this.notes.has(this.value)) {
+                    && this.notes.size != 0
+                    && !this.notes.has(this.value)) {
                     this.wrong = true
                     this.render()
                 }
@@ -312,6 +312,7 @@ export class Game {
     constructor($, darkMode, size = 0) {
         this.$ = $
         this.colors = darkMode ? Game.gameColorsDark : Game.gameColorsLight
+        this.darkMode = darkMode
         this.size = size
         this.data = []
         this.activeFieldIndex = null
@@ -322,6 +323,9 @@ export class Game {
                 this.data[r].push(new Field(r, c, this))
             }
         }
+
+        this.check_count = 0
+        this.hint_count = 0
     }
 
     get(row, col) {
@@ -329,21 +333,37 @@ export class Game {
     }
 
     dumpState() {
-        return game.data.map(row =>
+        const fieldData = this.data.map(row =>
             row.map(field => ({
                 user: field.user,
                 notes: Array.from(field.notes),
             })))
+
+        const result =
+        {
+            check_count: this.check_count,
+            hint_count: this.hint_count,
+            data: fieldData,
+        }
+
+        return result
     }
 
     restoreState(dumpedState) {
-        dumpedState.forEach((row, r) => {
-            row.forEach((field, c) => {
-                const gameField = game.get(r, c)
-                gameField.copyFrom(field)
-                gameField.render()
+        if (Object.hasOwn(dumpedState, "check_count")) {
+            this.check_count = dumpedState.check_count
+            this.hint_count = dumpedState.hint_count
+            this.restoreState(dumpedState.data)
+        }
+        else {
+            dumpedState.forEach((row, r) => {
+                row.forEach((field, c) => {
+                    const gameField = this.get(r, c)
+                    gameField.copyFrom(field)
+                    gameField.render()
+                })
             })
-        })
+        }
     }
 
     #setValues(row, col, mode, value) {
@@ -374,7 +394,7 @@ export class Game {
         })
     }
 
-    checkWrong(checkNotes = false) {
+    #checkWrong(checkNotes = false) {
         let result = false
         this.#forEachField(field => {
             field.checkWrong(checkNotes)
@@ -387,8 +407,18 @@ export class Game {
     }
 
     checkSolved() {
+        if (this.isSolved) {
+            return
+        }
+
         let finished = true
         this.#forEachField(field => {
+            if (!field.user && field.notes.size == 1)
+            {
+                field.user = field.notes.values().next().value
+                field.render()
+            }
+
             if (!field.isSolved()) {
                 finished = false
             }
@@ -400,10 +430,38 @@ export class Game {
         }
     }
 
-    restart() {
+    checkForHint() {
+        this.checkSolved()
+
+        function getResult(solved, wrong) {
+            const result = { isSolved: solved, isWrong: wrong }
+            return result
+        }
+
+        if (this.isSolved) {
+            return getResult(true, false)
+        }
+
+        this.hint_count++
+        if (this.#checkWrong(false) || this.#checkWrong(true)) {
+            return getResult(false, true)
+        }
+
+        return getResult(false, false)
+    }
+
+    check() {
+        this.checkSolved()
         if (this.isSolved) {
             return
         }
+
+        this.check_count++
+        this.#checkWrong()
+    }
+
+    restart() {
+        this.isSolved = false
 
         this.#forEachField(field => {
             field.reset()
@@ -465,7 +523,7 @@ export class Game {
 
         const bitsPerNumber = Math.floor(Math.log2(size - 1)) + 1
         const bitsPerField = 2 + bitsPerNumber // black + known + number
-        const game = new Game(this.$, this.darkMode, size)
+        const result = new Game(this.$, this.darkMode, size)
 
         for (let row = 0; row < size; row++) {
             for (let col = 0; col < size; col++) {
@@ -483,46 +541,24 @@ export class Game {
                     ? (isKnown ? modes.BLACKKNOWN : modes.BLACK)
                     : (isKnown ? modes.WHITEKNOWN : modes.USER)
 
-                game.#setValues(row, col, mode, value)
+                result.#setValues(row, col, mode, value)
             }
         }
 
-        return game
-    }
-
-    #parseGameV001(binary) {
-        game = new Game(this.$, darkMode, 9)
-        if (binary.length < (6 * 81)) return // Invalid data
-        for (let i = 0; i < 81; i++) {
-            const subBinary = binary.substring(i * 6, (i + 1) * 6)
-            const mode = parseInt(subBinary.substring(0, 2), 2)
-            const value = parseInt(subBinary.substring(2, 6), 2) + 1
-            game.#setValues(Math.floor(i / 9), i % 9, mode, value)
-        }
-        binary = binary.substring(6 * 81)
-        let counter = 0
-        while (binary.length >= 7 && counter < (4 - difficulty) * 3.5) {
-            const position = parseInt(binary.substring(0, 7), 2)
-            game.get(Math.floor(position / 9), position % 9).mode = modes.WHITEKNOWN
-            game.get(Math.floor(position / 9), position % 9).render()
-            binary = binary.substring(7)
-            counter++
-        }
-
-        return game
+        return result
     }
 
     #parseGameV002(binary) {
-        game = new Game(this.$, darkMode, 9)
+        const result = new Game(this.$, this.darkMode, 9)
         if (binary.length < (6 * 81) || binary.length > (6 * 81 + 8)) return // Invalid data
         for (let i = 0; i < 81; i++) {
             const subBinary = binary.substring(i * 6, (i + 1) * 6)
             const mode = parseInt(subBinary.substring(0, 2), 2)
             const value = parseInt(subBinary.substring(2, 6), 2) + 1
-            game.#setValues(Math.floor(i / 9), i % 9, mode, value)
+            result.#setValues(Math.floor(i / 9), i % 9, mode, value)
         }
 
-        return game
+        return result
     }
 
     #decode(code) {
@@ -543,7 +579,8 @@ export class Game {
         const decoded = this.#decode(code)
         switch (decoded.encodingVersion) {
             case 1:
-                return this.#parseGameV001(decoded.binary)
+                // not supported any more
+                return null
             case 128:
                 // 0b10000000: arbitrary size game encoding
                 return this.#parseGameV128(decoded.binary)

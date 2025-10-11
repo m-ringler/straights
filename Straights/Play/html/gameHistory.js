@@ -5,57 +5,122 @@
 const MAX_NUMBER_OF_STORED_GAMES = 50
 
 export function saveGameState(key, game) {
-  const gameState = {
-    timestamp: Date.now(),
-    data: game.dumpState(),
-  }
-  const gameStateString = JSON.stringify(gameState)
-  localStorage.setItem(key, gameStateString)
-
-  // Ensure only the latest MAX_NUMBER_OF_STORED_GAMES are kept
-  const keys = Object.keys(localStorage)
-  if (keys.length > MAX_NUMBER_OF_STORED_GAMES) {
-    const keysByAge = keys.sort((a, b) => JSON.parse(localStorage.getItem(a)).timestamp - JSON.parse(localStorage.getItem(b)).timestamp)
-    for (let i = 0; i < keysByAge.length - MAX_NUMBER_OF_STORED_GAMES; i++) {
-      localStorage.removeItem(keysByAge[i])
+    migrate()
+    const gameState = {
+        timestamp: Date.now(),
+        data: game.dumpState(),
     }
-  }
+
+    const gameStateString = JSON.stringify(gameState)
+    localStorage.setItem('history.' + key, gameStateString)
+
+    // Ensure only the latest MAX_NUMBER_OF_STORED_GAMES are kept
+    const prefixedKeys = getPrefixedHistoryKeys()
+    if (prefixedKeys.length > MAX_NUMBER_OF_STORED_GAMES) {
+        console.info("Cropping game history")
+        const keysByAge = []
+        for (const pk of prefixedKeys) {
+            const gameState = loadGameStateData(pk)
+            if (!gameState) {
+                console.debug(`Removing corrupt history entry ${pk}`)
+                localStorage.removeItem(pk)
+            }
+
+            keysByAge.push({ key: pk, timestamp: gameState.timestamp })
+        }
+
+        keysByAge.sort(
+            (a, b) => a.timestamp - b.timestamp)
+        for (let i = 0; i < keysByAge.length - MAX_NUMBER_OF_STORED_GAMES; i++) {
+            const oldKey = keysByAge[i].key
+            console.debug(`Removing old history entry ${oldKey}`)
+            localStorage.removeItem(oldKey)
+        }
+    }
 }
 
 export function restoreGameState(key, game) {
-  const savedGameState = loadGameStateData(gameCode)
-  if (savedGameState) {
-    game.restoreState(savedGameState.data)
-  }
+    migrate()
+    const savedGameState = loadGameStateData('history.' + key)
+    if (savedGameState) {
+        game.restoreState(savedGameState.data)
+    }
 }
 
 export function getLatestGameKey() {
-  const keys = Object.keys(localStorage)
-  let latestKey = null
-  let latestTimestamp = 0
+    migrate()
+    const prefixedKeys = getPrefixedHistoryKeys()
+    let latestKey = null
+    let latestTimestamp = 0
 
-  keys.forEach(key => {
-      const gameState = loadGameStateData(key)
-      if (gameState && gameState.timestamp > latestTimestamp) {
-        latestTimestamp = gameState.timestamp
-        latestKey = key
-      }
-    }
-  )
+    prefixedKeys.forEach(prefixedKey => {
+        const gameState = loadGameStateData(prefixedKey)
+        if (gameState && gameState.timestamp > latestTimestamp) {
+            latestTimestamp = gameState.timestamp
+            latestKey = prefixedKey.substring('history.'.length)
+        }
+    })
 
-  return latestKey
+    return latestKey
 }
 
-function loadGameStateData(key) {
-  try {
-    const gameStateString = localStorage.getItem(key)
-    if (!gameStateString) {
+function getPrefixedHistoryKeys() {
+    return Object.keys(localStorage).filter(k => k.startsWith('history.'))
+}
+
+function loadGameStateData(prefixedKey) {
+    if (!prefixedKey.startsWith('history.')) {
         return null
     }
 
-    return JSON.parse(gameStateString)
-  } catch (e) {
-    console.warn('Error loading game state from localStorage for key:', key, e)
-    return null
-  }
+    return loadGameStateDataCore(prefixedKey)
+}
+
+function loadGameStateDataCore(prefixedKey) {
+    try {
+        const gameStateString = localStorage.getItem(prefixedKey)
+        if (!gameStateString) {
+            return null
+        }
+
+        const result = JSON.parse(gameStateString)
+
+        return result.timestamp && result.data ? result : null
+    } catch (e) {
+        console.warn('Error loading game state from localStorage for key:', prefixedKey, e)
+        return null
+    }
+}
+
+function migrate() {
+    if (localStorage.getItem('version')) {
+        return
+    }
+
+    const keys = Object.keys(localStorage)
+    for (const key of keys) {
+        if (key.startsWith('history.')) {
+            continue
+        }
+
+        if (key.startsWith('generate.')) {
+            continue
+        }
+
+        const item = loadGameStateDataCore(key)
+        if (!item) {
+            console.debug(`Removing unknown local storage key ${key}`)
+        }
+        else {
+            console.debug(`Migrating game history entry ${key}`)
+
+            const gameStateString = localStorage.getItem(key)
+            localStorage.setItem('history.' + key, gameStateString)
+        }
+
+        localStorage.removeItem(key)
+    }
+
+    localStorage.setItem('version', '1')
+    console.info('Migrated game history data')
 }
