@@ -15,6 +15,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="AwesomeAssertions" />
+  <PackageReference Include="System.CommandLine" VersionOverride="2.0.0-rc.1.25451.107" />
     <PackageReference Include="System.IO.Abstractions.TestingHelpers" />
     <PackageReference Include="Verify.XunitV3" />
     <PackageReference Include="xunit.v3" />
