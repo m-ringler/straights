@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-const CACHE_NAME = 'v0.6.20-beta1';
+const CACHE_NAME = 'v0.6.20-beta2';
 const urlsToCache = [
     './',
     './favicon.ico',
@@ -41,7 +41,7 @@ const apiEndPoints = new Set([
 
 async function fetchFresh(url) {
     console.debug("Fetching ", url)
-    result = await fetch(url, { cache: 'no-store' })
+    let result = await fetch(url, { cache: 'no-store' })
     console.debug("Response:", result.status, result.statusText)
     return result
 }
@@ -101,10 +101,10 @@ self.addEventListener('activate', event => {
     event.waitUntil((async () => {
         const cacheNames = await caches.keys();
         await Promise.all(
-            cacheNames.map(cacheName => {
+            cacheNames.map(async cacheName => {
                 if (!cacheWhitelist.includes(cacheName)) {
                     console.info("Deleting old cache", cacheName)
-                    return caches.delete(cacheName)
+                    await caches.delete(cacheName)
                 }
             })
         )
