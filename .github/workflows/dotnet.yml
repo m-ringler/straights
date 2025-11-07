@@ -111,7 +111,7 @@ jobs:
           -p:Exclude='[netczicompress]netczicompress.Views.*'
 
       - name: Upload dotnet test results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: test-results-${{ matrix.config.os }}-${{ matrix.build }}
           path: TestResults
@@ -120,7 +120,7 @@ jobs:
 
       - name: Upload Verify Received Files
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: verify-test-results-${{ matrix.config.os }}-${{ matrix.build }}
           path: |
@@ -138,7 +138,7 @@ jobs:
           -p:PublishReadyToRunShowWarnings=true
 
       - name: Upload published binaries
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: ${{ (github.event_name != 'pull_request') && (matrix.build == 'Release') }}
         with:
           name: Straights_${{ steps.get-set-version.outputs.version }}_${{ matrix.config.os}}-x64
@@ -152,7 +152,7 @@ jobs:
 
 
       - name: Upload nuget artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: ${{ (matrix.config.os == 'ubuntu-22.04' && github.event_name != 'pull_request') && (matrix.build == 'Release') }}
         with:
           name: Straights_${{ steps.get-set-version.outputs.version }}_Nugets
