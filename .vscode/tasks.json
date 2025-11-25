@@ -2,6 +2,20 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "label": "npm: install (ci)",
+      "type": "shell",
+      "command": "npm",
+      "args": ["ci"],
+      "problemMatcher": []
+    },
+    {
+      "label": "tsc: compile",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run","tsc"],
+      "dependsOn": "npm: install (ci)",
+      "problemMatcher": []
+    },
       "label": "build (no-restore)",
       "command": "dotnet",
       "type": "process",
