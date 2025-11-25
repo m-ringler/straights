@@ -46,7 +46,7 @@
   <!-- Copy runtime assets from the Play/html folder. Exclude TypeScript sources so only compiled .js/html/css are published. -->
   <Content
     Include="..\Straights\Play\html\*.js;..\Straights\Play\html\*.html;..\Straights\Play\html\*.css"
-    Exclude="..\Straights\Play\html\*.ts"
+    Exclude="..\Straights\Play\html\*.ts;..\Straights\Play\html\generate-str8ts.js"
     LinkBase="." >
     <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
   </Content>
@@ -57,3 +57,4 @@
   </Content>
 </ItemGroup>
 </Project>
+
