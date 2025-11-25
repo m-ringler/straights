@@ -34,6 +34,7 @@
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary"
       ],
+      "dependsOn": "tsc",
       "problemMatcher": "$msCompile"
     },
     {
@@ -46,6 +47,7 @@
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary"
       ],
+      "dependsOn": "tsc",
       "problemMatcher": "$msCompile"
     },
     {
@@ -59,6 +61,7 @@
         "${workspaceFolder}/publish/NuGetPackages",
         "-p:VersionSuffix=beta${input:betaVersionNumber}"
       ],
+      "dependsOn": "tsc",
       "problemMatcher": "$msCompile"
     },
     {
@@ -73,6 +76,7 @@
         "--use-current-runtime",
         "true"
       ],
+      "dependsOn": "tsc",
       "problemMatcher": "$msCompile"
     },
     {
@@ -89,6 +93,7 @@
         "-p",
         "MSBuildEnableWorkloadResolver=false"
       ],
+      "dependsOn": "tsc",
       "problemMatcher": "$msCompile"
     },
     {
@@ -96,6 +101,7 @@
       "command": "emrun",
       "type": "shell",
       "args": ["${workspaceFolder}/Straights.Web/publish/index.html"],
+      "dependsOn": "publish Straights.Web",
       "problemMatcher": []
     },
     {
