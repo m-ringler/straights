@@ -4,14 +4,16 @@
 
 // This provides the generate function
 // from an API endpoint running on the server.
+
+// TODO: Specify return types
 export function load_generate() {
-  async function generate(size, difficulty) {
+  async function generate(size: number, difficulty: number) {
     const response = await fetch(`/generate?gridSize=${size}&difficulty=${difficulty - 1}`)
     const data = await response.json()
     return data
   }
 
-  async function generateHint(gameAsJson) {
+  async function generateHint(gameAsJson: any) {
     const response = await fetch('/hint', {
       method: 'POST',
       headers: {

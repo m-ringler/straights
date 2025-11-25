@@ -33,7 +33,7 @@
 
   <ItemGroup>
     <!-- Only copy the runtime assets (js/html/css/favicon) into outputs. -->
-    <Content Include="Play/html/*.*;Play/html/favicon/*.*;LICENSE" Exlude="Play/html/*.ts;Play/html/*.js.map">
+    <Content Include="Play/html/*.*;Play/html/favicon/*.*;LICENSE" Exlude="Play/html/*.ts">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

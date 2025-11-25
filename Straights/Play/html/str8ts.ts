@@ -2,8 +2,12 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import type { Game } from './game.js'
+import type { Field } from './game.js'
+import type { UndoStack } from './undoStack.js'
+
 // Global Constants
-function _getButtonColors(darkMode) {
+function _getButtonColors(darkMode: boolean) {
     const buttonColorsLight = {
         BUTTONDOWN: '#335',
         BUTTONUP: '#b1cffc'
@@ -28,21 +32,21 @@ const DEFAULT_GRID_SIZE = 9
 const DEFAULT_DIFFICULTY = 3
 
 // Global Variables
-let _starttime
-let _timer
+let _starttime: number
+let _timer: number
 let _noteMode = false
-let _minCodeSize
-let _game
-let _gameCode
-let _gameHistory
-let _gameUrl
+let _minCodeSize: number
+let _game : Game
+let _gameCode : string
+let _gameHistory : typeof import('./gameHistory.js')
+let _gameUrl: string | URL
 let _difficulty = DEFAULT_DIFFICULTY
 let _currentGridSize = 12
 let _generateGridSize = DEFAULT_GRID_SIZE
-let _undoStack
-let _hintField
+let _undoStack : UndoStack<Field>
+let _hintField : Field | null = null
 
-// imported functions
+// imported functions (TODO: import the types from generate-str8ts.ts)
 let _generate
 let _generateHint
 
@@ -59,7 +63,7 @@ async function _importModules() {
     _gameHistory = await import('./gameHistory.js')
 
     const generateModule = await import('./generate-str8ts.js')
-    loadedFunctions = generateModule.load_generate()
+    const loadedFunctions = generateModule.load_generate()
     _generate = loadedFunctions.generate
     _generateHint = loadedFunctions.generateHint
 }
@@ -110,9 +114,9 @@ async function hint() {
             // hintData.rule is either ColumnNameInPascalCase
             // or BlockNameInPascalCase.
             const ruleWords = hintData.rule.split(/(?=[A-Z])/)
-            ruleType = ruleWords[0]
-            ruleName = ruleWords.slice(1).join(" ")
-            ruleTarget = ruleType == 'Block'
+            const ruleType = ruleWords[0]
+            const ruleName = ruleWords.slice(1).join(" ")
+            const ruleTarget = ruleType == 'Block'
                 ? `${hintData.direction} block`
                 : ((hintData.direction == 'horizontal') ? "row" : "column")
             $('#hint-text').html(`Hint: ${hintData.number} can be removed by applying the <a href="https://github.com/m-ringler/straights/wiki/Rules-of-Str8ts#${hintData.rule}" target="rules">${ruleName} rule</a> to the ${ruleTarget}.`)
@@ -134,6 +138,10 @@ function closeHint() {
 }
 
 function _positionHintDialog() {
+    if (!_hintField) {
+        return
+    }
+
     const field = _hintField.getElement()
     const dialog = $('#hint-dialog');
     _positionPopup(field, dialog)
@@ -144,6 +152,10 @@ function _positionPopup(target, popup) {
     const targetPos = target[0].getBoundingClientRect();
     const windowHeight = $(window).height();
     const windowWidth = $(window).width();
+
+    if (!windowHeight || !windowWidth) {
+        return;
+    }
 
     // Determine the vertical position
     let popupTop;
@@ -178,7 +190,7 @@ function solution() {
 
 function undo() {
     if (_undoStack.length > 0 && !_game.isSolved) {
-        const field = _undoStack.pop()
+        const field = _undoStack.pop()!
         const gameField = _game.get(field.row, field.col)
         gameField.copyFrom(field)
         gameField.wrong = false
@@ -187,7 +199,7 @@ function undo() {
     }
 }
 
-function _renderUndoButton(length) {
+function _renderUndoButton(length: number) {
     const undoButton = $('#undo')
     if (length == 0 || _game.isSolved) {
         undoButton.prop('disabled', true)
@@ -315,13 +327,13 @@ function _loadSettings() {
 function changeDifficulty() {
     _difficulty = Number($('#difficulty-slider').val())
     $('#difficulty').text(_difficulty)
-    localStorage.setItem('generate.difficulty', _difficulty)
+    localStorage.setItem('generate.difficulty', String(_difficulty))
 }
 
 function changeGenerateSize() {
     _generateGridSize = Number($('#grid-size-slider').val())
     $('#grid-size').text(_generateGridSize)
-    localStorage.setItem('generate.gridSize', _generateGridSize)
+    localStorage.setItem('generate.gridSize', String(_generateGridSize))
 }
 
 async function _startGame() {
@@ -331,8 +343,9 @@ async function _startGame() {
         $('.container').removeClass('finished')
         showDialog(false)
 
-        _game = _game.parseGame(_gameCode)
-        if (_game) {
+        const parsedGame = _game.parseGame(_gameCode)
+        if (parsedGame) {
+            _game = parsedGame
             hasGame = true
 
             _changeGridSize(_game.size)
@@ -454,7 +467,7 @@ function _handleCursorKey(e) {
 }
 
 let _firstDigit = null
-let _digitTimer = null
+let _digitTimer: number | undefined = undefined
 const _twoDigitTimeout = 500
 function _handleNumberKey(num) {
     if (_firstDigit == null) {
@@ -535,18 +548,18 @@ async function copyCurrentLink() {
     }
 }
 
-$(document).ready(async function () {
+$(async function () {
     await _modulePromise
     _createGrid()
     _onResize()
     _loadSettings()
     _handleGameLoad()
-    $('td[id^="ce"]').click(function () { // Game fields
+    $('td[id^="ce"]').on("click", function () { // Game fields
         const row = Number($(this).attr('row'))
         const col = Number($(this).attr('col'))
         _game.selectCell(row, col)
     })
-    $('td[data-button^="bn"]').click(function () { // Number buttons
+    $('td[data-button^="bn"]').on("click", function () { // Number buttons
         const num = Number($(this).text())
         _handleNumberInput(num)
     })
@@ -554,7 +567,7 @@ $(document).ready(async function () {
 })
 
 window.addEventListener('popstate', function () {
-    _handleGameLoad(popstate = true)
+    _handleGameLoad(true)
 })
 
 function _handleGameLoad(popstate = false) {

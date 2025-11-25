@@ -2,9 +2,11 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import type { Game } from "./game"
+
 const MAX_NUMBER_OF_STORED_GAMES = 50
 
-export function saveGameState(key, game) {
+export function saveGameState(key: string, game: Game) {
     migrate()
     const gameState = {
         timestamp: Date.now(),
@@ -18,7 +20,7 @@ export function saveGameState(key, game) {
     const prefixedKeys = getPrefixedHistoryKeys()
     if (prefixedKeys.length > MAX_NUMBER_OF_STORED_GAMES) {
         console.info("Cropping game history")
-        const keysByAge = []
+        const keysByAge: { key:string, timestamp: number }[] = []
         for (const pk of prefixedKeys) {
             const gameState = loadGameStateData(pk)
             if (!gameState) {
@@ -39,7 +41,7 @@ export function saveGameState(key, game) {
     }
 }
 
-export function restoreGameState(key, game) {
+export function restoreGameState(key: string, game: Game): void {
     migrate()
     const savedGameState = loadGameStateData('history.' + key)
     if (savedGameState) {
@@ -47,10 +49,10 @@ export function restoreGameState(key, game) {
     }
 }
 
-export function getLatestGameKey() {
+export function getLatestGameKey(): string | null {
     migrate()
     const prefixedKeys = getPrefixedHistoryKeys()
-    let latestKey = null
+    let latestKey: string | null = null
     let latestTimestamp = 0
 
     prefixedKeys.forEach(prefixedKey => {
@@ -64,11 +66,11 @@ export function getLatestGameKey() {
     return latestKey
 }
 
-function getPrefixedHistoryKeys() {
+function getPrefixedHistoryKeys(): string[] {
     return Object.keys(localStorage).filter(k => k.startsWith('history.'))
 }
 
-function loadGameStateData(prefixedKey) {
+function loadGameStateData(prefixedKey: string) {
     if (!prefixedKey.startsWith('history.')) {
         return null
     }
@@ -76,7 +78,7 @@ function loadGameStateData(prefixedKey) {
     return loadGameStateDataCore(prefixedKey)
 }
 
-function loadGameStateDataCore(prefixedKey) {
+function loadGameStateDataCore(prefixedKey: string) {
     try {
         const gameStateString = localStorage.getItem(prefixedKey)
         if (!gameStateString) {
@@ -115,7 +117,9 @@ function migrate() {
             console.debug(`Migrating game history entry ${key}`)
 
             const gameStateString = localStorage.getItem(key)
-            localStorage.setItem('history.' + key, gameStateString)
+            if (gameStateString) {
+                localStorage.setItem('history.' + key, gameStateString)
+            }
         }
 
         localStorage.removeItem(key)
