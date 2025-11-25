@@ -157,12 +157,18 @@ jobs:
           # find and remove obj and bin directories (be careful to skip .git)
           find . -path './.git' -prune -o -type d \( -name 'obj' -o -name 'bin' \) -print -exec rm -rf {} + || true
 
-      - name: Restore using newly-created NuGet packages
+      - name: Restore using newly-created NuGet packages (copy to packages_local)
         if: ${{ (matrix.config.os == 'ubuntu-22.04' && github.event_name != 'pull_request') && (matrix.build == 'Release') }}
         run: |
+          echo "Copying freshly-packed nugets into packages_local so NuGet.config will find them"
+          mkdir -p packages_local
+          # remove old local packages, then copy new ones created by the pack step
+          rm -rf packages_local/* || true
+          cp -a "${{ github.workspace }}/nuget/." packages_local/ || true
+          echo "packages_local contains:" && ls -la packages_local || true
+
+          # Now restore using the normal configuration (NuGet.config references packages_local)
           dotnet restore straights-commandline.slnf \
-            --source "https://api.nuget.org/v3/index.json" \
-            --source "${{ github.workspace }}/nuget" \
             -p:UseStraightsNugetPackagesVersion=${{ steps.get-set-version.outputs.version }}
 
       - name: Test (using freshly created NuGet packages)
