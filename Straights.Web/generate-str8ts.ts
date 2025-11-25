@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 // TODO: declare an interface for the generate-str8ts modules
-export function load_generate(){
+export function load_generate() {
     const worker = new Worker('generate-worker.js')
 
     function generate(size: number, difficulty: number): Promise<any> {
