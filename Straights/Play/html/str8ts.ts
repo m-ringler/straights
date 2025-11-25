@@ -604,4 +604,3 @@ function _onResize() {
         $('#hint-dialog').css('width', '150px')
     }
 }
-

@@ -1,0 +1,13 @@
+{
+  "name": "straights",
+  "private": true,
+  "version": "0.0.0",
+  "devDependencies": {
+    "typescript": "~5.3.0",
+    "@types/jquery": "~3.6.0"
+  },
+  "scripts": {
+    "tsc": "tsc -p tsconfig.json",
+    "tsc:watch": "tsc -p tsconfig.json --watch"
+  }
+}
