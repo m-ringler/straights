@@ -53,4 +53,3 @@ function _generate(size, difficulty) {
         Module._Memory_Free(bufferPtr)
     }
 }
-
