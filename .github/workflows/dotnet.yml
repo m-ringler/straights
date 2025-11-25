@@ -64,6 +64,17 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install frontend dependencies (npm ci)
+        run: npm ci
+
+      - name: Compile TypeScript sources (tsc)
+        run: npm run tsc
+
       - name: Build
         run: dotnet build --no-restore -c ${{ matrix.build }} straights-commandline.slnf
 
