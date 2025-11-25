@@ -2,10 +2,10 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "npm: install (ci)",
+      "label": "npm: install",
       "type": "shell",
       "command": "npm",
-      "args": ["ci"],
+      "args": ["install"],
       "problemMatcher": []
     },
     {
