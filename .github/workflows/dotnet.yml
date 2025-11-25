@@ -69,8 +69,8 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install frontend dependencies (npm ci)
-        run: npm ci
+      - name: Install frontend dependencies (npm install)
+        run: npm install
 
       - name: Compile TypeScript sources (tsc)
         run: npm run tsc
