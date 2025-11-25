@@ -447,19 +447,14 @@ test/local/*
 Straights.Web/publish/
 publish/
 
-# Ignore compiled JS generated from TypeScript sources (we keep source .ts in git, compiled .js should be generated)
-# Keep third-party libs like jquery-*.min.js tracked
+# Ignore compiled JS generated from TypeScript sources
 /Straights/Play/html/str8ts.js
 /Straights/Play/html/generate-str8ts.js
 /Straights/Play/html/game.js
 /Straights/Play/html/gameHistory.js
 /Straights/Play/html/undoStack.js
 /Straights/Play/html/service-worker.js
-
-# also ignore any source-map files produced from TS compilation in those folders
-/Straights/Play/html/*.js.map
-/Straights.Web/*.js.map
-
+/Straights.Web/generate-str8ts.js
 
 # Verify received files
 *.received.*

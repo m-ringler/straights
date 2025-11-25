@@ -3,8 +3,9 @@
   "private": true,
   "version": "0.0.0",
   "devDependencies": {
-    "typescript": "~5.3.0",
-    "@types/jquery": "~3.6.0"
+    "@types/jquery": "^3.5.33",
+    "@types/serviceworker": "^0.0.167",
+    "typescript": "~5.3.0"
   },
   "scripts": {
     "tsc": "tsc -p tsconfig.json",

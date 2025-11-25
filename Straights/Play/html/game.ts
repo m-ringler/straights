@@ -14,7 +14,7 @@ const minCodeSizeV128 = (
 
 export const minCodeSize = Math.min(minCodeSizeV2, minCodeSizeV128)
 
-class Field {
+export class Field {
 row: number
 col: number
 game: Game
@@ -143,7 +143,7 @@ notes: Set<number>
         this.render()
     }
 
-    setHint(number:number) {
+    setHint(number:number|undefined) {
         this.hint = number
         if (number && this.notes.size === 0) {
             for (let i = 1; i <= this.game.size; i++) {

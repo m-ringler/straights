@@ -2,36 +2,37 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-export class UndoStack {
-  constructor(handleLengthChanged) {
+export class UndoStack<ItemType> {
+  stack: ItemType[]
+  constructor(handleLengthChanged: (length: number) => void) {
     this.stack = []
     this.#onLengthChanged = handleLengthChanged
     this.#raiseLengthChanged()
   }
 
-  #onLengthChanged
+  #onLengthChanged: (length: number) => void
 
   #raiseLengthChanged() {
     this.#onLengthChanged(this.length)
   }
 
-  push(item) {
+  push(item: ItemType) {
     this.stack.push(item)
     this.#raiseLengthChanged()
   }
 
-  pop() {
+  pop(): ItemType | undefined {
     const item = this.stack.pop()
     this.#raiseLengthChanged()
     return item
   }
 
-  clear() {
+  clear(): void {
     this.stack = []
     this.#raiseLengthChanged()
   }
 
-  get length() {
+  get length(): number {
     return this.stack.length
   }
 }

@@ -2,10 +2,11 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-export function load_generate() {
+// TODO: declare an interface for the generate-str8ts modules
+export function load_generate(){
     const worker = new Worker('generate-worker.js')
 
-    function generate(size, difficulty) {
+    function generate(size: number, difficulty: number): Promise<any> {
         return _run_in_worker({
             method: 'generate',
             size,
@@ -13,7 +14,7 @@ export function load_generate() {
         })
     }
 
-    function generateHint(gameAsJson) {
+    function generateHint(gameAsJson: any): Promise<any> {
         return _run_in_worker({
             method: 'hint',
             gameAsJson: JSON.stringify(gameAsJson)
@@ -22,7 +23,9 @@ export function load_generate() {
 
     return { generate, generateHint }
 
-    function _run_in_worker(message) {
+    function _run_in_worker(message:
+         { method: "generate", size?: number, difficulty?: number } |
+         { method: 'hint', gameAsJson: string }): Promise<any> {
         return new Promise((resolve, reject) => {
             worker.onmessage = (event) => {
                 resolve(event.data)
