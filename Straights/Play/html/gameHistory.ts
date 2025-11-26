@@ -3,12 +3,18 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import type { Game } from "./game"
+import type { DumpedState } from "./game"
 
-const MAX_NUMBER_OF_STORED_GAMES = 50
+const MAX_NUMBER_OF_STORED_GAMES = 50 
+
+type GameState = {
+    timestamp: number,
+    data: DumpedState,
+}
 
 export function saveGameState(key: string, game: Game) {
     migrate()
-    const gameState = {
+    const gameState: GameState = {
         timestamp: Date.now(),
         data: game.dumpState(),
     }
@@ -20,15 +26,15 @@ export function saveGameState(key: string, game: Game) {
     const prefixedKeys = getPrefixedHistoryKeys()
     if (prefixedKeys.length > MAX_NUMBER_OF_STORED_GAMES) {
         console.info("Cropping game history")
-        const keysByAge: { key:string, timestamp: number }[] = []
+        const keysByAge: { key: string, timestamp: number }[] = []
         for (const pk of prefixedKeys) {
             const gameState = loadGameStateData(pk)
             if (!gameState) {
                 console.debug(`Removing corrupt history entry ${pk}`)
                 localStorage.removeItem(pk)
+            } else {
+                keysByAge.push({ key: pk, timestamp: gameState.timestamp })
             }
-
-            keysByAge.push({ key: pk, timestamp: gameState.timestamp })
         }
 
         keysByAge.sort(
@@ -70,7 +76,7 @@ function getPrefixedHistoryKeys(): string[] {
     return Object.keys(localStorage).filter(k => k.startsWith('history.'))
 }
 
-function loadGameStateData(prefixedKey: string) {
+function loadGameStateData(prefixedKey: string): GameState | null {
     if (!prefixedKey.startsWith('history.')) {
         return null
     }
@@ -78,14 +84,14 @@ function loadGameStateData(prefixedKey: string) {
     return loadGameStateDataCore(prefixedKey)
 }
 
-function loadGameStateDataCore(prefixedKey: string) {
+function loadGameStateDataCore(prefixedKey: string): GameState | null {
     try {
         const gameStateString = localStorage.getItem(prefixedKey)
         if (!gameStateString) {
             return null
         }
 
-        const result = JSON.parse(gameStateString)
+        const result = JSON.parse(gameStateString) as GameState
 
         return result.timestamp && result.data ? result : null
     } catch (e) {
@@ -94,7 +100,7 @@ function loadGameStateDataCore(prefixedKey: string) {
     }
 }
 
-function migrate() {
+function migrate(): void {
     if (localStorage.getItem('version')) {
         return
     }
