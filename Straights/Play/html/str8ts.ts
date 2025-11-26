@@ -47,8 +47,8 @@ let _undoStack : UndoStack<Field>
 let _hintField : Field | null = null
 
 // imported functions (TODO: import the types from generate-str8ts.ts)
-let _generate
-let _generateHint
+let _generate: (arg0: number, arg1: number) => any
+let _generateHint: (arg0: (number | undefined)[][][]) => any
 
 const _modulePromise = _importModules()
 
@@ -147,7 +147,7 @@ function _positionHintDialog() {
     _positionPopup(field, dialog)
 }
 
-function _positionPopup(target, popup) {
+function _positionPopup(target: { getBoundingClientRect: () => DOMRect }[], popup: JQuery<HTMLElement>) {
     // Get the position of the field relative to the viewport
     const targetPos = target[0].getBoundingClientRect();
     const windowHeight = $(window).height();
@@ -160,7 +160,7 @@ function _positionPopup(target, popup) {
     // Determine the vertical position
     let popupTop;
     if ((targetPos.top + targetPos.height / 2) > windowHeight / 2) {
-        popupTop = targetPos.top + window.scrollY - popup.outerHeight();
+        popupTop = targetPos.top + window.scrollY - popup.outerHeight()!;
     } else {
         popupTop = targetPos.top + window.scrollY + targetPos.height;
     }
@@ -168,7 +168,7 @@ function _positionPopup(target, popup) {
     // Determine the horizontal position
     let popupLeft;
     if ((targetPos.left + targetPos.width / 2) > windowWidth / 2) {
-        popupLeft = targetPos.left + window.scrollX - popup.outerWidth();
+        popupLeft = targetPos.left + window.scrollX - popup.outerWidth()!;
     } else {
         popupLeft = targetPos.left + window.scrollX + targetPos.width;
     }
@@ -211,7 +211,7 @@ function _renderUndoButton(length: number) {
 }
 
 // General Functions
-function _changeGridSize(newGridSize) {
+function _changeGridSize(newGridSize: number): void {
     if (newGridSize == _currentGridSize) {
         return
     }
@@ -265,7 +265,7 @@ function _restartTimer() {
     }, 1000)
 }
 
-function _getURLParameter(name) {
+function _getURLParameter(name: string) {
     if (!window.location.search) return null
     const urlParams = new URLSearchParams(window.location.search)
     return urlParams.get(name)
@@ -294,7 +294,7 @@ async function loadNewGame() {
 }
 
 function _loadSettings() {
-    function loadSetting(sliderId, storageKey, defaultValue) {
+    function loadSetting(sliderId: string, storageKey: string, defaultValue: number) {
         const slider = $(`#${sliderId}`)
         const storedValue = localStorage.getItem(storageKey)
 
@@ -367,7 +367,7 @@ function loadNewGameAgain() {
     $('#cancel-new-game').show()
 }
 
-function showDialog(dialog) {
+function showDialog(dialog: number | boolean) {
     $('#welcome-dialog').hide()
     $('#start-dialog').hide()
     $('#loading-dialog').hide()
@@ -419,7 +419,7 @@ function showDialog(dialog) {
     }
 }
 
-function _onKeyDown(e) {
+function _onKeyDown(e: KeyboardEvent) {
     if (_game.isSolved) return
 
     let handled = false
@@ -445,7 +445,7 @@ function _onKeyDown(e) {
     }
 }
 
-function _handleCursorKey(e) {
+function _handleCursorKey(e: KeyboardEvent) {
     switch (e.which) {
         case 37: // left
             _game.moveSelection(-1, 0)
@@ -466,17 +466,17 @@ function _handleCursorKey(e) {
     return true
 }
 
-let _firstDigit = null
+let _firstDigit: number | null = null
 let _digitTimer: number | undefined = undefined
 const _twoDigitTimeout = 500
-function _handleNumberKey(num) {
+function _handleNumberKey(num: number) {
     if (_firstDigit == null) {
         if (_currentGridSize < 10 || num !== 1) {
             _handleNumberInput(num)
         } else {
             _firstDigit = num
             _digitTimer = setTimeout(() => {
-                _handleNumberInput(_firstDigit)
+                _handleNumberInput(num)
                 _firstDigit = null
             }, _twoDigitTimeout)
         }
@@ -494,7 +494,7 @@ function _handleNumberKey(num) {
     }
 }
 
-function _handleNumberInput(num) {
+function _handleNumberInput(num: number) {
     if (num < 1 || num > _currentGridSize) {
         return
     }
