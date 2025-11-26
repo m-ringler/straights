@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-const modes = { USER: 0, WHITEKNOWN: 1, BLACK: 2, BLACKKNOWN: 3 }
+const modes = { USER: 0, WHITEKNOWN: 1, BLACK: 2, BLACKKNOWN: 3 } as const;
 
 const MIN_GRID_SIZE_V128 = 4
 const minCodeSizeV2 = 82
