@@ -2,9 +2,9 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import type { Game } from './game.js'
-import type { Field } from './game.js'
-import type { UndoStack } from './undoStack.js'
+type Game= import("./game.js").Game
+type Field = import("./game.js").Field
+type UndoStack<T> = import("./undoStack.js").UndoStack<T>
 
 // Global Constants
 function _getButtonColors(darkMode: boolean) {
