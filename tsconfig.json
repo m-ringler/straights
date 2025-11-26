@@ -15,7 +15,7 @@
     "verbatimModuleSyntax": true
   },
   "include": [
-    "Straights/**/html/**/*.ts",
-    "Straights.Web/**/*.ts"
+    "./Straights/Play/html/*.ts",
+    "./Straights.Web/*.ts"
   ]
 }
