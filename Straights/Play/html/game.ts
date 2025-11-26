@@ -2,7 +2,12 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-const modes = { USER: 0, WHITEKNOWN: 1, BLACK: 2, BLACKKNOWN: 3 } as const;
+const modes = {
+    USER: 0,
+    WHITEKNOWN: 1,
+    BLACK: 2,
+    BLACKKNOWN: 3
+} as const;
 
 const MIN_GRID_SIZE_V128 = 4
 const minCodeSizeV2 = 82
@@ -25,7 +30,7 @@ hint: undefined|number
 isShowingSolution: boolean
 user: undefined|number
 notes: Set<number>
-    constructor(row: number, col:number, game: Game) {
+    constructor(row: number, col: number, game: Game) {
         this.row = row
         this.col = col
         this.game = game
@@ -48,7 +53,7 @@ notes: Set<number>
         return `#ce${this.row}_${this.col}`;
     }
 
-    setUser(input:number) {
+    setUser(input: number) {
         if (this.isEditable()) {
             this.wrong = false
             this.hint = undefined
@@ -71,7 +76,7 @@ notes: Set<number>
         return this.mode === modes.USER;
     }
 
-    setNote(value:number) {
+    setNote(value: number) {
         if (this.isEditable()) {
             this.wrong = false
             this.hint = undefined
@@ -143,7 +148,7 @@ notes: Set<number>
         this.render()
     }
 
-    setHint(number:number|undefined) {
+    setHint(number: number|undefined) {
         this.hint = number
         if (number && this.notes.size === 0) {
             for (let i = 1; i <= this.game.size; i++) {
@@ -168,7 +173,7 @@ notes: Set<number>
         return field
     }
 
-    copyFrom(field: Field) {
+    copyFrom(field: FieldUserData) {
         this.user = field.user
         this.notes.clear()
         for (const note of field.notes) {
@@ -245,7 +250,7 @@ notes: Set<number>
         element.css('color', this.#getTextColor())
         if (this.isEditable()) {
             if (this.isShowingSolution) {
-                element.text(this.value)
+                element.text(this.value!)
             } else {
                 if (this.user) {
                     element.text(this.user)
@@ -266,9 +271,9 @@ notes: Set<number>
                 }
             }
         } else if (this.mode === modes.BLACKKNOWN) {
-            element.text(this.value)
+            element.text(this.value!)
         } else if (this.mode === modes.WHITEKNOWN) {
-            element.text(this.value)
+            element.text(this.value!)
         }
     }
 
@@ -278,7 +283,7 @@ notes: Set<number>
         } else if (this.mode === modes.BLACKKNOWN) {
             return [-this.value!]; // black known field
         } else if (this.mode === modes.WHITEKNOWN) {
-            return [this.value]; // white known field
+            return [this.value!]; // white known field
         } else if (this.user) {
             return [this.user]; // white field with user guess
         } else {
@@ -286,6 +291,22 @@ notes: Set<number>
         }
     }
 }
+
+export interface FieldIndex {
+    row: number;
+    col: number;
+}
+
+export interface FieldUserData {
+    user: number | undefined;
+    notes: Iterable<number>;
+}
+
+export type DumpedState = {
+    check_count: number;
+    hint_count: number;
+    data: FieldUserData[][];
+};
 
 // class to store and modify the current game state
 export class Game {
@@ -318,13 +339,26 @@ export class Game {
         BG_WHITEKNOWN: '#aaaaaa',
         BG_HINT: '#ffff99',
     }
-$: any
-colors: { FG_BLACK: string; FG_USER: string; FG_USER_WRONG: string; FG_SOLUTION: string; FG_WHITEKNOWN: string; BG_BLACK: string; BG_USER: string; BG_USER_ACTIVE: string; BG_USER_WRONG: string; BG_USER_WRONG_ACTIVE: string; BG_WHITEKNOWN: string; BG_HINT: string }
+$: JQueryStatic 
+colors: { 
+    FG_BLACK: string;
+    FG_USER: string;
+    FG_USER_WRONG: string;
+    FG_SOLUTION: string;
+    FG_WHITEKNOWN: string;
+    BG_BLACK: string;
+    BG_USER: string;
+    BG_USER_ACTIVE: string;
+    BG_USER_WRONG: string;
+    BG_USER_WRONG_ACTIVE: string;
+    BG_WHITEKNOWN: string;
+    BG_HINT: string
+}
 darkMode: boolean
 size: number
 data: Field[][]
 isSolved: boolean
-activeFieldIndex: null|{ row: number, col: number }
+activeFieldIndex: null|FieldIndex
 check_count: number
 hint_count: number
 
@@ -347,11 +381,11 @@ hint_count: number
         this.hint_count = 0
     }
 
-    get(row:number, col:number) {
+    get(row:number, col:number): Field {
         return this.data[row][col]
     }
 
-    dumpState() {
+    dumpState(): DumpedState {
         const fieldData = this.data.map(row =>
             row.map(field => ({
                 user: field.user,
@@ -368,14 +402,19 @@ hint_count: number
         return result
     }
 
-    restoreState(dumpedState:any) {
+    restoreState(dumpedState: FieldUserData[][] | DumpedState) {
         if (Object.hasOwn(dumpedState, "check_count")) {
-            this.check_count = dumpedState.check_count
-            this.hint_count = dumpedState.hint_count
-            this.restoreState(dumpedState.data)
+            // new format including check and hint count
+            const ds = dumpedState as DumpedState
+            this.check_count = ds.check_count
+            this.hint_count = ds.hint_count
+            this.restoreState(ds.data)
         }
         else {
-            dumpedState.forEach((row: Field[], r: number) => {
+            // old format (just field data) also used in
+            // recursive call from above
+            const ds = dumpedState as FieldUserData[][]
+            ds.forEach((row: FieldUserData[], r: number) => {
                 row.forEach((field, c) => {
                     const gameField = this.get(r, c)
                     gameField.copyFrom(field)
@@ -385,7 +424,7 @@ hint_count: number
         }
     }
 
-    #setValues(row: number, col: number, mode:number, value: number) {
+    #setValues(row: number, col: number, mode: number, value: number) {
         const field = new Field(row, col, this)
         this.data[row][col] = field
         this.data[row][col].mode = mode
@@ -393,7 +432,7 @@ hint_count: number
         field.render()
     }
 
-    #forEachField(iteratorFunction: (f:Field, r:number, c:number) => void) {
+    #forEachField(iteratorFunction: (f: Field, r: number, c: number) => void) {
         for (let r = 0; r < this.size; r++) {
             for (let c = 0; c < this.size; c++) {
                 iteratorFunction(this.data[r][c], r, c)
@@ -536,7 +575,7 @@ hint_count: number
     }
 
     // Parse game
-    #parseGameV128(binary:string) {
+    #parseGameV128(binary: string) {
         const size = parseInt(binary.substring(0, 5), 2)
         const pos = 5
 
@@ -567,7 +606,7 @@ hint_count: number
         return result
     }
 
-    #parseGameV002(binary:string) {
+    #parseGameV002(binary: string) {
         const result = new Game(this.$, this.darkMode, 9)
         if (binary.length < (6 * 81) || binary.length > (6 * 81 + 8)) return // Invalid data
         for (let i = 0; i < 81; i++) {
@@ -580,7 +619,7 @@ hint_count: number
         return result
     }
 
-    #decode(code:string) {
+    #decode(code: string) {
         const base64urlCharacters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_'
         let binary = ''
         for (let i = 0; i < code.length; i++) {
@@ -594,7 +633,7 @@ hint_count: number
         return { encodingVersion, binary }
     }
 
-    parseGame(code:string) {
+    parseGame(code: string) {
         const decoded = this.#decode(code)
         switch (decoded.encodingVersion) {
             case 1:

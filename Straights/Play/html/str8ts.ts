@@ -2,9 +2,19 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-type Game= import("./game.js").Game
-type Field = import("./game.js").Field
-type UndoStack<T> = import("./undoStack.js").UndoStack<T>
+type Game= import("./game").Game
+type Field = import("./game").Field
+type UndoStack<T> = import("./undoStack").UndoStack<T>
+type ApiResult = import("./generate-str8ts").ApiResult
+
+// JSON data returned by the generateHint function
+type HintData = {
+    x: number
+    y: number
+    number: number
+    rule: string
+    direction: "horizontal" | "vertical"
+}
 
 // Global Constants
 function _getButtonColors(darkMode: boolean) {
@@ -47,8 +57,8 @@ let _undoStack : UndoStack<Field>
 let _hintField : Field | null = null
 
 // imported functions (TODO: import the types from generate-str8ts.ts)
-let _generate: (arg0: number, arg1: number) => any
-let _generateHint: (arg0: (number | undefined)[][][]) => any
+let _generate: (arg0: number, arg1: number) => Promise<ApiResult>
+let _generateHint: (arg0: number[][][]) => Promise<ApiResult>
 
 const _modulePromise = _importModules()
 
@@ -107,7 +117,9 @@ async function hint() {
     async function generateAndDisplayHint() {
         const hintResponse = await _generateHint(_game.toJsonArray())
         if (hintResponse.status === 0 && hintResponse.message) {
-            const hintData = JSON.parse(hintResponse.message)
+
+            const hintData = JSON.parse(hintResponse.message) as HintData
+            
             _hintField = _game.get(hintData.y, hintData.x)
             _hintField.setHint(hintData.number)
 
@@ -142,7 +154,7 @@ function _positionHintDialog() {
         return
     }
 
-    const field = _hintField.getElement()
+    const field = _hintField.getElement() as any
     const dialog = $('#hint-dialog');
     _positionPopup(field, dialog)
 }
