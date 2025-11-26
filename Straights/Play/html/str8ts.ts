@@ -445,7 +445,7 @@ function _onKeyDown(e: KeyboardEvent) {
     }
 }
 
-function _handleCursorKey(e: KeyboardEvent) {
+function _handleCursorKey(e: { which: number }) {
     switch (e.which) {
         case 37: // left
             _game.moveSelection(-1, 0)
@@ -595,9 +595,9 @@ function _handleGameLoad(popstate = false) {
     }
 }
 
-$(document).keydown(_onKeyDown)
+$(document).on("keydown", _onKeyDown as any)
 
-$(window).resize(_onResize)
+$(window).on("resize", _onResize)
 function _onResize() {
     closeHint()
     if (window.innerWidth / 2 - 45 < $('.controls').position().left) { // Large screen
