@@ -115,6 +115,30 @@
       "name": ".NET Core Attach",
       "type": "coreclr",
       "request": "attach"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug TS Tests",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "test", "--", "--run"],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug Current TS Test File",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "test",
+        "--",
+        "--run",
+        "${relativeFile}"
+      ],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
     }
   ]
 }

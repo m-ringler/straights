@@ -16,6 +16,21 @@
       "problemMatcher": []
     },
     {
+      "label": "test ts",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "test:run"],
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      }
+    },
+    {
       "label": "tsc",
       "type": "shell",
       "command": "npm",
