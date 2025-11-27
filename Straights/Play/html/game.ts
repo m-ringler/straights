@@ -2,6 +2,9 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import { BitmaskEncoder } from './encoder';
+import type { EncodedResult } from './encoder';
+
 const modes = {
     USER: 0,
     WHITEKNOWN: 1,
@@ -424,6 +427,35 @@ hint_count: number
         }
     }
 
+    #getEncoder() {
+        return new BitmaskEncoder({
+            compressionThreshold: 48,
+            minCompressionRatio: 0.9,
+            maxN: 12
+        });
+    }
+
+    async dumpStateBase64(): Promise<EncodedResult> {
+        const encoder = this.#getEncoder();
+
+        var data: Iterable<number>[] = []
+        this.#forEachField(field =>
+            data.push(field.user ? [field.user] : field.notes));
+
+        const encoded = await encoder.encode(this.size, data)
+        return encoded
+    }
+
+    async restoreStateBase64(stateBase64: string) {
+        const decoder = this.#getEncoder();
+        let userFieldCount = 0;
+        this.#forEachField(field =>
+        {
+        })
+
+        //const decoded = await decoder.decode({})
+    }
+
     #setValues(row: number, col: number, mode: number, value: number) {
         const field = new Field(row, col, this)
         this.data[row][col] = field
@@ -432,12 +464,22 @@ hint_count: number
         field.render()
     }
 
-    #forEachField(iteratorFunction: (f: Field, r: number, c: number) => void) {
+    private *loopFields(): IterableIterator<{ field: Field; row: number; col: number }> {
         for (let r = 0; r < this.size; r++) {
             for (let c = 0; c < this.size; c++) {
-                iteratorFunction(this.data[r][c], r, c)
+                yield { field: this.data[r][c], row: r, col: c };
             }
         }
+    }
+
+    forEachField(iteratorFunction: (f: Field, r: number, c: number) => void) {
+        for (const { field, row, col } of this.loopFields()) {
+            iteratorFunction(field, row, col);
+        }
+    }
+
+    *iterateFields(): IterableIterator<{ field: Field; row: number; col: number }> {
+        yield* this.loopFields();
     }
 
     showSolution() {
