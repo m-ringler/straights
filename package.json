@@ -1,7 +1,7 @@
 {
   "name": "straights",
   "private": true,
-  "version": "0.6.20",
+  "version": "0.7.0",
   "devDependencies": {
     "@types/jquery": "^3.5.33",
     "@types/serviceworker": "^0.0.167",
