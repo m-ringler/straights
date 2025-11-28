@@ -43,7 +43,7 @@ const DEFAULT_DIFFICULTY = 3
 
 // Global Variables
 let _starttime: number
-let _timer: number
+let _timer: ReturnType<typeof setTimeout>
 let _noteMode = false
 let _minCodeSize: number
 let _game : Game
@@ -283,6 +283,19 @@ function _getURLParameter(name: string) {
     return urlParams.get(name)
 }
 
+function _removeURLParameter(paramKey: string): void {
+  // Get the current URL and its search part
+  const url: URL = new URL(window.location.href);
+  const searchParams: URLSearchParams = new URLSearchParams(url.search);
+
+  // Remove the specified parameter
+  searchParams.delete(paramKey);
+
+  // Update the URL without reloading the page
+  url.search = searchParams.toString();
+  window.history.replaceState({}, '', url);
+}
+
 async function loadNewGame() {
     showDialog(dialogs.LOADING)
     clearInterval(_timer)
@@ -362,7 +375,7 @@ async function _startGame() {
 
             _changeGridSize(_game.size)
 
-            _gameHistory.restoreGameState(_gameCode, _game)
+            _restoreGameState()
 
             _restartTimer()
             _renderCounters()
@@ -371,6 +384,25 @@ async function _startGame() {
 
     if (!hasGame) {
         await loadNewGame()
+    }
+}
+
+function _restoreGameState() {
+    const state = _getURLParameter("state")
+    _removeURLParameter("state")
+    let stateLoaded = false
+    if (state) {
+        try {
+            _game.restoreStateBase64(state)
+            stateLoaded = true
+        }
+        catch (ex) {
+            console.error(ex)
+        }
+    }
+
+    if (!stateLoaded) {
+        _gameHistory.restoreGameState(_gameCode, _game)
     }
 }
 
@@ -479,7 +511,7 @@ function _handleCursorKey(e: { which: number }) {
 }
 
 let _firstDigit: number | null = null
-let _digitTimer: number | undefined = undefined
+let _digitTimer: ReturnType<typeof setTimeout> | undefined = undefined
 const _twoDigitTimeout = 500
 function _handleNumberKey(num: number) {
     if (_firstDigit == null) {
@@ -551,7 +583,14 @@ function _handleDelete() {
 
 async function copyCurrentLink() {
     try {
-        await navigator.clipboard.writeText(window.location.href)
+        let link = window.location.href
+        if (_game)
+        {
+            const stateBase64 = await _game.dumpStateBase64()
+            link += `&state=${stateBase64}`
+        }
+
+        await navigator.clipboard.writeText(link)
         const copyBtn = $('.copy-link')
         copyBtn.text('Link copied!')
         setTimeout(() => copyBtn.text('🔗'), 1000)

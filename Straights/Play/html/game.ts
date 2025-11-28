@@ -2,8 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import { BitmaskEncoder } from './encoder';
-import type { EncodedResult } from './encoder';
+import { BitmaskEncoder } from './encoder.js';
+import type { EncodedResult } from './encoder.js';
 
 const modes = {
     USER: 0,
@@ -188,12 +188,17 @@ notes: Set<number>
         return this.game.$(this.getSelector())
     }
 
-    reset() {
+    reset(template: FieldUserData | null = null) {
         this.user = undefined
         this.notes.clear()
         this.wrong = false
         this.hint = undefined
         this.isShowingSolution = false
+        if (template)
+        {
+            this.copyFrom(template)
+        }
+
         this.render()
     }
 
@@ -435,25 +440,36 @@ hint_count: number
         });
     }
 
-    async dumpStateBase64(): Promise<EncodedResult> {
-        const encoder = this.#getEncoder();
-
-        var data: Iterable<number>[] = []
-        this.#forEachField(field =>
-            data.push(field.user ? [field.user] : field.notes));
-
-        const encoded = await encoder.encode(this.size, data)
-        return encoded
+    #getUserFields()
+    {
+        return Array.from(
+                this.loopFields(),
+                x => x.field)
+            .filter(
+                x => x.mode === modes.USER);
     }
 
-    async restoreStateBase64(stateBase64: string) {
-        const decoder = this.#getEncoder();
-        let userFieldCount = 0;
-        this.#forEachField(field =>
-        {
-        })
+    async dumpStateBase64(): Promise<string> {
+        const encoder = this.#getEncoder();
 
-        //const decoded = await decoder.decode({})
+        var data = this.#getUserFields()
+            .map(f => f.user ? [f.user] : f.notes);
+
+        const encoded = await encoder.encode(this.size, data)
+        return encoded.base64Data
+    }
+
+    async restoreStateBase64(base64Data: string) {
+        const userFields = this.#getUserFields();
+        const count = userFields.length
+        const decoded = await this.#getEncoder().decode(
+            { base64Data, count },
+            this.size)
+        
+        for (let i = 0; i < count; i++)
+        {
+            userFields[i].reset(toFieldUserData(decoded[i]))
+        }
     }
 
     #setValues(row: number, col: number, mode: number, value: number) {
@@ -464,22 +480,19 @@ hint_count: number
         field.render()
     }
 
-    private *loopFields(): IterableIterator<{ field: Field; row: number; col: number }> {
+    private *loopFields(): IterableIterator<{ field: Field } & FieldIndex> {
         for (let r = 0; r < this.size; r++) {
             for (let c = 0; c < this.size; c++) {
-                yield { field: this.data[r][c], row: r, col: c };
+                const field = this.data[r][c]
+                yield { field, row: r, col: c };
             }
         }
     }
 
-    forEachField(iteratorFunction: (f: Field, r: number, c: number) => void) {
+    #forEachField(iteratorFunction: (f: Field, r: number, c: number) => void) {
         for (const { field, row, col } of this.loopFields()) {
             iteratorFunction(field, row, col);
         }
-    }
-
-    *iterateFields(): IterableIterator<{ field: Field; row: number; col: number }> {
-        yield* this.loopFields();
     }
 
     showSolution() {
@@ -562,10 +575,7 @@ hint_count: number
 
     restart() {
         this.isSolved = false
-
-        this.#forEachField(field => {
-            field.reset()
-        })
+        this.#forEachField(field => field.reset())
     }
 
     getActiveField() {
@@ -661,22 +671,8 @@ hint_count: number
         return result
     }
 
-    #decode(code: string) {
-        const base64urlCharacters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_'
-        let binary = ''
-        for (let i = 0; i < code.length; i++) {
-            let b = base64urlCharacters.indexOf(code.charAt(i)).toString(2)
-            while (b.length < 6) b = '0' + b
-            binary += b
-        }
-        const encodingVersion = parseInt(binary.substring(0, 8), 2)
-        binary = binary.substring(8)
-
-        return { encodingVersion, binary }
-    }
-
     parseGame(code: string) {
-        const decoded = this.#decode(code)
+        const decoded = base64GameCodeToBinary(code)
         switch (decoded.encodingVersion) {
             case 1:
                 // not supported any more
@@ -695,3 +691,32 @@ hint_count: number
         );
     }
 }
+
+function base64GameCodeToBinary(gameCode: string) {
+    const base64urlCharacters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_'
+    let binary = ''
+    for (let i = 0; i < gameCode.length; i++) {
+        let b = base64urlCharacters.indexOf(gameCode.charAt(i)).toString(2)
+        while (b.length < 6) b = '0' + b
+        binary += b
+    }
+    const encodingVersion = parseInt(binary.substring(0, 8), 2)
+    binary = binary.substring(8)
+    
+    return { encodingVersion, binary }
+}
+
+function toFieldUserData(notes: Set<number>) {
+    let user: number | undefined = undefined;
+
+    // Single note is solved field.
+    if (notes.size == 1) {
+        for (let v of notes) {
+            user = v;
+        }
+    }
+
+    const userData = { user, notes };
+    return userData;
+}
+
