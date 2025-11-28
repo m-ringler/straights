@@ -16,10 +16,10 @@
     "singleQuote": true,
     "trailingComma": "es5",
     "tabWidth": 4,
-    "printWidth": 100
+    "printWidth": 80
   },
   "scripts": {
-    "format": "prettier --write \"**/*.{ts,tsx,js,json,css,md,html}\"",
+    "format": "prettier --write \"**/*.{ts,tsx,css,html}\"",
     "tsc": "tsc -p tsconfig.json",
     "tsc:watch": "tsc -p tsconfig.json --watch",
     "test": "vitest",
