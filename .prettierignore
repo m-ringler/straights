@@ -12,4 +12,6 @@ publish
 
 dist
 
+package-lock.json
+
 **/*.min.js
