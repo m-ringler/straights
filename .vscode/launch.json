@@ -1,136 +1,136 @@
 {
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "name": "Straights Generate 5",
-            "type": "coreclr",
-            "request": "launch",
-            "preLaunchTask": "build",
-            "program": "${workspaceFolder}/Straights/bin/Debug/net9.0/straights",
-            "args": ["generate", "--size", "5"],
-            "cwd": "${workspaceFolder}",
-            "console": "integratedTerminal",
-            "stopAtEntry": false
-        },
-        {
-            "name": "Straights Generate 9",
-            "type": "coreclr",
-            "request": "launch",
-            "preLaunchTask": "build",
-            "program": "${workspaceFolder}/Straights/bin/Debug/net9.0/straights",
-            "args": [
-                "generate",
-                "--layout",
-                "HVSymmetric",
-                "--black-blanks",
-                "11",
-                "--black-numbers",
-                "4",
-                "--seed",
-                "Pcg32-6f1987e8d8374b4b-9ce293ec9c374996"
-            ],
-            "cwd": "${workspaceFolder}",
-            "console": "integratedTerminal",
-            "stopAtEntry": false
-        },
-        {
-            "name": "Straights Generate 13",
-            "type": "coreclr",
-            "request": "launch",
-            "preLaunchTask": "build",
-            "program": "${workspaceFolder}/Straights/bin/Debug/net9.0/straights",
-            "args": [
-                "generate",
-                "--layout",
-                "PointSymmetric",
-                "--size",
-                "13",
-                "--attempts",
-                "1000",
-                "--failure-threshold",
-                "100"
-            ],
-            "cwd": "${workspaceFolder}",
-            "console": "integratedTerminal",
-            "stopAtEntry": false
-        },
-        {
-            "name": "Straights Solve TXT",
-            "type": "coreclr",
-            "request": "launch",
-            "preLaunchTask": "build",
-            "program": "${workspaceFolder}/Straights/bin/Debug/net9.0/straights",
-            "args": ["solve", "test/grid09_001.txt"],
-            "cwd": "${workspaceFolder}",
-            "console": "integratedTerminal",
-            "stopAtEntry": false
-        },
-        {
-            "name": "Straights Solve JSON",
-            "type": "coreclr",
-            "request": "launch",
-            "preLaunchTask": "build",
-            "program": "${workspaceFolder}/Straights/bin/Debug/net9.0/straights",
-            "args": ["solve", "test/6690.json"],
-            "cwd": "${workspaceFolder}",
-            "console": "integratedTerminal",
-            "stopAtEntry": false
-        },
-        {
-            "name": "Straights Solve IMG",
-            "type": "coreclr",
-            "request": "launch",
-            "preLaunchTask": "build",
-            "program": "${workspaceFolder}/Straights/bin/Debug/net9.0/straights",
-            "args": ["solve", "${workspaceFolder}/test/grid09_001.png"],
-            "cwd": "${workspaceFolder}",
-            "console": "integratedTerminal",
-            "stopAtEntry": false
-        },
-        {
-            "name": "Straights Solve Editor",
-            "type": "coreclr",
-            "request": "launch",
-            "preLaunchTask": "build",
-            "program": "${workspaceFolder}/Straights/bin/Debug/net9.0/straights",
-            "args": ["solve"],
-            "cwd": "${workspaceFolder}",
-            "console": "integratedTerminal",
-            "stopAtEntry": false
-        },
-        {
-            "name": "Straights Play Offline",
-            "type": "coreclr",
-            "request": "launch",
-            "preLaunchTask": "build",
-            "program": "${workspaceFolder}/Straights/bin/Debug/net9.0/straights",
-            "args": ["play", "test/grid09_001.txt", "--offline"],
-            "cwd": "${workspaceFolder}",
-            "console": "integratedTerminal",
-            "stopAtEntry": false
-        },
-        {
-            "name": ".NET Core Attach",
-            "type": "coreclr",
-            "request": "attach"
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Debug TS Tests",
-            "runtimeExecutable": "npm",
-            "runtimeArgs": ["run", "test", "--", "--run"],
-            "console": "integratedTerminal",
-            "internalConsoleOptions": "neverOpen"
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Debug Current TS Test File",
-            "runtimeExecutable": "npm",
-            "runtimeArgs": ["run", "test", "--", "--run", "${relativeFile}"],
-            "console": "integratedTerminal",
-            "internalConsoleOptions": "neverOpen"
-        }
-    ]
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Straights Generate 5",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      "program": "${workspaceFolder}/Straights/bin/Debug/net9.0/straights",
+      "args": ["generate", "--size", "5"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "stopAtEntry": false
+    },
+    {
+      "name": "Straights Generate 9",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      "program": "${workspaceFolder}/Straights/bin/Debug/net9.0/straights",
+      "args": [
+        "generate",
+        "--layout",
+        "HVSymmetric",
+        "--black-blanks",
+        "11",
+        "--black-numbers",
+        "4",
+        "--seed",
+        "Pcg32-6f1987e8d8374b4b-9ce293ec9c374996"
+      ],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "stopAtEntry": false
+    },
+    {
+      "name": "Straights Generate 13",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      "program": "${workspaceFolder}/Straights/bin/Debug/net9.0/straights",
+      "args": [
+        "generate",
+        "--layout",
+        "PointSymmetric",
+        "--size",
+        "13",
+        "--attempts",
+        "1000",
+        "--failure-threshold",
+        "100"
+      ],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "stopAtEntry": false
+    },
+    {
+      "name": "Straights Solve TXT",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      "program": "${workspaceFolder}/Straights/bin/Debug/net9.0/straights",
+      "args": ["solve", "test/grid09_001.txt"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "stopAtEntry": false
+    },
+    {
+      "name": "Straights Solve JSON",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      "program": "${workspaceFolder}/Straights/bin/Debug/net9.0/straights",
+      "args": ["solve", "test/6690.json"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "stopAtEntry": false
+    },
+    {
+      "name": "Straights Solve IMG",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      "program": "${workspaceFolder}/Straights/bin/Debug/net9.0/straights",
+      "args": ["solve", "${workspaceFolder}/test/grid09_001.png"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "stopAtEntry": false
+    },
+    {
+      "name": "Straights Solve Editor",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      "program": "${workspaceFolder}/Straights/bin/Debug/net9.0/straights",
+      "args": ["solve"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "stopAtEntry": false
+    },
+    {
+      "name": "Straights Play Offline",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      "program": "${workspaceFolder}/Straights/bin/Debug/net9.0/straights",
+      "args": ["play", "test/grid09_001.txt", "--offline"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "stopAtEntry": false
+    },
+    {
+      "name": ".NET Core Attach",
+      "type": "coreclr",
+      "request": "attach"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug TS Tests",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "test", "--", "--run"],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug Current TS Test File",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "test", "--", "--run", "${relativeFile}"],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
+    }
+  ]
 }

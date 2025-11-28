@@ -8,25 +8,25 @@
 export type ApiResult = { status: number; message: string };
 
 export function load_generate() {
-    async function generate(size: number, difficulty: number) {
-        const response = await fetch(
-            `/generate?gridSize=${size}&difficulty=${difficulty - 1}`
-        );
-        const data = await response.json();
-        return data as ApiResult;
-    }
+  async function generate(size: number, difficulty: number) {
+    const response = await fetch(
+      `/generate?gridSize=${size}&difficulty=${difficulty - 1}`
+    );
+    const data = await response.json();
+    return data as ApiResult;
+  }
 
-    async function generateHint(gameAsJson: number[][][]) {
-        const response = await fetch('/hint', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(gameAsJson),
-        });
-        const data = await response.json();
-        return data as ApiResult;
-    }
+  async function generateHint(gameAsJson: number[][][]) {
+    const response = await fetch('/hint', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(gameAsJson),
+    });
+    const data = await response.json();
+    return data as ApiResult;
+  }
 
-    return { generate, generateHint };
+  return { generate, generateHint };
 }

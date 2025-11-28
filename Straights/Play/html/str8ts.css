@@ -5,313 +5,313 @@
  */
 
 :root {
-    --color-border: black;
-    --color-dialog-background: whitesmoke;
-    --color-button-background: #b1cffc;
-    --color-button-active: #335;
-    --color-button-hover-shadow: #ccc;
-    --color-counter-text: #afafaf;
-    --color-cell-border: #113;
-    --color-finished-border: #0c0;
-    --color-transparent: rgb(0 0 0 / 0%);
-    --color-background: white;
-    --color-foreground: black;
-    --color-mini: black;
-    --color-link: #00e;
-    --color-visited-link: #551a8b;
+  --color-border: black;
+  --color-dialog-background: whitesmoke;
+  --color-button-background: #b1cffc;
+  --color-button-active: #335;
+  --color-button-hover-shadow: #ccc;
+  --color-counter-text: #afafaf;
+  --color-cell-border: #113;
+  --color-finished-border: #0c0;
+  --color-transparent: rgb(0 0 0 / 0%);
+  --color-background: white;
+  --color-foreground: black;
+  --color-mini: black;
+  --color-link: #00e;
+  --color-visited-link: #551a8b;
 }
 
 @media (prefers-color-scheme: dark) {
-    :root {
-        --color-border: #aaa;
-        --color-dialog-background: #333;
-        --color-button-background: #555;
-        --color-button-active: #e7d9cdff;
-        --color-button-hover-shadow: #888;
-        --color-counter-text: #ccc;
-        --color-finished-border: #0f0;
-        --color-transparent: rgb(255 255 255 / 0%);
-        --color-background: black;
-        --color-foreground: #ccc;
-        --color-mini: black;
-        --color-link: #4d9eff;
-        --color-visited-link: #aa7dff;
-    }
+  :root {
+    --color-border: #aaa;
+    --color-dialog-background: #333;
+    --color-button-background: #555;
+    --color-button-active: #e7d9cdff;
+    --color-button-hover-shadow: #888;
+    --color-counter-text: #ccc;
+    --color-finished-border: #0f0;
+    --color-transparent: rgb(255 255 255 / 0%);
+    --color-background: black;
+    --color-foreground: #ccc;
+    --color-mini: black;
+    --color-link: #4d9eff;
+    --color-visited-link: #aa7dff;
+  }
 }
 
 div,
 span,
 td,
 tr {
-    padding: 0;
-    margin: 0;
-    font-family: Nunito, sans-serif;
-    -webkit-touch-callout: none;
-    user-select: none;
+  padding: 0;
+  margin: 0;
+  font-family: Nunito, sans-serif;
+  -webkit-touch-callout: none;
+  user-select: none;
 }
 
 body,
 html {
-    width: 100vw;
-    height: 100vh;
-    margin: 0;
-    padding: 0;
-    background-color: var(--color-background);
-    color: var(--color-foreground);
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  background-color: var(--color-background);
+  color: var(--color-foreground);
 }
 
 .wrapper {
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
 }
 
 .container {
-    border: 1px solid var(--color-border);
-    margin: 10px 25px;
+  border: 1px solid var(--color-border);
+  margin: 10px 25px;
 }
 
 .row {
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
 }
 
 .cell {
-    height: 41px;
-    width: 41px;
-    border: 1px solid var(--color-cell-border);
-    margin: 0;
-    padding: 2px;
-    text-align: center;
-    font-weight: 600;
+  height: 41px;
+  width: 41px;
+  border: 1px solid var(--color-cell-border);
+  margin: 0;
+  padding: 2px;
+  text-align: center;
+  font-weight: 600;
 }
 
 .controls {
-    margin: 10px 25px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  margin: 10px 25px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .button {
-    height: 40px;
-    text-align: center;
-    font-size: 20pt;
-    border-radius: 10px;
-    background-color: var(--color-button-background);
+  height: 40px;
+  text-align: center;
+  font-size: 20pt;
+  border-radius: 10px;
+  background-color: var(--color-button-background);
 }
 
 .hint {
-    text-shadow: 0 0 5px red;
+  text-shadow: 0 0 5px red;
 }
 
 .button[disabled] {
-    opacity: 0.5;
-    cursor: not-allowed;
-    pointer-events: none;
-    filter: grayscale(60%);
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+  filter: grayscale(60%);
 }
 
 @media (prefers-color-scheme: dark) {
-    .button {
-        opacity: 0.8;
-    }
+  .button {
+    opacity: 0.8;
+  }
 }
 
 .num {
-    width: 80px;
-    font-weight: 600;
+  width: 80px;
+  font-weight: 600;
 }
 
 .num-small {
-    width: 35px;
-    height: 35px;
-    font-weight: 600;
+  width: 35px;
+  height: 35px;
+  font-weight: 600;
 }
 
 .set {
-    width: 123px;
+  width: 123px;
 }
 
 .set-slim {
-    width: 80px;
+  width: 80px;
 }
 
 .button:hover {
-    box-shadow: 2px 2px var(--color-button-hover-shadow);
+  box-shadow: 2px 2px var(--color-button-hover-shadow);
 }
 
 .button:active {
-    background-color: var(--color-button-active);
+  background-color: var(--color-button-active);
 }
 
 .line {
-    margin: 7px;
-    width: 254px;
+  margin: 7px;
+  width: 254px;
 }
 
 .counter-text {
-    text-align: center;
-    color: var(--color-counter-text);
-    font-size: 10pt;
+  text-align: center;
+  color: var(--color-counter-text);
+  font-size: 10pt;
 }
 
 .mini {
-    text-align: center;
-    margin: -2px 0;
-    width: 100%;
-    font-size: 8pt;
-    font-weight: 600;
-    color: var(--color-mini);
+  text-align: center;
+  margin: -2px 0;
+  width: 100%;
+  font-size: 8pt;
+  font-weight: 600;
+  color: var(--color-mini);
 }
 
 .transparent {
-    color: var(--color-transparent);
+  color: var(--color-transparent);
 }
 
 .finished {
-    border: 15px solid var(--color-finished-border);
+  border: 15px solid var(--color-finished-border);
 }
 
 .dialog-outer-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 
 .dialog-inner-container {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .dialog-background {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: var(--color-border);
-    opacity: 0.2;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--color-border);
+  opacity: 0.2;
 }
 
 .dialog {
-    display: none;
-    background-color: var(--color-dialog-background);
-    border-radius: 10px;
-    padding: 15px;
-    padding-bottom: 20px;
-    width: 235px;
-    position: relative;
+  display: none;
+  background-color: var(--color-dialog-background);
+  border-radius: 10px;
+  padding: 15px;
+  padding-bottom: 20px;
+  width: 235px;
+  position: relative;
 }
 
 .close-button {
-    position: absolute;
-    right: 15px;
-    top: 15px;
-    cursor: pointer;
-    font-size: 20px;
-    line-height: 20px;
-    color: var(--color-foreground);
+  position: absolute;
+  right: 15px;
+  top: 15px;
+  cursor: pointer;
+  font-size: 20px;
+  line-height: 20px;
+  color: var(--color-foreground);
 }
 
 .dialog-title {
-    font-weight: bold;
-    font-size: 20px;
-    margin-bottom: 5px;
+  font-weight: bold;
+  font-size: 20px;
+  margin-bottom: 5px;
 }
 
 .dialog-text {
-    padding-bottom: 20px;
+  padding-bottom: 20px;
 }
 
 .dialog-button {
-    display: inline-block;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    padding: 5px;
-    border-radius: 3px;
-    font-weight: bold;
-    background: linear-gradient(#0000, rgb(0 0 0/10%)) top/100% 800%;
-    background-color: var(--color-button-background);
-    transition: 0.2s;
+  display: inline-block;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding: 5px;
+  border-radius: 3px;
+  font-weight: bold;
+  background: linear-gradient(#0000, rgb(0 0 0/10%)) top/100% 800%;
+  background-color: var(--color-button-background);
+  transition: 0.2s;
 }
 
 .dialog-button:hover {
-    background-position: bottom;
+  background-position: bottom;
 }
 
 .full-width {
-    width: 225px;
-    text-align: center;
+  width: 225px;
+  text-align: center;
 }
 
 .dialog-new {
-    padding-bottom: 20px;
+  padding-bottom: 20px;
 }
 
 .slider {
-    width: 220px;
-    margin-top: 5px;
-    padding-top: 2px;
+  width: 220px;
+  margin-top: 5px;
+  padding-top: 2px;
 }
 
 .dialog-text-input {
-    padding: 3px;
-    border-radius: 3px;
+  padding: 3px;
+  border-radius: 3px;
 }
 
 .copy-button {
-    background-color: var(--color-button-background);
-    margin-left: 5px;
-    padding: 0 3px;
-    border-radius: 3px;
+  background-color: var(--color-button-background);
+  margin-left: 5px;
+  padding: 0 3px;
+  border-radius: 3px;
 }
 
 .loading-dialog {
-    text-align: center;
+  text-align: center;
 }
 
 .loading-ring {
-    display: inline-block;
-    width: 80px;
-    height: 80px;
+  display: inline-block;
+  width: 80px;
+  height: 80px;
 }
 
 .loading-ring::after {
-    content: ' ';
-    display: block;
-    width: 64px;
-    height: 64px;
-    border-radius: 50%;
-    border: 6px solid var(--color-button-background);
-    border-color: var(--color-button-background) transparent;
-    animation: loading-ring 1.2s linear infinite;
+  content: ' ';
+  display: block;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 6px solid var(--color-button-background);
+  border-color: var(--color-button-background) transparent;
+  animation: loading-ring 1.2s linear infinite;
 }
 
 @keyframes loading-ring {
-    0% {
-        transform: rotate(0deg);
-    }
+  0% {
+    transform: rotate(0deg);
+  }
 
-    100% {
-        transform: rotate(360deg);
-    }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 a {
-    color: var(--color-link);
+  color: var(--color-link);
 }
 
 a:visited {
-    color: var(--color-visited-link);
+  color: var(--color-visited-link);
 }
