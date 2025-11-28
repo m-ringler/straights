@@ -79,7 +79,9 @@ class UIController {
 
     private async _importModules() {
         const undoStackModule = await import('./undoStack.js');
-        this._undoStack = new undoStackModule.UndoStack(this._renderUndoButton.bind(this));
+        this._undoStack = new undoStackModule.UndoStack(
+            this._renderUndoButton.bind(this)
+        );
 
         const gameModule = await import('./game.js');
         this._game = new gameModule.Game($, _darkMode);
@@ -102,7 +104,9 @@ class UIController {
 
     toggleNoteMode() {
         this._noteMode = !this._noteMode;
-        const color = this._noteMode ? _buttonColors.BUTTONDOWN : _buttonColors.BUTTONUP;
+        const color = this._noteMode
+            ? _buttonColors.BUTTONDOWN
+            : _buttonColors.BUTTONUP;
         $('#notes').css('background-color', color);
     }
 
@@ -211,7 +215,8 @@ class UIController {
         // Determine the vertical position
         let popupTop;
         if (targetPos.top + targetPos.height / 2 > windowHeight / 2) {
-            popupTop = targetPos.top + window.scrollY - (popup.outerHeight() ?? 0);
+            popupTop =
+                targetPos.top + window.scrollY - (popup.outerHeight() ?? 0);
         } else {
             popupTop = targetPos.top + window.scrollY + targetPos.height;
         }
@@ -219,7 +224,8 @@ class UIController {
         // Determine the horizontal position
         let popupLeft;
         if (targetPos.left + targetPos.width / 2 > windowWidth / 2) {
-            popupLeft = targetPos.left + window.scrollX - (popup.outerWidth() ?? 0);
+            popupLeft =
+                targetPos.left + window.scrollX - (popup.outerWidth() ?? 0);
         } else {
             popupLeft = targetPos.left + window.scrollX + targetPos.width;
         }
@@ -316,7 +322,11 @@ class UIController {
             const minutes = Math.floor(diff / 60000);
             const seconds = Math.floor(diff / 1000 - minutes * 60);
             $('#time').text(
-                (minutes < 10 ? '0' : '') + minutes + ':' + (seconds < 10 ? '0' : '') + seconds
+                (minutes < 10 ? '0' : '') +
+                    minutes +
+                    ':' +
+                    (seconds < 10 ? '0' : '') +
+                    seconds
             );
         }, 1000);
     }
@@ -345,10 +355,16 @@ class UIController {
         clearInterval(this._timer);
         $('#generate-button').prop('disabled', true);
         try {
-            const data = await this._generate(this._generateGridSize, this._difficulty);
+            const data = await this._generate(
+                this._generateGridSize,
+                this._difficulty
+            );
             if (data.status === 0 && data.message.length > this._minCodeSize) {
                 console.log('Game:', data.message);
-                this._gameUrl = window.location.href.split('?')[0] + '?code=' + data.message;
+                this._gameUrl =
+                    window.location.href.split('?')[0] +
+                    '?code=' +
+                    data.message;
                 this._gameCode = data.message;
                 this.showDialog(dialogs.GENERATED);
                 return;
@@ -363,7 +379,11 @@ class UIController {
     }
 
     private _loadSettings() {
-        function loadSetting(sliderId: string, storageKey: string, defaultValue: number) {
+        function loadSetting(
+            sliderId: string,
+            storageKey: string,
+            defaultValue: number
+        ) {
             const slider = $(`#${sliderId}`);
             const storedValue = localStorage.getItem(storageKey);
 
@@ -410,7 +430,10 @@ class UIController {
     changeGenerateSize() {
         this._generateGridSize = Number($('#grid-size-slider').val());
         $('#grid-size').text(this._generateGridSize);
-        localStorage.setItem('generate.gridSize', String(this._generateGridSize));
+        localStorage.setItem(
+            'generate.gridSize',
+            String(this._generateGridSize)
+        );
     }
 
     private async _startGame() {
@@ -665,7 +688,8 @@ class UIController {
             const latestKey = this._gameHistory.getLatestGameKey();
             if (latestKey) {
                 // Reload the current page with the latest game code
-                window.location.href = window.location.href.split('?')[0] + '?code=' + latestKey;
+                window.location.href =
+                    window.location.href.split('?')[0] + '?code=' + latestKey;
                 return;
             }
 
@@ -680,7 +704,11 @@ class UIController {
             // Large screen
             $('#buttons-small').hide();
             $('#buttons-large').show();
-            $('.cell').css({ 'font-size': '22pt', width: '41px', height: '41px' });
+            $('.cell').css({
+                'font-size': '22pt',
+                width: '41px',
+                height: '41px',
+            });
             $('.mini').css('font-size', '9pt');
             $('#hint-dialog').css('width', '235px');
         } else {

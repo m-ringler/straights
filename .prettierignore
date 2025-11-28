@@ -1,0 +1,15 @@
+# Ignore verification snapshots and files used for test verification
+
+**/*.verified.*
+
+# Common ignores (keep these for safety)
+
+node_modules
+
+coverage
+
+publish
+
+dist
+
+**/*.min.js
