@@ -115,7 +115,7 @@
       "label": "run Straights.Web",
       "command": "emrun",
       "type": "shell",
-      "args": ["${workspaceFolder}/Straights.Web/publish/index.html"],
+      "args": ["${workspaceFolder}/publish/Straights.Web/index.html"],
       "dependsOn": "publish Straights.Web",
       "problemMatcher": []
     },
