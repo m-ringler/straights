@@ -238,7 +238,7 @@ class UIController {
         });
     }
 
-    solution() {
+    showSolution() {
         this.showDialog(false);
         clearInterval(this._timer);
         this._game.showSolution();
@@ -350,7 +350,7 @@ class UIController {
         window.history.replaceState({}, '', url);
     }
 
-    async loadNewGame() {
+    async generateNewGame() {
         this.showDialog(dialogs.LOADING);
         clearInterval(this._timer);
         $('#generate-button').prop('disabled', true);
@@ -458,7 +458,7 @@ class UIController {
         }
 
         if (!hasGame) {
-            await this.loadNewGame();
+            await this.generateNewGame();
         }
     }
 
@@ -480,7 +480,7 @@ class UIController {
         }
     }
 
-    loadNewGameAgain() {
+    generateNewGameAgain() {
         this.showDialog(dialogs.WELCOME);
         $('#cancel-new-game').show();
     }
@@ -767,26 +767,49 @@ class UIController {
         $(window).on('resize', () => {
             this._onResize();
         });
+
+        // Controls wired from index.html
+        $('#undo').on('click', () => this.undo());
+        $('#notes').on('click', () => this.toggleNoteMode());
+        $('#check').on('click', () => this.check());
+        $('#hint').on('click', () => this.hint());
+        $('#show-solution').on('click', () =>
+            this.showDialog(dialogs.SOLUTION)
+        );
+
+        $('#new').on('click', () => this.generateNewGameAgain());
+        $('#restart').on('click', () => this.showDialog(dialogs.RESTART));
+        $('#about').on('click', () => this.showDialog(dialogs.ABOUT));
+
+        $('#grid-size-slider').on('input', () => this.changeGenerateSize());
+        $('#difficulty-slider').on('input', () => this.changeDifficulty());
+
+        $('#generate-button').on('click', () => this.generateNewGame());
+        $('#cancel-new-game').on('click', () => this.showDialog(false));
+
+        $('#confirm-show-solution').on('click', () => this.showSolution());
+        $('#confirm-restart').on('click', () => this.restart());
+
+        // Copy link and force-update actions
+        $('#copy-link').on('click', () => this.copyCurrentLink());
+
+        // The force-update action proper is registered in a script block in index.html
+        $('#force-update').on('click', () => this.showDialog(false));
+
+        // Hint dialog close handlers (close the hint on click)
+        $('#hint-dialog').on('click', () => this.closeHint());
+        $('#hint-close').on('click', (e) => {
+            e.stopPropagation();
+            this.closeHint();
+        });
+
+        // generic close buttons for dialogs (hide overlay)
+        $('.close-button')
+            .not('#hint-close')
+            .on('click', () => this.showDialog(false));
     }
 }
 
 const _ui = new UIController();
 
 $(_ui.start);
-
-// Backwards-compatible global helpers used by inline handlers in index.html
-/* eslint-disable @typescript-eslint/no-explicit-any */
-(window as any).restart = () => _ui.restart();
-(window as any).toggleNoteMode = () => _ui.toggleNoteMode();
-(window as any).check = () => _ui.check();
-(window as any).hint = () => _ui.hint();
-(window as any).solution = () => _ui.solution();
-(window as any).undo = () => _ui.undo();
-(window as any).loadNewGameAgain = () => _ui.loadNewGameAgain();
-(window as any).loadNewGame = () => _ui.loadNewGame();
-(window as any).showDialog = (d: number | boolean) => _ui.showDialog(d);
-(window as any).copyCurrentLink = () => _ui.copyCurrentLink();
-(window as any).closeHint = () => _ui.closeHint();
-(window as any).changeGenerateSize = () => _ui.changeGenerateSize();
-(window as any).changeDifficulty = () => _ui.changeDifficulty();
-/* eslint-enable @typescript-eslint/no-explicit-any */
