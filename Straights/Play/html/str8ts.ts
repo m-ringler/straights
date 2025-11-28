@@ -17,6 +17,37 @@ type HintData = {
 };
 
 // Global Constants
+
+// Lightweight interface that describes the jQuery-like surface used by
+// UIController. We intentionally keep this small and focused so the
+// UIController can be constructed with a thin mock in tests.
+interface JQuerySelection {
+  on(event: string, handler?: any): this;
+  css(props: any): this;
+  css(key: string, val: any): this;
+  text(val?: any): this | string;
+  html(val?: any): this;
+  append(val: any): this;
+  addClass(val: string): this;
+  removeClass(val?: string): this;
+  show(): this;
+  hide(): this;
+  val(val?: any): any;
+  attr(key: string, val?: any): any;
+  prop(key: string, val?: any): any;
+  removeAttr(key: string): this;
+  position(): { left: number; top: number } | undefined;
+  outerHeight(): number | null;
+  outerWidth(): number | null;
+  height(): number | undefined;
+  width(): number | undefined;
+  not(selector: string): JQuerySelection;
+}
+
+interface JQueryLike {
+  (selector: any, ...args: any[]): JQuerySelection;
+}
+
 function _getButtonColors(darkMode: boolean) {
   const buttonColorsLight = {
     BUTTONDOWN: '#335',
@@ -66,6 +97,10 @@ class UIController {
   private _undoStack!: UndoStack<Field>;
   private _hintField: Field | null = null;
 
+  // injected dependencies
+  private $: JQueryLike;
+  private win: Window;
+
   // imported functions (TODO: import the types from generate-str8ts.ts)
   private _generate!: (arg0: number, arg1: number) => Promise<ApiResult>;
   private _generateHint!: (arg0: number[][][]) => Promise<ApiResult>;
@@ -73,7 +108,9 @@ class UIController {
   // module loader promise so external code can wait
   readonly modulePromise: Promise<void>;
 
-  constructor() {
+  constructor($: any, win: Window) {
+    this.$ = $ as JQueryLike;
+    this.win = win;
     this.modulePromise = this._importModules();
   }
 
@@ -84,7 +121,7 @@ class UIController {
     );
 
     const gameModule = await import('./game.js');
-    this._game = new gameModule.Game($, _darkMode);
+    this._game = new gameModule.Game(this.$, _darkMode);
     this._minCodeSize = gameModule.minCodeSize;
 
     this._gameHistory = await import('./gameHistory.js');
@@ -107,12 +144,12 @@ class UIController {
     const color = this._noteMode
       ? _buttonColors.BUTTONDOWN
       : _buttonColors.BUTTONUP;
-    $('#notes').css('background-color', color);
+    this.$('#notes').css('background-color', color);
   }
 
   private _renderCounters() {
-    $('#check-counter').text(this._game.check_count);
-    $('#hint-counter').text(this._game.hint_count);
+    this.$('#check-counter').text(this._game.check_count);
+    this.$('#hint-counter').text(this._game.hint_count);
   }
 
   check() {
@@ -160,7 +197,7 @@ class UIController {
             ? 'row'
             : 'column';
 
-      $('#hint-text').html(
+      this.$('#hint-text').html(
         `Hint: ${hintData.number} can be removed by applying the <a href="https://github.com/m-ringler/straights/wiki/Rules-of-Str8ts#${hintData.rule}" target="rules">${ruleName} rule</a> to the ${ruleTarget}.`
       );
       this._positionHintDialog();
@@ -183,30 +220,15 @@ class UIController {
       return;
     }
 
-    const field = this._hintField.getElement() as any;
-    const dialog = $('#hint-dialog');
-    this._positionPopup(field, dialog);
+    const fieldElement = this._hintField.getElement()[0];
+    const dialog = this.$('#hint-dialog');
+    this._positionPopup(fieldElement, dialog);
   }
 
-  private _positionPopup(
-    target: Element | JQuery<HTMLElement> | ArrayLike<Element>,
-    popup: JQuery<HTMLElement>
-  ) {
-    // Get the position of the field relative to the viewport
-    // Normalize target to a DOM Element
-    let el: Element | undefined;
-    if ((target as any).getBoundingClientRect) {
-      el = target as Element;
-    } else if ((target as any)[0]) {
-      el = (target as any)[0] as Element;
-    } else if ((target as any).length && (target as any)[0]) {
-      el = (target as any)[0] as Element;
-    }
-    if (!el) return;
-
-    const targetPos = el.getBoundingClientRect();
-    const windowHeight = $(window).height();
-    const windowWidth = $(window).width();
+  private _positionPopup(target: Element, popup: JQuerySelection) {
+    const targetPos = target.getBoundingClientRect();
+    const windowHeight = this.$(this.win).height();
+    const windowWidth = this.$(this.win).width();
 
     if (!windowHeight || !windowWidth) {
       return;
@@ -215,17 +237,17 @@ class UIController {
     // Determine the vertical position
     let popupTop;
     if (targetPos.top + targetPos.height / 2 > windowHeight / 2) {
-      popupTop = targetPos.top + window.scrollY - (popup.outerHeight() ?? 0);
+      popupTop = targetPos.top + this.win.scrollY - (popup.outerHeight() ?? 0);
     } else {
-      popupTop = targetPos.top + window.scrollY + targetPos.height;
+      popupTop = targetPos.top + this.win.scrollY + targetPos.height;
     }
 
     // Determine the horizontal position
     let popupLeft;
     if (targetPos.left + targetPos.width / 2 > windowWidth / 2) {
-      popupLeft = targetPos.left + window.scrollX - (popup.outerWidth() ?? 0);
+      popupLeft = targetPos.left + this.win.scrollX - (popup.outerWidth() ?? 0);
     } else {
-      popupLeft = targetPos.left + window.scrollX + targetPos.width;
+      popupLeft = targetPos.left + this.win.scrollX + targetPos.width;
     }
 
     // Set the position of the dialog
@@ -260,7 +282,7 @@ class UIController {
   }
 
   private _renderUndoButton(length: number) {
-    const undoButton = $('#undo');
+    const undoButton = this.$('#undo');
     if (length == 0 || this._game.isSolved) {
       undoButton.prop('disabled', true);
       undoButton.attr('disabled', 'disabled'); // Ensure attribute is present for CSS to update
@@ -283,22 +305,22 @@ class UIController {
 
   private _showHideButtonsAndCells() {
     for (let i = 1; i <= this._currentGridSize; i++) {
-      $(`td[data-button="bn${i}"]`).show();
+      this.$(`td[data-button="bn${i}"]`).show();
     }
     for (let i = this._currentGridSize + 1; i <= MAX_GRID_SIZE; i++) {
-      $(`td[data-button="bn${i}"]`).hide();
+      this.$(`td[data-button="bn${i}"]`).hide();
     }
     for (let r = 0; r < this._currentGridSize; r++) {
-      $('#r' + r).show();
+      this.$('#r' + r).show();
       for (let c = 0; c < this._currentGridSize; c++) {
-        $(`#ce${r}_${c}`).show();
+        this.$(`#ce${r}_${c}`).show();
       }
       for (let c = this._currentGridSize; c < MAX_GRID_SIZE; c++) {
-        $(`#ce${r}_${c}`).hide();
+        this.$(`#ce${r}_${c}`).hide();
       }
     }
     for (let r = this._currentGridSize; r < MAX_GRID_SIZE; r++) {
-      $('#r' + r).hide();
+      this.$('#r' + r).hide();
     }
   }
 
@@ -309,7 +331,7 @@ class UIController {
         row += `<td class="cell" id="ce${r}_${c}" row="${r}" col="${c}"></td>`;
       }
       row += '</tr>';
-      $('.container').append(row);
+      this.$('.container').append(row);
     }
   }
 
@@ -319,7 +341,7 @@ class UIController {
       const diff = new Date().getTime() - this._starttime;
       const minutes = Math.floor(diff / 60000);
       const seconds = Math.floor(diff / 1000 - minutes * 60);
-      $('#time').text(
+      this.$('#time').text(
         (minutes < 10 ? '0' : '') +
           minutes +
           ':' +
@@ -330,14 +352,14 @@ class UIController {
   }
 
   private _getURLParameter(name: string) {
-    if (!window.location.search) return null;
-    const urlParams = new URLSearchParams(window.location.search);
+    if (!this.win.location.search) return null;
+    const urlParams = new URLSearchParams(this.win.location.search);
     return urlParams.get(name);
   }
 
   private _removeURLParameter(paramKey: string): void {
     // Get the current URL and its search part
-    const url: URL = new URL(window.location.href);
+    const url: URL = new URL(this.win.location.href);
     const searchParams: URLSearchParams = new URLSearchParams(url.search);
 
     // Remove the specified parameter
@@ -345,13 +367,13 @@ class UIController {
 
     // Update the URL without reloading the page
     url.search = searchParams.toString();
-    window.history.replaceState({}, '', url);
+    this.win.history.replaceState({}, '', url);
   }
 
   async generateNewGame() {
     this.showDialog(dialogs.LOADING);
     clearInterval(this._timer);
-    $('#generate-button').prop('disabled', true);
+    this.$('#generate-button').prop('disabled', true);
     try {
       const data = await this._generate(
         this._generateGridSize,
@@ -360,7 +382,7 @@ class UIController {
       if (data.status === 0 && data.message.length > this._minCodeSize) {
         console.log('Game:', data.message);
         this._gameUrl =
-          window.location.href.split('?')[0] + '?code=' + data.message;
+          this.win.location.href.split('?')[0] + '?code=' + data.message;
         this._gameCode = data.message;
         this.showDialog(dialogs.GENERATED);
         return;
@@ -371,16 +393,16 @@ class UIController {
       console.error('Error fetching game:', error);
     }
     this.showDialog(false);
-    $('#generate-button').prop('disabled', false);
+    this.$('#generate-button').prop('disabled', false);
   }
 
   private _loadSettings() {
-    function loadSetting(
+    const loadSetting = (
       sliderId: string,
       storageKey: string,
       defaultValue: number
-    ) {
-      const slider = $(`#${sliderId}`);
+    ) => {
+      const slider = this.$(`#${sliderId}`);
       const storedValue = localStorage.getItem(storageKey);
 
       let validatedValue = defaultValue;
@@ -395,9 +417,9 @@ class UIController {
       }
 
       slider.val(validatedValue);
-      $(`#${sliderId.replace('-slider', '')}`).text(validatedValue);
+      this.$(`#${sliderId.replace('-slider', '')}`).text(validatedValue);
       return validatedValue;
-    }
+    };
 
     try {
       this._generateGridSize = loadSetting(
@@ -418,14 +440,14 @@ class UIController {
   }
 
   changeDifficulty() {
-    this._difficulty = Number($('#difficulty-slider').val());
-    $('#difficulty').text(this._difficulty);
+    this._difficulty = Number(this.$('#difficulty-slider').val());
+    this.$('#difficulty').text(this._difficulty);
     localStorage.setItem('generate.difficulty', String(this._difficulty));
   }
 
   changeGenerateSize() {
-    this._generateGridSize = Number($('#grid-size-slider').val());
-    $('#grid-size').text(this._generateGridSize);
+    this._generateGridSize = Number(this.$('#grid-size-slider').val());
+    this.$('#grid-size').text(this._generateGridSize);
     localStorage.setItem('generate.gridSize', String(this._generateGridSize));
   }
 
@@ -433,7 +455,7 @@ class UIController {
     let hasGame = false;
     if (this._gameCode && this._gameCode.length > this._minCodeSize) {
       this._undoStack.clear();
-      $('.container').removeClass('finished');
+      this.$('.container').removeClass('finished');
       this.showDialog(false);
 
       const parsedGame = this._game.parseGame(this._gameCode);
@@ -475,58 +497,58 @@ class UIController {
 
   generateNewGameAgain() {
     this.showDialog(dialogs.WELCOME);
-    $('#cancel-new-game').show();
+    this.$('#cancel-new-game').show();
   }
 
   showDialog(dialog: number | boolean) {
-    $('#welcome-dialog').hide();
-    $('#start-dialog').hide();
-    $('#loading-dialog').hide();
-    $('#solution-dialog').hide();
-    $('#restart-dialog').hide();
-    $('#about-dialog').hide();
-    $('#hint-dialog').hide();
+    this.$('#welcome-dialog').hide();
+    this.$('#start-dialog').hide();
+    this.$('#loading-dialog').hide();
+    this.$('#solution-dialog').hide();
+    this.$('#restart-dialog').hide();
+    this.$('#about-dialog').hide();
+    this.$('#hint-dialog').hide();
     if (dialog != dialogs.HINT) {
       this.closeHint();
     }
 
     if (dialog) {
-      $('.dialog-outer-container').show();
+      this.$('.dialog-outer-container').show();
       switch (dialog) {
         case dialogs.LOADING:
-          $('#loading-dialog').show();
+          this.$('#loading-dialog').show();
           break;
         case dialogs.WELCOME:
-          $('#welcome-dialog').show();
+          this.$('#welcome-dialog').show();
           break;
         case dialogs.GENERATED:
-          window.history.pushState({}, '', this._gameUrl);
+          this.win.history.pushState({}, '', this._gameUrl);
           this._startGame();
           break;
         case dialogs.SOLUTION:
           if (!this._game.isSolved) {
-            $('#solution-dialog').show();
+            this.$('#solution-dialog').show();
           } else {
-            $('.dialog-outer-container').hide();
+            this.$('.dialog-outer-container').hide();
           }
           break;
         case dialogs.RESTART:
           if (!this._game.isSolved) {
-            $('#restart-dialog').show();
+            this.$('#restart-dialog').show();
           } else {
-            $('.dialog-outer-container').hide();
+            this.$('.dialog-outer-container').hide();
           }
           break;
         case dialogs.ABOUT:
-          $('#current-game').attr('href', window.location.href);
-          $('#about-dialog').show();
+          this.$('#current-game').attr('href', this.win.location.href);
+          this.$('#about-dialog').show();
           break;
         case dialogs.HINT:
-          $('#hint-dialog').show();
+          this.$('#hint-dialog').show();
           break;
       }
     } else {
-      $('.dialog-outer-container').hide();
+      this.$('.dialog-outer-container').hide();
     }
   }
 
@@ -625,7 +647,7 @@ class UIController {
 
       if (this._game.isSolved) {
         this._undoStack.clear();
-        $('.container').addClass('finished');
+        this.$('.container').addClass('finished');
         this._onResize();
         clearInterval(this._timer);
       }
@@ -650,14 +672,14 @@ class UIController {
 
   async copyCurrentLink() {
     try {
-      let link = window.location.href;
+      let link = this.win.location.href;
       if (this._game) {
         const stateBase64 = await this._game.dumpStateBase64();
         link += `&state=${stateBase64}`;
       }
 
-      await navigator.clipboard.writeText(link);
-      const copyBtn = $('.copy-link');
+      await this.win.navigator.clipboard.writeText(link);
+      const copyBtn = this.$('.copy-link');
       copyBtn.text('Link copied!');
       setTimeout(() => copyBtn.text('🔗'), 1000);
     } catch (err) {
@@ -667,7 +689,7 @@ class UIController {
 
   private _handleGameLoad(popstate = false) {
     const code = this._getURLParameter('code');
-    const currentKey = window.location.href;
+    const currentKey = this.win.location.href;
 
     if (code && code.length > this._minCodeSize) {
       this._gameUrl = currentKey;
@@ -681,8 +703,8 @@ class UIController {
       const latestKey = this._gameHistory.getLatestGameKey();
       if (latestKey) {
         // Reload the current page with the latest game code
-        window.location.href =
-          window.location.href.split('?')[0] + '?code=' + latestKey;
+        this.win.location.href =
+          this.win.location.href.split('?')[0] + '?code=' + latestKey;
         return;
       }
 
@@ -693,34 +715,37 @@ class UIController {
 
   private _onResize() {
     this.closeHint();
-    if (window.innerWidth / 2 - 45 < $('.controls').position().left) {
+    if (
+      this.win.innerWidth / 2 - 45 <
+      (this.$('.controls').position()?.left ?? 0)
+    ) {
       // Large screen
-      $('#buttons-small').hide();
-      $('#buttons-large').show();
-      $('.cell').css({
+      this.$('#buttons-small').hide();
+      this.$('#buttons-large').show();
+      this.$('.cell').css({
         'font-size': '22pt',
         width: '41px',
         height: '41px',
       });
-      $('.mini').css('font-size', '9pt');
-      $('#hint-dialog').css('width', '235px');
+      this.$('.mini').css('font-size', '9pt');
+      this.$('#hint-dialog').css('width', '235px');
     } else {
       // Small screen
       const cellwidth = Math.min(
-        Math.floor(window.innerWidth / this._currentGridSize - 2),
+        Math.floor(this.win.innerWidth / this._currentGridSize - 2),
         41
       );
-      $('#buttons-small').show();
-      $('#buttons-large').hide();
-      $('.container').css({ margin: '5px 2px' });
-      $('.controls').css({ margin: '0px 2px' });
-      $('.cell').css({
+      this.$('#buttons-small').show();
+      this.$('#buttons-large').hide();
+      this.$('.container').css({ margin: '5px 2px' });
+      this.$('.controls').css({ margin: '0px 2px' });
+      this.$('.cell').css({
         'font-size': '17pt',
         width: `${cellwidth}px`,
         height: `${cellwidth}px`,
       });
-      $('.mini').css('font-size', '8pt');
-      $('#hint-dialog').css('width', '150px');
+      this.$('.mini').css('font-size', '8pt');
+      this.$('#hint-dialog').css('width', '150px');
     }
   }
 
@@ -736,71 +761,73 @@ class UIController {
     this._handleGameLoad();
 
     // event handlers for UI elements
-    $('td[id^="ce"]').on('click', (evt) => {
+    this.$('td[id^="ce"]').on('click', (evt) => {
       // Game fields
       const el = evt.currentTarget as Element;
-      const row = Number($(el).attr('row'));
-      const col = Number($(el).attr('col'));
+      const row = Number(this.$(el).attr('row'));
+      const col = Number(this.$(el).attr('col'));
       this.selectCell(row, col);
     });
-    $('td[data-button^="bn"]').on('click', (evt) => {
+    this.$('td[data-button^="bn"]').on('click', (evt) => {
       // Number buttons
       const el = evt.currentTarget as Element;
-      const num = Number($(el).text());
+      const num = Number(this.$(el).text());
       this._handleNumberInput(num);
     });
 
     // wire page-level events here so they can call private methods
-    window.addEventListener('popstate', () => {
+    this.win.addEventListener('popstate', () => {
       this._handleGameLoad(true);
     });
-    $(document).on('keydown', (e) => {
+    this.$(document).on('keydown', (e) => {
       this._onKeyDown(e as any);
     });
-    $(window).on('resize', () => {
+    this.$(this.win).on('resize', () => {
       this._onResize();
     });
 
     // Controls wired from index.html
-    $('#undo').on('click', () => this.undo());
-    $('#notes').on('click', () => this.toggleNoteMode());
-    $('#check').on('click', () => this.check());
-    $('#hint').on('click', () => this.hint());
-    $('#show-solution').on('click', () => this.showDialog(dialogs.SOLUTION));
+    this.$('#undo').on('click', () => this.undo());
+    this.$('#notes').on('click', () => this.toggleNoteMode());
+    this.$('#check').on('click', () => this.check());
+    this.$('#hint').on('click', () => this.hint());
+    this.$('#show-solution').on('click', () =>
+      this.showDialog(dialogs.SOLUTION)
+    );
 
-    $('#new').on('click', () => this.generateNewGameAgain());
-    $('#restart').on('click', () => this.showDialog(dialogs.RESTART));
-    $('#about').on('click', () => this.showDialog(dialogs.ABOUT));
+    this.$('#new').on('click', () => this.generateNewGameAgain());
+    this.$('#restart').on('click', () => this.showDialog(dialogs.RESTART));
+    this.$('#about').on('click', () => this.showDialog(dialogs.ABOUT));
 
-    $('#grid-size-slider').on('input', () => this.changeGenerateSize());
-    $('#difficulty-slider').on('input', () => this.changeDifficulty());
+    this.$('#grid-size-slider').on('input', () => this.changeGenerateSize());
+    this.$('#difficulty-slider').on('input', () => this.changeDifficulty());
 
-    $('#generate-button').on('click', () => this.generateNewGame());
-    $('#cancel-new-game').on('click', () => this.showDialog(false));
+    this.$('#generate-button').on('click', () => this.generateNewGame());
+    this.$('#cancel-new-game').on('click', () => this.showDialog(false));
 
-    $('#confirm-show-solution').on('click', () => this.showSolution());
-    $('#confirm-restart').on('click', () => this.restart());
+    this.$('#confirm-show-solution').on('click', () => this.showSolution());
+    this.$('#confirm-restart').on('click', () => this.restart());
 
     // Copy link and force-update actions
-    $('#copy-link').on('click', () => this.copyCurrentLink());
+    this.$('#copy-link').on('click', () => this.copyCurrentLink());
 
     // The force-update action proper is registered in a script block in index.html
-    $('#force-update').on('click', () => this.showDialog(false));
+    this.$('#force-update').on('click', () => this.showDialog(false));
 
     // Hint dialog close handlers (close the hint on click)
-    $('#hint-dialog').on('click', () => this.closeHint());
-    $('#hint-close').on('click', (e) => {
+    this.$('#hint-dialog').on('click', () => this.closeHint());
+    this.$('#hint-close').on('click', (e) => {
       e.stopPropagation();
       this.closeHint();
     });
 
     // generic close buttons for dialogs (hide overlay)
-    $('.close-button')
+    this.$('.close-button')
       .not('#hint-close')
       .on('click', () => this.showDialog(false));
   }
 }
 
-const _ui = new UIController();
+const _ui = new UIController($, window);
 
 $(_ui.start);

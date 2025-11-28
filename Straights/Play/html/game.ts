@@ -188,8 +188,22 @@ export class Field {
     }
   }
 
+  /**
+   * Retrieves the single DOM element associated with the field.
+   * @returns A jQuery object containing exactly one HTMLElement.
+   * @throws {Error} If no element is found or if multiple elements are found.
+   */
   getElement() {
-    return this.game.$(this.getSelector());
+    const result = this.game.$(this.getSelector());
+    if (result.length == 0) {
+      throw new Error(`Element not found: ${this.getSelector()}`);
+    }
+
+    if (result.length > 1) {
+      throw new Error(`Multiple elements found: ${this.getSelector()}`);
+    }
+
+    return result;
   }
 
   reset(template: FieldUserData | null = null) {
