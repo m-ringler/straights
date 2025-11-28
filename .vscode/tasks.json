@@ -1,180 +1,183 @@
 {
-  "version": "2.0.0",
-  "tasks": [
-    {
-      "label": "npm ci",
-      "type": "shell",
-      "command": "npm",
-      "args": ["ci"],
-      "problemMatcher": []
-    },
-    {
-      "label": "npm install",
-      "type": "shell",
-      "command": "npm",
-      "args": ["install"],
-      "problemMatcher": []
-    },
-    {
-      "label": "test ts",
-      "type": "shell",
-      "command": "npm",
-      "args": ["run", "test:run"],
-      "problemMatcher": [],
-      "presentation": {
-        "reveal": "always",
-        "panel": "shared"
-      },
-      "group": {
-        "kind": "test",
-        "isDefault": true
-      }
-    },
-    {
-      "label": "tsc",
-      "type": "shell",
-      "command": "npm",
-      "args": ["run","tsc"],
-      "dependsOn": "npm ci",
-      "problemMatcher": []
-    },
-    {
-      "label": "build (no-restore)",
-      "command": "dotnet",
-      "type": "process",
-      "args": [
-        "build",
-        "--no-restore",
-        "${workspaceFolder}/straights-commandline.slnf",
-        "/property:GenerateFullPaths=true",
-        "/consoleloggerparameters:NoSummary"
-      ],
-      "dependsOn": "tsc",
-      "problemMatcher": "$msCompile"
-    },
-    {
-      "label": "build",
-      "command": "dotnet",
-      "type": "process",
-      "args": [
-        "build",
-        "${workspaceFolder}/straights-commandline.slnf",
-        "/property:GenerateFullPaths=true",
-        "/consoleloggerparameters:NoSummary"
-      ],
-      "dependsOn": "tsc",
-      "problemMatcher": "$msCompile"
-    },
-    {
-      "label": "pack",
-      "command": "dotnet",
-      "type": "process",
-      "args": [
-        "pack",
-        "${workspaceFolder}/straights-nuget.slnf",
-        "--output",
-        "${workspaceFolder}/publish/NuGetPackages",
-        "-p:VersionSuffix=beta${input:betaVersionNumber}"
-      ],
-      "dependsOn": "tsc",
-      "problemMatcher": "$msCompile"
-    },
-    {
-      "label": "publish straights",
-      "command": "dotnet",
-      "type": "process",
-      "args": [
-        "publish",
-        "${workspaceFolder}/Straights/Straights.csproj",
-        "-c",
-        "Release",
-        "--use-current-runtime",
-        "true"
-      ],
-      "dependsOn": "tsc",
-      "problemMatcher": "$msCompile"
-    },
-    {
-      "label": "publish Straights.Web",
-      "command": "dotnet",
-      "type": "process",
-      "args": [
-        "publish",
-        "${workspaceFolder}/Straights.Web/Straights.Web.csproj",
-        "-c",
-        "Release",
-        "-r",
-        "browser-wasm",
-        "-p",
-        "MSBuildEnableWorkloadResolver=false"
-      ],
-      "dependsOn": "tsc",
-      "problemMatcher": "$msCompile"
-    },
-    {
-      "label": "run Straights.Web",
-      "command": "emrun",
-      "type": "shell",
-      "args": ["${workspaceFolder}/publish/Straights.Web/index.html"],
-      "dependsOn": "publish Straights.Web",
-      "problemMatcher": []
-    },
-    {
-      "label": "test",
-      "command": "dotnet",
-      "type": "process",
-      "args": ["test"],
-      "problemMatcher": "$msCompile"
-    },
-    {
-      "label": "test nugets",
-      "command": "dotnet",
-      "type": "process",
-      "args": ["test", "-p:UseStraightsNugetPackagesVersion=${input:nugetVersion}"],
-      "problemMatcher": "$msCompile"
-    },
-    {
-      "label": "test (no-build)",
-      "command": "dotnet",
-      "type": "process",
-      "args": ["test", "--no-build"],
-      "problemMatcher": "$msCompile"
-    },
-    {
-      "label": "test (coverage)",
-      "command": "dotnet",
-      "type": "process",
-      "args": [
-        "test",
-        "/p:CollectCoverage=true",
-        "/p:CoverletOutputFormat=lcov%2ccobertura",
-        "/p:CoverletOutput=${workspaceFolder}/coverage/",
-        "/p:ExcludeByAttribute=GeneratedCodeAttribute%2cObsoleteAttribute",
-        "/p:ExcludeByFile=**/*.axaml%2c**/*.g.cs"
-      ],
-      "problemMatcher": "$msCompile"
-    },
-    {
-      "label": "generate coverage report",
-      "command": "reportgenerator",
-      "type": "shell",
-      "args": [
-        "-reports:${workspaceFolder}/coverage/coverage.info",
-        "-targetdir:${workspaceFolder}/coverage/covstats"
-      ],
-      "problemMatcher": []
-    }
-  ],
-  "inputs": [
-    {
-      "description": "The nuget version to use.",
-      "id": "nugetVersion",
-      "type": "promptString"
-    },
-    {
-      "description": "The beta version number to use.",
-      "id": "betaVersionNumber",
-      "type": "promptString"
-    }
-  ]
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "npm ci",
+            "type": "shell",
+            "command": "npm",
+            "args": ["ci"],
+            "problemMatcher": []
+        },
+        {
+            "label": "npm install",
+            "type": "shell",
+            "command": "npm",
+            "args": ["install"],
+            "problemMatcher": []
+        },
+        {
+            "label": "test ts",
+            "type": "shell",
+            "command": "npm",
+            "args": ["run", "test:run"],
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "tsc",
+            "type": "shell",
+            "command": "npm",
+            "args": ["run", "tsc"],
+            "dependsOn": "npm ci",
+            "problemMatcher": []
+        },
+        {
+            "label": "build (no-restore)",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "--no-restore",
+                "${workspaceFolder}/straights-commandline.slnf",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "dependsOn": "tsc",
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "build",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/straights-commandline.slnf",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "dependsOn": "tsc",
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "pack",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "pack",
+                "${workspaceFolder}/straights-nuget.slnf",
+                "--output",
+                "${workspaceFolder}/publish/NuGetPackages",
+                "-p:VersionSuffix=beta${input:betaVersionNumber}"
+            ],
+            "dependsOn": "tsc",
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "publish straights",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "publish",
+                "${workspaceFolder}/Straights/Straights.csproj",
+                "-c",
+                "Release",
+                "--use-current-runtime",
+                "true"
+            ],
+            "dependsOn": "tsc",
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "publish Straights.Web",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "publish",
+                "${workspaceFolder}/Straights.Web/Straights.Web.csproj",
+                "-c",
+                "Release",
+                "-r",
+                "browser-wasm",
+                "-p",
+                "MSBuildEnableWorkloadResolver=false"
+            ],
+            "dependsOn": "tsc",
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "run Straights.Web",
+            "command": "emrun",
+            "type": "shell",
+            "args": ["${workspaceFolder}/publish/Straights.Web/index.html"],
+            "dependsOn": "publish Straights.Web",
+            "problemMatcher": []
+        },
+        {
+            "label": "test",
+            "command": "dotnet",
+            "type": "process",
+            "args": ["test"],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "test nugets",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "test",
+                "-p:UseStraightsNugetPackagesVersion=${input:nugetVersion}"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "test (no-build)",
+            "command": "dotnet",
+            "type": "process",
+            "args": ["test", "--no-build"],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "test (coverage)",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "test",
+                "/p:CollectCoverage=true",
+                "/p:CoverletOutputFormat=lcov%2ccobertura",
+                "/p:CoverletOutput=${workspaceFolder}/coverage/",
+                "/p:ExcludeByAttribute=GeneratedCodeAttribute%2cObsoleteAttribute",
+                "/p:ExcludeByFile=**/*.axaml%2c**/*.g.cs"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "generate coverage report",
+            "command": "reportgenerator",
+            "type": "shell",
+            "args": [
+                "-reports:${workspaceFolder}/coverage/coverage.info",
+                "-targetdir:${workspaceFolder}/coverage/covstats"
+            ],
+            "problemMatcher": []
+        }
+    ],
+    "inputs": [
+        {
+            "description": "The nuget version to use.",
+            "id": "nugetVersion",
+            "type": "promptString"
+        },
+        {
+            "description": "The beta version number to use.",
+            "id": "betaVersionNumber",
+            "type": "promptString"
+        }
+    ]
 }

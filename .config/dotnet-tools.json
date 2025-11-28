@@ -1,20 +1,16 @@
 {
-  "version": 1,
-  "isRoot": true,
-  "tools": {
-    "dotnet-serve": {
-      "version": "1.10.190",
-      "commands": [
-        "dotnet-serve"
-      ],
-      "rollForward": false
-    },
-    "nupu": {
-      "version": "1.0.50",
-      "commands": [
-        "nupu"
-      ],
-      "rollForward": false
+    "version": 1,
+    "isRoot": true,
+    "tools": {
+        "dotnet-serve": {
+            "version": "1.10.190",
+            "commands": ["dotnet-serve"],
+            "rollForward": false
+        },
+        "nupu": {
+            "version": "1.0.50",
+            "commands": ["nupu"],
+            "rollForward": false
+        }
     }
-  }
 }
