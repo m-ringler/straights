@@ -29,6 +29,17 @@ dotnet_diagnostic.SA1633.severity = none
 csharp_using_directive_placement = inside_namespace
 csharp_style_namespace_declarations = file_scoped
 
+[*.{ts,tsx,css,html,json,js}]
+# Keep these in sync with prettier config in package.json:
+# prettier config: singleQuote = true, trailingComma = "es5", tabWidth = 2, printWidth = 80
+charset = "utf-8"
+indent_style = space
+indent_size = 2
+tab_width = 2
+insert_final_newline = true
+trim_trailing_whitespace = true
+max_line_length = 80
+
 # Verify settings
 [*.{received,verified}.{json,txt,xml}]
 charset = "utf-8-bom"
@@ -37,10 +48,3 @@ indent_size = unset
 indent_style = unset
 tab_width = unset
 trim_trailing_whitespace = false
-
-[*.js]
-indent_size = 2
-tab_width = 2
-insert_final_newline = true
-trim_trailing_whitespace = true
-indent_style = space
