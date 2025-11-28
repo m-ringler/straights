@@ -189,7 +189,6 @@ SPDX-License-Identifier: GPL-3.0-or-later
                             class="button set"
                             id="undo"
                             title="Undo [Ctrl+Z]"
-                            onclick="undo()"
                             disabled
                         >
                             ⎌
@@ -198,7 +197,6 @@ SPDX-License-Identifier: GPL-3.0-or-later
                             class="button set"
                             id="notes"
                             title="Notes Mode [N]"
-                            onclick="toggleNoteMode()"
                         >
                             📝
                         </td>
@@ -206,27 +204,16 @@ SPDX-License-Identifier: GPL-3.0-or-later
                 </table>
                 <table cellspacing="7px">
                     <tr>
-                        <td
-                            class="button set-slim"
-                            id="check"
-                            title="Check"
-                            onclick="check()"
-                        >
+                        <td class="button set-slim" id="check" title="Check">
                             ✅️
                         </td>
-                        <td
-                            class="button set-slim"
-                            id="hint"
-                            title="Hint"
-                            onclick="hint()"
-                        >
+                        <td class="button set-slim" id="hint" title="Hint">
                             💡
                         </td>
                         <td
                             class="button set-slim"
-                            id="delete"
+                            id="show-solution"
                             title="Show solution"
-                            onclick="showDialog(dialogs.SOLUTION)"
                         >
                             👀
                         </td>
@@ -243,28 +230,17 @@ SPDX-License-Identifier: GPL-3.0-or-later
                 </table>
                 <table cellspacing="7px">
                     <tr>
-                        <td
-                            class="button set-slim"
-                            id="new"
-                            title="New game"
-                            onclick="loadNewGameAgain()"
-                        >
+                        <td class="button set-slim" id="new" title="New game">
                             ✨
                         </td>
                         <td
                             class="button set-slim"
                             id="restart"
                             title="Start over"
-                            onclick="showDialog(dialogs.RESTART)"
                         >
                             ⟳
                         </td>
-                        <td
-                            class="button set-slim"
-                            id="about"
-                            title="About"
-                            onclick="showDialog(dialogs.ABOUT)"
-                        >
+                        <td class="button set-slim" id="about" title="About">
                             ❓
                         </td>
                     </tr>
@@ -288,7 +264,7 @@ SPDX-License-Identifier: GPL-3.0-or-later
                             value="9"
                             class="slider"
                             autocomplete="off"
-                            oninput="changeGenerateSize()"
+                        />
                         />
                         <br />
                         <label for="difficulty-slider">Difficulty:</label>
@@ -302,40 +278,34 @@ SPDX-License-Identifier: GPL-3.0-or-later
                             id="difficulty-slider"
                             class="slider"
                             autocomplete="off"
-                            oninput="changeDifficulty()"
+                        />
                         />
                     </div>
-                    <span
-                        class="dialog-button full-width"
-                        id="generate-button"
-                        onclick="loadNewGame()"
+                    <span class="dialog-button full-width" id="generate-button"
                         >Generate new game</span
                     >
                     <span
                         class="close-button"
                         id="cancel-new-game"
-                        onclick="showDialog(false)"
                         style="display: none"
                         >×</span
                     >
                 </div>
                 <div class="dialog" id="solution-dialog">
-                    <span class="close-button" onclick="showDialog(false)"
-                        >×</span
-                    >
+                    <span class="close-button">×</span>
                     <div class="dialog-title">Show Solution</div>
                     <div class="dialog-text">Reveal the complete solution?</div>
-                    <span class="dialog-button full-width" onclick="solution()"
+                    <span
+                        class="dialog-button full-width"
+                        id="confirm-show-solution"
                         >Reveal</span
                     >
                 </div>
                 <div class="dialog" id="restart-dialog">
-                    <span class="close-button" onclick="showDialog(false)"
-                        >×</span
-                    >
+                    <span class="close-button">×</span>
                     <div class="dialog-title">Start Over</div>
                     <div class="dialog-text">Clear all numbers and notes?</div>
-                    <span class="dialog-button full-width" onclick="restart()"
+                    <span class="dialog-button full-width" id="confirm-restart"
                         >Clear</span
                     >
                 </div>
@@ -346,9 +316,7 @@ SPDX-License-Identifier: GPL-3.0-or-later
                     </div>
                 </div>
                 <div class="dialog" id="about-dialog">
-                    <span class="close-button" onclick="showDialog(false)"
-                        >×</span
-                    >
+                    <span class="close-button">×</span>
                     <div class="dialog-title">
                         Straights.Web <span id="version">0.6.20</span>
                     </div>
@@ -379,8 +347,8 @@ SPDX-License-Identifier: GPL-3.0-or-later
                         <li>
                             <a href="." id="current-game">Current Game</a>
                             <span
+                                id="copy-link"
                                 class="copy-link"
-                                onclick="copyCurrentLink()"
                                 title="Copy link to clipboard"
                                 >🔗</span
                             >
@@ -391,14 +359,13 @@ SPDX-License-Identifier: GPL-3.0-or-later
                             id="force-update"
                             class="dialog-button full-width"
                             style="display: none"
-                            onclick="showDialog(false)"
                             title="Force an update of the app. You may need to restart the app afterwards."
                             >Update App</span
                         >
                     </div>
                 </div>
-                <div class="dialog" id="hint-dialog" onclick="closeHint()">
-                    <span class="close-button" onclick="closeHint()">×</span>
+                <div class="dialog" id="hint-dialog">
+                    <span class="close-button" id="hint-close">×</span>
                     <div id="hint-text"></div>
                 </div>
             </div>
