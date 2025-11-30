@@ -2,9 +2,10 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-const CACHE_NAME = 'v0.7.0-beta1';
+const CACHE_NAME = 'v0.7.0-beta2';
 const urlsToCache = [
   './',
+  './encoder.js',
   './favicon.ico',
   './game.js',
   './gameHistory.js',
