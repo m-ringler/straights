@@ -452,21 +452,25 @@ export class UIController {
   }
 
   private _restoreGameState() {
+    if (!this._tryLoadStateFromUrlParameter()) {
+      gameHistory.restoreGameState(this._gameCode, this._game);
+    }
+  }
+
+  private _tryLoadStateFromUrlParameter() {
     const stateUrlParameter = this._getURLParameter('state');
-    this._removeURLParameter('state');
-    let stateLoaded = false;
-    if (stateUrlParameter) {
-      try {
-        this._game.restoreStateBase64(stateUrlParameter);
-        this._saveState();
-        stateLoaded = true;
-      } catch (ex) {
-        console.error(ex);
-      }
+    if (!stateUrlParameter) {
+      return false;
     }
 
-    if (!stateLoaded) {
-      gameHistory.restoreGameState(this._gameCode, this._game);
+    try {
+      this._removeURLParameter('state');
+      this._game.restoreStateBase64(stateUrlParameter);
+      this._saveState();
+      return true;
+    } catch (ex) {
+      console.error(ex);
+      return false;
     }
   }
 
