@@ -449,12 +449,12 @@ publish/
 
 # Ignore compiled JS generated from TypeScript sources
 /Straights/Play/html/str8ts.js
-/Straights/Play/html/generate-str8ts.js
+/Straights/Play/html/str8ts-api.js
 /Straights/Play/html/game.js
 /Straights/Play/html/gameHistory.js
 /Straights/Play/html/undoStack.js
 /Straights/Play/html/service-worker.js
-/Straights.Web/generate-str8ts.js
+/Straights.Web/str8ts-api.js
 
 # Verify received files
 *.received.*

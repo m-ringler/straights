@@ -2,14 +2,14 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-const CACHE_NAME = 'v0.7.0-beta2';
+const CACHE_NAME = 'v0.7.0-beta3';
 const urlsToCache = [
   './',
   './encoder.js',
   './favicon.ico',
   './game.js',
   './gameHistory.js',
-  './generate-str8ts.js',
+  './str8ts-api.js',
   './generate-worker.js',
   './index.html',
   './jquery-3.7.1.min.js',
@@ -44,7 +44,7 @@ async function fetchFresh(url: Request | string) {
   return result;
 }
 
-async function _fetch(request: Request) : Promise<Response> {
+async function _fetch(request: Request): Promise<Response> {
   const requestUrl = new URL(request.url);
 
   if (apiEndPoints.has(requestUrl.pathname)) {

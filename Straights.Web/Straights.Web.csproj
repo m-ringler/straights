@@ -45,7 +45,7 @@
   </Content>
   <Content
     Include="..\Straights\Play\html\*.*"
-    Exclude="**\*.ts;..\Straights\Play\html\generate-str8ts.js"
+    Exclude="**\*.ts;..\Straights\Play\html\str8ts-api.js"
     LinkBase="." >
     <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
   </Content>

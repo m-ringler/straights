@@ -2,10 +2,12 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-type Game = import('./game').Game;
-type Field = import('./game').Field;
-type UndoStack<T> = import('./undoStack').UndoStack<T>;
-type ApiResult = import('./generate-str8ts').ApiResult;
+import { Game, Field, minCodeSize as game_minCodeSize } from './game.js';
+import { UndoStack } from './undoStack.js';
+import * as api from './str8ts-api.js';
+import * as gameHistory from './gameHistory.js';
+
+import type { ApiResult } from './str8ts-api.js';
 
 // JSON data returned by the generateHint function
 type HintData = {
@@ -81,15 +83,13 @@ const DEFAULT_GRID_SIZE = 9;
 const DEFAULT_DIFFICULTY = 3;
 
 // We wrap the UI behavior into a single controller class to avoid leaking many globals
-class UIController {
+export class UIController {
   // state
   private _starttime!: number;
   private _timer!: ReturnType<typeof setTimeout>;
   private _noteMode = false;
-  private _minCodeSize!: number;
   private _game!: Game;
   private _gameCode!: string;
-  private _gameHistory!: typeof import('./gameHistory.js');
   private _gameUrl!: string | URL;
   private _difficulty = DEFAULT_DIFFICULTY;
   private _currentGridSize = 12;
@@ -99,37 +99,13 @@ class UIController {
 
   // injected dependencies
   private $: JQueryLike;
-  private win: Window;
+  private _win: Window;
 
-  // imported functions (TODO: import the types from generate-str8ts.ts)
-  private _generate!: (arg0: number, arg1: number) => Promise<ApiResult>;
-  private _generateHint!: (arg0: number[][][]) => Promise<ApiResult>;
-
-  // module loader promise so external code can wait
-  readonly modulePromise: Promise<void>;
-
-  constructor($: any, win: Window) {
-    this.$ = $ as JQueryLike;
-    this.win = win;
-    this.modulePromise = this._importModules();
-  }
-
-  private async _importModules() {
-    const undoStackModule = await import('./undoStack.js');
-    this._undoStack = new undoStackModule.UndoStack(
-      this._renderUndoButton.bind(this)
-    );
-
-    const gameModule = await import('./game.js');
-    this._game = new gameModule.Game(this.$, _darkMode);
-    this._minCodeSize = gameModule.minCodeSize;
-
-    this._gameHistory = await import('./gameHistory.js');
-
-    const generateModule = await import('./generate-str8ts.js');
-    const loadedFunctions = generateModule.load_generate();
-    this._generate = loadedFunctions.generate;
-    this._generateHint = loadedFunctions.generateHint;
+  constructor($: JQueryLike, win: Window) {
+    this.$ = $;
+    this._win = win;
+    this._undoStack = new UndoStack(this._renderUndoButton.bind(this));
+    this._game = new Game(this.$, _darkMode);
   }
 
   // Button Functions
@@ -174,7 +150,7 @@ class UIController {
   private async _generateAndDisplayHint() {
     let resp: ApiResult | undefined;
     try {
-      resp = await this._generateHint(this._game.toJsonArray());
+      resp = await api.generateHint(this._game.toJsonArray());
     } catch (ex) {
       console.error('Hint generation failed or unsupported:', ex);
       return;
@@ -227,8 +203,8 @@ class UIController {
 
   private _positionPopup(target: Element, popup: JQuerySelection) {
     const targetPos = target.getBoundingClientRect();
-    const windowHeight = this.$(this.win).height();
-    const windowWidth = this.$(this.win).width();
+    const windowHeight = this.$(this._win).height();
+    const windowWidth = this.$(this._win).width();
 
     if (!windowHeight || !windowWidth) {
       return;
@@ -237,17 +213,18 @@ class UIController {
     // Determine the vertical position
     let popupTop;
     if (targetPos.top + targetPos.height / 2 > windowHeight / 2) {
-      popupTop = targetPos.top + this.win.scrollY - (popup.outerHeight() ?? 0);
+      popupTop = targetPos.top + this._win.scrollY - (popup.outerHeight() ?? 0);
     } else {
-      popupTop = targetPos.top + this.win.scrollY + targetPos.height;
+      popupTop = targetPos.top + this._win.scrollY + targetPos.height;
     }
 
     // Determine the horizontal position
     let popupLeft;
     if (targetPos.left + targetPos.width / 2 > windowWidth / 2) {
-      popupLeft = targetPos.left + this.win.scrollX - (popup.outerWidth() ?? 0);
+      popupLeft =
+        targetPos.left + this._win.scrollX - (popup.outerWidth() ?? 0);
     } else {
-      popupLeft = targetPos.left + this.win.scrollX + targetPos.width;
+      popupLeft = targetPos.left + this._win.scrollX + targetPos.width;
     }
 
     // Set the position of the dialog
@@ -352,14 +329,14 @@ class UIController {
   }
 
   private _getURLParameter(name: string) {
-    if (!this.win.location.search) return null;
-    const urlParams = new URLSearchParams(this.win.location.search);
+    if (!this._win.location.search) return null;
+    const urlParams = new URLSearchParams(this._win.location.search);
     return urlParams.get(name);
   }
 
   private _removeURLParameter(paramKey: string): void {
     // Get the current URL and its search part
-    const url: URL = new URL(this.win.location.href);
+    const url: URL = new URL(this._win.location.href);
     const searchParams: URLSearchParams = new URLSearchParams(url.search);
 
     // Remove the specified parameter
@@ -367,7 +344,7 @@ class UIController {
 
     // Update the URL without reloading the page
     url.search = searchParams.toString();
-    this.win.history.replaceState({}, '', url);
+    this._win.history.replaceState({}, '', url);
   }
 
   async generateNewGame() {
@@ -375,14 +352,11 @@ class UIController {
     clearInterval(this._timer);
     this.$('#generate-button').prop('disabled', true);
     try {
-      const data = await this._generate(
-        this._generateGridSize,
-        this._difficulty
-      );
-      if (data.status === 0 && data.message.length > this._minCodeSize) {
+      const data = await api.generate(this._generateGridSize, this._difficulty);
+      if (data.status === 0 && data.message.length > game_minCodeSize) {
         console.log('Game:', data.message);
         this._gameUrl =
-          this.win.location.href.split('?')[0] + '?code=' + data.message;
+          this._win.location.href.split('?')[0] + '?code=' + data.message;
         this._gameCode = data.message;
         this.showDialog(dialogs.GENERATED);
         return;
@@ -453,7 +427,7 @@ class UIController {
 
   private async _startGame() {
     let hasGame = false;
-    if (this._gameCode && this._gameCode.length > this._minCodeSize) {
+    if (this._gameCode && this._gameCode.length > game_minCodeSize) {
       this._undoStack.clear();
       this.$('.container').removeClass('finished');
       this.showDialog(false);
@@ -491,7 +465,7 @@ class UIController {
     }
 
     if (!stateLoaded) {
-      this._gameHistory.restoreGameState(this._gameCode, this._game);
+      gameHistory.restoreGameState(this._gameCode, this._game);
     }
   }
 
@@ -522,7 +496,7 @@ class UIController {
           this.$('#welcome-dialog').show();
           break;
         case dialogs.GENERATED:
-          this.win.history.pushState({}, '', this._gameUrl);
+          this._win.history.pushState({}, '', this._gameUrl);
           this._startGame();
           break;
         case dialogs.SOLUTION:
@@ -540,7 +514,7 @@ class UIController {
           }
           break;
         case dialogs.ABOUT:
-          this.$('#current-game').attr('href', this.win.location.href);
+          this.$('#current-game').attr('href', this._win.location.href);
           this.$('#about-dialog').show();
           break;
         case dialogs.HINT:
@@ -657,7 +631,7 @@ class UIController {
   }
 
   private _saveState() {
-    this._gameHistory.saveGameState(this._gameCode, this._game);
+    gameHistory.saveGameState(this._gameCode, this._game);
   }
 
   private _handleDelete() {
@@ -672,13 +646,13 @@ class UIController {
 
   async copyCurrentLink() {
     try {
-      let link = this.win.location.href;
+      let link = this._win.location.href;
       if (this._game) {
         const stateBase64 = await this._game.dumpStateBase64();
         link += `&state=${stateBase64}`;
       }
 
-      await this.win.navigator.clipboard.writeText(link);
+      await this._win.navigator.clipboard.writeText(link);
       const copyBtn = this.$('.copy-link');
       copyBtn.text('Link copied!');
       setTimeout(() => copyBtn.text('🔗'), 1000);
@@ -689,9 +663,9 @@ class UIController {
 
   private _handleGameLoad(popstate = false) {
     const code = this._getURLParameter('code');
-    const currentKey = this.win.location.href;
+    const currentKey = this._win.location.href;
 
-    if (code && code.length > this._minCodeSize) {
+    if (code && code.length > game_minCodeSize) {
       this._gameUrl = currentKey;
       this._gameCode = code;
       if (popstate) {
@@ -700,11 +674,11 @@ class UIController {
         this.showDialog(dialogs.GENERATED);
       }
     } else {
-      const latestKey = this._gameHistory.getLatestGameKey();
+      const latestKey = gameHistory.getLatestGameKey();
       if (latestKey) {
         // Reload the current page with the latest game code
-        this.win.location.href =
-          this.win.location.href.split('?')[0] + '?code=' + latestKey;
+        this._win.location.href =
+          this._win.location.href.split('?')[0] + '?code=' + latestKey;
         return;
       }
 
@@ -716,7 +690,7 @@ class UIController {
   private _onResize() {
     this.closeHint();
     if (
-      this.win.innerWidth / 2 - 45 <
+      this._win.innerWidth / 2 - 45 <
       (this.$('.controls').position()?.left ?? 0)
     ) {
       // Large screen
@@ -732,7 +706,7 @@ class UIController {
     } else {
       // Small screen
       const cellwidth = Math.min(
-        Math.floor(this.win.innerWidth / this._currentGridSize - 2),
+        Math.floor(this._win.innerWidth / this._currentGridSize - 2),
         41
       );
       this.$('#buttons-small').show();
@@ -750,10 +724,7 @@ class UIController {
   }
 
   // single public startup entry point for DOM initialisation
-  async start(): Promise<void> {
-    // ensure modules are loaded
-    await this.modulePromise;
-
+  start(): void {
     // initial UI setup
     this._createGrid();
     this._onResize();
@@ -776,13 +747,13 @@ class UIController {
     });
 
     // wire page-level events here so they can call private methods
-    this.win.addEventListener('popstate', () => {
+    this._win.addEventListener('popstate', () => {
       this._handleGameLoad(true);
     });
     this.$(document).on('keydown', (e) => {
       this._onKeyDown(e as any);
     });
-    this.$(this.win).on('resize', () => {
+    this.$(this._win).on('resize', () => {
       this._onResize();
     });
 
@@ -828,6 +799,6 @@ class UIController {
   }
 }
 
-const _ui = new UIController($, window);
+const _ui = new UIController($ as JQueryLike, window);
 
 $(() => _ui.start());
