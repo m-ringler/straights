@@ -458,6 +458,7 @@ export class UIController {
     if (stateUrlParameter) {
       try {
         this._game.restoreStateBase64(stateUrlParameter);
+        this._saveState();
         stateLoaded = true;
       } catch (ex) {
         console.error(ex);
