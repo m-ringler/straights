@@ -675,7 +675,10 @@ export class Game {
 
   #parseGameV002(binary: string) {
     const result = new Game(this.$, this.darkMode, 9);
-    if (binary.length < 6 * 81 || binary.length > 6 * 81 + 8) return; // Invalid data
+    if (binary.length < 6 * 81 || binary.length > 6 * 81 + 8) {
+      return; // Invalid data
+    }
+
     for (let i = 0; i < 81; i++) {
       const subBinary = binary.substring(i * 6, (i + 1) * 6);
       const mode = parseInt(subBinary.substring(0, 2), 2);

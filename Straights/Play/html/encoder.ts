@@ -18,9 +18,12 @@ export class BitmaskEncoder {
   /**
    * Create a new BitmaskEncoder instance
    * @param options Configuration options
-   * @param options.compressionThreshold Minimum buffer size in bytes before attempting compression
-   * @param options.minCompressionRatio Maximum compression ratio (compressed/original) to use compression
-   * @param options.maxN Maximum value for n parameter, must be between 1 and 32
+   * @param options.compressionThreshold Minimum buffer size in bytes before
+   *     attempting compression
+   * @param options.minCompressionRatio Maximum compression ratio
+   *     (compressed/original) to use compression
+   * @param options.maxN Maximum value for n parameter, must be
+   *     between 1 and 32
    */
   constructor(options: {
     compressionThreshold: number;
@@ -38,9 +41,12 @@ export class BitmaskEncoder {
 
   /**
    * Encode an iterable of sets as a bitmask with optional gzip compression
-   * @param n - Number between 1 and maxN representing the size of each set's domain
-   * @param sets - Iterable of up to n*n sets containing numbers between 1 and n (inclusive).
-   * @returns EncodedResult containing compression flag and base64url-encoded data
+   * @param n - Number between 1 and maxN representing the size of each set's
+   *     domain
+   * @param sets - Iterable of up to n*n sets containing numbers
+   *     between 1 and n (inclusive).
+   * @returns EncodedResult containing compression flag and base64url-encoded
+   *     data
    */
   async encode(
     n: number,
@@ -98,7 +104,9 @@ export class BitmaskEncoder {
         dataToCompress,
         CONTROL_BYTE_COMPRESSED
       );
-      const compressionRatio = (compressed.length - 1) / dataToCompress.length; // Subtract control byte from comparison
+
+      // Subtract control byte from comparison
+      const compressionRatio = (compressed.length - 1) / dataToCompress.length;
       if (compressionRatio < this.minCompressionRatio) {
         // Use compressed data (already has control byte set to compressed)
         const base64Data = toBase64Url(compressed);
@@ -118,7 +126,8 @@ export class BitmaskEncoder {
   /**
    * Decode a bitmask-encoded result back to an array of sets
    * @param encoded - The encoded result from encode()
-   * @param n - Number between 1 and maxN representing the size of each set's domain
+   * @param n - Number between 1 and maxN representing the size of each set's
+   *     domain
    * @returns Array of sets containing the decoded numbers
    */
   async decode(encoded: EncodedResult, n: number): Promise<Set<number>[]> {
