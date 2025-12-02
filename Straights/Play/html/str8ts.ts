@@ -830,4 +830,4 @@ class UIController {
 
 const _ui = new UIController($, window);
 
-$(_ui.start);
+$(() => _ui.start());
