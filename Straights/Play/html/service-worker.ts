@@ -37,14 +37,14 @@ const urlsToCache = [
 
 const apiEndPoints = new Set(['/generate', '/hint']);
 
-async function fetchFresh(url) {
+async function fetchFresh(url: Request | string) {
   console.debug('Fetching ', url);
   let result = await fetch(url, { cache: 'no-store' });
   console.debug('Response:', result.status, result.statusText);
   return result;
 }
 
-async function _fetch(request) {
+async function _fetch(request: Request) : Promise<Response> {
   const requestUrl = new URL(request.url);
 
   if (apiEndPoints.has(requestUrl.pathname)) {
