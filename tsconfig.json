@@ -5,8 +5,8 @@
     "lib": ["DOM", "ES2022", "webworker"],
     "allowJs": false,
     "checkJs": false,
-    "outDir": "",
-    "rootDir": ".",
+    "outDir": "webdev/tsc-out",
+    "rootDirs": ["webdev/ts/shared", "webdev/ts/webservice"],
     "noEmitOnError": false,
     "noImplicitAny": false,
     "alwaysStrict": true,
@@ -15,6 +15,6 @@
     "sourceMap": false,
     "verbatimModuleSyntax": true
   },
-  "include": ["./Straights/Play/html/*.ts", "./Straights.Web/*.ts"],
-  "exclude": ["node_modules", "**/*.test.ts"]
+  "include": ["webdev/ts/**/*.ts"],
+  "exclude": ["webdev/ts/**/*.test.ts", "webdev/ts/**/tests/**"]
 }

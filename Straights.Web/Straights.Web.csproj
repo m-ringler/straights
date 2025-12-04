@@ -40,17 +40,16 @@
   </ItemGroup>
 
   <ItemGroup>
-  <Content Include="*.js;*.html;*.htaccess;LICENSE">
+  <Content Include="LICENSE">
     <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
   </Content>
   <Content
-    Include="..\Straights\Play\html\*.*"
-    Exclude="**\*.ts;..\Straights\Play\html\str8ts-api.js"
+    Include="..\webdev\base\shared\*.*;..\webdev\base\wasm\*.*;..\webdev\tsc-out\shared\*.*;..\webdev\tsc-out\wasm\*.*"
     LinkBase="." >
     <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
   </Content>
   <Content
-    Include="..\Straights\Play\html\favicon\*.*"
+    Include="..\webdev\base\shared\favicon\*.*"
     LinkBase="favicon/" >
     <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
   </Content>

@@ -444,21 +444,13 @@ test/local/*
 !test/local/Readme.md
 
 # publish dirs
-Straights.Web/publish/
 publish/
 
 # Ignore compiled JS generated from TypeScript sources
-/Straights/Play/html/str8ts.js
-/Straights/Play/html/str8ts-api.js
-/Straights/Play/html/game.js
-/Straights/Play/html/gameHistory.js
-/Straights/Play/html/undoStack.js
-/Straights/Play/html/service-worker.js
-/Straights.Web/str8ts-api.js
+webdev/tsc-out/
 
 # Verify received files
 *.received.*
 
 # Python
 .venv/*
-Straights/Play/html/encoder.js
