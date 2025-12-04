@@ -28,13 +28,18 @@ function run_in_worker(
     | { method: 'hint'; gameAsJson: string }
 ): Promise<ApiResult> {
   return new Promise((resolve, reject) => {
-    worker.onmessage = (event) => {
-      resolve(event.data as ApiResult);
+    const handleMessage = (event: MessageEvent<ApiResult>) => {
+      worker.removeEventListener('error', handleError);
+      resolve(event.data);
     };
 
-    worker.onerror = (error) => {
+    const handleError = (error: ErrorEvent) => {
+      worker.removeEventListener('message', handleMessage);
       reject(error);
     };
+
+    worker.addEventListener('message', handleMessage, { once: true });
+    worker.addEventListener('error', handleError, { once: true });
 
     worker.postMessage(message);
   });
