@@ -19,7 +19,7 @@
     "printWidth": 80
   },
   "scripts": {
-    "format": "prettier --write Straights.Web/generate-worker.js \"**/*.{ts,tsx,css,html,json}\"",
+    "format": "prettier --write Straights.Web/str8ts-api-worker.js \"**/*.{ts,tsx,css,html,json}\"",
     "tsc": "tsc -p tsconfig.json",
     "tsc:watch": "tsc -p tsconfig.json --watch",
     "test": "vitest",

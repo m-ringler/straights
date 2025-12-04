@@ -5,7 +5,7 @@
 // TODO: declare an interface for the str8ts-api modules
 export type ApiResult = { status: number; message: string };
 
-const worker = new Worker('generate-worker.js');
+const worker = new Worker('str8ts-api-worker.js');
 
 export function generate(size: number, difficulty: number): Promise<ApiResult> {
   return run_in_worker({
