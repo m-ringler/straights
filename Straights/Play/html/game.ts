@@ -62,6 +62,13 @@ export class Field {
       this.hint = undefined;
       if (this.user === input) {
         this.user = undefined;
+        if (this.notes.size === 1) {
+            // When we only have a single note we automatically
+            // set the user value to that note. But here, we want
+            // to switch to note mode. Therefore, we need to remove
+            // the single note.
+            this.notes.clear();
+        }
       } else {
         this.user = input;
       }
@@ -535,6 +542,7 @@ export class Game {
     this.#forEachField((field) => {
       if (!field.user && field.notes.size == 1) {
         field.user = field.notes.values().next().value;
+        field.notes.clear();
         field.render();
       }
 
