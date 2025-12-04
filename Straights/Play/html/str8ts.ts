@@ -803,7 +803,3 @@ export class UIController {
       .on('click', () => this.showDialog(false));
   }
 }
-
-const _ui = new UIController($ as JQueryLike, window);
-
-$(() => _ui.start());

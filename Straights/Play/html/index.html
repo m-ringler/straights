@@ -254,7 +254,16 @@ SPDX-License-Identifier: GPL-3.0-or-later
         </div>
       </div>
     </div>
-    <script type="module" src="str8ts.js"></script>
+
+    <!-- Start the UI Controller -->
+    <script type="module">
+        import { UIController } from './str8ts.js';
+
+        const ui = new UIController($, window);
+        $(() => ui.start());
+    </script>
+
+    <!-- Register the Service Worker -->
     <script>
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker
