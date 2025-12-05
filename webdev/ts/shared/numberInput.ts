@@ -4,39 +4,60 @@
 
 export class NumberInput {
   private handleNumber: (num: number) => void;
+  private currentNumber: number = 0;
+  private digitTimer: ReturnType<typeof setTimeout> | undefined = undefined;
+  private readonly digitTimeout: number;
 
-  constructor(
-    handleNumber: (num: number) => void
-  ) {
+  constructor(handleNumber: (num: number) => void, digitTimeout: number = 500) {
     this.handleNumber = handleNumber;
+    this.digitTimeout = digitTimeout;
   }
 
-  private firstDigit: number | null = null;
-  private digitTimer: ReturnType<typeof setTimeout> | undefined = undefined;
-  private twoDigitTimeout = 500;
-
   handleDigit(digit: number, maxNumber: number) {
-    if (this.firstDigit == null) {
-      if (maxNumber < 10 || digit !== 1) {
-        this.handleNumber(digit);
-      } else {
-        this.firstDigit = digit;
-        this.digitTimer = setTimeout(() => {
-          this.handleNumber(digit);
-          this.firstDigit = null;
-        }, this.twoDigitTimeout);
-      }
-    } else {
-      clearTimeout(this.digitTimer);
-      const firstNum = this.firstDigit;
-      const combinedNum = this.firstDigit * 10 + digit;
-      this.firstDigit = null;
-      if (combinedNum <= maxNumber) {
-        this.handleNumber(combinedNum);
-      } else {
-        this.handleNumber(firstNum);
-        this.handleDigit(digit, maxNumber);
-      }
+    if (digit < 0 || digit > 9) {
+      throw new Error('Digit must be between 0 and 9');
     }
+
+    // If the digit itself exceeds maxNumber, reject it
+    if (digit > maxNumber) {
+      throw new Error(`Digit ${digit} exceeds maxNumber ${maxNumber}`);
+    }
+
+    // Clear any pending timeout
+    if (this.digitTimer) {
+      clearTimeout(this.digitTimer);
+    }
+
+    // Update the current number
+    const previousNumber = this.currentNumber;
+    this.currentNumber = this.currentNumber * 10 + digit;
+
+    if (this.currentNumber === 0) {
+      return; // Ignore leading zeros
+    }
+
+    // If the number exceeds maxNumber, finalize the previous number and restart with the last digit
+    if (this.currentNumber > maxNumber) {
+      this.handleNumber(previousNumber);
+      this.currentNumber = digit;
+    }
+
+    // If appending another digit would exceed maxNumber, finalize currentNumber
+    if (this.currentNumber * 10 > maxNumber) {
+      this.handleNumber(this.currentNumber);
+      this.currentNumber = 0;
+      return;
+    }
+
+    // Set a new timeout to finalize the number if no more digits arrive
+    this.digitTimer = setTimeout(() => {
+      this.handleNumber(this.currentNumber);
+      this.currentNumber = 0;
+    }, this.digitTimeout);
+  }
+
+  reset() {
+    clearTimeout(this.digitTimer);
+    this.currentNumber = 0;
   }
 }

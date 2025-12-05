@@ -93,8 +93,8 @@ export class UIController {
     const darkMode = win.matchMedia('(prefers-color-scheme: dark)').matches;
     this.buttonColors = getButtonColors(darkMode);
     this.game = new Game(this.$, darkMode);
-    this.numberInput = new NumberInput(
-      (num: number) => this.handleNumberInput(num)
+    this.numberInput = new NumberInput((num: number) =>
+      this.handleNumberInput(num)
     );
   }
 
@@ -477,8 +477,7 @@ export class UIController {
     if (this.handleCursorKey(e)) {
       handled = true;
     } else if (key >= '0' && key <= '9') {
-      this.handleDigitKey(Number(key));
-      handled = true;
+      handled = this.handleDigitKey(Number(key));
     } else if (key == 'n') {
       this.toggleNoteMode();
       handled = true;
@@ -517,7 +516,12 @@ export class UIController {
   }
 
   private handleDigitKey(digit: number) {
-    this.numberInput.handleDigit(digit, this.currentGridSize);
+    const handled = digit <= this.currentGridSize;
+    if (handled) {
+      this.numberInput.handleDigit(digit, this.currentGridSize);
+    }
+
+    return handled;
   }
 
   private handleNumberInput(num: number) {
