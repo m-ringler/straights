@@ -20,7 +20,7 @@ using PlayCore = Straights.Solver.Play;
 /// This web app is started when the user calls `straights play`
 /// with the `--offline` flag.
 /// <para/>
-/// The web app consists of the static HTML in the Play folder
+/// The web app consists of static HTML and Javascript
 /// plus a) the endpoint to generate a new game code which is
 /// mapped to the <see cref="PlayCore.GenerateGameCode(int, int)"/>
 /// method and b) the endpoint to generate a hint which is
@@ -42,6 +42,9 @@ internal class WebApp : IWebApp
             WebRootPath = folder.FullName,
         });
         _ = builder.WebHost.UseUrls(url);
+#if DEBUG
+        _ = builder.WebHost.UseSetting(WebHostDefaults.DetailedErrorsKey, "true");
+#endif
         _ = builder.Services.AddControllers();
 
         var app = builder.Build();
