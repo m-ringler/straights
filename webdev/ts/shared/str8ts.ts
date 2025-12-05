@@ -8,6 +8,7 @@ import * as api from './str8ts-api.js';
 import * as gameHistory from './gameHistory.js';
 
 import type { ApiResult } from './str8ts-api.js';
+import type { EventData } from 'node:test';
 
 // JSON data returned by the generateHint function
 type HintData = {
@@ -69,8 +70,7 @@ const _darkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
 const _buttonColors = _getButtonColors(_darkMode);
 
 const dialogs = {
-  WELCOME: 1,
-  GENERATED: 2,
+  NEW_GAME: 1,
   LOADING: 3,
   SOLUTION: 4,
   RESTART: 5,
@@ -109,8 +109,8 @@ export class UIController {
   }
 
   // Button Functions
-  restart() {
-    this.showDialog(false);
+  async restartAsync() {
+    await this.showDialogAsync(false);
     this._game.restart();
     this._undoStack.clear();
   }
@@ -120,7 +120,7 @@ export class UIController {
     const color = this._noteMode
       ? _buttonColors.BUTTONDOWN
       : _buttonColors.BUTTONUP;
-    this.$('#notes').css('background-color', color);
+    this.$('#toggle-notes-mode-button').css('background-color', color);
   }
 
   private _renderCounters() {
@@ -134,20 +134,20 @@ export class UIController {
     this._saveState();
   }
 
-  async hint() {
-    this.closeHint();
+  async generateAndDisplayHintAsync() {
+    await this.closeHintAsync();
 
     const checkResult = this._game.checkForHint();
     this._renderCounters();
 
     if (!(checkResult.isSolved || checkResult.isWrong)) {
-      await this._generateAndDisplayHint();
+      await this._generateAndDisplayHintCoreAsync();
     }
 
     this._saveState();
   }
 
-  private async _generateAndDisplayHint() {
+  private async _generateAndDisplayHintCoreAsync() {
     let resp: ApiResult | undefined;
     try {
       resp = await api.generateHint(this._game.toJsonArray());
@@ -177,17 +177,17 @@ export class UIController {
         `Hint: ${hintData.number} can be removed by applying the <a href="https://github.com/m-ringler/straights/wiki/Rules-of-Str8ts#${hintData.rule}" target="rules">${ruleName} rule</a> to the ${ruleTarget}.`
       );
       this._positionHintDialog();
-      this.showDialog(dialogs.HINT);
+      await this.showDialogAsync(dialogs.HINT);
     } else if (resp && resp.message) {
       console.error('Failed to generate a hint:', resp.message);
     }
   }
 
-  closeHint() {
+  async closeHintAsync() {
     if (this._hintField) {
       this._hintField.setHint(undefined);
       this._hintField = null;
-      this.showDialog(false);
+      await this.showDialogAsync(false);
     }
   }
 
@@ -235,8 +235,8 @@ export class UIController {
     });
   }
 
-  showSolution() {
-    this.showDialog(false);
+  async showSolutionAsync() {
+    await this.showDialogAsync(false);
     clearInterval(this._timer);
     this._game.showSolution();
     this._undoStack.clear();
@@ -259,7 +259,7 @@ export class UIController {
   }
 
   private _renderUndoButton(length: number) {
-    const undoButton = this.$('#undo');
+    const undoButton = this.$('#undo-button');
     if (length == 0 || this._game.isSolved) {
       undoButton.prop('disabled', true);
       undoButton.attr('disabled', 'disabled'); // Ensure attribute is present for CSS to update
@@ -318,7 +318,7 @@ export class UIController {
       const diff = new Date().getTime() - this._starttime;
       const minutes = Math.floor(diff / 60000);
       const seconds = Math.floor(diff / 1000 - minutes * 60);
-      this.$('#time').text(
+      this.$('#time-counter').text(
         (minutes < 10 ? '0' : '') +
           minutes +
           ':' +
@@ -347,10 +347,10 @@ export class UIController {
     this._win.history.replaceState({}, '', url);
   }
 
-  async generateNewGame() {
-    this.showDialog(dialogs.LOADING);
+  async generateNewGameAsync() {
+    await this.showDialogAsync(dialogs.LOADING);
     clearInterval(this._timer);
-    this.$('#generate-button').prop('disabled', true);
+    this.$('#confirm-new-game-button').prop('disabled', true);
     try {
       const data = await api.generate(this._generateGridSize, this._difficulty);
       if (data.status === 0 && data.message.length > game_minCodeSize) {
@@ -358,7 +358,7 @@ export class UIController {
         this._gameUrl =
           this._win.location.href.split('?')[0] + '?code=' + data.message;
         this._gameCode = data.message;
-        this.showDialog(dialogs.GENERATED);
+        this._startNewGameAsync();
         return;
       } else {
         console.error('Error generating game:', data.message);
@@ -366,8 +366,8 @@ export class UIController {
     } catch (error) {
       console.error('Error fetching game:', error);
     }
-    this.showDialog(false);
-    this.$('#generate-button').prop('disabled', false);
+    await this.showDialogAsync(false);
+    this.$('#confirm-new-game-button').prop('disabled', false);
   }
 
   private _loadSettings() {
@@ -415,22 +415,22 @@ export class UIController {
 
   changeDifficulty() {
     this._difficulty = Number(this.$('#difficulty-slider').val());
-    this.$('#difficulty').text(this._difficulty);
+    this.$('#difficulty-text').text(this._difficulty);
     localStorage.setItem('generate.difficulty', String(this._difficulty));
   }
 
   changeGenerateSize() {
     this._generateGridSize = Number(this.$('#grid-size-slider').val());
-    this.$('#grid-size').text(this._generateGridSize);
+    this.$('#grid-size-text').text(this._generateGridSize);
     localStorage.setItem('generate.gridSize', String(this._generateGridSize));
   }
 
-  private async _startGame() {
+  private async _startGameAsync() {
     let hasGame = false;
     if (this._gameCode && this._gameCode.length > game_minCodeSize) {
       this._undoStack.clear();
       this.$('.container').removeClass('finished');
-      this.showDialog(false);
+      await this.showDialogAsync(false);
 
       const parsedGame = this._game.parseGame(this._gameCode);
       if (parsedGame) {
@@ -447,7 +447,7 @@ export class UIController {
     }
 
     if (!hasGame) {
-      await this.generateNewGame();
+      await this.generateNewGameAsync();
     }
   }
 
@@ -474,20 +474,20 @@ export class UIController {
     }
   }
 
-  generateNewGameAgain() {
-    this.showDialog(dialogs.WELCOME);
-    this.$('#cancel-new-game').show();
+  async showNewGameDialogAsync() {
+    await this.showDialogAsync(dialogs.NEW_GAME);
+    this.$('#cancel-new-game-button').show();
   }
 
-  showDialog(dialog: number | boolean) {
-    this.$('#welcome-dialog').hide();
+  async showDialogAsync(dialog: number | boolean) {
+    this.$('#new-game-dialog').hide();
     this.$('#loading-dialog').hide();
     this.$('#solution-dialog').hide();
     this.$('#restart-dialog').hide();
     this.$('#about-dialog').hide();
     this.$('#hint-dialog').hide();
     if (dialog != dialogs.HINT) {
-      this.closeHint();
+      await this.closeHintAsync();
     }
 
     if (dialog) {
@@ -496,12 +496,8 @@ export class UIController {
         case dialogs.LOADING:
           this.$('#loading-dialog').show();
           break;
-        case dialogs.WELCOME:
-          this.$('#welcome-dialog').show();
-          break;
-        case dialogs.GENERATED:
-          this._win.history.pushState({}, '', this._gameUrl);
-          this._startGame();
+        case dialogs.NEW_GAME:
+          this.$('#new-game-dialog').show();
           break;
         case dialogs.SOLUTION:
           if (!this._game.isSolved) {
@@ -518,7 +514,8 @@ export class UIController {
           }
           break;
         case dialogs.ABOUT:
-          this.$('#current-game').attr('href', this._win.location.href);
+          const link = await this._getCurrentLinkAsync();
+          this.$('#current-game-link').attr('href', link);
           this.$('#about-dialog').show();
           break;
         case dialogs.HINT:
@@ -528,6 +525,11 @@ export class UIController {
     } else {
       this.$('.dialog-outer-container').hide();
     }
+  }
+
+  private async _startNewGameAsync() {
+    this._win.history.pushState({}, '', this._gameUrl);
+    await this._startGameAsync();
   }
 
   private _onKeyDown(e: KeyboardEvent) {
@@ -626,7 +628,7 @@ export class UIController {
       if (this._game.isSolved) {
         this._undoStack.clear();
         this.$('.container').addClass('finished');
-        this._onResize();
+        this._onResizeAsync();
         clearInterval(this._timer);
       }
     }
@@ -648,16 +650,20 @@ export class UIController {
     field.clear();
   }
 
-  async copyCurrentLink() {
-    try {
-      let link = this._win.location.href;
-      if (this._game) {
-        const stateBase64 = await this._game.dumpStateBase64();
-        link += `&state=${stateBase64}`;
-      }
+  private async _getCurrentLinkAsync() {
+    let link = this._win.location.href;
+    if (this._game) {
+      const stateBase64 = await this._game.dumpStateBase64();
+      link += `&state=${stateBase64}`;
+    }
+    return link;
+  }
 
+  async copyCurrentLinkAsync() {
+    try {
+      const link = await this._getCurrentLinkAsync();
       await this._win.navigator.clipboard.writeText(link);
-      const copyBtn = this.$('.copy-link');
+      const copyBtn = this.$('.copy-link-button');
       copyBtn.text('Link copied!');
       setTimeout(() => copyBtn.text('🔗'), 1000);
     } catch (err) {
@@ -665,7 +671,7 @@ export class UIController {
     }
   }
 
-  private _handleGameLoad(popstate = false) {
+  private async _handleGameLoadAsync(popstate = false) {
     const code = this._getURLParameter('code');
     const currentKey = this._win.location.href;
 
@@ -673,9 +679,9 @@ export class UIController {
       this._gameUrl = currentKey;
       this._gameCode = code;
       if (popstate) {
-        this._startGame();
+        await this._startGameAsync();
       } else {
-        this.showDialog(dialogs.GENERATED);
+        await this._startNewGameAsync();
       }
     } else {
       const latestKey = gameHistory.getLatestGameKey();
@@ -686,13 +692,13 @@ export class UIController {
         return;
       }
 
-      // Nothing stored, show welcome dialog.
-      this.showDialog(dialogs.WELCOME);
+      // Nothing stored, show new game dialog.
+      await this.showDialogAsync(dialogs.NEW_GAME);
     }
   }
 
-  private _onResize() {
-    this.closeHint();
+  private async _onResizeAsync() {
+    await this.closeHintAsync();
     if (
       this._win.innerWidth / 2 - 45 <
       (this.$('.controls').position()?.left ?? 0)
@@ -728,12 +734,12 @@ export class UIController {
   }
 
   // single public startup entry point for DOM initialisation
-  start(): void {
+  async startAsync() {
     // initial UI setup
     this._createGrid();
-    this._onResize();
+    await this._onResizeAsync();
     this._loadSettings();
-    this._handleGameLoad();
+    await this._handleGameLoadAsync();
 
     // event handlers for UI elements
     this.$('td[id^="ce"]').on('click', (evt) => {
@@ -751,54 +757,87 @@ export class UIController {
     });
 
     // wire page-level events here so they can call private methods
-    this._win.addEventListener('popstate', () => {
-      this._handleGameLoad(true);
+    this._win.addEventListener('popstate', async () => {
+      await this._handleGameLoadAsync(true);
     });
-    this.$(document).on('keydown', (e) => {
-      this._onKeyDown(e as any);
+    this.$(document).on('keydown', (e: KeyboardEvent) => {
+      this._onKeyDown(e);
     });
-    this.$(this._win).on('resize', () => {
-      this._onResize();
+    this.$(this._win).on('resize', async () => {
+      await this._onResizeAsync();
     });
 
     // Controls wired from index.html
-    this.$('#undo').on('click', () => this.undo());
-    this.$('#notes').on('click', () => this.toggleNoteMode());
-    this.$('#check').on('click', () => this.check());
-    this.$('#hint').on('click', () => this.hint());
-    this.$('#show-solution').on('click', () =>
-      this.showDialog(dialogs.SOLUTION)
+    this.$('#undo-button').on('click', () => this.undo());
+    this.$('#toggle-notes-mode-button').on('click', () =>
+      this.toggleNoteMode()
+    );
+    this.$('#check-button').on('click', () => this.check());
+    this.$('#show-hint-button').on(
+      'click',
+      async () => await this.generateAndDisplayHintAsync()
+    );
+    this.$('#show-solution-button').on(
+      'click',
+      async () => await this.showDialogAsync(dialogs.SOLUTION)
     );
 
-    this.$('#new').on('click', () => this.generateNewGameAgain());
-    this.$('#restart').on('click', () => this.showDialog(dialogs.RESTART));
-    this.$('#about').on('click', () => this.showDialog(dialogs.ABOUT));
+    this.$('#show-new-game-dialog-button').on(
+      'click',
+      async () => await this.showNewGameDialogAsync()
+    );
+    this.$('#show-restart-dialog-button').on(
+      'click',
+      async () => await this.showDialogAsync(dialogs.RESTART)
+    );
+    this.$('#show-about-dialog-button').on(
+      'click',
+      async () => await this.showDialogAsync(dialogs.ABOUT)
+    );
 
     this.$('#grid-size-slider').on('input', () => this.changeGenerateSize());
     this.$('#difficulty-slider').on('input', () => this.changeDifficulty());
 
-    this.$('#generate-button').on('click', () => this.generateNewGame());
-    this.$('#cancel-new-game').on('click', () => this.showDialog(false));
+    this.$('#confirm-new-game-button').on(
+      'click',
+      async () => await this.generateNewGameAsync()
+    );
+    this.$('#cancel-new-game-button').on(
+      'click',
+      async () => await this.showDialogAsync(false)
+    );
 
-    this.$('#confirm-show-solution').on('click', () => this.showSolution());
-    this.$('#confirm-restart').on('click', () => this.restart());
+    this.$('#confirm-show-solution-button').on(
+      'click',
+      async () => await this.showSolutionAsync()
+    );
+    this.$('#confirm-restart-button').on(
+      'click',
+      async () => await this.restartAsync()
+    );
 
     // Copy link and force-update actions
-    this.$('#copy-link').on('click', () => this.copyCurrentLink());
+    this.$('#copy-link-button').on(
+      'click',
+      async () => await this.copyCurrentLinkAsync()
+    );
 
     // The force-update action proper is registered in a script block in index.html
-    this.$('#force-update').on('click', () => this.showDialog(false));
+    this.$('#force-update').on(
+      'click',
+      async () => await this.showDialogAsync(false)
+    );
 
     // Hint dialog close handlers (close the hint on click)
-    this.$('#hint-dialog').on('click', () => this.closeHint());
-    this.$('#hint-close').on('click', (e) => {
+    this.$('#hint-dialog').on('click', async () => await this.closeHintAsync());
+    this.$('#hint-close').on('click', async (e: Event) => {
       e.stopPropagation();
-      this.closeHint();
+      await this.closeHintAsync();
     });
 
     // generic close buttons for dialogs (hide overlay)
     this.$('.close-button')
       .not('#hint-close')
-      .on('click', () => this.showDialog(false));
+      .on('click', async () => await this.showDialogAsync(false));
   }
 }

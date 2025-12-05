@@ -107,19 +107,32 @@ SPDX-License-Identifier: GPL-3.0-or-later
         </table>
         <table cellspacing="7px">
           <tr>
-            <td class="button set" id="undo" title="Undo [Ctrl+Z]" disabled>
+            <td
+              class="button set"
+              id="undo-button"
+              title="Undo [Ctrl+Z]"
+              disabled
+            >
               ⎌
             </td>
-            <td class="button set" id="notes" title="Notes Mode [N]">📝</td>
+            <td
+              class="button set"
+              id="toggle-notes-mode-button"
+              title="Notes Mode [N]"
+            >
+              📝
+            </td>
           </tr>
         </table>
         <table cellspacing="7px">
           <tr>
-            <td class="button set-slim" id="check" title="Check">✅️</td>
-            <td class="button set-slim" id="hint" title="Hint">💡</td>
+            <td class="button set-slim" id="check-button" title="Check">✅️</td>
+            <td class="button set-slim" id="show-hint-button" title="Hint">
+              💡
+            </td>
             <td
               class="button set-slim"
-              id="show-solution"
+              id="show-solution-button"
               title="Show solution"
             >
               👀
@@ -128,14 +141,32 @@ SPDX-License-Identifier: GPL-3.0-or-later
           <tr>
             <td class="counter-text set-slim" id="check-counter">0</td>
             <td class="counter-text set-slim" id="hint-counter">0</td>
-            <td class="counter-text set-slim" id="time">00:00</td>
+            <td class="counter-text set-slim" id="time-counter">00:00</td>
           </tr>
         </table>
         <table cellspacing="7px">
           <tr>
-            <td class="button set-slim" id="new" title="New game">✨</td>
-            <td class="button set-slim" id="restart" title="Start over">⟳</td>
-            <td class="button set-slim" id="about" title="About">❓</td>
+            <td
+              class="button set-slim"
+              id="show-new-game-dialog-button"
+              title="New game"
+            >
+              ✨
+            </td>
+            <td
+              class="button set-slim"
+              id="show-restart-dialog-button"
+              title="Start over"
+            >
+              ⟳
+            </td>
+            <td
+              class="button set-slim"
+              id="show-about-dialog-button"
+              title="About"
+            >
+              ❓
+            </td>
           </tr>
         </table>
       </div>
@@ -143,11 +174,11 @@ SPDX-License-Identifier: GPL-3.0-or-later
     <div class="dialog-outer-container">
       <div class="dialog-background"></div>
       <div class="dialog-inner-container">
-        <div class="dialog" id="welcome-dialog">
+        <div class="dialog" id="new-game-dialog">
           <div class="dialog-title">New Str8ts-Game</div>
           <div style="margin-top: 10px" class="dialog-new">
             <label for="grid-size-slider">Grid Size:</label>
-            <span id="grid-size">9</span>
+            <span id="grid-size-text">9</span>
             <br />
             <input
               type="range"
@@ -160,7 +191,7 @@ SPDX-License-Identifier: GPL-3.0-or-later
             />
             <br />
             <label for="difficulty-slider">Difficulty:</label>
-            <span id="difficulty" class="difficulty">3</span>
+            <span id="difficulty-text" class="difficulty">3</span>
             <br />
             <input
               type="range"
@@ -172,10 +203,13 @@ SPDX-License-Identifier: GPL-3.0-or-later
               autocomplete="off"
             />
           </div>
-          <span class="dialog-button full-width" id="generate-button"
+          <span class="dialog-button full-width" id="confirm-new-game-button"
             >Generate new game</span
           >
-          <span class="close-button" id="cancel-new-game" style="display: none"
+          <span
+            class="close-button"
+            id="cancel-new-game-button"
+            style="display: none"
             >×</span
           >
         </div>
@@ -183,7 +217,9 @@ SPDX-License-Identifier: GPL-3.0-or-later
           <span class="close-button">×</span>
           <div class="dialog-title">Show Solution</div>
           <div class="dialog-text">Reveal the complete solution?</div>
-          <span class="dialog-button full-width" id="confirm-show-solution"
+          <span
+            class="dialog-button full-width"
+            id="confirm-show-solution-button"
             >Reveal</span
           >
         </div>
@@ -191,7 +227,7 @@ SPDX-License-Identifier: GPL-3.0-or-later
           <span class="close-button">×</span>
           <div class="dialog-title">Start Over</div>
           <div class="dialog-text">Clear all numbers and notes?</div>
-          <span class="dialog-button full-width" id="confirm-restart"
+          <span class="dialog-button full-width" id="confirm-restart-button"
             >Clear</span
           >
         </div>
@@ -229,9 +265,9 @@ SPDX-License-Identifier: GPL-3.0-or-later
               >
             </li>
             <li>
-              <a href="." id="current-game">Current Game</a>
+              <a href="." id="current-game-link">Current Game</a>
               <span
-                id="copy-link"
+                id="copy-link-button"
                 class="copy-link"
                 title="Copy link to clipboard"
                 >🔗</span
