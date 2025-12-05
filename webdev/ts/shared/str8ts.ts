@@ -51,24 +51,6 @@ interface JQueryLike {
   (selector: any, ...args: any[]): JQuerySelection;
 }
 
-function _getButtonColors(darkMode: boolean) {
-  const buttonColorsLight = {
-    BUTTONDOWN: '#335',
-    BUTTONUP: '#b1cffc',
-  };
-
-  const buttonColorsDark = {
-    BUTTONDOWN: '#e7d9cdff' /* color-button-active */,
-    BUTTONUP: '#555' /* color-button-background */,
-  };
-
-  return darkMode ? buttonColorsDark : buttonColorsLight;
-}
-
-const _darkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-const _buttonColors = _getButtonColors(_darkMode);
-
 const dialogs = {
   NEW_GAME: 1,
   GENERATING_NEW_GAME: 3,
@@ -96,6 +78,7 @@ export class UIController {
   private _generateGridSize = DEFAULT_GRID_SIZE;
   private _undoStack!: UndoStack<Field>;
   private _hintField: Field | null = null;
+  private _buttonColors: ButtonColors;
 
   // injected dependencies
   private $: JQueryLike;
@@ -105,6 +88,8 @@ export class UIController {
     this.$ = $;
     this._win = win;
     this._undoStack = new UndoStack(this._renderUndoButton.bind(this));
+    const _darkMode = win.matchMedia('(prefers-color-scheme: dark)').matches;
+    this._buttonColors = _getButtonColors(_darkMode);
     this._game = new Game(this.$, _darkMode);
   }
 
@@ -118,8 +103,8 @@ export class UIController {
   toggleNoteMode() {
     this._noteMode = !this._noteMode;
     const color = this._noteMode
-      ? _buttonColors.BUTTONDOWN
-      : _buttonColors.BUTTONUP;
+      ? this._buttonColors.BUTTONDOWN
+      : this._buttonColors.BUTTONUP;
     this.$('#toggle-notes-mode-button').css('background-color', color);
   }
 
@@ -814,4 +799,23 @@ export class UIController {
       .not('#hint-close')
       .on('click', async () => await this.showDialogAsync(false));
   }
+}
+
+interface ButtonColors {
+  BUTTONDOWN: string;
+  BUTTONUP: string;
+}
+
+function _getButtonColors(darkMode: boolean) : ButtonColors{
+  const buttonColorsLight = {
+    BUTTONDOWN: '#335',
+    BUTTONUP: '#b1cffc',
+  };
+
+  const buttonColorsDark = {
+    BUTTONDOWN: '#e7d9cdff' /* color-button-active */,
+    BUTTONUP: '#555' /* color-button-background */,
+  };
+
+  return darkMode ? buttonColorsDark : buttonColorsLight;
 }
