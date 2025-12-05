@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2025 Moritz Ringler
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 // Type definitions for TC39 Stage 3 Uint8Array base64 proposal
 // https://github.com/tc39/proposal-arraybuffer-base64
 

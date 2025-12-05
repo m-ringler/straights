@@ -1,4 +1,7 @@
-// test/utils.ts
+// SPDX-FileCopyrightText: 2025 Moritz Ringler
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import * as cheerio from 'cheerio';
 import * as fs from 'fs';
 

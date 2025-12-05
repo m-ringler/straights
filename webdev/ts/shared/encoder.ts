@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2025 Moritz Ringler
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 export interface EncodedResult {
   base64Data: string;
   count: number; // Number of sets encoded

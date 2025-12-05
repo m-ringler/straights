@@ -8,6 +8,7 @@ import * as api from './str8ts-api.js';
 import * as gameHistory from './gameHistory.js';
 
 import type { ApiResult } from './str8ts-api.js';
+import * as Popup from './popup.js';
 
 // JSON data returned by the generateHint function
 type HintData = {
@@ -80,13 +81,6 @@ const MIN_GRID_SIZE = 4;
 const MAX_GRID_SIZE = 12;
 const DEFAULT_GRID_SIZE = 9;
 const DEFAULT_DIFFICULTY = 3;
-
-interface WindowLayoutData {
-  width: number | undefined;
-  height: number | undefined;
-  scrollX: number;
-  scrollY: number;
-}
 
 // We wrap the UI behavior into a single controller class to avoid leaking many globals
 export class UIController {
@@ -204,13 +198,13 @@ export class UIController {
 
     const fieldElement = this._hintField.getElement()[0];
     const dialog = this.$('#hint-dialog');
-    const windowLayout: WindowLayoutData = {
+    const windowLayout: Popup.WindowLayoutData = {
       height: this.$(this._win).height(),
       width: this.$(this._win).width(),
       scrollX: this._win.scrollX,
       scrollY: this._win.scrollY,
     };
-    _positionPopup(fieldElement, dialog, windowLayout);
+    Popup.positionPopup(fieldElement, dialog, windowLayout);
   }
 
   async showSolutionAsync() {
@@ -820,43 +814,4 @@ export class UIController {
       .not('#hint-close')
       .on('click', async () => await this.showDialogAsync(false));
   }
-}
-
-function _positionPopup(
-  target: Element,
-  popup: JQuerySelection,
-  windowLayout: WindowLayoutData
-) {
-  const targetPos = target.getBoundingClientRect();
-  const windowHeight = windowLayout.height;
-  const windowWidth = windowLayout.width;
-
-  if (!windowHeight || !windowWidth) {
-    return;
-  }
-
-  // Determine the vertical position
-  let popupTop;
-  if (targetPos.top + targetPos.height / 2 > windowHeight / 2) {
-    popupTop =
-      targetPos.top + windowLayout.scrollY - (popup.outerHeight() ?? 0);
-  } else {
-    popupTop = targetPos.top + windowLayout.scrollY + targetPos.height;
-  }
-
-  // Determine the horizontal position
-  let popupLeft;
-  if (targetPos.left + targetPos.width / 2 > windowWidth / 2) {
-    popupLeft =
-      targetPos.left + windowLayout.scrollX - (popup.outerWidth() ?? 0);
-  } else {
-    popupLeft = targetPos.left + windowLayout.scrollX + targetPos.width;
-  }
-
-  // Set the position of the dialog
-  popup.css({
-    position: 'absolute',
-    top: popupTop,
-    left: popupLeft,
-  });
 }
