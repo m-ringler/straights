@@ -4,6 +4,7 @@
 
 import { Game, Field, minCodeSize as game_minCodeSize } from './game.js';
 import { UndoStack } from './undoStack.js';
+import { NumberInput } from './numberInput.js';
 import * as api from './str8ts-api.js';
 import * as gameHistory from './gameHistory.js';
 
@@ -67,75 +68,79 @@ const DEFAULT_DIFFICULTY = 3;
 // We wrap the UI behavior into a single controller class to avoid leaking many globals
 export class UIController {
   // state
-  private _starttime!: number;
-  private _timer!: ReturnType<typeof setTimeout>;
-  private _noteMode = false;
-  private _game!: Game;
-  private _gameCode!: string;
-  private _gameUrl!: string | URL;
-  private _difficulty = DEFAULT_DIFFICULTY;
-  private _currentGridSize = 12;
-  private _generateGridSize = DEFAULT_GRID_SIZE;
-  private _undoStack!: UndoStack<Field>;
-  private _hintField: Field | null = null;
-  private _buttonColors: ButtonColors;
+  private starttime!: number;
+  private timer!: ReturnType<typeof setTimeout>;
+  private isInNoteMode = false;
+  private game!: Game;
+  private gameCode!: string;
+  private gameUrl!: string | URL;
+  private generateDifficulty = DEFAULT_DIFFICULTY;
+  private currentGridSize = 12;
+  private generateGridSize = DEFAULT_GRID_SIZE;
+  private undoStack!: UndoStack<Field>;
+  private hintField: Field | null = null;
+  private buttonColors: ButtonColors;
+  private numberInput: NumberInput;
 
   // injected dependencies
   private $: JQueryLike;
-  private _win: Window;
+  private win: Window;
 
   constructor($: JQueryLike, win: Window) {
     this.$ = $;
-    this._win = win;
-    this._undoStack = new UndoStack(this._renderUndoButton.bind(this));
-    const _darkMode = win.matchMedia('(prefers-color-scheme: dark)').matches;
-    this._buttonColors = _getButtonColors(_darkMode);
-    this._game = new Game(this.$, _darkMode);
+    this.win = win;
+    this.undoStack = new UndoStack(this.renderUndoButton.bind(this));
+    const darkMode = win.matchMedia('(prefers-color-scheme: dark)').matches;
+    this.buttonColors = getButtonColors(darkMode);
+    this.game = new Game(this.$, darkMode);
+    this.numberInput = new NumberInput(
+      (num: number) => this.handleNumberInput(num)
+    );
   }
 
   // Button Functions
-  async restartAsync() {
+  private async restartAsync() {
     await this.showDialogAsync(false);
-    this._game.restart();
-    this._undoStack.clear();
+    this.game.restart();
+    this.undoStack.clear();
   }
 
-  toggleNoteMode() {
-    this._noteMode = !this._noteMode;
-    const color = this._noteMode
-      ? this._buttonColors.BUTTONDOWN
-      : this._buttonColors.BUTTONUP;
+  private toggleNoteMode() {
+    this.isInNoteMode = !this.isInNoteMode;
+    const color = this.isInNoteMode
+      ? this.buttonColors.BUTTONDOWN
+      : this.buttonColors.BUTTONUP;
     this.$('#toggle-notes-mode-button').css('background-color', color);
   }
 
-  private _renderCounters() {
-    this.$('#check-counter').text(this._game.check_count);
-    this.$('#hint-counter').text(this._game.hint_count);
+  private renderCounters() {
+    this.$('#check-counter').text(this.game.check_count);
+    this.$('#hint-counter').text(this.game.hint_count);
   }
 
-  check() {
-    this._game.check();
-    this._renderCounters();
-    this._saveState();
+  private check() {
+    this.game.check();
+    this.renderCounters();
+    this.saveState();
   }
 
-  async generateAndDisplayHintAsync() {
+  private async generateAndDisplayHintAsync() {
     await this.closeHintAsync();
 
-    const checkResult = this._game.checkForHint();
-    this._renderCounters();
+    const checkResult = this.game.checkForHint();
+    this.renderCounters();
 
     if (!(checkResult.isSolved || checkResult.isWrong)) {
-      await this._generateAndDisplayHintCoreAsync();
+      await this.generateAndDisplayHintCoreAsync();
     }
 
-    this._saveState();
+    this.saveState();
   }
 
-  private async _generateAndDisplayHintCoreAsync() {
+  private async generateAndDisplayHintCoreAsync() {
     let resp: ApiResult | undefined;
     try {
-      resp = await api.generateHint(this._game.toJsonArray());
+      resp = await api.generateHint(this.game.toJsonArray());
     } catch (ex) {
       console.error('Hint generation failed or unsupported:', ex);
       return;
@@ -144,8 +149,8 @@ export class UIController {
     if (resp && resp.status === 0 && resp.message) {
       const hintData = JSON.parse(resp.message) as HintData;
 
-      this._hintField = this._game.get(hintData.y, hintData.x);
-      this._hintField.setHint(hintData.number);
+      this.hintField = this.game.get(hintData.y, hintData.x);
+      this.hintField.setHint(hintData.number);
 
       // hintData.rule is either ColumnNameInPascalCase or BlockNameInPascalCase.
       const ruleWords = hintData.rule.split(/(?=[A-Z])/);
@@ -161,63 +166,64 @@ export class UIController {
       this.$('#hint-text').html(
         `Hint: ${hintData.number} can be removed by applying the <a href="https://github.com/m-ringler/straights/wiki/Rules-of-Str8ts#${hintData.rule}" target="rules">${ruleName} rule</a> to the ${ruleTarget}.`
       );
-      this._positionHintDialog();
+      this.positionHintDialog();
       await this.showDialogAsync(dialogs.HINT);
     } else if (resp && resp.message) {
       console.error('Failed to generate a hint:', resp.message);
     }
   }
 
-  async closeHintAsync() {
-    if (this._hintField) {
-      this._hintField.setHint(undefined);
-      this._hintField = null;
+  private async closeHintAsync() {
+    if (this.hintField) {
+      this.hintField.setHint(undefined);
+      this.hintField = null;
       await this.showDialogAsync(false);
     }
   }
 
-  private _positionHintDialog() {
-    if (!this._hintField) {
+  private positionHintDialog() {
+    if (!this.hintField) {
       return;
     }
 
-    const fieldElement = this._hintField.getElement()[0];
-    const dialog = this.$('#hint-dialog');
-    const windowLayout: Popup.WindowLayoutData = {
-      height: this.$(this._win).height(),
-      width: this.$(this._win).width(),
-      scrollX: this._win.scrollX,
-      scrollY: this._win.scrollY,
+    const windowLayoutData = {
+      height: this.$(this.win).height(),
+      width: this.$(this.win).width(),
+      scrollX: this.win.scrollX,
+      scrollY: this.win.scrollY,
     };
-    Popup.positionPopup(fieldElement, dialog, windowLayout);
+    Popup.positionPopup(
+      this.hintField.getElement()[0],
+      this.$('#hint-dialog'),
+      windowLayoutData
+    );
   }
 
-  async showSolutionAsync() {
+  private async showSolutionAsync() {
     await this.showDialogAsync(false);
-    clearInterval(this._timer);
-    this._game.showSolution();
-    this._undoStack.clear();
+    clearInterval(this.timer);
+    this.game.showSolution();
+    this.undoStack.clear();
   }
 
-  undo() {
-    if (this._undoStack.length > 0 && !this._game.isSolved) {
-      const field = this._undoStack.pop()!;
-      const gameField = this._game.get(field.row, field.col);
+  private undo(): void {
+    if (this.undoStack.length > 0 && !this.game.isSolved) {
+      const field = this.undoStack.pop()!;
+      const gameField = this.game.get(field.row, field.col);
       gameField.copyFrom(field);
       gameField.wrong = false;
-      this._game.selectCell(field.row, field.col);
+      this.game.selectCell(field.row, field.col);
       gameField.render();
     }
   }
 
-  // exposed helper for external code that used to call _game.selectCell directly
-  selectCell(row: number, col: number) {
-    this._game.selectCell(row, col);
+  private selectCell(row: number, col: number) {
+    this.game.selectCell(row, col);
   }
 
-  private _renderUndoButton(length: number) {
+  private renderUndoButton(length: number) {
     const undoButton = this.$('#undo-button');
-    if (length == 0 || this._game.isSolved) {
+    if (length == 0 || this.game.isSolved) {
       undoButton.prop('disabled', true);
       undoButton.attr('disabled', 'disabled'); // Ensure attribute is present for CSS to update
     } else {
@@ -227,38 +233,38 @@ export class UIController {
   }
 
   // General Functions
-  private _changeGridSize(newGridSize: number): void {
-    if (newGridSize == this._currentGridSize) {
+  private changeGridSize(newGridSize: number): void {
+    if (newGridSize == this.currentGridSize) {
       return;
     }
 
-    this._currentGridSize = Math.min(newGridSize, MAX_GRID_SIZE);
-    this._currentGridSize = Math.max(this._currentGridSize, MIN_GRID_SIZE);
-    this._showHideButtonsAndCells();
+    this.currentGridSize = Math.min(newGridSize, MAX_GRID_SIZE);
+    this.currentGridSize = Math.max(this.currentGridSize, MIN_GRID_SIZE);
+    this.showHideButtonsAndCells();
   }
 
-  private _showHideButtonsAndCells() {
-    for (let i = 1; i <= this._currentGridSize; i++) {
+  private showHideButtonsAndCells() {
+    for (let i = 1; i <= this.currentGridSize; i++) {
       this.$(`td[data-button="bn${i}"]`).show();
     }
-    for (let i = this._currentGridSize + 1; i <= MAX_GRID_SIZE; i++) {
+    for (let i = this.currentGridSize + 1; i <= MAX_GRID_SIZE; i++) {
       this.$(`td[data-button="bn${i}"]`).hide();
     }
-    for (let r = 0; r < this._currentGridSize; r++) {
+    for (let r = 0; r < this.currentGridSize; r++) {
       this.$('#r' + r).show();
-      for (let c = 0; c < this._currentGridSize; c++) {
+      for (let c = 0; c < this.currentGridSize; c++) {
         this.$(`#ce${r}_${c}`).show();
       }
-      for (let c = this._currentGridSize; c < MAX_GRID_SIZE; c++) {
+      for (let c = this.currentGridSize; c < MAX_GRID_SIZE; c++) {
         this.$(`#ce${r}_${c}`).hide();
       }
     }
-    for (let r = this._currentGridSize; r < MAX_GRID_SIZE; r++) {
+    for (let r = this.currentGridSize; r < MAX_GRID_SIZE; r++) {
       this.$('#r' + r).hide();
     }
   }
 
-  private _createGrid() {
+  private createGrid() {
     for (let r = 0; r < MAX_GRID_SIZE; r++) {
       let row = `<tr class="row" id="r${r}" row="${r}">`;
       for (let c = 0; c < MAX_GRID_SIZE; c++) {
@@ -269,10 +275,10 @@ export class UIController {
     }
   }
 
-  private _restartTimer() {
-    this._starttime = new Date().getTime();
-    this._timer = setInterval(() => {
-      const diff = new Date().getTime() - this._starttime;
+  private restartTimer() {
+    this.starttime = new Date().getTime();
+    this.timer = setInterval(() => {
+      const diff = new Date().getTime() - this.starttime;
       const minutes = Math.floor(diff / 60000);
       const seconds = Math.floor(diff / 1000 - minutes * 60);
       this.$('#time-counter').text(
@@ -285,15 +291,15 @@ export class UIController {
     }, 1000);
   }
 
-  private _getURLParameter(name: string) {
-    if (!this._win.location.search) return null;
-    const urlParams = new URLSearchParams(this._win.location.search);
+  private getURLParameter(name: string) {
+    if (!this.win.location.search) return null;
+    const urlParams = new URLSearchParams(this.win.location.search);
     return urlParams.get(name);
   }
 
-  private _removeURLParameter(paramKey: string): void {
+  private removeURLParameter(paramKey: string): void {
     // Get the current URL and its search part
-    const url: URL = new URL(this._win.location.href);
+    const url: URL = new URL(this.win.location.href);
     const searchParams: URLSearchParams = new URLSearchParams(url.search);
 
     // Remove the specified parameter
@@ -301,20 +307,23 @@ export class UIController {
 
     // Update the URL without reloading the page
     url.search = searchParams.toString();
-    this._win.history.replaceState({}, '', url);
+    this.win.history.replaceState({}, '', url);
   }
 
-  async generateNewGameAsync() {
+  private async generateNewGameAsync() {
     await this.showDialogAsync(dialogs.GENERATING_NEW_GAME);
-    clearInterval(this._timer);
+    clearInterval(this.timer);
     this.$('#confirm-new-game-button').prop('disabled', true);
     try {
-      const data = await api.generate(this._generateGridSize, this._difficulty);
+      const data = await api.generate(
+        this.generateGridSize,
+        this.generateDifficulty
+      );
       if (data.status === 0 && data.message.length > game_minCodeSize) {
         console.log('Game:', data.message);
-        this._gameUrl =
-          this._win.location.href.split('?')[0] + '?code=' + data.message;
-        this._gameCode = data.message;
+        this.gameUrl =
+          this.win.location.href.split('?')[0] + '?code=' + data.message;
+        this.gameCode = data.message;
         await this._startNewGameAsync();
         return;
       } else {
@@ -328,79 +337,48 @@ export class UIController {
     this.$('#confirm-new-game-button').prop('disabled', false);
   }
 
-  private _loadSettings() {
-    const loadSetting = (
-      sliderId: string,
-      storageKey: string,
-      defaultValue: number
-    ) => {
-      const slider = this.$(`#${sliderId}`);
-      const storedValue = localStorage.getItem(storageKey);
+  private loadSettings() {
+    var values = loadNewGameSettings(this.$, (key) =>
+      localStorage.getItem(key)
+    );
 
-      let validatedValue = defaultValue;
-      if (storedValue !== null) {
-        const value = Number(storedValue);
-        const min = Number(slider.attr('min'));
-        const max = Number(slider.attr('max'));
-
-        if (value >= min && value <= max) {
-          validatedValue = value;
-        }
-      }
-
-      slider.val(validatedValue);
-      this.$(`#${sliderId.replace('-slider', '')}`).text(validatedValue);
-      return validatedValue;
-    };
-
-    try {
-      this._generateGridSize = loadSetting(
-        'grid-size-slider',
-        'generate.gridSize',
-        DEFAULT_GRID_SIZE
-      );
-      this._difficulty = loadSetting(
-        'difficulty-slider',
-        'generate.difficulty',
-        DEFAULT_DIFFICULTY
-      );
-    } catch (error) {
-      console.warn('Failed to load settings:', error, 'Using defaults.');
-      this._generateGridSize = DEFAULT_GRID_SIZE;
-      this._difficulty = DEFAULT_DIFFICULTY;
-    }
+    this.generateGridSize = values.generateGridSize;
+    this.generateDifficulty = values.generateDifficulty;
   }
 
   changeDifficulty() {
-    this._difficulty = Number(this.$('#difficulty-slider').val());
-    this.$('#difficulty-text').text(this._difficulty);
-    localStorage.setItem('generate.difficulty', String(this._difficulty));
+    this.generateDifficulty = Number(this.$('#difficulty-slider').val());
+    this.$('#difficulty-text').text(this.generateDifficulty);
+    localStorage.setItem(
+      'generate.difficulty',
+      String(this.generateDifficulty)
+    );
   }
 
   changeGenerateSize() {
-    this._generateGridSize = Number(this.$('#grid-size-slider').val());
-    this.$('#grid-size-text').text(this._generateGridSize);
-    localStorage.setItem('generate.gridSize', String(this._generateGridSize));
+    this.generateGridSize = Number(this.$('#grid-size-slider').val());
+    this.$('#grid-size-text').text(this.generateGridSize);
+    localStorage.setItem('generate.gridSize', String(this.generateGridSize));
   }
 
-  private async _startGameAsync() {
+  private async startGameAsync() {
     let hasGame = false;
-    if (this._gameCode && this._gameCode.length > game_minCodeSize) {
-      this._undoStack.clear();
+    if (this.gameCode && this.gameCode.length > game_minCodeSize) {
+      this.undoStack.clear();
       this.$('.container').removeClass('finished');
       await this.showDialogAsync(false);
 
-      const parsedGame = this._game.parseGame(this._gameCode);
+      const parsedGame = this.game.parseGame(this.gameCode);
       if (parsedGame) {
-        this._game = parsedGame;
+        this.game = parsedGame;
         hasGame = true;
 
-        this._changeGridSize(this._game.size);
+        this.changeGridSize(this.game.size);
 
         this._restoreGameState();
 
-        this._restartTimer();
-        this._renderCounters();
+        this.restartTimer();
+        this.renderCounters();
       }
     }
 
@@ -411,20 +389,20 @@ export class UIController {
 
   private _restoreGameState() {
     if (!this._tryLoadStateFromUrlParameter()) {
-      gameHistory.restoreGameState(this._gameCode, this._game);
+      gameHistory.restoreGameState(this.gameCode, this.game);
     }
   }
 
   private _tryLoadStateFromUrlParameter() {
-    const stateUrlParameter = this._getURLParameter('state');
+    const stateUrlParameter = this.getURLParameter('state');
     if (!stateUrlParameter) {
       return false;
     }
 
     try {
-      this._removeURLParameter('state');
-      this._game.restoreStateBase64(stateUrlParameter);
-      this._saveState();
+      this.removeURLParameter('state');
+      this.game.restoreStateBase64(stateUrlParameter);
+      this.saveState();
       return true;
     } catch (ex) {
       console.error(ex);
@@ -459,14 +437,14 @@ export class UIController {
           this.$('#new-game-dialog').show();
           break;
         case dialogs.SOLUTION:
-          if (!this._game.isSolved) {
+          if (!this.game.isSolved) {
             this.$('#solution-dialog').show();
           } else {
             this.$('.dialog-outer-container').hide();
           }
           break;
         case dialogs.RESTART:
-          if (!this._game.isSolved) {
+          if (!this.game.isSolved) {
             this.$('#restart-dialog').show();
           } else {
             this.$('.dialog-outer-container').hide();
@@ -487,19 +465,19 @@ export class UIController {
   }
 
   private async _startNewGameAsync() {
-    this._win.history.pushState({}, '', this._gameUrl);
-    await this._startGameAsync();
+    this.win.history.pushState({}, '', this.gameUrl);
+    await this.startGameAsync();
   }
 
-  private _onKeyDown(e: KeyboardEvent) {
-    if (this._game.isSolved) return;
+  private onKeyDown(e: KeyboardEvent) {
+    if (this.game.isSolved) return;
 
     let handled = false;
     const key = e.key;
-    if (this._handleCursorKey(e)) {
+    if (this.handleCursorKey(e)) {
       handled = true;
     } else if (key >= '0' && key <= '9') {
-      this._handleNumberKey(Number(key));
+      this.handleDigitKey(Number(key));
       handled = true;
     } else if (key == 'n') {
       this.toggleNoteMode();
@@ -508,7 +486,7 @@ export class UIController {
       this.undo();
       handled = true;
     } else if (key === 'Backspace' || key === 'Delete') {
-      this._handleDelete();
+      this.handleDelete();
       handled = true;
     }
 
@@ -517,19 +495,19 @@ export class UIController {
     }
   }
 
-  private _handleCursorKey(e: { which: number }) {
+  private handleCursorKey(e: { which: number }) {
     switch (e.which) {
       case 37: // left
-        this._game.moveSelection(-1, 0);
+        this.game.moveSelection(-1, 0);
         break;
       case 38: // up
-        this._game.moveSelection(0, -1);
+        this.game.moveSelection(0, -1);
         break;
       case 39: // right
-        this._game.moveSelection(1, 0);
+        this.game.moveSelection(1, 0);
         break;
       case 40: // down
-        this._game.moveSelection(0, 1);
+        this.game.moveSelection(0, 1);
         break;
       default:
         return false;
@@ -538,81 +516,57 @@ export class UIController {
     return true;
   }
 
-  private _firstDigit: number | null = null;
-  private _digitTimer: ReturnType<typeof setTimeout> | undefined = undefined;
-  private _twoDigitTimeout = 500;
-  private _handleNumberKey(num: number) {
-    if (this._firstDigit == null) {
-      if (this._currentGridSize < 10 || num !== 1) {
-        this._handleNumberInput(num);
-      } else {
-        this._firstDigit = num;
-        this._digitTimer = setTimeout(() => {
-          this._handleNumberInput(num);
-          this._firstDigit = null;
-        }, this._twoDigitTimeout);
-      }
-    } else {
-      clearTimeout(this._digitTimer);
-      const firstNum = this._firstDigit;
-      const combinedNum = this._firstDigit * 10 + num;
-      this._firstDigit = null;
-      if (combinedNum <= this._currentGridSize) {
-        this._handleNumberInput(combinedNum);
-      } else {
-        this._handleNumberInput(firstNum);
-        this._handleNumberKey(num);
-      }
-    }
+  private handleDigitKey(digit: number) {
+    this.numberInput.handleDigit(digit, this.currentGridSize);
   }
 
-  private _handleNumberInput(num: number) {
-    if (num < 1 || num > this._currentGridSize) {
+  private handleNumberInput(num: number) {
+    if (num < 1 || num > this.currentGridSize) {
       return;
     }
 
-    const activeField = this._game.getActiveField();
+    const activeField = this.game.getActiveField();
     if (!activeField || !activeField.isEditable()) {
       return;
     }
 
-    this._undoStack.push(activeField.copy());
+    this.undoStack.push(activeField.copy());
 
-    if (this._noteMode) {
+    if (this.isInNoteMode) {
       activeField.setNote(num);
     } else {
       activeField.setUser(num);
-      this._game.checkSolved();
+      this.game.checkSolved();
 
-      if (this._game.isSolved) {
-        this._undoStack.clear();
+      if (this.game.isSolved) {
+        this.undoStack.clear();
         this.$('.container').addClass('finished');
         this._onResizeAsync();
-        clearInterval(this._timer);
+        clearInterval(this.timer);
       }
     }
 
-    this._saveState();
+    this.saveState();
   }
 
-  private _saveState() {
-    gameHistory.saveGameState(this._gameCode, this._game);
+  private saveState() {
+    gameHistory.saveGameState(this.gameCode, this.game);
   }
 
-  private _handleDelete() {
-    const field = this._game.getActiveField();
+  private handleDelete() {
+    const field = this.game.getActiveField();
     if (!field || !field.isEditable()) {
       return;
     }
 
-    this._undoStack.push(field.copy());
+    this.undoStack.push(field.copy());
     field.clear();
   }
 
   private async _getCurrentLinkAsync() {
-    let link = this._win.location.href;
-    if (this._game) {
-      const stateBase64 = await this._game.dumpStateBase64();
+    let link = this.win.location.href;
+    if (this.game) {
+      const stateBase64 = await this.game.dumpStateBase64();
       link += `&state=${stateBase64}`;
     }
     return link;
@@ -621,7 +575,7 @@ export class UIController {
   async copyCurrentLinkAsync() {
     try {
       const link = await this._getCurrentLinkAsync();
-      await this._win.navigator.clipboard.writeText(link);
+      await this.win.navigator.clipboard.writeText(link);
       const copyBtn = this.$('.copy-link-button');
       copyBtn.text('Link copied!');
       setTimeout(() => copyBtn.text('🔗'), 1000);
@@ -631,14 +585,14 @@ export class UIController {
   }
 
   private async _handleGameLoadAsync(popstate = false) {
-    const code = this._getURLParameter('code');
-    const currentKey = this._win.location.href;
+    const code = this.getURLParameter('code');
+    const currentKey = this.win.location.href;
 
     if (code && code.length > game_minCodeSize) {
-      this._gameUrl = currentKey;
-      this._gameCode = code;
+      this.gameUrl = currentKey;
+      this.gameCode = code;
       if (popstate) {
-        await this._startGameAsync();
+        await this.startGameAsync();
       } else {
         await this._startNewGameAsync();
       }
@@ -646,8 +600,8 @@ export class UIController {
       const latestKey = gameHistory.getLatestGameKey();
       if (latestKey) {
         // Reload the current page with the latest game code
-        this._win.location.href =
-          this._win.location.href.split('?')[0] + '?code=' + latestKey;
+        this.win.location.href =
+          this.win.location.href.split('?')[0] + '?code=' + latestKey;
         return;
       }
 
@@ -659,7 +613,7 @@ export class UIController {
   private async _onResizeAsync() {
     await this.closeHintAsync();
     if (
-      this._win.innerWidth / 2 - 45 <
+      this.win.innerWidth / 2 - 45 <
       (this.$('.controls').position()?.left ?? 0)
     ) {
       // Large screen
@@ -675,7 +629,7 @@ export class UIController {
     } else {
       // Small screen
       const cellwidth = Math.min(
-        Math.floor(this._win.innerWidth / this._currentGridSize - 2),
+        Math.floor(this.win.innerWidth / this.currentGridSize - 2),
         41
       );
       this.$('#buttons-small').show();
@@ -695,9 +649,9 @@ export class UIController {
   // single public startup entry point for DOM initialisation
   async startAsync() {
     // initial UI setup
-    this._createGrid();
+    this.createGrid();
     await this._onResizeAsync();
-    this._loadSettings();
+    this.loadSettings();
     await this._handleGameLoadAsync();
 
     // event handlers for UI elements
@@ -712,17 +666,17 @@ export class UIController {
       // Number buttons
       const el = evt.currentTarget as Element;
       const num = Number(this.$(el).text());
-      this._handleNumberInput(num);
+      this.handleNumberInput(num);
     });
 
     // wire page-level events here so they can call private methods
-    this._win.addEventListener('popstate', async () => {
+    this.win.addEventListener('popstate', async () => {
       await this._handleGameLoadAsync(true);
     });
     this.$(document).on('keydown', (e: KeyboardEvent) => {
-      this._onKeyDown(e);
+      this.onKeyDown(e);
     });
-    this.$(this._win).on('resize', async () => {
+    this.$(this.win).on('resize', async () => {
       await this._onResizeAsync();
     });
 
@@ -806,7 +760,7 @@ interface ButtonColors {
   BUTTONUP: string;
 }
 
-function _getButtonColors(darkMode: boolean) : ButtonColors{
+function getButtonColors(darkMode: boolean): ButtonColors {
   const buttonColorsLight = {
     BUTTONDOWN: '#335',
     BUTTONUP: '#b1cffc',
@@ -818,4 +772,54 @@ function _getButtonColors(darkMode: boolean) : ButtonColors{
   };
 
   return darkMode ? buttonColorsDark : buttonColorsLight;
+}
+
+function loadNewGameSettings(
+  $$: JQueryLike,
+  getStoredValue: (key: string) => string | null
+): { generateGridSize: number; generateDifficulty: number } {
+  function loadSetting(
+    sliderId: string,
+    storageKey: string,
+    defaultValue: number
+  ) {
+    const slider = $$(`#${sliderId}`);
+    const storedValue = getStoredValue(storageKey);
+
+    let validatedValue = defaultValue;
+    if (storedValue !== null) {
+      const value = Number(storedValue);
+      const min = Number(slider.attr('min'));
+      const max = Number(slider.attr('max'));
+
+      if (value >= min && value <= max) {
+        validatedValue = value;
+      }
+    }
+
+    slider.val(validatedValue);
+    $$(`#${sliderId.replace('-slider', '-text')}`).text(validatedValue);
+    return validatedValue;
+  }
+
+  try {
+    return {
+      generateGridSize: loadSetting(
+        'grid-size-slider',
+        'generate.gridSize',
+        DEFAULT_GRID_SIZE
+      ),
+      generateDifficulty: loadSetting(
+        'difficulty-slider',
+        'generate.difficulty',
+        DEFAULT_DIFFICULTY
+      ),
+    };
+  } catch (error) {
+    console.warn('Failed to load settings:', error, 'Using defaults.');
+    return {
+      generateGridSize: DEFAULT_GRID_SIZE,
+      generateDifficulty: DEFAULT_DIFFICULTY,
+    };
+  }
 }

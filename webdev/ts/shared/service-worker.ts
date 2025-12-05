@@ -14,6 +14,8 @@ const urlsToCache = [
   './index.html',
   './jquery-3.7.1.min.js',
   './LICENSE',
+  './numberInput.js',
+  './popup.js',
   './str8ts.css',
   './str8ts.js',
   './Straights.Web.js',
