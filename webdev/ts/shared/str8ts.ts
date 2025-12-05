@@ -481,7 +481,6 @@ export class UIController {
 
   showDialog(dialog: number | boolean) {
     this.$('#welcome-dialog').hide();
-    this.$('#start-dialog').hide();
     this.$('#loading-dialog').hide();
     this.$('#solution-dialog').hide();
     this.$('#restart-dialog').hide();

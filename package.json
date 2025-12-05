@@ -3,14 +3,15 @@
   "private": true,
   "version": "0.7.0",
   "devDependencies": {
-    "@types/jquery": "^3.5.33",
-    "@types/serviceworker": "^0.0.167",
     "@edge-runtime/vm": "^5.0.0",
+    "@types/jquery": "^3.5.33",
     "@types/node": "^20.0.0",
+    "@types/serviceworker": "^0.0.167",
     "@vitest/ui": "^4.0.14",
-    "typescript": "^5.6.0",
+    "cheerio": "^1.1.2",
     "prettier": "^3.5.3",
-    "vitest": "^4.0.14"
+    "typescript": "^5.6.0",
+    "vitest": "^4.0.15"
   },
   "prettier": {
     "singleQuote": true,
@@ -19,7 +20,7 @@
     "printWidth": 80
   },
   "scripts": {
-    "format": "prettier --write Straights.Web/str8ts-api-worker.js \"**/*.{ts,tsx,css,html,json}\"",
+    "format": "prettier --write \"webdev/**/*.js\" \"**/*.{ts,tsx,css,html,json}\"",
     "tsc": "tsc -p tsconfig.json",
     "tsc:watch": "tsc -p tsconfig.json --watch",
     "test": "vitest",

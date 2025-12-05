@@ -4,16 +4,12 @@
   "tools": {
     "dotnet-serve": {
       "version": "1.10.193",
-      "commands": [
-        "dotnet-serve"
-      ],
+      "commands": ["dotnet-serve"],
       "rollForward": false
     },
     "nupu": {
       "version": "1.0.50",
-      "commands": [
-        "nupu"
-      ],
+      "commands": ["nupu"],
       "rollForward": false
     }
   }

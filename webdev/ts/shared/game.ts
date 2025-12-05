@@ -63,11 +63,11 @@ export class Field {
       if (this.user === input) {
         this.user = undefined;
         if (this.notes.size === 1) {
-            // When we only have a single note we automatically
-            // set the user value to that note. But here, we want
-            // to switch to note mode. Therefore, we need to remove
-            // the single note.
-            this.notes.clear();
+          // When we only have a single note we automatically
+          // set the user value to that note. But here, we want
+          // to switch to note mode. Therefore, we need to remove
+          // the single note.
+          this.notes.clear();
         }
       } else {
         this.user = input;
