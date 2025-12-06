@@ -580,7 +580,7 @@ export class UIController {
     try {
       const link = await this._getCurrentLinkAsync();
       await this.win.navigator.clipboard.writeText(link);
-      const copyBtn = this.$('.copy-link-button');
+      const copyBtn = this.$('#copy-link-button');
       copyBtn.text('Link copied!');
       setTimeout(() => copyBtn.text('🔗'), 1000);
     } catch (err) {
