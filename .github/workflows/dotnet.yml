@@ -151,6 +151,10 @@ jobs:
           -p:PublishReadyToRun=true
           -p:PublishReadyToRunShowWarnings=true
 
+      - name: List files
+        run: |
+          find "${{ github.workspace }}/publish" -type f
+
       - name: Upload published binaries
         uses: actions/upload-artifact@v5
         if: ${{ (github.event_name != 'pull_request') && (matrix.build == 'Release') }}
@@ -196,6 +200,9 @@ jobs:
           --results-directory "TestResults.Nuget"
           -p:UseStraightsNugetPackagesVersion=${{ steps.get-set-version.outputs.version }}
 
+      - name: List nugets
+        run: |
+          ls -la "${{ github.workspace }}/nuget"
 
       - name: Upload nuget artifacts
         uses: actions/upload-artifact@v5

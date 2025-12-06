@@ -64,6 +64,11 @@ jobs:
           rm ./Straights.Web/*.pdb
           rm ./Straights.Web/*.xml
 
+      - name: List files
+        run: |
+          cd "${{ github.workspace }}/publish/Straights.Web"
+          find . -type f
+
       - name: Upload artifact
         uses: actions/upload-artifact@v5
         with:
