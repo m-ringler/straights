@@ -74,3 +74,4 @@ jobs:
         with:
           name: Straights.Web_${{ steps.get-set-version.outputs.version }}
           path: ${{ github.workspace }}/publish/Straights.Web
+          include-hidden-files: true

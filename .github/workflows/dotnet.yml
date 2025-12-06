@@ -161,6 +161,7 @@ jobs:
         with:
           name: Straights_${{ steps.get-set-version.outputs.version }}_${{ matrix.config.os}}-x64
           path: publish
+          include-hidden-files: true
 
 
       - name: Pack nugets
