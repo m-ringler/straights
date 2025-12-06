@@ -43,7 +43,8 @@
         "generate",
         "--layout",
         "PointSymmetric",
-        "--size", "13",
+        "--size",
+        "13",
         "--attempts",
         "1000",
         "--failure-threshold",
@@ -81,10 +82,7 @@
       "request": "launch",
       "preLaunchTask": "build",
       "program": "${workspaceFolder}/Straights/bin/Debug/net9.0/straights",
-      "args": [
-        "solve",
-        "${workspaceFolder}/test/grid09_001.png"
-      ],
+      "args": ["solve", "${workspaceFolder}/test/grid09_001.png"],
       "cwd": "${workspaceFolder}",
       "console": "integratedTerminal",
       "stopAtEntry": false
@@ -115,6 +113,24 @@
       "name": ".NET Core Attach",
       "type": "coreclr",
       "request": "attach"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug TS Tests",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "test", "--", "--run"],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug Current TS Test File",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "test", "--", "--run", "${relativeFile}"],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
     }
   ]
 }

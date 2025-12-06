@@ -444,8 +444,10 @@ test/local/*
 !test/local/Readme.md
 
 # publish dirs
-Straights.Web/publish/
 publish/
+
+# Ignore compiled JS generated from TypeScript sources
+webdev/tsc-out/
 
 # Verify received files
 *.received.*

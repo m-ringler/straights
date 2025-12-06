@@ -2,7 +2,7 @@
 
  [![NuGet Version](https://img.shields.io/nuget/v/Straights.Image)](https://www.nuget.org/packages/Straights.Image/) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Straights.Image is a dotnet library that reads single square Str8ts andSudoku grids from screenshot images. The maximum supported grid size is 9x9.
+Straights.Image is a dotnet library that reads single square Str8ts and Sudoku grids from screenshot images. The maximum supported grid size is 9x9.
 
 This package depends on [OpenCvSharp](https://github.com/shimat/opencvsharp) and a working native OpenCvSharpExtern runtime library.
 

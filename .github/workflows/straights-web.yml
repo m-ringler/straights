@@ -15,9 +15,23 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           lfs: true
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+
+      - name: Install JavaScript/TypeScript dependencies (npm ci)
+        run: npm ci
+
+      - name: Run vitest tests
+        run: npm run test:run
+
+      - name: Compile TypeScript sources (tsc)
+        run: npm run tsc
 
       - name: Get Version
         id: get-set-version

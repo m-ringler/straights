@@ -34,7 +34,7 @@ jobs:
           - {os: ubuntu-24.04, osfamily: linux}
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           lfs: true
 
@@ -63,6 +63,20 @@ jobs:
 
       - name: Restore dependencies
         run: dotnet restore
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+
+      - name: Install JavaScript/TypeScript dependencies (npm ci)
+        run: npm ci
+
+      - name: Run vitest tests
+        run: npm run test:run
+
+      - name: Compile TypeScript sources (tsc)
+        run: npm run tsc
 
       - name: Build
         run: dotnet build --no-restore -c ${{ matrix.build }} straights-commandline.slnf
@@ -149,6 +163,38 @@ jobs:
         if: ${{ (matrix.config.os == 'ubuntu-22.04' && github.event_name != 'pull_request') && (matrix.build == 'Release') }}
         run: |
           dotnet pack --no-build straights-nuget.slnf -o ${{ github.workspace }}/nuget
+
+      - name: Clean obj/bin directories
+        if: ${{ (matrix.config.os == 'ubuntu-22.04' && github.event_name != 'pull_request') && (matrix.build == 'Release') }}
+        run: |
+          echo "Removing all obj/ and bin/ directories from the repository (except .git)"
+          # find and remove obj and bin directories (be careful to skip .git)
+          find . -path './.git' -prune -o -type d \( -name 'obj' -o -name 'bin' \) -print -exec rm -rf {} + || true
+
+      - name: Restore using newly-created NuGet packages (copy to packages_local)
+        if: ${{ (matrix.config.os == 'ubuntu-22.04' && github.event_name != 'pull_request') && (matrix.build == 'Release') }}
+        run: |
+          echo "Copying freshly-packed nugets into packages_local so NuGet.config will find them"
+          mkdir -p packages_local
+          # remove old local packages, then copy new ones created by the pack step
+          rm -rf packages_local/* || true
+          cp -a "${{ github.workspace }}/nuget/." packages_local/ || true
+          echo "packages_local contains:" && ls -la packages_local || true
+
+          # Now restore using the normal configuration (NuGet.config references packages_local)
+          dotnet restore straights-commandline.slnf \
+            -p:UseStraightsNugetPackagesVersion=${{ steps.get-set-version.outputs.version }}
+
+      - name: Test (using freshly created NuGet packages)
+        if: ${{ (matrix.config.os == 'ubuntu-22.04' && github.event_name != 'pull_request') && (matrix.build == 'Release') }}
+        run: >
+          dotnet test straights-commandline.slnf
+          --no-restore
+          -c ${{ matrix.build }}
+          --verbosity normal
+          --logger trx
+          --results-directory "TestResults.Nuget"
+          -p:UseStraightsNugetPackagesVersion=${{ steps.get-set-version.outputs.version }}
 
 
       - name: Upload nuget artifacts

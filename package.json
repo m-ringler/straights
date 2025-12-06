@@ -1,0 +1,30 @@
+{
+  "name": "straights",
+  "private": true,
+  "version": "0.7.0",
+  "devDependencies": {
+    "@edge-runtime/vm": "^5.0.0",
+    "@types/jquery": "^3.5.33",
+    "@types/node": "^20.0.0",
+    "@types/serviceworker": "^0.0.167",
+    "@vitest/ui": "^4.0.14",
+    "cheerio": "^1.1.2",
+    "prettier": "^3.5.3",
+    "typescript": "^5.6.0",
+    "vitest": "^4.0.15"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "trailingComma": "es5",
+    "tabWidth": 2,
+    "printWidth": 80
+  },
+  "scripts": {
+    "format": "prettier --write \"webdev/**/*.js\" \"**/*.{ts,tsx,css,html,json}\"",
+    "tsc": "tsc -p tsconfig.json",
+    "tsc:watch": "tsc -p tsconfig.json --watch",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "test:debug": "vitest --inspect-brk --no-coverage"
+  }
+}

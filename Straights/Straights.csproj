@@ -27,12 +27,22 @@
     <PackageReference Include="System.IO.Abstractions" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="m-ringler.OpenCvSharp4.ubuntu24.runtime.linux-x64" Condition="'$(STRAIGHTS_TARGET_OS)' != 'ubuntu-22.04'" />
-    <PackageReference Include="OpenCvSharp4.official.runtime.linux-x64" Condition="'$(STRAIGHTS_TARGET_OS)' == 'ubuntu-22.04'" />
+    <PackageReference Include="m-ringler.OpenCvSharp4.ubuntu24.runtime.linux-x64"
+      Condition="'$(STRAIGHTS_TARGET_OS)' != 'ubuntu-22.04'" />
+    <PackageReference Include="OpenCvSharp4.official.runtime.linux-x64"
+      Condition="'$(STRAIGHTS_TARGET_OS)' == 'ubuntu-22.04'" />
   </ItemGroup>
 
+
   <ItemGroup>
-    <Content Include="Play/html/*.*;Play/html/favicon/*.*;LICENSE" >
+    <Content
+      Include="..\webdev\tsc-out\shared\*.*;..\webdev\tsc-out\webservice\*.*;..\webdev\base\shared\*.*;..\webdev\base\webservice\*.*"
+      LinkBase="Play/html/">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content
+      Include="..\webdev\base\shared\favicon\*.*"
+      LinkBase="Play/html/favicon/">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

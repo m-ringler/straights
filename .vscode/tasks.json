@@ -2,6 +2,43 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "label": "npm ci",
+      "type": "shell",
+      "command": "npm",
+      "args": ["ci"],
+      "problemMatcher": []
+    },
+    {
+      "label": "npm install",
+      "type": "shell",
+      "command": "npm",
+      "args": ["install"],
+      "problemMatcher": []
+    },
+    {
+      "label": "test ts",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "test:run"],
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "tsc",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "tsc"],
+      "dependsOn": "npm ci",
+      "problemMatcher": []
+    },
+    {
       "label": "build (no-restore)",
       "command": "dotnet",
       "type": "process",
@@ -12,6 +49,7 @@
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary"
       ],
+      "dependsOn": "tsc",
       "problemMatcher": "$msCompile"
     },
     {
@@ -24,6 +62,7 @@
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary"
       ],
+      "dependsOn": "tsc",
       "problemMatcher": "$msCompile"
     },
     {
@@ -37,6 +76,7 @@
         "${workspaceFolder}/publish/NuGetPackages",
         "-p:VersionSuffix=beta${input:betaVersionNumber}"
       ],
+      "dependsOn": "tsc",
       "problemMatcher": "$msCompile"
     },
     {
@@ -51,6 +91,7 @@
         "--use-current-runtime",
         "true"
       ],
+      "dependsOn": "tsc",
       "problemMatcher": "$msCompile"
     },
     {
@@ -67,13 +108,15 @@
         "-p",
         "MSBuildEnableWorkloadResolver=false"
       ],
+      "dependsOn": "tsc",
       "problemMatcher": "$msCompile"
     },
     {
       "label": "run Straights.Web",
       "command": "emrun",
       "type": "shell",
-      "args": ["${workspaceFolder}/Straights.Web/publish/index.html"],
+      "args": ["${workspaceFolder}/publish/Straights.Web/index.html"],
+      "dependsOn": "publish Straights.Web",
       "problemMatcher": []
     },
     {
@@ -87,7 +130,10 @@
       "label": "test nugets",
       "command": "dotnet",
       "type": "process",
-      "args": ["test", "-p:UseStraightsNugetPackagesVersion=${input:nugetVersion}"],
+      "args": [
+        "test",
+        "-p:UseStraightsNugetPackagesVersion=${input:nugetVersion}"
+      ],
       "problemMatcher": "$msCompile"
     },
     {

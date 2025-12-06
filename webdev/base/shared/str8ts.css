@@ -17,8 +17,8 @@
   --color-background: white;
   --color-foreground: black;
   --color-mini: black;
-  --color-link: #00E;
-  --color-visited-link: #551A8B;
+  --color-link: #00e;
+  --color-visited-link: #551a8b;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -39,15 +39,19 @@
   }
 }
 
-div, span, td, tr {
-    padding: 0;
-    margin: 0;
-    font-family: Nunito, sans-serif;
-    -webkit-touch-callout: none;
-    user-select: none;
+div,
+span,
+td,
+tr {
+  padding: 0;
+  margin: 0;
+  font-family: Nunito, sans-serif;
+  -webkit-touch-callout: none;
+  user-select: none;
 }
 
-body, html {
+body,
+html {
   width: 100vw;
   height: 100vh;
   margin: 0;
@@ -273,7 +277,7 @@ body, html {
   border-radius: 3px;
 }
 
-.loading-dialog {
+.generating-new-game-dialog {
   text-align: center;
 }
 
@@ -284,7 +288,7 @@ body, html {
 }
 
 .loading-ring::after {
-  content: " ";
+  content: ' ';
   display: block;
   width: 64px;
   height: 64px;
