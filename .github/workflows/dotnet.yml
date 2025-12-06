@@ -151,12 +151,18 @@ jobs:
           -p:PublishReadyToRun=true
           -p:PublishReadyToRunShowWarnings=true
 
+      - name: List files
+        if: ${{ matrix.config.osfamily == 'linux' }}
+        run: |
+          find "${{ github.workspace }}/publish" -type f
+
       - name: Upload published binaries
         uses: actions/upload-artifact@v5
         if: ${{ (github.event_name != 'pull_request') && (matrix.build == 'Release') }}
         with:
           name: Straights_${{ steps.get-set-version.outputs.version }}_${{ matrix.config.os}}-x64
           path: publish
+          include-hidden-files: true
 
 
       - name: Pack nugets
@@ -196,6 +202,10 @@ jobs:
           --results-directory "TestResults.Nuget"
           -p:UseStraightsNugetPackagesVersion=${{ steps.get-set-version.outputs.version }}
 
+      - name: List nugets
+        if: ${{ (matrix.config.os == 'ubuntu-22.04' && github.event_name != 'pull_request') && (matrix.build == 'Release') }}
+        run: |
+          ls -la "${{ github.workspace }}/nuget"
 
       - name: Upload nuget artifacts
         uses: actions/upload-artifact@v5
