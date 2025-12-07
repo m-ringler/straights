@@ -193,9 +193,3 @@ export class GameHistory<TState> {
     console.info('Migrated game history data');
   }
 }
-
-// Example usage:
-// const history = new GameHistory<MyGameState>(localStorage);
-// history.saveGameState('key', myGame);
-// history.restoreGameState('key', myGame);
-// const latestKey = history.getLatestGameKey();
