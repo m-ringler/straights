@@ -29,27 +29,21 @@ export function positionPopup(
   }
 
   // Determine the vertical position
-  let popupTop: number;
-  if (targetPos.top + targetPos.height / 2 > windowHeight / 2) {
-    popupTop =
-      targetPos.top + windowLayout.scrollY - (popup.outerHeight() ?? 0);
-  } else {
-    popupTop = targetPos.top + windowLayout.scrollY + targetPos.height;
-  }
+  const targetIsBelowCenter = targetPos.top + targetPos.bottom > windowHeight;
+  const popupTop = targetIsBelowCenter
+    ? targetPos.top - (popup.outerHeight() ?? 0)
+    : targetPos.bottom;
 
   // Determine the horizontal position
-  let popupLeft: number;
-  if (targetPos.left + targetPos.width / 2 > windowWidth / 2) {
-    popupLeft =
-      targetPos.left + windowLayout.scrollX - (popup.outerWidth() ?? 0);
-  } else {
-    popupLeft = targetPos.left + windowLayout.scrollX + targetPos.width;
-  }
+  const targetIsRightOfCenter = targetPos.left + targetPos.right > windowWidth;
+  const popupLeft = targetIsRightOfCenter
+    ? targetPos.left - (popup.outerWidth() ?? 0)
+    : targetPos.right;
 
   // Set the position of the dialog
   popup.css({
     position: 'absolute',
-    top: popupTop,
-    left: popupLeft,
+    top: popupTop + windowLayout.scrollY,
+    left: popupLeft + windowLayout.scrollX,
   });
 }

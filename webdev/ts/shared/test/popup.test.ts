@@ -7,7 +7,12 @@ describe('positionPopup', () => {
   let mockWindowLayout: WindowLayoutData;
 
   // Helper method to create a mock DOMRect
-  const mockRect = (left: number, top: number, right: number, bottom: number) => ({
+  const mockRect = (
+    left: number,
+    top: number,
+    right: number,
+    bottom: number
+  ) => ({
     top,
     left,
     width: right - left,
@@ -57,7 +62,7 @@ describe('positionPopup', () => {
     expect(mockPopup.css).toHaveBeenCalledWith({
       position: 'absolute',
       top: 650 + 30 - 250, // popupTop = targetPos.top + scrollY - popup.outerHeight()
-      left: 300 + 20 + 150,// popupLeft = targetPos.right + scrollX
+      left: 300 + 20 + 150, // popupLeft = targetPos.right + scrollX
     });
   });
 
@@ -73,7 +78,7 @@ describe('positionPopup', () => {
     expect(mockPopup.css).toHaveBeenCalledWith({
       position: 'absolute',
       top: 150 + 30 + 60, // popupTop = targetPos.top + scrollY + targetPos.height
-      left: 320 + 20,     // popupLeft = targetPos.right + scrollX
+      left: 320 + 20, // popupLeft = targetPos.right + scrollX
     });
   });
 
