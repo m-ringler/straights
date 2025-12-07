@@ -2,14 +2,18 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import { Game, Field, minCodeSize as game_minCodeSize } from './game.js';
+// module imports
+import * as Str8ts from './game.js';
+import * as api from './str8ts-api.js';
+import * as Popup from './popup.js';
+
+// module member imports
 import { UndoStack } from './undoStack.js';
 import { NumberInput } from './numberInput.js';
-import * as api from './str8ts-api.js';
-import * as gameHistory from './gameHistory.js';
+import { GameHistory } from './gameHistory.js';
 
+// type imports
 import type { ApiResult } from './str8ts-api.js';
-import * as Popup from './popup.js';
 
 // JSON data returned by the generateHint function
 type HintData = {
@@ -71,16 +75,17 @@ export class UIController {
   private starttime!: number;
   private timer!: ReturnType<typeof setTimeout>;
   private isInNoteMode = false;
-  private game!: Game;
+  private game!: Str8ts.Game;
   private gameCode!: string;
   private gameUrl!: string | URL;
   private generateDifficulty = DEFAULT_DIFFICULTY;
   private currentGridSize = 12;
   private generateGridSize = DEFAULT_GRID_SIZE;
-  private undoStack!: UndoStack<Field>;
-  private hintField: Field | null = null;
+  private undoStack!: UndoStack<Str8ts.Field>;
+  private hintField: Str8ts.Field | null = null;
   private buttonColors: ButtonColors;
   private numberInput: NumberInput;
+  private gameHistory: GameHistory<Str8ts.DumpedState>;
 
   // injected dependencies
   private $: JQueryLike;
@@ -92,7 +97,8 @@ export class UIController {
     this.undoStack = new UndoStack(this.renderUndoButton.bind(this));
     const darkMode = win.matchMedia('(prefers-color-scheme: dark)').matches;
     this.buttonColors = getButtonColors(darkMode);
-    this.game = new Game(this.$, darkMode);
+    this.game = new Str8ts.Game(this.$, darkMode);
+    this.gameHistory = new GameHistory<Str8ts.DumpedState>(localStorage);
     this.numberInput = new NumberInput((num: number) =>
       this.handleNumberInput(num)
     );
@@ -319,7 +325,7 @@ export class UIController {
         this.generateGridSize,
         this.generateDifficulty
       );
-      if (data.status === 0 && data.message.length > game_minCodeSize) {
+      if (data.status === 0 && data.message.length > Str8ts.minCodeSize) {
         console.log('Game:', data.message);
         this.gameUrl =
           this.win.location.href.split('?')[0] + '?code=' + data.message;
@@ -363,7 +369,7 @@ export class UIController {
 
   private async startGameAsync() {
     let hasGame = false;
-    if (this.gameCode && this.gameCode.length > game_minCodeSize) {
+    if (this.gameCode && this.gameCode.length > Str8ts.minCodeSize) {
       this.undoStack.clear();
       this.$('.container').removeClass('finished');
       await this.showDialogAsync(false);
@@ -389,7 +395,7 @@ export class UIController {
 
   private _restoreGameState() {
     if (!this._tryLoadStateFromUrlParameter()) {
-      gameHistory.restoreGameState(this.gameCode, this.game);
+      this.gameHistory.restoreGameState(this.gameCode, this.game);
     }
   }
 
@@ -554,7 +560,7 @@ export class UIController {
   }
 
   private saveState() {
-    gameHistory.saveGameState(this.gameCode, this.game);
+    this.gameHistory.saveGameState(this.gameCode, this.game);
   }
 
   private handleDelete() {
@@ -592,7 +598,7 @@ export class UIController {
     const code = this.getURLParameter('code');
     const currentKey = this.win.location.href;
 
-    if (code && code.length > game_minCodeSize) {
+    if (code && code.length > Str8ts.minCodeSize) {
       this.gameUrl = currentKey;
       this.gameCode = code;
       if (popstate) {
@@ -601,7 +607,7 @@ export class UIController {
         await this._startNewGameAsync();
       }
     } else {
-      const latestKey = gameHistory.getLatestGameKey();
+      const latestKey = this.gameHistory.getLatestGameKey();
       if (latestKey) {
         // Reload the current page with the latest game code
         this.win.location.href =
