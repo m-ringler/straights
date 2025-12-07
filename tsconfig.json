@@ -16,5 +16,5 @@
     "verbatimModuleSyntax": true
   },
   "include": ["webdev/ts/**/*.ts"],
-  "exclude": ["webdev/ts/**/*.test.ts", "webdev/ts/**/test/*.ts"]
+  "exclude": ["webdev/ts/**/test/*.ts"]
 }
