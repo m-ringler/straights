@@ -10,7 +10,7 @@ export interface StorageProvider {
   get length(): number;
 }
 
-interface GameLike<TState> {
+export interface GameLike<TState> {
   dumpState(): TState;
   restoreState(state: TState): void;
 }
@@ -32,8 +32,20 @@ export class GameHistory<TState> {
     maxNumberOfStoredGames: number = 50,
     storagePrefix: string = 'history.',
     versionKey: string = 'version',
-    generatePrefix: string = 'generate.',
+    generatePrefix: string = 'generate.'
   ) {
+    if (!storagePrefix) {
+      throw new Error('storagePrefix must not be empty');
+    }
+
+    if (!versionKey) {
+      throw new Error('versionKey must not be empty');
+    }
+
+    if (!generatePrefix) {
+      throw new Error('generatePrefix must not be empty');
+    }
+
     this.storage = storage;
     this.maxNumberOfStoredGames = maxNumberOfStoredGames;
     this.storagePrefix = storagePrefix;
@@ -79,10 +91,14 @@ export class GameHistory<TState> {
   }
 
   private getPrefixedHistoryKeys(): string[] {
+    return this.getKeys((key) => key.startsWith(this.storagePrefix));
+  }
+
+  private getKeys(include: (arg0: string) => boolean): string[] {
     const keys: string[] = [];
     for (let i = 0; i < this.storage.length; i++) {
       const key = this.storage.key(i);
-      if (key && key.startsWith(this.storagePrefix)) {
+      if (key && include(key)) {
         keys.push(key);
       }
     }
@@ -144,23 +160,22 @@ export class GameHistory<TState> {
       return;
     }
 
-    for (let i = 0; i < this.storage.length; i++) {
-      const key = this.storage.key(i);
-      if (!key) continue;
+    const keysToMigrate: string[] = this.getKeys(
+      (key) =>
+        !key.startsWith(this.storagePrefix) &&
+        !key.startsWith(this.generatePrefix)
+    );
 
-      if (key.startsWith(this.storagePrefix)) {
-        continue;
-      }
-      if (key.startsWith(this.generatePrefix)) {
-        continue;
-      }
-
+    for (const key of keysToMigrate) {
       const item = this.storage.getItem(key);
       if (!item) {
         console.debug(`Removing unknown storage key ${key}`);
       } else {
         try {
-          const parsed = JSON.parse(item) as { timestamp?: number; data?: unknown };
+          const parsed = JSON.parse(item) as {
+            timestamp?: number;
+            data?: unknown;
+          };
           if (parsed.timestamp && parsed.data) {
             console.debug(`Migrating game history entry ${key}`);
             this.storage.setItem(this.storagePrefix + key, item);
