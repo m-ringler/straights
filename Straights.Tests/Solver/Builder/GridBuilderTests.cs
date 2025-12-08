@@ -43,7 +43,7 @@ public class GridBuilderTests
             _,_,w3
             b3,b2,_
             b2,_,b
-            
+
             """.ReplaceLineEndings());
     }
 
@@ -65,7 +65,7 @@ public class GridBuilderTests
             _,_,_
             _,b2,_
             b2,_,_
-            
+
             """.ReplaceLineEndings());
     }
 

@@ -41,7 +41,7 @@ public class GridBuilderTextPersisterTests
             _,_,w3
             b3,b2,_
             b2,_,b
-            
+
             """.ReplaceLineEndings());
     }
 
