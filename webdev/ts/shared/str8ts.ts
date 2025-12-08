@@ -227,6 +227,12 @@ export class UIController {
     this.game.selectCell(row, col);
   }
 
+  private toggleNoOrAllNotes(row: number, col: number) {
+    this.selectCell(row, col);
+    this.pushActiveFieldToUndoStack();
+    this.game.get(row, col).toggleNoOrAllNotes();
+  }
+
   private renderUndoButton(length: number) {
     const undoButton = this.$('#undo-button');
     if (length == 0 || this.game.isSolved) {
@@ -272,9 +278,9 @@ export class UIController {
 
   private createGrid() {
     for (let r = 0; r < MAX_GRID_SIZE; r++) {
-      let row = `<tr class="row" id="r${r}" row="${r}">`;
+      let row = `<tr class="row" id="r${r}" data-row="${r}">`;
       for (let c = 0; c < MAX_GRID_SIZE; c++) {
-        row += `<td class="cell" id="ce${r}_${c}" row="${r}" col="${c}"></td>`;
+        row += `<td class="cell" id="ce${r}_${c}" data-row="${r}" data-col="${c}"></td>`;
       }
       row += '</tr>';
       this.$('.container').append(row);
@@ -540,7 +546,7 @@ export class UIController {
       return;
     }
 
-    this.undoStack.push(activeField.copy());
+    this.pushToUndoStack(activeField);
 
     if (this.isInNoteMode) {
       activeField.setNote(num);
@@ -557,6 +563,19 @@ export class UIController {
     }
 
     this.saveState();
+  }
+
+  private pushActiveFieldToUndoStack() {
+    const activeField = this.game.getActiveField();
+    if (!activeField || !activeField.isEditable()) {
+      return;
+    }
+
+    this.pushToUndoStack(activeField);
+  }
+
+  private pushToUndoStack(activeField: Str8ts.Field) {
+    this.undoStack.push(activeField.copy());
   }
 
   private saveState() {
@@ -665,12 +684,15 @@ export class UIController {
     await this._handleGameLoadAsync();
 
     // event handlers for UI elements
-    this.$('td[id^="ce"]').on('click', (evt) => {
+    this.$('td[id^="ce"]').on('click', (evt: Event) => {
       // Game fields
-      const el = evt.currentTarget as Element;
-      const row = Number(this.$(el).attr('row'));
-      const col = Number(this.$(el).attr('col'));
+      const { row, col } = this.getRowAndColumnOfTargetCell(evt);
       this.selectCell(row, col);
+    });
+    this.$('td[id^="ce"]').on('dblclick', (evt: Event) => {
+      // Game fields
+      const { row, col } = this.getRowAndColumnOfTargetCell(evt);
+      this.toggleNoOrAllNotes(row, col);
     });
     this.$('td[data-button^="bn"]').on('click', (evt) => {
       // Number buttons
@@ -762,6 +784,13 @@ export class UIController {
     this.$('.close-button')
       .not('#hint-close')
       .on('click', async () => await this.showDialogAsync(false));
+  }
+
+  private getRowAndColumnOfTargetCell(evt: Event) {
+    const selection = this.$(evt.currentTarget);
+    const row = Number(selection.attr('data-row'));
+    const col = Number(selection.attr('data-col'));
+    return { row, col };
   }
 }
 
