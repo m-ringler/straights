@@ -172,7 +172,15 @@ export class UIController {
       this.$('#hint-text').html(
         `Hint: ${hintData.number} can be removed by applying the <a href="https://github.com/m-ringler/straights/wiki/Rules-of-Str8ts#${hintData.rule}" target="rules">${ruleName} rule</a> to the ${ruleTarget}.`
       );
-      this.positionHintDialog();
+
+      const popup = this.$('#hint-dialog');
+      popup.css(
+        Popup.getPopupPosition(
+          popup,
+          this.hintField.getElement()[0].getBoundingClientRect(),
+          this.win.document.body.getBoundingClientRect()
+        )
+      );
       await this.showDialogAsync(dialogs.HINT);
     } else if (resp && resp.message) {
       console.error('Failed to generate a hint:', resp.message);
@@ -185,24 +193,6 @@ export class UIController {
       this.hintField = null;
       await this.showDialogAsync(false);
     }
-  }
-
-  private positionHintDialog() {
-    if (!this.hintField) {
-      return;
-    }
-
-    const windowLayoutData = {
-      height: this.$(this.win).height(),
-      width: this.$(this.win).width(),
-      scrollX: this.win.scrollX,
-      scrollY: this.win.scrollY,
-    };
-    Popup.positionPopup(
-      this.hintField.getElement()[0],
-      this.$('#hint-dialog'),
-      windowLayoutData
-    );
   }
 
   private async showSolutionAsync() {

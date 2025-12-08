@@ -2,48 +2,45 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-export interface WindowLayoutData {
-  width: number | undefined;
-  height: number | undefined;
-  scrollX: number;
-  scrollY: number;
-}
-
 export interface PopupElement {
   outerHeight: () => number | null;
   outerWidth: () => number | null;
-  css: (styles: Record<string, number | string>) => void;
 }
 
-export function positionPopup(
-  target: Element,
+export function getPopupPosition(
   popup: PopupElement,
-  windowLayout: WindowLayoutData
-) {
-  const targetPos = target.getBoundingClientRect();
-  const windowHeight = windowLayout.height;
-  const windowWidth = windowLayout.width;
-
-  if (!windowHeight || !windowWidth) {
-    return;
-  }
+  targetClientRect: DOMRect,
+  bodyClientRect: DOMRect
+): {
+  left: number;
+  top: number;
+  position: 'absolute';
+} {
+  const targetRectAbsolute = {
+    top: targetClientRect.top - bodyClientRect.top,
+    bottom: targetClientRect.bottom - bodyClientRect.top,
+    left: targetClientRect.left - bodyClientRect.left,
+    right: targetClientRect.right - bodyClientRect.left,
+  };
 
   // Determine the vertical position
-  const targetIsBelowCenter = targetPos.top + targetPos.bottom > windowHeight;
+  const targetIsBelowCenter =
+    targetRectAbsolute.top + targetRectAbsolute.bottom > bodyClientRect.height;
   const popupTop = targetIsBelowCenter
-    ? targetPos.top - (popup.outerHeight() ?? 0)
-    : targetPos.bottom;
+    ? targetRectAbsolute.top - (popup.outerHeight() ?? 0)
+    : targetRectAbsolute.bottom;
 
   // Determine the horizontal position
-  const targetIsRightOfCenter = targetPos.left + targetPos.right > windowWidth;
+  const targetIsRightOfCenter =
+    targetRectAbsolute.left + targetRectAbsolute.right > bodyClientRect.width;
   const popupLeft = targetIsRightOfCenter
-    ? targetPos.left - (popup.outerWidth() ?? 0)
-    : targetPos.right;
+    ? targetRectAbsolute.left - (popup.outerWidth() ?? 0)
+    : targetRectAbsolute.right;
 
-  // Set the position of the dialog
-  popup.css({
+  // Return the position of the popup in absolute coordinates
+  return {
+    top: popupTop,
+    left: popupLeft,
     position: 'absolute',
-    top: popupTop + windowLayout.scrollY,
-    left: popupLeft + windowLayout.scrollX,
-  });
+  };
 }

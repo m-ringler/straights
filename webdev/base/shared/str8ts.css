@@ -168,7 +168,8 @@ html {
   pointer-events: none;
 }
 
-table.mini tr, table.mini td {
+table.mini tr,
+table.mini td {
   pointer-events: none;
 }
 
