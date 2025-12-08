@@ -28,6 +28,7 @@ dotnet_diagnostic.SA1633.severity = none
 
 csharp_using_directive_placement = inside_namespace
 csharp_style_namespace_declarations = file_scoped
+max_line_length=80
 
 [*.{ts,tsx,css,html,json,js}]
 # Keep these in sync with prettier config in package.json:
