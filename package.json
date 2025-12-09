@@ -20,7 +20,7 @@
     "printWidth": 80
   },
   "scripts": {
-    "format": "prettier --write \"webdev/**/*.js\" \"**/*.{ts,tsx,css,html,json}\"",
+    "format": "prettier --write \"webdev/**/*.js\" \"**/*.{ts,css,html,json}\"",
     "tsc": "tsc -p tsconfig.json",
     "tsc:watch": "tsc -p tsconfig.json --watch",
     "test": "vitest",
