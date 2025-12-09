@@ -2,14 +2,18 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import { Game, Field, minCodeSize as game_minCodeSize } from './game.js';
+// module imports
+import * as Str8ts from './game.js';
+import * as api from './str8ts-api.js';
+import * as Popup from './popup.js';
+
+// module member imports
 import { UndoStack } from './undoStack.js';
 import { NumberInput } from './numberInput.js';
-import * as api from './str8ts-api.js';
-import * as gameHistory from './gameHistory.js';
+import { GameHistory } from './gameHistory.js';
 
+// type imports
 import type { ApiResult } from './str8ts-api.js';
-import * as Popup from './popup.js';
 
 // JSON data returned by the generateHint function
 type HintData = {
@@ -71,16 +75,17 @@ export class UIController {
   private starttime!: number;
   private timer!: ReturnType<typeof setTimeout>;
   private isInNoteMode = false;
-  private game!: Game;
+  private game!: Str8ts.Game;
   private gameCode!: string;
   private gameUrl!: string | URL;
   private generateDifficulty = DEFAULT_DIFFICULTY;
   private currentGridSize = 12;
   private generateGridSize = DEFAULT_GRID_SIZE;
-  private undoStack!: UndoStack<Field>;
-  private hintField: Field | null = null;
+  private undoStack!: UndoStack<Str8ts.Field>;
+  private hintField: Str8ts.Field | null = null;
   private buttonColors: ButtonColors;
   private numberInput: NumberInput;
+  private gameHistory: GameHistory<Str8ts.DumpedState>;
 
   // injected dependencies
   private $: JQueryLike;
@@ -92,7 +97,8 @@ export class UIController {
     this.undoStack = new UndoStack(this.renderUndoButton.bind(this));
     const darkMode = win.matchMedia('(prefers-color-scheme: dark)').matches;
     this.buttonColors = getButtonColors(darkMode);
-    this.game = new Game(this.$, darkMode);
+    this.game = new Str8ts.Game(this.$, darkMode);
+    this.gameHistory = new GameHistory<Str8ts.DumpedState>(localStorage);
     this.numberInput = new NumberInput((num: number) =>
       this.handleNumberInput(num)
     );
@@ -166,7 +172,15 @@ export class UIController {
       this.$('#hint-text').html(
         `Hint: ${hintData.number} can be removed by applying the <a href="https://github.com/m-ringler/straights/wiki/Rules-of-Str8ts#${hintData.rule}" target="rules">${ruleName} rule</a> to the ${ruleTarget}.`
       );
-      this.positionHintDialog();
+
+      const popup = this.$('#hint-dialog');
+      popup.css(
+        Popup.getPopupPosition(
+          popup,
+          this.hintField.getElement()[0].getBoundingClientRect(),
+          this.win.document.body.getBoundingClientRect()
+        )
+      );
       await this.showDialogAsync(dialogs.HINT);
     } else if (resp && resp.message) {
       console.error('Failed to generate a hint:', resp.message);
@@ -179,24 +193,6 @@ export class UIController {
       this.hintField = null;
       await this.showDialogAsync(false);
     }
-  }
-
-  private positionHintDialog() {
-    if (!this.hintField) {
-      return;
-    }
-
-    const windowLayoutData = {
-      height: this.$(this.win).height(),
-      width: this.$(this.win).width(),
-      scrollX: this.win.scrollX,
-      scrollY: this.win.scrollY,
-    };
-    Popup.positionPopup(
-      this.hintField.getElement()[0],
-      this.$('#hint-dialog'),
-      windowLayoutData
-    );
   }
 
   private async showSolutionAsync() {
@@ -219,6 +215,12 @@ export class UIController {
 
   private selectCell(row: number, col: number) {
     this.game.selectCell(row, col);
+  }
+
+  private toggleNoOrAllNotes(row: number, col: number) {
+    this.selectCell(row, col);
+    this.pushActiveFieldToUndoStack();
+    this.game.get(row, col).toggleNoOrAllNotes();
   }
 
   private renderUndoButton(length: number) {
@@ -266,9 +268,9 @@ export class UIController {
 
   private createGrid() {
     for (let r = 0; r < MAX_GRID_SIZE; r++) {
-      let row = `<tr class="row" id="r${r}" row="${r}">`;
+      let row = `<tr class="row" id="r${r}" data-row="${r}">`;
       for (let c = 0; c < MAX_GRID_SIZE; c++) {
-        row += `<td class="cell" id="ce${r}_${c}" row="${r}" col="${c}"></td>`;
+        row += `<td class="cell" id="ce${r}_${c}" data-row="${r}" data-col="${c}"></td>`;
       }
       row += '</tr>';
       this.$('.container').append(row);
@@ -319,7 +321,7 @@ export class UIController {
         this.generateGridSize,
         this.generateDifficulty
       );
-      if (data.status === 0 && data.message.length > game_minCodeSize) {
+      if (data.status === 0 && data.message.length > Str8ts.minCodeSize) {
         console.log('Game:', data.message);
         this.gameUrl =
           this.win.location.href.split('?')[0] + '?code=' + data.message;
@@ -363,7 +365,7 @@ export class UIController {
 
   private async startGameAsync() {
     let hasGame = false;
-    if (this.gameCode && this.gameCode.length > game_minCodeSize) {
+    if (this.gameCode && this.gameCode.length > Str8ts.minCodeSize) {
       this.undoStack.clear();
       this.$('.container').removeClass('finished');
       await this.showDialogAsync(false);
@@ -389,7 +391,7 @@ export class UIController {
 
   private _restoreGameState() {
     if (!this._tryLoadStateFromUrlParameter()) {
-      gameHistory.restoreGameState(this.gameCode, this.game);
+      this.gameHistory.restoreGameState(this.gameCode, this.game);
     }
   }
 
@@ -534,7 +536,7 @@ export class UIController {
       return;
     }
 
-    this.undoStack.push(activeField.copy());
+    this.pushToUndoStack(activeField);
 
     if (this.isInNoteMode) {
       activeField.setNote(num);
@@ -553,8 +555,21 @@ export class UIController {
     this.saveState();
   }
 
+  private pushActiveFieldToUndoStack() {
+    const activeField = this.game.getActiveField();
+    if (!activeField || !activeField.isEditable()) {
+      return;
+    }
+
+    this.pushToUndoStack(activeField);
+  }
+
+  private pushToUndoStack(activeField: Str8ts.Field) {
+    this.undoStack.push(activeField.copy());
+  }
+
   private saveState() {
-    gameHistory.saveGameState(this.gameCode, this.game);
+    this.gameHistory.saveGameState(this.gameCode, this.game);
   }
 
   private handleDelete() {
@@ -592,7 +607,7 @@ export class UIController {
     const code = this.getURLParameter('code');
     const currentKey = this.win.location.href;
 
-    if (code && code.length > game_minCodeSize) {
+    if (code && code.length > Str8ts.minCodeSize) {
       this.gameUrl = currentKey;
       this.gameCode = code;
       if (popstate) {
@@ -601,7 +616,7 @@ export class UIController {
         await this._startNewGameAsync();
       }
     } else {
-      const latestKey = gameHistory.getLatestGameKey();
+      const latestKey = this.gameHistory.getLatestGameKey();
       if (latestKey) {
         // Reload the current page with the latest game code
         this.win.location.href =
@@ -659,15 +674,18 @@ export class UIController {
     await this._handleGameLoadAsync();
 
     // event handlers for UI elements
-    this.$('td[id^="ce"]').on('click', (evt) => {
-      // Game fields
-      const el = evt.currentTarget as Element;
-      const row = Number(this.$(el).attr('row'));
-      const col = Number(this.$(el).attr('col'));
+    const gridCells = this.$('td[id^="ce"]');
+    gridCells.on('click', (evt: Event) => {
+      const { row, col } = this.getRowAndColumnOfTargetCell(evt);
       this.selectCell(row, col);
     });
-    this.$('td[data-button^="bn"]').on('click', (evt) => {
-      // Number buttons
+    gridCells.on('dblclick', (evt: Event) => {
+      const { row, col } = this.getRowAndColumnOfTargetCell(evt);
+      this.toggleNoOrAllNotes(row, col);
+    });
+
+    const numberButtons = this.$('td[data-button^="bn"]');
+    numberButtons.on('click', (evt: Event) => {
       const el = evt.currentTarget as Element;
       const num = Number(this.$(el).text());
       this.handleNumberInput(num);
@@ -754,8 +772,15 @@ export class UIController {
 
     // generic close buttons for dialogs (hide overlay)
     this.$('.close-button')
-      .not('#hint-close')
+      .not('#hint-close') // special handler above
       .on('click', async () => await this.showDialogAsync(false));
+  }
+
+  private getRowAndColumnOfTargetCell(evt: Event) {
+    const selection = this.$(evt.currentTarget);
+    const row = Number(selection.attr('data-row'));
+    const col = Number(selection.attr('data-col'));
+    return { row, col };
   }
 }
 

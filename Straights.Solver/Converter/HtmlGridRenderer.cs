@@ -26,11 +26,11 @@ public sealed class HtmlGridRenderer
             * {
               box-sizing: border-box;
             }
-            
+
             div.col {
                 float: left;
             }
-            
+
             div.col div {
               float: left;
               clear: left;
@@ -40,13 +40,13 @@ public sealed class HtmlGridRenderer
               padding-bottom: 2pt;
               color: #404090;
             }
-            
+
             table.grid {
                border-collapse: collapse;
                font-family: LucidaSans, Helvetica, Arial, sans-serif;
                font-size: 21pt;
             }
-            
+
             tr.grid-row td
             {
                border: solid 1px #909090;
@@ -55,25 +55,25 @@ public sealed class HtmlGridRenderer
                height: 50pt;
                min-width: 50pt;
             }
-            
+
             tr.grid-row
             {
                margin: 0;
             }
-            
+
             td.white-field-solved
             {
                background-color: white;
                color: black;
             }
-            
+
             td.white-field-unsolved
             {
                font-size: 8pt;
                padding-left: 0.37em;
                padding-right: 0.37em;
             }
-            
+
             td.black-field
             {
                 background-color: black;

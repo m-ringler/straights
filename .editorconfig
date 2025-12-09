@@ -1,4 +1,10 @@
 [*.cs]
+insert_final_newline = true
+trim_trailing_whitespace = true
+dotnet_sort_system_directives_first = true
+dotnet_separate_import_directive_groups = true
+max_line_length = 80
+
 dotnet_analyzer_diagnostic.severity = warning
 
 dotnet_diagnostic.CA1859.severity = none
@@ -28,6 +34,9 @@ dotnet_diagnostic.SA1633.severity = none
 
 csharp_using_directive_placement = inside_namespace
 csharp_style_namespace_declarations = file_scoped
+
+[*.csproj]
+max_line_length=80
 
 [*.{ts,tsx,css,html,json,js}]
 # Keep these in sync with prettier config in package.json:

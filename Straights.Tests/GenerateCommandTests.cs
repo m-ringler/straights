@@ -15,6 +15,7 @@ using Straights.Solver.Generator;
 using Straights.Solver.Simplification;
 
 using Xunit.Sdk;
+
 using XFS = System.IO.Abstractions.TestingHelpers.MockUnixSupport;
 
 /// <summary>
@@ -141,7 +142,7 @@ _,b,_,_,_,_,b,_,b
             _,_,b,_,b,_,b,b9,_
             _,_,_,_,_,_,_,w8,_
             _,_,b,_,w6,_,_,_,_
-            
+
             """;
         var configV = new TestConfig(
             GridLayout.VerticallySymmetric,

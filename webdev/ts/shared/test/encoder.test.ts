@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { describe, it, expect } from 'vitest';
-import { EncodedResult, BitmaskEncoder } from './encoder';
+import { EncodedResult, BitmaskEncoder } from '../encoder';
 
 // Simple seeded random number generator for deterministic tests
 function seededRandom(seed: number) {

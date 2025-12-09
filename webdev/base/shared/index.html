@@ -243,7 +243,7 @@ SPDX-License-Identifier: GPL-3.0-or-later
         <div class="dialog" id="about-dialog">
           <span class="close-button">×</span>
           <div class="dialog-title">
-            Straights.Web <span id="version">0.7.1</span>
+            Straights.Web <span id="version">0.7.2</span>
           </div>
           <div>© 2020 Luis Walter, 2025 Moritz Ringler</div>
           <ul>
@@ -262,7 +262,7 @@ SPDX-License-Identifier: GPL-3.0-or-later
             </li>
             <li>
               <a
-                href="https://github.com/m-ringler/straights/wiki/Rules-of-Str8ts"
+                href="https://github.com/m-ringler/straights/wiki/"
                 target="rules"
                 >How to play</a
               >
@@ -287,11 +287,13 @@ SPDX-License-Identifier: GPL-3.0-or-later
             >
           </div>
         </div>
-        <div class="dialog" id="hint-dialog">
-          <span class="close-button" id="hint-close">×</span>
-          <div id="hint-text"></div>
-        </div>
       </div>
+    </div>
+    <!-- In constrast to the other dialogs, this one is positioned relative to the page.
+      -- Therefore, it's not placed inside the dialog container.  -->
+    <div class="dialog" id="hint-dialog">
+      <span class="close-button" id="hint-close">×</span>
+      <div id="hint-text"></div>
     </div>
 
     <!-- Start the UI Controller -->

@@ -100,6 +100,22 @@ export class Field {
     }
   }
 
+  toggleNoOrAllNotes() {
+    if (!this.isEditable || this.user) {
+      return;
+    }
+
+    if (this.notes.size === 0) {
+      for (let i = 1; i <= this.game.size; i++) {
+        this.notes.add(i);
+      }
+    } else if (this.notes.size === this.game.size) {
+      this.notes.clear();
+    }
+
+    this.render();
+  }
+
   clear() {
     if (this.isEditable()) {
       if (this.user) {

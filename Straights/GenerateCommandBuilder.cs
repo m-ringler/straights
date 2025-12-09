@@ -73,7 +73,7 @@ internal sealed class GenerateCommandBuilder(
         This option determines which white numbers are revealed
         from the start. The overall difficulty is also influenced
         by the number of black blanks and the number of black numbers.
-        
+
         """;
 
     private readonly Option<FileInfo?> outputOption = new(
