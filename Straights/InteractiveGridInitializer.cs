@@ -5,7 +5,6 @@
 namespace Straights;
 
 using System.IO.Abstractions;
-
 using Straights.Console;
 using Straights.Solver.Builder;
 using Straights.Solver.Converter;
@@ -15,17 +14,27 @@ internal sealed class InteractiveGridInitializer(ReadWriteConsole console)
 {
     public IDirectoryInfo? DebugDataFolder { get; init; }
 
-    public (ConvertibleGrid Grid, bool IsImage, string? SuggestedSavePath)
-        InitializeGrid(IFileInfo? args)
+    public (
+        ConvertibleGrid Grid,
+        bool IsImage,
+        string? SuggestedSavePath
+    ) InitializeGrid(IFileInfo? args)
     {
         string? path = args?.FullName;
 
         return string.IsNullOrWhiteSpace(path)
             ? this.NewEmptyGrid()
-            : new GridLoader { DebugDataFolder = this.DebugDataFolder }.LoadGrid(args!);
+            : new GridLoader
+            {
+                DebugDataFolder = this.DebugDataFolder,
+            }.LoadGrid(args!);
     }
 
-    public (ConvertibleGrid Grid, bool IsImage, string? SuggestedPath) NewEmptyGrid()
+    public (
+        ConvertibleGrid Grid,
+        bool IsImage,
+        string? SuggestedPath
+    ) NewEmptyGrid()
     {
         return (new(new GridBuilder(this.ReadSize())), false, null);
     }
@@ -37,9 +46,11 @@ internal sealed class InteractiveGridInitializer(ReadWriteConsole console)
         {
             terminal.Write("Size: ");
             var sizeAsString = readLine();
-            if (int.TryParse(sizeAsString, out int size)
-                     && size > 0
-                     && size <= WhiteFieldData.MaxSize)
+            if (
+                int.TryParse(sizeAsString, out int size)
+                && size > 0
+                && size <= WhiteFieldData.MaxSize
+            )
             {
                 return size;
             }

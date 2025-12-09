@@ -23,7 +23,8 @@ namespace Straights.Solver.Simplification;
 /// </param>
 public sealed class CombinationFinder<T, TAgg>(
     Func<TAgg, T, TAgg> aggregate,
-    Func<TAgg, bool> isEligible)
+    Func<TAgg, bool> isEligible
+)
 {
     /// <summary>
     /// Gets all eligible combinations of <paramref name="numberOfItemsToCombine"/> items
@@ -42,21 +43,24 @@ public sealed class CombinationFinder<T, TAgg>(
     public IEnumerable<IEnumerable<T>> EnumerateEligibleCombinations(
         IReadOnlyCollection<T> values,
         TAgg seed,
-        int numberOfItemsToCombine)
+        int numberOfItemsToCombine
+    )
     {
         ArgumentOutOfRangeException.ThrowIfLessThan(numberOfItemsToCombine, 1);
         return this.EnumerateAllCombinations(
             values,
             values.Count,
             seed,
-            numberOfItemsToCombine);
+            numberOfItemsToCombine
+        );
     }
 
     private IEnumerable<IEnumerable<T>> EnumerateAllCombinations(
         IEnumerable<T> values,
         int valuesCount,
         TAgg seed,
-        int numberOfItemsToCombine)
+        int numberOfItemsToCombine
+    )
     {
         if (valuesCount < numberOfItemsToCombine)
         {
@@ -94,11 +98,14 @@ public sealed class CombinationFinder<T, TAgg>(
             }
 
             var remainingValues = values.Skip(i);
-            foreach (var followingValuesCombination in this.EnumerateAllCombinations(
-                remainingValues,
-                remainingValuesCount,
-                agg,
-                numberOfFollowingValues))
+            foreach (
+                var followingValuesCombination in this.EnumerateAllCombinations(
+                    remainingValues,
+                    remainingValuesCount,
+                    agg,
+                    numberOfFollowingValues
+                )
+            )
             {
                 yield return followingValuesCombination.Prepend(value);
             }

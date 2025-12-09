@@ -72,9 +72,7 @@ public sealed class GridBuilder
         if (value.Value != null)
         {
             CheckAdd(this.fields[iy], value);
-            CheckAdd(
-                this.GetColumn(ix),
-                value);
+            CheckAdd(this.GetColumn(ix), value);
         }
 
         this.fields[iy][ix] = value;
@@ -87,9 +85,7 @@ public sealed class GridBuilder
 
     public IEnumerable<BuilderField?> EnumerateFields()
     {
-        return from row in this.fields
-               from field in row
-               select field;
+        return from row in this.fields from field in row select field;
     }
 
     public override string ToString()
@@ -111,7 +107,8 @@ public sealed class GridBuilder
 
     private static void CheckAdd(
         IEnumerable<BuilderField?> target,
-        BuilderField value)
+        BuilderField value
+    )
     {
         if (value.Value == null)
         {
@@ -130,6 +127,6 @@ public sealed class GridBuilder
     private IEnumerable<BuilderField> GetColumn(int ix)
     {
         return from i in Enumerable.Range(0, this.Size)
-               select this.fields[i][ix];
+            select this.fields[i][ix];
     }
 }

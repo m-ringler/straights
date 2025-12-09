@@ -18,7 +18,14 @@ public class BlockDisjunctSubsetsTests
         // ARRANGE
         var column = SolverColumn.Create(
             9,
-            [[[4, 6, 7, 8, 9], [6, 7], [4, 6, 7, 8, 9]]]);
+            [
+                [
+                    [4, 6, 7, 8, 9],
+                    [6, 7],
+                    [4, 6, 7, 8, 9],
+                ],
+            ]
+        );
 
         var simplifier = new BlockDisjunctSubsets();
 
@@ -26,13 +33,17 @@ public class BlockDisjunctSubsetsTests
         simplifier.Simplify(column.Blocks[0]);
 
         // ASSERT
-        _ = column.DumpCode().Should().Be(
-"""
+        _ = column
+            .DumpCode()
+            .Should()
+            .Be(
+                """
 SolverColumn.Create(9,
 [[[6, 7, 8, 9],
 [6, 7],
 [6, 7, 8, 9]]])
-""");
+"""
+            );
     }
 
     [Fact]
@@ -41,7 +52,14 @@ SolverColumn.Create(9,
         // ARRANGE
         var column = SolverColumn.Create(
             9,
-            [[[4, 6, 7, 9], [5, 6, 7], [4, 6, 7, 9]]]);
+            [
+                [
+                    [4, 6, 7, 9],
+                    [5, 6, 7],
+                    [4, 6, 7, 9],
+                ],
+            ]
+        );
 
         var simplifier = new BlockDisjunctSubsets();
 
@@ -49,12 +67,16 @@ SolverColumn.Create(9,
         simplifier.Simplify(column.Blocks[0]);
 
         // ASSERT
-        _ = column.DumpCode().Should().Be(
-"""
+        _ = column
+            .DumpCode()
+            .Should()
+            .Be(
+                """
 SolverColumn.Create(9,
 [[[4, 6, 7],
 [5, 6, 7],
 [4, 6, 7]]])
-""");
+"""
+            );
     }
 }

@@ -5,17 +5,16 @@
 namespace Straights.Image.Tests.GridReader;
 
 using Argon;
-
 using OpenCvSharp;
-
 using Straights.Image.DigitReader;
 using Straights.Image.GridReader;
 
 public class BlackAndWhiteGridReaderTests
 {
-    private IDebugInfoWriter DebugInfoWriter { get; set; } = Directory.Exists("/tmp/straights")
-        ? new DebugInfoWriter("/tmp/straights")
-        : new NullDebugInfoWriter();
+    private IDebugInfoWriter DebugInfoWriter { get; set; } =
+        Directory.Exists("/tmp/straights")
+            ? new DebugInfoWriter("/tmp/straights")
+            : new NullDebugInfoWriter();
 
     [Theory]
     [InlineData("GridReader/grid-numbers1.png")]
@@ -30,20 +29,18 @@ public class BlackAndWhiteGridReaderTests
 
         // ACT
         using var img = Cv2.ImRead(png, ImreadModes.Grayscale);
-        var grid = new GridFinder(this.DebugInfoWriter)
-            .FindGrid(img);
+        var grid = new GridFinder(this.DebugInfoWriter).FindGrid(img);
         var gridReader = new BlackAndWhiteGridReader8Bit(
             new CombinedGridCellExtractor(),
             new ThreeMeansCellClassifier(),
-            Mock.Of<IDigitReader>(x => x.TryReadDigit(It.IsAny<Mat>()) == 1));
+            Mock.Of<IDigitReader>(x => x.TryReadDigit(It.IsAny<Mat>()) == 1)
+        );
         var result = gridReader.ReadGrid(img, grid);
-        var textLines = from row in result
-                        select new string([.. row.Select(ToChar)]);
-        var actual = string.Join(
-            Environment.NewLine,
-            textLines);
-        var expected =
-"""
+        var textLines =
+            from row in result
+            select new string([.. row.Select(ToChar)]);
+        var actual = string.Join(Environment.NewLine, textLines);
+        var expected = """
 B_b_____b
 __b#_#__B
 _B_#__bbb
@@ -70,22 +67,22 @@ _____#__b
 
         // ACT
         using var img = Cv2.ImRead(png, ImreadModes.Grayscale);
-        var grid = new GridFinder(this.DebugInfoWriter)
-            .FindGrid(img);
+        var grid = new GridFinder(this.DebugInfoWriter).FindGrid(img);
 
-        using var digitClassifier = new DigitClassifierOnnx("bekhzod-olimov-printed-digits");
+        using var digitClassifier = new DigitClassifierOnnx(
+            "bekhzod-olimov-printed-digits"
+        );
         var gridReader = new BlackAndWhiteGridReader8Bit(
             new CombinedGridCellExtractor(),
             new ThreeMeansCellClassifier(),
-            new DigitReader1to9(new DigitFinderThreshold(4), digitClassifier));
+            new DigitReader1to9(new DigitFinderThreshold(4), digitClassifier)
+        );
         var result = gridReader.ReadGrid(img, grid);
-        var textLines = from row in result
-                        select new string([.. row.Select(ToChar)]);
-        var actual = string.Join(
-            Environment.NewLine,
-            textLines);
-        var expected =
-"""
+        var textLines =
+            from row in result
+            select new string([.. row.Select(ToChar)]);
+        var actual = string.Join(Environment.NewLine, textLines);
+        var expected = """
 B_b_____b
 __b#_#__B
 _B_#__bbb
@@ -98,10 +95,14 @@ _____#__b
 """.ReplaceLineEndings();
         _ = actual.Should().Be(expected);
 
-        var numbers = result.SelectMany(
-                cells => cells.OfType<Cell.IHasNumber>().Select(x => x.Number))
-                .ToArray();
-        _ = numbers.Should().Equal([5, 9, 8, 6, 1, 7, 1, 2, 9, 2, 3, 3, 8, 7, 4, 4, 5, 6]);
+        var numbers = result
+            .SelectMany(cells =>
+                cells.OfType<Cell.IHasNumber>().Select(x => x.Number)
+            )
+            .ToArray();
+        _ = numbers
+            .Should()
+            .Equal([5, 9, 8, 6, 1, 7, 1, 2, 9, 2, 3, 3, 8, 7, 4, 4, 5, 6]);
     }
 
     [Fact]
@@ -109,7 +110,8 @@ _____#__b
     {
         var pathToPng = TestData.GetPath("GridReader/grid-numbers1.png");
 
-        IBlackAndWhiteGridReader reader = new GridReaderFactory().CreateGridReader();
+        IBlackAndWhiteGridReader reader =
+            new GridReaderFactory().CreateGridReader();
         Cell[][] grid = reader.ReadGrid(pathToPng);
 
         var serializerSettings = new JsonSerializerSettings

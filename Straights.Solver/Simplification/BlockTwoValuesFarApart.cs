@@ -17,8 +17,7 @@ using Straights.Solver.Data;
 /// <see cref="BlockNFieldsWithNValuesInCertainRange"/>
 /// rule.
 /// </remarks>
-public sealed class BlockTwoValuesFarApart
-    : ISimplify<SolverBlock>
+public sealed class BlockTwoValuesFarApart : ISimplify<SolverBlock>
 {
     public void Simplify(SolverBlock item)
     {
@@ -30,19 +29,27 @@ public sealed class BlockTwoValuesFarApart
         }
     }
 
-    private static IReadOnlyCollection<TwoValueField>
-         FindFieldsWithTwoValuesFarApart(
-            SolverBlock item)
+    private static IReadOnlyCollection<TwoValueField> FindFieldsWithTwoValuesFarApart(
+        SolverBlock item
+    )
     {
         int n = item.Count;
-        var twoValuesFarApart = from field in item
-                                where field.Count == 2
-                                select new TwoValueField(field, field.Min, field.Max)
-                                into twoValueField
-                                where twoValueField.Max - twoValueField.Min >= n
-                                select twoValueField;
+        var twoValuesFarApart =
+            from field in item
+            where field.Count == 2
+            select new TwoValueField(
+                field,
+                field.Min,
+                field.Max
+            ) into twoValueField
+            where twoValueField.Max - twoValueField.Min >= n
+            select twoValueField;
         return [.. twoValuesFarApart];
     }
 
-    private readonly record struct TwoValueField(WhiteFieldData Field, int Min, int Max);
+    private readonly record struct TwoValueField(
+        WhiteFieldData Field,
+        int Min,
+        int Max
+    );
 }

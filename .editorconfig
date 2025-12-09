@@ -1,10 +1,4 @@
 [*.cs]
-insert_final_newline = true
-trim_trailing_whitespace = true
-dotnet_sort_system_directives_first = true
-dotnet_separate_import_directive_groups = true
-max_line_length = 80
-
 dotnet_analyzer_diagnostic.severity = warning
 
 dotnet_diagnostic.CA1859.severity = none
@@ -20,12 +14,73 @@ dotnet_diagnostic.IDE0025.severity = silent
 dotnet_diagnostic.IDE0027.severity = suggestion
 dotnet_diagnostic.IDE0042.severity = suggestion
 dotnet_diagnostic.IDE0046.severity = suggestion
+dotnet_diagnostic.IDE0055.severity = none
 dotnet_diagnostic.IDE0061.severity = suggestion
 dotnet_diagnostic.IDE0065.severity = none
 dotnet_diagnostic.IDE0072.severity = silent
 dotnet_diagnostic.IDE0270.severity = suggestion
 dotnet_diagnostic.IDE0305.severity = suggestion
 
+dotnet_diagnostic.SA1000.severity = none
+dotnet_diagnostic.SA1001.severity = none
+dotnet_diagnostic.SA1002.severity = none
+dotnet_diagnostic.SA1003.severity = none
+dotnet_diagnostic.SA1007.severity = none
+dotnet_diagnostic.SA1008.severity = none
+dotnet_diagnostic.SA1009.severity = none
+dotnet_diagnostic.SA1010.severity = none
+dotnet_diagnostic.SA1011.severity = none
+dotnet_diagnostic.SA1012.severity = none
+dotnet_diagnostic.SA1013.severity = none
+dotnet_diagnostic.SA1014.severity = none
+dotnet_diagnostic.SA1015.severity = none
+dotnet_diagnostic.SA1016.severity = none
+dotnet_diagnostic.SA1017.severity = none
+dotnet_diagnostic.SA1018.severity = none
+dotnet_diagnostic.SA1019.severity = none
+dotnet_diagnostic.SA1020.severity = none
+dotnet_diagnostic.SA1021.severity = none
+dotnet_diagnostic.SA1022.severity = none
+dotnet_diagnostic.SA1023.severity = none
+dotnet_diagnostic.SA1024.severity = none
+dotnet_diagnostic.SA1025.severity = none
+dotnet_diagnostic.SA1026.severity = none
+dotnet_diagnostic.SA1027.severity = none
+dotnet_diagnostic.SA1028.severity = none
+dotnet_diagnostic.SA1102.severity = none
+dotnet_diagnostic.SA1103.severity = none
+dotnet_diagnostic.SA1104.severity = none
+dotnet_diagnostic.SA1105.severity = none
+dotnet_diagnostic.SA1107.severity = none
+dotnet_diagnostic.SA1110.severity = none
+dotnet_diagnostic.SA1111.severity = none
+dotnet_diagnostic.SA1112.severity = none
+dotnet_diagnostic.SA1113.severity = none
+dotnet_diagnostic.SA1114.severity = none
+dotnet_diagnostic.SA1115.severity = none
+dotnet_diagnostic.SA1116.severity = none
+dotnet_diagnostic.SA1117.severity = none
+dotnet_diagnostic.SA1118.severity = none
+dotnet_diagnostic.SA1127.severity = none
+dotnet_diagnostic.SA1128.severity = none
+dotnet_diagnostic.SA1136.severity = none
+dotnet_diagnostic.SA1137.severity = none
+dotnet_diagnostic.SA1413.severity = none
+dotnet_diagnostic.SA1500.severity = none
+dotnet_diagnostic.SA1501.severity = none
+dotnet_diagnostic.SA1502.severity = none
+dotnet_diagnostic.SA1504.severity = none
+dotnet_diagnostic.SA1505.severity = none
+dotnet_diagnostic.SA1506.severity = none
+dotnet_diagnostic.SA1507.severity = none
+dotnet_diagnostic.SA1508.severity = none
+dotnet_diagnostic.SA1509.severity = none
+dotnet_diagnostic.SA1510.severity = none
+dotnet_diagnostic.SA1511.severity = none
+dotnet_diagnostic.SA1515.severity = none
+dotnet_diagnostic.SA1516.severity = none
+dotnet_diagnostic.SA1517.severity = none
+dotnet_diagnostic.SA1518.severity = none
 dotnet_diagnostic.SA1600.severity = suggestion
 dotnet_diagnostic.SA1601.severity = suggestion
 dotnet_diagnostic.SA1602.severity = suggestion
@@ -35,8 +90,32 @@ dotnet_diagnostic.SA1633.severity = none
 csharp_using_directive_placement = inside_namespace
 csharp_style_namespace_declarations = file_scoped
 
-[*.csproj]
-max_line_length=80
+###################
+# BEGIN csharpier #
+###################
+
+[*.{cs,csx}]
+# Non-configurable behaviors
+charset = utf-8
+insert_final_newline = true
+trim_trailing_whitespace = true
+dotnet_sort_system_directives_first = true
+dotnet_separate_import_directive_groups = false
+
+# Configurable behaviors
+# end_of_line = lf - there is no 'auto' with an .editorconfig
+indent_style = space
+indent_size = 4
+max_line_length = 80
+
+[*.{config,csproj,props,slnx,targets,xaml,xml}]
+indent_style = space
+indent_size = 2
+max_line_length = 80
+
+#################
+# END csharpier #
+#################
 
 [*.{ts,tsx,css,html,json,js}]
 # Keep these in sync with prettier config in package.json:

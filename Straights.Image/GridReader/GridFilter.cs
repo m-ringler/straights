@@ -1,4 +1,4 @@
-﻿// SPDX-FileCopyrightText: 2025 Moritz Ringler
+// SPDX-FileCopyrightText: 2025 Moritz Ringler
 //
 // SPDX-License-Identifier: MIT
 
@@ -11,7 +11,8 @@ internal sealed class GridFilter(IDebugInfoWriter debug)
     public void FilterGrid(
         List<LineSegmentPolar> lines1,
         Size imgSize,
-        out float cellLength)
+        out float cellLength
+    )
     {
         var origin = new Point(0, 0);
         var meanTheta = lines1.Average(l => l.Theta);
@@ -20,21 +21,24 @@ internal sealed class GridFilter(IDebugInfoWriter debug)
         Point center = GetCenter(imgSize);
         LineSegmentPolar cutLine = ConstructLineThroughPoint(
             lineTheta: (0.5 * Math.PI) + meanTheta,
-            point: center);
+            point: center
+        );
 
         // Intersect the lines with the cut line, calculate and store
         // the signed distance of the intersection point from the image center,
         // and order the lines by that value.
         double cc = center.DistanceTo(origin);
-        List<LineWithCoordinate> lines = [..
-            from l in lines1
+        List<LineWithCoordinate> lines =
+        [
+            .. from l in lines1
             let cutPoint = l.LineIntersection(cutLine)
             where cutPoint.HasValue
             let p = cutPoint.Value
             let r = p.DistanceTo(origin)
             let d = (float)(Math.Sign(r - cc) * center.DistanceTo(p))
             orderby d
-            select new LineWithCoordinate(l, d)];
+            select new LineWithCoordinate(l, d),
+        ];
         debug.Save(lines, "cuts.txt");
 
         // Calculate the distances of the lines along the cut line.
@@ -50,7 +54,11 @@ internal sealed class GridFilter(IDebugInfoWriter debug)
 
         const float toleranceRelative = 0.20f;
         var startIndex = lines.IndexOf(startLine);
-        List<LineSegmentPolar>[] results = [[], []];
+        List<LineSegmentPolar>[] results =
+        [
+            [],
+            [],
+        ];
         int[] steps = [-1, 1];
 
         // Starting from that line iteratively look for the next grid line...
@@ -66,7 +74,11 @@ internal sealed class GridFilter(IDebugInfoWriter debug)
             int numCells = 1;
             List<(int Index, float Delta)> deltaCoords = [];
 
-            for (int i = startIndex + step; i >= 0 && i < lines.Count; i += step)
+            for (
+                int i = startIndex + step;
+                i >= 0 && i < lines.Count;
+                i += step
+            )
             {
                 var currentLine = lines[i];
                 float deltaCoord = step * (currentLine.Coord - nextCoord);
@@ -84,20 +96,27 @@ internal sealed class GridFilter(IDebugInfoWriter debug)
                         if (numCells > 1)
                         {
                             var lastLine = lastKeptLine.Line;
-                            float deltaRho = (currentLine.Line.Rho - lastLine.Rho) / numCells;
-                            float deltaTheta = (currentLine.Line.Theta - lastLine.Theta) / numCells;
+                            float deltaRho =
+                                (currentLine.Line.Rho - lastLine.Rho)
+                                / numCells;
+                            float deltaTheta =
+                                (currentLine.Line.Theta - lastLine.Theta)
+                                / numCells;
                             for (int j = 1; j < numCells; j++)
                             {
                                 result.Add(
                                     new(
                                         rho: lastLine.Rho + (j * deltaRho),
-                                        theta: lastLine.Theta + (j * deltaTheta)));
+                                        theta: lastLine.Theta + (j * deltaTheta)
+                                    )
+                                );
                             }
                         }
 
                         result.Add(currentLine.Line);
                         float currentCoord = currentLine.Coord;
-                        localCellSize = step * (currentCoord - lastCoord) / numCells;
+                        localCellSize =
+                            step * (currentCoord - lastCoord) / numCells;
 
                         nextCoord = currentCoord + (step * localCellSize);
                         lastKeptLine = currentLine;
@@ -128,15 +147,13 @@ internal sealed class GridFilter(IDebugInfoWriter debug)
 
         lines1.Clear();
         results[0].Reverse();
-        lines1.AddRange([
-            ..results[0],
-            startLine.Line,
-            ..results[1]]);
+        lines1.AddRange([.. results[0], startLine.Line, .. results[1]]);
     }
 
     private static LineSegmentPolar ConstructLineThroughPoint(
         double lineTheta,
-        Point point)
+        Point point
+    )
     {
         double c = point.DistanceTo(new Point(0, 0));
         double gamma = Math.Atan2(point.Y, point.X);
@@ -152,18 +169,21 @@ internal sealed class GridFilter(IDebugInfoWriter debug)
         return center;
     }
 
-    private static IEnumerable<(float Delta, (LineWithCoordinate First, LineWithCoordinate Second) Pair)>
-        Distances(IEnumerable<LineWithCoordinate> lines)
+    private static IEnumerable<(
+        float Delta,
+        (LineWithCoordinate First, LineWithCoordinate Second) Pair
+    )> Distances(IEnumerable<LineWithCoordinate> lines)
     {
         var pairs = PairsOfNeighbors(lines);
-        return
-         from pair in pairs
-         select (Delta: pair.Second.Coord - pair.First.Coord, pair) into item
-         orderby item.Delta
-         select item;
+        return from pair in pairs
+            select (Delta: pair.Second.Coord - pair.First.Coord, pair) into item
+            orderby item.Delta
+            select item;
     }
 
-    private static IEnumerable<(T First, T Second)> PairsOfNeighbors<T>(IEnumerable<T> items)
+    private static IEnumerable<(T First, T Second)> PairsOfNeighbors<T>(
+        IEnumerable<T> items
+    )
     {
         return items.Zip(items.Skip(1));
     }

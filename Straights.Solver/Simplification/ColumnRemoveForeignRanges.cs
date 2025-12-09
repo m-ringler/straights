@@ -16,8 +16,7 @@ using Straights.Solver.Data;
 /// between the smallest and greatest consecutive sequences of N values
 /// among the admissible values of the block's fields.
 /// </remarks>
-public sealed class ColumnRemoveForeignRanges
-: ISimplify<SolverColumn>
+public sealed class ColumnRemoveForeignRanges : ISimplify<SolverColumn>
 {
     public void Simplify(SolverColumn item)
     {
@@ -26,8 +25,8 @@ public sealed class ColumnRemoveForeignRanges
             return;
         }
 
-        var certainRanges = item.Blocks
-            .Select(block => (block, range: block.FindCertainRange()))
+        var certainRanges = item
+            .Blocks.Select(block => (block, range: block.FindCertainRange()))
             .Where(x => !x.range.IsEmpty)
             .ToArray();
 
@@ -38,9 +37,11 @@ public sealed class ColumnRemoveForeignRanges
 
         foreach (var currentBlock in item.Blocks)
         {
-            foreach (var otherBlockCertainRange in
-                certainRanges.Where(x => x.block != currentBlock)
-                .Select(x => x.range))
+            foreach (
+                var otherBlockCertainRange in certainRanges
+                    .Where(x => x.block != currentBlock)
+                    .Select(x => x.range)
+            )
             {
                 currentBlock.Remove(otherBlockCertainRange);
             }

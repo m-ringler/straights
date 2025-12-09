@@ -1,4 +1,4 @@
-﻿// SPDX-FileCopyrightText: 2025 Moritz Ringler
+// SPDX-FileCopyrightText: 2025 Moritz Ringler
 //
 // SPDX-License-Identifier: MIT
 
@@ -6,10 +6,14 @@ namespace Straights.Solver.Generator.Empty;
 
 using Straights.Solver.Builder;
 
-internal sealed class VerticallySymmetricEmptyGridGenerator(GridParameters gridParameters, IRandom rng)
-    : IEmptyGridGenerator
+internal sealed class VerticallySymmetricEmptyGridGenerator(
+    GridParameters gridParameters,
+    IRandom rng
+) : IEmptyGridGenerator
 {
-    private readonly HorizontallySymmetricEmptyGridGenerator core = new(gridParameters)
+    private readonly HorizontallySymmetricEmptyGridGenerator core = new(
+        gridParameters
+    )
     {
         RandomNumberGenerator = rng,
     };
@@ -20,10 +24,11 @@ internal sealed class VerticallySymmetricEmptyGridGenerator(GridParameters gridP
 
     public BuilderField?[][] GenerateGrid()
     {
-        var fields = from row in this.core!.GenerateGrid()
-                     from field in row
-                     where field != null
-                     select field;
+        var fields =
+            from row in this.core!.GenerateGrid()
+            from field in row
+            where field != null
+            select field;
         var result = GridBuilder.AllocateFields(this.core.GridParameters.Size);
         foreach (var item in fields)
         {

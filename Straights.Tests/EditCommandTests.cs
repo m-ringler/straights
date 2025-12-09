@@ -5,10 +5,8 @@
 namespace Straights.Tests;
 
 using System.IO.Abstractions.TestingHelpers;
-
 using Straights.Console;
 using Straights.Tests.Console;
-
 using XFS = System.IO.Abstractions.TestingHelpers.MockUnixSupport;
 
 /// <summary>
@@ -16,8 +14,7 @@ using XFS = System.IO.Abstractions.TestingHelpers.MockUnixSupport;
 /// </summary>
 public class EditCommandTests
 {
-    private const string Grid4x4 =
-        """
+    private const string Grid4x4 = """
         4
         _,b,w3,b
         _,_,_,w1
@@ -30,7 +27,8 @@ public class EditCommandTests
     {
         var inputPath = XFS.Path(@"x:\grid.txt");
         var outputPath = XFS.Path(@"C:\foo\grid.txt");
-        IReadOnlyList<string> userInput = [
+        IReadOnlyList<string> userInput =
+        [
             "4 1 w4",
             string.Empty,
             "y",
@@ -43,16 +41,18 @@ public class EditCommandTests
             userInput.GetEnumerator(),
             fs,
             out var getConsoleOutput,
-            inputPath);
+            inputPath
+        );
 
         // ACT
         var exitCode = sut.Run();
 
         // ASSERT
         exitCode.Should().Be(0);
-        return
-            Verify(getConsoleOutput())
-            .UseFileName($"{nameof(EditCommandTests)}.{nameof(this.File)}.IsUnix={XFS.IsUnixPlatform()}")
+        return Verify(getConsoleOutput())
+            .UseFileName(
+                $"{nameof(EditCommandTests)}.{nameof(this.File)}.IsUnix={XFS.IsUnixPlatform()}"
+            )
             .AppendContentAsFile(fs.File.ReadAllText(outputPath));
     }
 
@@ -60,7 +60,8 @@ public class EditCommandTests
     public Task NoFile()
     {
         var outputPath = XFS.Path(@"C:\foo\grid.txt");
-        IReadOnlyList<string> userInput = [
+        IReadOnlyList<string> userInput =
+        [
             "4",
             "1 1 w2",
             "1 3",
@@ -77,16 +78,18 @@ public class EditCommandTests
         var sut = CreateSut(
             userInput.GetEnumerator(),
             fs,
-            out var getConsoleOutput);
+            out var getConsoleOutput
+        );
 
         // ACT
         var exitCode = sut.Run();
 
         // ASSERT
         exitCode.Should().Be(0);
-        return
-            Verify(getConsoleOutput())
-            .UseFileName($"{nameof(EditCommandTests)}.{nameof(this.NoFile)}.IsUnix={XFS.IsUnixPlatform()}")
+        return Verify(getConsoleOutput())
+            .UseFileName(
+                $"{nameof(EditCommandTests)}.{nameof(this.NoFile)}.IsUnix={XFS.IsUnixPlatform()}"
+            )
             .AppendContentAsFile(fs.File.ReadAllText(outputPath));
     }
 
@@ -94,7 +97,8 @@ public class EditCommandTests
         IEnumerator<string> userInput,
         MockFileSystem fs,
         out Func<string> getConsoleOutput,
-        string? fileName = null)
+        string? fileName = null
+    )
     {
         IWriteOnlyConsole console = new StringBuilderConsole();
         getConsoleOutput = () => console.ToString()!;

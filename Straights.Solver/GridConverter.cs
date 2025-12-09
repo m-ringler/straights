@@ -5,7 +5,6 @@
 namespace Straights.Solver;
 
 using System.IO.Abstractions;
-
 using Straights.Solver.Builder;
 using Straights.Solver.Converter;
 using Straights.Solver.Data;
@@ -105,7 +104,9 @@ public static class GridConverter
     /// <returns>
     /// A new convertible grid.
     /// </returns>
-    public static ConvertibleGrid Convert(this Grid<SolverField> solverFieldGrid)
+    public static ConvertibleGrid Convert(
+        this Grid<SolverField> solverFieldGrid
+    )
     {
         return new ConvertibleGrid(solverFieldGrid);
     }
@@ -135,10 +136,11 @@ public static class GridConverter
     {
         int size = builderFields.Length;
         var builder = new GridBuilder(size);
-        var allFields = from row in builderFields
-                        from field in row
-                        where field != null
-                        select field;
+        var allFields =
+            from row in builderFields
+            from field in row
+            where field != null
+            select field;
         foreach (var field in allFields)
         {
             builder.Add(field);
@@ -182,7 +184,8 @@ public static class GridConverter
         {
             throw new ArgumentException(
                 paramName: nameof(file),
-                message: "Unsupported input format: " + extension);
+                message: "Unsupported input format: " + extension
+            );
         }
         else
         {
@@ -205,12 +208,10 @@ public static class GridConverter
     public static string ToUrlParameter(
         Grid<SolverField> solved,
         Grid<SolverField> unsolved,
-        byte encodingVersion = BinaryGameSerializer.EncodingVersion)
+        byte encodingVersion = BinaryGameSerializer.EncodingVersion
+    )
     {
-        var binary = ToBinaryString(
-            solved,
-            unsolved,
-            encodingVersion);
+        var binary = ToBinaryString(solved, unsolved, encodingVersion);
         return Base64UrlEncoder.EncodeBase64Url(binary);
     }
 
@@ -224,11 +225,13 @@ public static class GridConverter
     /// </param>
     /// <returns>A tuple containing the solved and unsolved grids.</returns>
     /// <seealso cref="ToUrlParameter"/>
-    public static
-        (Grid<SolverField> Solved, Grid<SolverField> Unsolved)
-            ConvertUrlParameter(
+    public static (
+        Grid<SolverField> Solved,
+        Grid<SolverField> Unsolved
+    ) ConvertUrlParameter(
         string urlParameter,
-        byte encodingVersion = BinaryGameSerializer.EncodingVersion)
+        byte encodingVersion = BinaryGameSerializer.EncodingVersion
+    )
     {
         var binary = Base64UrlEncoder.DecodeBase64Url(urlParameter);
         return ConvertBinaryString(binary, encodingVersion);
@@ -248,7 +251,8 @@ public static class GridConverter
     public static string ToBinaryString(
         Grid<SolverField> solved,
         Grid<SolverField> unsolved,
-        byte encodingVersion = BinaryGameSerializer.EncodingVersion)
+        byte encodingVersion = BinaryGameSerializer.EncodingVersion
+    )
     {
         var writer = new BinaryStringWriter();
         ToBinary(new(solved, unsolved), encodingVersion, writer);
@@ -266,9 +270,13 @@ public static class GridConverter
     /// </param>
     /// <returns>A tuple containing the solved and unsolved grids.</returns>
     /// <seealso cref="ToBinaryString"/>
-    public static (Grid<SolverField> Solved, Grid<SolverField> Unsolved) ConvertBinaryString(
+    public static (
+        Grid<SolverField> Solved,
+        Grid<SolverField> Unsolved
+    ) ConvertBinaryString(
         string binaryString,
-        byte encodingVersion = BinaryGameSerializer.EncodingVersion)
+        byte encodingVersion = BinaryGameSerializer.EncodingVersion
+    )
     {
         var reader = new BinaryStringReader(binaryString);
         return FromBinary(reader, encodingVersion);
@@ -286,14 +294,17 @@ public static class GridConverter
     /// <seealso cref="ToBinary"/>
     internal static Game FromBinary(
         BinaryStringReader reader,
-        byte encodingVersion)
+        byte encodingVersion
+    )
     {
         return encodingVersion switch
         {
-            BinaryGameSerializer.EncodingVersion => BinaryGameSerializer.FromBinary(reader),
+            BinaryGameSerializer.EncodingVersion =>
+                BinaryGameSerializer.FromBinary(reader),
             _ => throw new ArgumentException(
-                    paramName: nameof(encodingVersion),
-                    message: $"Unsupported encoding version: {encodingVersion}"),
+                paramName: nameof(encodingVersion),
+                message: $"Unsupported encoding version: {encodingVersion}"
+            ),
         };
     }
 
@@ -307,7 +318,8 @@ public static class GridConverter
     internal static void ToBinary(
         Game game,
         byte encodingVersion,
-        BinaryStringWriter writer)
+        BinaryStringWriter writer
+    )
     {
         switch (encodingVersion)
         {
@@ -320,7 +332,8 @@ public static class GridConverter
             default:
                 throw new ArgumentException(
                     paramName: nameof(encodingVersion),
-                    message: $"Unsupported encoding version: {encodingVersion}");
+                    message: $"Unsupported encoding version: {encodingVersion}"
+                );
         }
     }
 }

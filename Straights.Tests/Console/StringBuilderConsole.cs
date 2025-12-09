@@ -5,7 +5,6 @@
 namespace Straights.Tests.Console;
 
 using System.Text;
-
 using Straights.Console;
 
 internal sealed class StringBuilderConsole : IWriteOnlyConsole

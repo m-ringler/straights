@@ -6,7 +6,12 @@ namespace Straights.Solver.Generator.Empty;
 
 using Straights.Solver;
 
-internal sealed record UniformEmptyGridGeneratorCell(int X, int Y, int GridSize, double CellSize)
+internal sealed record UniformEmptyGridGeneratorCell(
+    int X,
+    int Y,
+    int GridSize,
+    double CellSize
+)
 {
     public UniformEmptyGridGeneratorCell Next()
     {
@@ -22,7 +27,12 @@ internal sealed record UniformEmptyGridGeneratorCell(int X, int Y, int GridSize,
             }
         }
 
-        return new UniformEmptyGridGeneratorCell(x, y, this.GridSize, this.CellSize);
+        return new UniformEmptyGridGeneratorCell(
+            x,
+            y,
+            this.GridSize,
+            this.CellSize
+        );
     }
 
     public FieldIndex GetRandomLocation(IRandom rng)

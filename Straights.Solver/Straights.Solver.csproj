@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-      <EnablePackageValidation>true</EnablePackageValidation>
+    <EnablePackageValidation>true</EnablePackageValidation>
 
     <!-- Optional: Detect breaking changes from a previous version -->
     <!-- <PackageValidationBaselineVersion>1.0.0</PackageValidationBaselineVersion> -->
@@ -25,6 +25,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <InternalsVisibleTo Include="Straights.Tests"/>
+    <InternalsVisibleTo Include="Straights.Tests" />
   </ItemGroup>
 </Project>

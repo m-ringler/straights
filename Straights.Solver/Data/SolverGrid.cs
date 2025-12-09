@@ -5,7 +5,6 @@
 namespace Straights.Solver.Data;
 
 using System.Collections.Immutable;
-
 using Straights.Solver.Simplification;
 
 public record class SolverGrid : ISolverGrid
@@ -31,9 +30,10 @@ public record class SolverGrid : ISolverGrid
     /// <returns>A new solver grid, completely independent of the current instance.</returns>
     public SolverGrid CreateCopy()
     {
-        var clonedFields = from r in this.Grid.GetRows()
-                           from field in r
-                           select field.Clone();
+        var clonedFields =
+            from r in this.Grid.GetRows()
+            from field in r
+            select field.Clone();
         var clonedGrid = new Grid<SolverField>([.. clonedFields]);
         return FromFieldGrid(clonedGrid);
     }

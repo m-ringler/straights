@@ -64,7 +64,12 @@ public class IntRunTests
     [InlineData(0, 1, 1, 1)]
     [InlineData(0, 1, 1, 2)]
     [InlineData(0, 0, 0, -1)]
-    public void Equals_WhenDifferent_ReturnsFalse(int min1, int max1, int min2, int max2)
+    public void Equals_WhenDifferent_ReturnsFalse(
+        int min1,
+        int max1,
+        int min2,
+        int max2
+    )
     {
         var sut1 = new IntRun(min1, max1);
         var sut2 = new IntRun(min2, max2);
@@ -95,14 +100,17 @@ public class IntRunTests
     [InlineData(0, 1, 1, 2)]
     [InlineData(0, 0, 0, -1)]
     [InlineData(0, 17, 9, 20)]
-    public void Intersect_IsEquivalentToSetIntersection(int min1, int max1, int min2, int max2)
+    public void Intersect_IsEquivalentToSetIntersection(
+        int min1,
+        int max1,
+        int min2,
+        int max2
+    )
     {
         var sut1 = new IntRun(min1, max1);
         var sut2 = new IntRun(min2, max2);
 
         var e1 = (IEnumerable<int>)sut1;
-        _ = sut1.Intersect(sut2)
-            .Should()
-            .Equal(e1.Intersect(sut2));
+        _ = sut1.Intersect(sut2).Should().Equal(e1.Intersect(sut2));
     }
 }

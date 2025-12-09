@@ -9,8 +9,7 @@ namespace Straights.Solver.Simplification;
 /// </summary>
 /// <typeparam name="T">The type of the items to simplify.</typeparam>
 /// <param name="simplify">The delegate to call.</param>
-internal sealed class DelegateSimplifier<T>(Action<T> simplify)
-    : ISimplify<T>
+internal sealed class DelegateSimplifier<T>(Action<T> simplify) : ISimplify<T>
 {
     public void Simplify(T item)
     {

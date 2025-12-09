@@ -6,8 +6,7 @@ namespace Straights.Solver.Data;
 
 using Straights.Solver.Simplification;
 
-public interface ISolverGrid
-    : IGetSnapshot<int>
+public interface ISolverGrid : IGetSnapshot<int>
 {
     ImmutableArray<SolverColumn> Columns { get; }
 

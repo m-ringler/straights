@@ -18,7 +18,13 @@ public class BlockNoNeighborsTests
         // ARRANGE
         var column = SolverColumn.Create(
             9,
-            [[[5, 6, 8], [5, 6, 7, 8]]]);
+            [
+                [
+                    [5, 6, 8],
+                    [5, 6, 7, 8],
+                ],
+            ]
+        );
 
         var simplifier = new BlockNoNeighbors();
 
@@ -26,12 +32,16 @@ public class BlockNoNeighborsTests
         simplifier.Simplify(column.Blocks[0]);
 
         // ASSERT
-        _ = column.DumpCode().Should().Be(
-"""
+        _ = column
+            .DumpCode()
+            .Should()
+            .Be(
+                """
 SolverColumn.Create(9,
 [[[5, 6, 8],
 [5, 6, 7]]])
-""");
+"""
+            );
     }
 
     [Fact]
@@ -40,7 +50,14 @@ SolverColumn.Create(9,
         // ARRANGE
         var column = SolverColumn.Create(
             9,
-            [[[6, 9], [6, 7], [6, 7, 8, 9]]]);
+            [
+                [
+                    [6, 9],
+                    [6, 7],
+                    [6, 7, 8, 9],
+                ],
+            ]
+        );
 
         var simplifier = new BlockNoNeighbors();
 
@@ -48,12 +65,16 @@ SolverColumn.Create(9,
         simplifier.Simplify(column.Blocks[0]);
 
         // ASSERT
-        _ = column.DumpCode().Should().Be(
-"""
+        _ = column
+            .DumpCode()
+            .Should()
+            .Be(
+                """
 SolverColumn.Create(9,
 [[[6, 9],
 [6, 7],
 [6, 7, 8]]])
-""");
+"""
+            );
     }
 }

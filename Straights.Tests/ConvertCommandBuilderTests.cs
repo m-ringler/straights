@@ -1,4 +1,4 @@
-﻿// SPDX-FileCopyrightText: 2025 Moritz Ringler
+// SPDX-FileCopyrightText: 2025 Moritz Ringler
 //
 // SPDX-License-Identifier: MIT
 
@@ -6,7 +6,6 @@ namespace Straights.Tests;
 
 using System.IO.Abstractions;
 using System.IO.Abstractions.TestingHelpers;
-
 using XFS = System.IO.Abstractions.TestingHelpers.MockUnixSupport;
 
 /// <summary>
@@ -23,7 +22,12 @@ public class ConvertCommandBuilderTests
         var runner = new RunCommandFunction<ConvertCommand>(5);
         var sut = new ConvertCommandBuilder(this.fileSystem, runner.Invoke);
 
-        var args = new[] { XFS.Path(@"C:\Foo\input.json"), "--output", XFS.Path(@"C:\Foo\output.txt") };
+        var args = new[]
+        {
+            XFS.Path(@"C:\Foo\input.json"),
+            "--output",
+            XFS.Path(@"C:\Foo\output.txt"),
+        };
 
         // ACT
         var command = sut.Build();
@@ -87,19 +91,25 @@ public class ConvertCommandBuilderTests
         // ASSERT
         exitCode.Should().NotBe(0);
         runner.InvokedCommand.Should().BeNull();
-        errorOutput.Trim().Should().Be("Required argument missing for command: 'convert'.");
+        errorOutput
+            .Trim()
+            .Should()
+            .Be("Required argument missing for command: 'convert'.");
     }
 
     [Fact]
     public Task Help()
     {
         return HelpVerifier.VerifyHelp<ConvertCommand>(
-            execute =>
-                new ConvertCommandBuilder(new MockFileSystem(), execute));
+            execute => new ConvertCommandBuilder(new MockFileSystem(), execute)
+        );
     }
 
     private void ShouldHaveCorrectFileSystem(IFileInfo f)
     {
-        f.Should().BeOfType<FileInfoWrapper>().Which.FileSystem.Should().BeSameAs(this.fileSystem);
+        f.Should()
+            .BeOfType<FileInfoWrapper>()
+            .Which.FileSystem.Should()
+            .BeSameAs(this.fileSystem);
     }
 }

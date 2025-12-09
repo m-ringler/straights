@@ -9,7 +9,8 @@ using Straights.Image.DigitReader;
 public class BlackAndWhiteGridReader8Bit(
     IGridCellExtractor extractor,
     ICellClassifier cellClassifier,
-    IDigitReader digitReader)
+    IDigitReader digitReader
+)
 {
     private readonly Cell.BlackBlank blackBlank = new();
     private readonly Cell.WhiteBlank whiteBlank = new();
@@ -18,13 +19,12 @@ public class BlackAndWhiteGridReader8Bit(
     {
         using Mat imgUint8 = GetNormalized8BitImage(img);
 
-        return grid.BuildArray(
-            cell =>
-            {
-                using var cellMat = extractor.ExtractGridCell(imgUint8, cell);
-                var cellType = cellClassifier.GetCellType(cellMat);
-                return this.GetCell(cellMat, cellType);
-            });
+        return grid.BuildArray(cell =>
+        {
+            using var cellMat = extractor.ExtractGridCell(imgUint8, cell);
+            var cellType = cellClassifier.GetCellType(cellMat);
+            return this.GetCell(cellMat, cellType);
+        });
     }
 
     private static Mat GetNormalized8BitImage(Mat img)
@@ -33,7 +33,12 @@ public class BlackAndWhiteGridReader8Bit(
         try
         {
             img.MinMaxLoc(out double minVal, out double maxVal);
-            img.ConvertTo(imgFloat, MatType.CV_8UC1, 255 / maxVal, -minVal / maxVal);
+            img.ConvertTo(
+                imgFloat,
+                MatType.CV_8UC1,
+                255 / maxVal,
+                -minVal / maxVal
+            );
             return imgFloat;
         }
         catch

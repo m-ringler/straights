@@ -1,4 +1,4 @@
-﻿// SPDX-FileCopyrightText: 2025 Moritz Ringler
+// SPDX-FileCopyrightText: 2025 Moritz Ringler
 //
 // SPDX-License-Identifier: MIT
 
@@ -15,15 +15,15 @@ public class DebugInfoWriter(string folder) : IDebugInfoWriter
 
     public void Save(IEnumerable<LineSegmentPolar> lines, string fileName)
     {
-        var textLines =
-            from l in lines select $"{l.Rho}; {l.Theta}";
+        var textLines = from l in lines select $"{l.Rho}; {l.Theta}";
         File.WriteAllLines(this.GetPath(fileName), textLines);
     }
 
     public void Save(IEnumerable<LineWithCoordinate> lines, string fileName)
     {
         var textLines =
-            from l in lines select $"{l.Coord}; {l.Line.Rho}; {l.Line.Theta}";
+            from l in lines
+            select $"{l.Coord}; {l.Line.Rho}; {l.Line.Theta}";
         File.WriteAllLines(this.GetPath(fileName), textLines);
     }
 

@@ -16,7 +16,8 @@ public record class GridParameters
     public GridParameters(
         int size,
         int numberOfBlackBlanks,
-        int numberOfBlackNumbers)
+        int numberOfBlackNumbers
+    )
     {
         ArgumentOutOfRangeException.ThrowIfLessThan(size, 4);
         ArgumentOutOfRangeException.ThrowIfGreaterThan(size, 24);
@@ -27,17 +28,20 @@ public record class GridParameters
         ArgumentOutOfRangeException.ThrowIfLessThan(numberOfBlackBlanks, 0);
         ArgumentOutOfRangeException.ThrowIfGreaterThan(
             numberOfBlackBlanks,
-            numberOfFields * MaximumPercentageOfBlackBlanks / 100);
+            numberOfFields * MaximumPercentageOfBlackBlanks / 100
+        );
         this.NumberOfBlackBlanks = numberOfBlackBlanks;
 
         ArgumentOutOfRangeException.ThrowIfLessThan(numberOfBlackNumbers, 0);
         ArgumentOutOfRangeException.ThrowIfGreaterThan(
             numberOfBlackNumbers,
-            numberOfFields * MaximumPercentageOfBlackNumbers / 100);
+            numberOfFields * MaximumPercentageOfBlackNumbers / 100
+        );
         this.NumberOfBlackNumbers = numberOfBlackNumbers;
     }
 
-    public static GridParameters DefaultParameters { get; } = new GridParameters(9, 13, 5);
+    public static GridParameters DefaultParameters { get; } =
+        new GridParameters(9, 13, 5);
 
     public int Size { get; }
 
@@ -45,5 +49,6 @@ public record class GridParameters
 
     public int NumberOfBlackNumbers { get; }
 
-    public int TotalNumberOfBlackFields => this.NumberOfBlackBlanks + this.NumberOfBlackNumbers;
+    public int TotalNumberOfBlackFields =>
+        this.NumberOfBlackBlanks + this.NumberOfBlackNumbers;
 }

@@ -18,13 +18,20 @@ public class ColumnNFieldsWithNNumbersTests
         // ARRANGE
         var column = SolverColumn.Create(
             9,
-            [[[1],
-            [2]],
-            [[3, 4],
-            [3, 4],
-            [7],
-            [5, 6],
-            [3, 4, 5, 6, 8]]]);
+            [
+                [
+                    [1],
+                    [2],
+                ],
+                [
+                    [3, 4],
+                    [3, 4],
+                    [7],
+                    [5, 6],
+                    [3, 4, 5, 6, 8],
+                ],
+            ]
+        );
 
         var simplifier = new ColumnNFieldsWithNNumbers();
 
@@ -32,8 +39,11 @@ public class ColumnNFieldsWithNNumbersTests
         simplifier.Simplify(column);
 
         // ASSERT
-        _ = column.DumpCode().Should().Be(
-"""
+        _ = column
+            .DumpCode()
+            .Should()
+            .Be(
+                """
 SolverColumn.Create(9,
 [[[1],
 [2]],
@@ -42,7 +52,8 @@ SolverColumn.Create(9,
 [7],
 [5, 6],
 [5, 6, 8]]])
-""");
+"""
+            );
     }
 
     [Fact]
@@ -51,13 +62,20 @@ SolverColumn.Create(9,
         // ARRANGE
         var column = SolverColumn.Create(
             9,
-            [[[1],
-            [3, 4]],
-            [[2, 3, 4],
-            [2, 4],
-            [7],
-            [5, 6],
-            [3, 4, 5, 6, 8]]]);
+            [
+                [
+                    [1],
+                    [3, 4],
+                ],
+                [
+                    [2, 3, 4],
+                    [2, 4],
+                    [7],
+                    [5, 6],
+                    [3, 4, 5, 6, 8],
+                ],
+            ]
+        );
 
         var simplifier = new ColumnNFieldsWithNNumbers();
 
@@ -65,8 +83,11 @@ SolverColumn.Create(9,
         simplifier.Simplify(column);
 
         // ASSERT
-        _ = column.DumpCode().Should().Be(
-"""
+        _ = column
+            .DumpCode()
+            .Should()
+            .Be(
+                """
 SolverColumn.Create(9,
 [[[1],
 [3, 4]],
@@ -75,7 +96,8 @@ SolverColumn.Create(9,
 [7],
 [5, 6],
 [5, 6, 8]]])
-""");
+"""
+            );
     }
 
     [Fact]
@@ -84,12 +106,21 @@ SolverColumn.Create(9,
         // ARRANGE
         var column = SolverColumn.Create(
             9,
-            [[[5, 7]],
-            [[4, 5],
-            [4, 5],
-            [2],
-            [3]],
-            [[6]]]);
+            [
+                [
+                    [5, 7],
+                ],
+                [
+                    [4, 5],
+                    [4, 5],
+                    [2],
+                    [3],
+                ],
+                [
+                    [6],
+                ],
+            ]
+        );
 
         var simplifier = new ColumnNFieldsWithNNumbers();
 
@@ -97,8 +128,11 @@ SolverColumn.Create(9,
         simplifier.Simplify(column);
 
         // ASSERT
-        _ = column.DumpCode().Should().Be(
-"""
+        _ = column
+            .DumpCode()
+            .Should()
+            .Be(
+                """
 SolverColumn.Create(9,
 [[[7]],
 [[4, 5],
@@ -106,6 +140,7 @@ SolverColumn.Create(9,
 [2],
 [3]],
 [[6]]])
-""");
+"""
+            );
     }
 }

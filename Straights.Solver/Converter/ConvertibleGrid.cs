@@ -6,7 +6,6 @@ namespace Straights.Solver.Converter;
 
 using System.IO.Abstractions;
 using System.Text;
-
 using Straights.Solver.Builder;
 using Straights.Solver.Data;
 
@@ -40,8 +39,7 @@ public class ConvertibleGrid
     /// <summary>
     /// Gets the size of the grid.
     /// </summary>
-    public int Size => this.solverGrid?.Grid.Size
-        ?? this.Builder.Size;
+    public int Size => this.solverGrid?.Grid.Size ?? this.Builder.Size;
 
     /// <summary>
     /// Gets the builder representation of the
@@ -49,8 +47,10 @@ public class ConvertibleGrid
     /// </summary>
     public GridBuilder Builder
     {
-        get => this.builder ??=
-            SolverGridToBuilderConverter.ToBuilder(this.SolverFieldGrid);
+        get =>
+            this.builder ??= SolverGridToBuilderConverter.ToBuilder(
+                this.SolverFieldGrid
+            );
     }
 
     /// <summary>
@@ -58,8 +58,8 @@ public class ConvertibleGrid
     /// </summary>
     public SolverGrid SolverGrid
     {
-        get => this.solverGrid ??=
-            SolverGrid.FromFieldGrid(this.SolverFieldGrid);
+        get =>
+            this.solverGrid ??= SolverGrid.FromFieldGrid(this.SolverFieldGrid);
     }
 
     /// <summary>
@@ -68,9 +68,12 @@ public class ConvertibleGrid
     /// </summary>
     public Grid<SolverField> SolverFieldGrid
     {
-        get => this.solverFieldGrid
-            ??= this.solverGrid?.Grid
-            ?? BuilderToSolverGridConverter.ToSolverFields(this.builder!.GetFields());
+        get =>
+            this.solverFieldGrid ??=
+                this.solverGrid?.Grid
+                ?? BuilderToSolverGridConverter.ToSolverFields(
+                    this.builder!.GetFields()
+                );
     }
 
     /// <summary>
@@ -118,8 +121,7 @@ public class ConvertibleGrid
     /// </returns>
     public string ToJson()
     {
-        return GridToIntArraysConverter.ToJson(
-                this.SolverGrid.Grid);
+        return GridToIntArraysConverter.ToJson(this.SolverGrid.Grid);
     }
 
     /// <summary>
@@ -135,8 +137,7 @@ public class ConvertibleGrid
     /// </returns>
     public int[][][] ToIntArrays()
     {
-        return GridToIntArraysConverter.ToIntArrays(
-            this.SolverGrid.Grid);
+        return GridToIntArraysConverter.ToIntArrays(this.SolverGrid.Grid);
     }
 
     /// <summary>
@@ -209,7 +210,8 @@ public class ConvertibleGrid
         {
             throw new ArgumentException(
                 paramName: nameof(file),
-                message: "Unsupported output format: " + extension);
+                message: "Unsupported output format: " + extension
+            );
         }
         else
         {

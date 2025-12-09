@@ -1,15 +1,15 @@
-﻿// SPDX-FileCopyrightText: 2025 Moritz Ringler
+// SPDX-FileCopyrightText: 2025 Moritz Ringler
 //
 // SPDX-License-Identifier: MIT
 
 namespace Straights.Solver.Generator.Empty;
 
 using System.Diagnostics;
-
 using Straights.Solver.Builder;
 
-internal sealed class HorizontallyAndVerticallySymmetricEmptyGridGenerator(GridParameters gridParameters)
-    : IEmptyGridGenerator
+internal sealed class HorizontallyAndVerticallySymmetricEmptyGridGenerator(
+    GridParameters gridParameters
+) : IEmptyGridGenerator
 {
     public required IRandom RandomNumberGenerator { get; init; }
 
@@ -19,16 +19,21 @@ internal sealed class HorizontallyAndVerticallySymmetricEmptyGridGenerator(GridP
     {
         return EmptyGridGenerator.GenerateGrid(
             this.GridParameters,
-            this.GenerateFieldIndices(5));
+            this.GenerateFieldIndices(5)
+        );
     }
 
     private static GridParameters Validate(GridParameters gridParameters)
     {
-        if (gridParameters.Size % 2 == 0 && gridParameters.TotalNumberOfBlackFields % 4 != 0)
+        if (
+            gridParameters.Size % 2 == 0
+            && gridParameters.TotalNumberOfBlackFields % 4 != 0
+        )
         {
             throw new ArgumentException(
                 paramName: nameof(gridParameters),
-                message: $"The total number of black fields must be a multiple of 4 for size {gridParameters.Size}.");
+                message: $"The total number of black fields must be a multiple of 4 for size {gridParameters.Size}."
+            );
         }
 
         return gridParameters;
@@ -40,9 +45,10 @@ internal sealed class HorizontallyAndVerticallySymmetricEmptyGridGenerator(GridP
         int size = this.GridParameters.Size;
 
         var index1D = Enumerable.Range(0, (size + 1) / 2);
-        var allIndices = from y in index1D
-                         from x in index1D
-                         select new FieldIndex(x, y);
+        var allIndices =
+            from y in index1D
+            from x in index1D
+            select new FieldIndex(x, y);
 
         List<FieldIndex> result = [];
         var all = allIndices.ToList();
@@ -111,7 +117,9 @@ internal sealed class HorizontallyAndVerticallySymmetricEmptyGridGenerator(GridP
             return maxRecurse > 0
                 ? this.GenerateFieldIndices(maxRecurse - 1)
                 : throw new InvalidOperationException(
-                    "Failed to build a grid for parameters " + this.GridParameters);
+                    "Failed to build a grid for parameters "
+                        + this.GridParameters
+                );
         }
 
         this.RandomNumberGenerator.Shuffle(result);

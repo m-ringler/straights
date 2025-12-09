@@ -55,10 +55,11 @@ public class DifficultyAdjuster(ISolver solver)
     private GridBuilder RemoveUnnecessaryWhiteNumbers(GridBuilder builder)
     {
         var result = builder.GetFields().Convert().Builder;
-        var whiteFields = from row in result.GetFields()
-                          from field in row
-                          where field != null && field.IsWhite && field.Value != null
-                          select field!;
+        var whiteFields =
+            from row in result.GetFields()
+            from field in row
+            where field != null && field.IsWhite && field.Value != null
+            select field!;
 
         var candidates = whiteFields.ToArray();
         this.RandomNumberGenerator.Shuffle(candidates);
@@ -81,8 +82,10 @@ public class DifficultyAdjuster(ISolver solver)
         return this.Solver.Solve(grid).IsSolved;
     }
 
-    private sealed class GridGeneratorDecorator(IGridGenerator core, DifficultyAdjuster hintRemover)
-        : IGridGenerator
+    private sealed class GridGeneratorDecorator(
+        IGridGenerator core,
+        DifficultyAdjuster hintRemover
+    ) : IGridGenerator
     {
         public IGridGenerator Core { get; } = core;
 

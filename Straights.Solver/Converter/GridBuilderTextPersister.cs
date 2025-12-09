@@ -5,7 +5,6 @@
 namespace Straights.Solver.Converter;
 
 using System.Globalization;
-
 using Straights.Solver.Builder;
 
 /// <summary>
@@ -30,8 +29,7 @@ using Straights.Solver.Builder;
 /// Lines starting with the hash character # are ignored.
 /// </para>
 /// </remarks>
-public sealed class GridBuilderTextPersister
-    : ITextPersister<GridBuilder>
+public sealed class GridBuilderTextPersister : ITextPersister<GridBuilder>
 {
     public void Save(GridBuilder grid, TextWriter writer)
     {
@@ -45,8 +43,11 @@ public sealed class GridBuilderTextPersister
 
     public GridBuilder Load(TextReader reader)
     {
-        string sizeLine = ReadLine(reader)
-         ?? throw new IOException("End of input while looking for grid size.");
+        string sizeLine =
+            ReadLine(reader)
+            ?? throw new IOException(
+                "End of input while looking for grid size."
+            );
 
         int size = int.Parse(sizeLine.Trim(), CultureInfo.InvariantCulture);
         var result = new GridBuilder(size);
@@ -64,8 +65,7 @@ public sealed class GridBuilderTextPersister
         do
         {
             line = reader.ReadLine();
-        }
-        while (line?.StartsWith('#') == true);
+        } while (line?.StartsWith('#') == true);
 
         return line;
     }
@@ -106,7 +106,9 @@ public sealed class GridBuilderTextPersister
     {
         return string.Join(
             ",",
-            from f in builderFields select GetStringForSave(f));
+            from f in builderFields
+            select GetStringForSave(f)
+        );
     }
 
     private static string GetStringForSave(BuilderField f)

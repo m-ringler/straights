@@ -34,10 +34,12 @@ public sealed class BlockNFieldsWithNValuesInCertainRange
             return;
         }
 
-        foreach (var combination in certainRangeNumbers.GetUnorderedCombinations())
+        foreach (
+            var combination in certainRangeNumbers.GetUnorderedCombinations()
+        )
         {
-            var fieldsWithTheseNumbers = item.Fields
-                .Where(f => combination.Any(f.Contains))
+            var fieldsWithTheseNumbers = item
+                .Fields.Where(f => combination.Any(f.Contains))
                 .Take(combination.Count + 1)
                 .ToArray();
 
@@ -45,11 +47,10 @@ public sealed class BlockNFieldsWithNValuesInCertainRange
             {
                 var allValues = Enumerable.Range(
                     1,
-                    fieldsWithTheseNumbers[0].Size);
+                    fieldsWithTheseNumbers[0].Size
+                );
 
-                var remove = allValues
-                    .Except(combination)
-                    .ToArray();
+                var remove = allValues.Except(combination).ToArray();
 
                 fieldsWithTheseNumbers.Remove(remove);
             }

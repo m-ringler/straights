@@ -35,14 +35,18 @@ public class GridBuilderTextPersisterTests
         grid = sut.Load(reader);
 
         // ASSERT
-        _ = grid.ToString().ReplaceLineEndings().Should().Be(
-            """
-            3
-            _,_,w3
-            b3,b2,_
-            b2,_,b
+        _ = grid.ToString()
+            .ReplaceLineEndings()
+            .Should()
+            .Be(
+                """
+                3
+                _,_,w3
+                b3,b2,_
+                b2,_,b
 
-            """.ReplaceLineEndings());
+                """.ReplaceLineEndings()
+            );
     }
 
     [Fact]
@@ -64,13 +68,17 @@ public class GridBuilderTextPersisterTests
 
         // ASSERT
         var saved = writer.ToString();
-        _ = saved.ReplaceLineEndings().Should().Be(
-"""
+        _ = saved
+            .ReplaceLineEndings()
+            .Should()
+            .Be(
+                """
 3
 _,_,w3
 b3,b2,_
 b2,_,b
 
-""".ReplaceLineEndings());
+""".ReplaceLineEndings()
+            );
     }
 }

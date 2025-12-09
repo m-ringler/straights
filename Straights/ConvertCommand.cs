@@ -6,7 +6,6 @@ namespace Straights;
 
 using System;
 using System.IO.Abstractions;
-
 using Straights.Console;
 using Straights.Play;
 using Straights.Solver.Converter;
@@ -27,23 +26,18 @@ public sealed class ConvertCommand
     {
         var (convertibleGrid, _, _) = new GridLoader().LoadGrid(this.InputFile);
         this.WriteOutput(convertibleGrid);
-        this.PrintPlayUrl(
-            convertibleGrid);
+        this.PrintPlayUrl(convertibleGrid);
         this.Terminal.WriteLine();
         this.Terminal.WriteLine("=> " + this.OutputFile);
         return 0;
     }
 
-    private void PrintPlayUrl(
-        ConvertibleGrid unsolved)
+    private void PrintPlayUrl(ConvertibleGrid unsolved)
     {
-        new PlayUrl
-        {
-            BaseUri = this.PlayUri,
-        }
-        .PrintPlayUrl(
+        new PlayUrl { BaseUri = this.PlayUri }.PrintPlayUrl(
             this.Terminal,
-            unsolved.SolverGrid);
+            unsolved.SolverGrid
+        );
     }
 
     private void WriteOutput(ConvertibleGrid grid)

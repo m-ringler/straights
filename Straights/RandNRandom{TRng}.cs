@@ -5,10 +5,8 @@
 namespace Straights;
 
 using System.Collections.Generic;
-
 using RandN;
 using RandN.Compat;
-
 using Straights.Solver;
 
 /// <summary>

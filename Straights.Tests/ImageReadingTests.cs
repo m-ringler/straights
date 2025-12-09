@@ -7,12 +7,16 @@ namespace Straights.Tests;
 using System.Collections.Immutable;
 using System.IO.Abstractions;
 using System.Runtime.CompilerServices;
-
 using Straights.Image.GridReader;
 
 public class ImageReadingTests
 {
-    private static readonly ImmutableArray<string> ImageExtensions = [".png", ".jpg", ".jpeg"];
+    private static readonly ImmutableArray<string> ImageExtensions =
+    [
+        ".png",
+        ".jpg",
+        ".jpeg",
+    ];
 
     public static TheoryData<TestImage?> TestImages
     {
@@ -24,19 +28,31 @@ public class ImageReadingTests
                 return [null];
             }
 
-            var filesByBaseName = folder.GetFiles(
-                "*",
-                new EnumerationOptions { RecurseSubdirectories = true, MaxRecursionDepth = 1 })
-            .ToLookup(
-                f => folder.FileSystem.Path.GetFileNameWithoutExtension(f.Name),
-                f => f);
-            var result = from g in filesByBaseName
-                         let textFile = g.FirstOrDefault(IsTextFile)
-                         where textFile != null
-                         from imageFile in g.Where(IsImageFile)
-                         select new TestImage(
-                            ExpectedTextPath: textFile,
-                            ImagePath: imageFile);
+            var filesByBaseName = folder
+                .GetFiles(
+                    "*",
+                    new EnumerationOptions
+                    {
+                        RecurseSubdirectories = true,
+                        MaxRecursionDepth = 1,
+                    }
+                )
+                .ToLookup(
+                    f =>
+                        folder.FileSystem.Path.GetFileNameWithoutExtension(
+                            f.Name
+                        ),
+                    f => f
+                );
+            var result =
+                from g in filesByBaseName
+                let textFile = g.FirstOrDefault(IsTextFile)
+                where textFile != null
+                from imageFile in g.Where(IsImageFile)
+                select new TestImage(
+                    ExpectedTextPath: textFile,
+                    ImagePath: imageFile
+                );
 
             TheoryData<TestImage?> data = [.. result];
             if (data.Count == 0)
@@ -81,16 +97,21 @@ public class ImageReadingTests
         var actual = builder1.ToString().ReplaceLineEndings();
 
         // ASSERT
-        var expected = fs.File.ReadAllText(
-            testImage.ExpectedTextPath.FullName)
+        var expected = fs
+            .File.ReadAllText(testImage.ExpectedTextPath.FullName)
             .ReplaceLineEndings();
 
-        _ = actual.Should().Be(
-            expected,
-            because: $"We expect reading {testImage.ImagePath} to yield the text in {testImage.ExpectedTextPath}");
+        _ = actual
+            .Should()
+            .Be(
+                expected,
+                because: $"We expect reading {testImage.ImagePath} to yield the text in {testImage.ExpectedTextPath}"
+            );
     }
 
-    private static IDirectoryInfo? GetTestImageFolder([CallerFilePath] string? callerFilePath = null)
+    private static IDirectoryInfo? GetTestImageFolder(
+        [CallerFilePath] string? callerFilePath = null
+    )
     {
         if (callerFilePath == null)
         {
@@ -105,9 +126,7 @@ public class ImageReadingTests
         }
 
         dir = fs.Path.Combine(dir, "..", "test");
-        return fs.Directory.Exists(dir)
-            ? fs.DirectoryInfo.New(dir)
-            : null;
+        return fs.Directory.Exists(dir) ? fs.DirectoryInfo.New(dir) : null;
     }
 
     public record TestImage(IFileInfo ImagePath, IFileInfo ExpectedTextPath);

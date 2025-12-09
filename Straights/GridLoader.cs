@@ -5,7 +5,6 @@
 namespace Straights;
 
 using System.IO.Abstractions;
-
 using Straights.Image.GridReader;
 using Straights.Solver;
 using Straights.Solver.Builder;
@@ -13,12 +12,20 @@ using Straights.Solver.Converter;
 
 internal sealed class GridLoader
 {
-    private static readonly string[] ImageExtensions = [".png", ".jpg", ".jpeg"];
+    private static readonly string[] ImageExtensions =
+    [
+        ".png",
+        ".jpg",
+        ".jpeg",
+    ];
 
     public IDirectoryInfo? DebugDataFolder { get; init; }
 
-    public (ConvertibleGrid Grid, bool IsImage, string? SuggestedSavePath)
-        LoadGrid(IFileInfo args)
+    public (
+        ConvertibleGrid Grid,
+        bool IsImage,
+        string? SuggestedSavePath
+    ) LoadGrid(IFileInfo args)
     {
         string path = args.FullName;
 
@@ -34,7 +41,9 @@ internal sealed class GridLoader
     private static bool HasExtension(IFileInfo file, string extension)
     {
         return file.Extension.Equals(
-            extension, StringComparison.OrdinalIgnoreCase);
+            extension,
+            StringComparison.OrdinalIgnoreCase
+        );
     }
 
     private static bool IsImage(IFileInfo file)
@@ -50,7 +59,9 @@ internal sealed class GridLoader
     private ConvertibleGrid LoadGridFromImage(IFileInfo file)
     {
         var factory = new GridReaderFactory();
-        var cells = factory.CreateGridReader(this.DebugDataFolder?.FullName).ReadGrid(file.FullName);
+        var cells = factory
+            .CreateGridReader(this.DebugDataFolder?.FullName)
+            .ReadGrid(file.FullName);
         GridBuilder builder = CellsToGridBuilderAdapter.ToBuilder(cells);
 
         return new ConvertibleGrid(builder);

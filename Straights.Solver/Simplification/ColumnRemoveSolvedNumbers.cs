@@ -10,8 +10,7 @@ using Straights.Solver.Data;
 /// A simplifier, that finds the solved fields in a <see cref="SolverColumn"/>
 /// and eliminates their values from the unsolved fields in the column.
 /// </summary>
-public sealed class ColumnRemoveSolvedNumbers
-    : ISimplify<SolverColumn>
+public sealed class ColumnRemoveSolvedNumbers : ISimplify<SolverColumn>
 {
     public void Simplify(SolverColumn item)
     {

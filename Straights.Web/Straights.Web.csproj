@@ -35,23 +35,22 @@
   <!-- Emscripten arguments -->
   <ItemGroup>
     <LinkerArg Include="-sEXPORTED_RUNTIME_METHODS=['stringToUTF8','UTF8ToString','HEAPU8','HEAP32','HEAP16']" />
-    <LinkerArg Include="-sMODULARIZE"/>
-    <LinkerArg Include="-sEXPORT_NAME=createWasmModule"/>
+    <LinkerArg Include="-sMODULARIZE" />
+    <LinkerArg Include="-sEXPORT_NAME=createWasmModule" />
   </ItemGroup>
 
   <ItemGroup>
-  <Content Include="LICENSE">
-    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-  </Content>
-  <Content
-    Include="..\webdev\base\shared\*.*;..\webdev\base\wasm\*.*;..\webdev\tsc-out\shared\*.*;..\webdev\tsc-out\wasm\*.*"
-    LinkBase="." >
-    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-  </Content>
-  <Content
-    Include="..\webdev\base\shared\favicon\*.*"
-    LinkBase="favicon/" >
-    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-  </Content>
-</ItemGroup>
+    <Content Include="LICENSE">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content
+      Include="..\webdev\base\shared\*.*;..\webdev\base\wasm\*.*;..\webdev\tsc-out\shared\*.*;..\webdev\tsc-out\wasm\*.*"
+      LinkBase="."
+    >
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\webdev\base\shared\favicon\*.*" LinkBase="favicon/">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 </Project>

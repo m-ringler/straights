@@ -10,7 +10,4 @@ namespace Straights.Solver.Builder;
 /// is not valid.
 /// </summary>
 /// <param name="message">The exception message.</param>
-public class ValidationException(string message)
-    : Exception(message)
-{
-}
+public class ValidationException(string message) : Exception(message) { }

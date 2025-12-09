@@ -9,8 +9,9 @@ namespace Straights.Solver.Simplification;
 /// </summary>
 /// <typeparam name="T">The type of the items to simplify.</typeparam>
 /// <param name="components">The simplifiers to wrap.</param>
-internal sealed class CompositeSimplifier<T>(IEnumerable<ISimplify<T>> components)
-    : ISimplify<T>
+internal sealed class CompositeSimplifier<T>(
+    IEnumerable<ISimplify<T>> components
+) : ISimplify<T>
 {
     public ImmutableArray<ISimplify<T>> Components { get; } = [.. components];
 

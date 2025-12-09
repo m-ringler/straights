@@ -6,7 +6,6 @@ namespace Straights;
 
 using System.Diagnostics;
 using System.IO.Abstractions;
-
 using Straights.Console;
 using Straights.Solver;
 using Straights.Solver.Builder;
@@ -45,8 +44,8 @@ public sealed class SolveCommand(IFileSystem fileSystem)
 
     public int Run()
     {
-        var (grid, fromImage, suggestedPath)
-            = this.GridInitializer().InitializeGrid(this.File);
+        var (grid, fromImage, suggestedPath) = this.GridInitializer()
+            .InitializeGrid(this.File);
 
         if (this.Interactive)
         {
@@ -55,8 +54,10 @@ public sealed class SolveCommand(IFileSystem fileSystem)
 
             if (askToSave)
             {
-                new InteractiveGridSaver(fileSystem, this.Console)
-                    .SaveGrid(builder, suggestedPath);
+                new InteractiveGridSaver(fileSystem, this.Console).SaveGrid(
+                    builder,
+                    suggestedPath
+                );
             }
 
             grid = builder.Convert();
@@ -70,7 +71,8 @@ public sealed class SolveCommand(IFileSystem fileSystem)
         }
 
         var iterativeGridSimplifier = this.BuildSimplifier(
-            this.PrintIterations ? gridPrinter : null);
+            this.PrintIterations ? gridPrinter : null
+        );
 
         Stopwatch watch = new();
         try
@@ -110,7 +112,10 @@ public sealed class SolveCommand(IFileSystem fileSystem)
         }
     }
 
-    private SolverGrid Solve(SolverGrid dataIn, ISimplify<SolverGrid> iterativeGridSimplifier)
+    private SolverGrid Solve(
+        SolverGrid dataIn,
+        ISimplify<SolverGrid> iterativeGridSimplifier
+    )
     {
         dataIn = iterativeGridSimplifier.ToSolver().Solve(dataIn);
 
@@ -120,7 +125,9 @@ public sealed class SolveCommand(IFileSystem fileSystem)
         }
 
         this.Terminal.WriteLine();
-        this.Terminal.WriteLine($"Mode {SolverMode.SimplifyOnly} did not find a solution.");
+        this.Terminal.WriteLine(
+            $"Mode {SolverMode.SimplifyOnly} did not find a solution."
+        );
         var solver1 = new EliminatingSolver(iterativeGridSimplifier);
         var data1 = solver1.Solve(dataIn);
 
@@ -130,7 +137,9 @@ public sealed class SolveCommand(IFileSystem fileSystem)
         }
 
         this.Terminal.WriteLine();
-        this.Terminal.WriteLine($"Mode {SolverMode.UniqueSolution} did not find a solution.");
+        this.Terminal.WriteLine(
+            $"Mode {SolverMode.UniqueSolution} did not find a solution."
+        );
         var solver2 = new RecursiveTrialAndErrorSolver(iterativeGridSimplifier)
         {
             RandomNumberGenerator = new RandNRandomFactory().CreatePcg32(),
@@ -143,8 +152,7 @@ public sealed class SolveCommand(IFileSystem fileSystem)
 
     private bool EditGrid(GridBuilder builder)
     {
-        return new InteractiveGridEditor(this.Console)
-                        .Edit(builder);
+        return new InteractiveGridEditor(this.Console).Edit(builder);
     }
 
     private void PrintStatus(SolverGrid data, TimeSpan elapsedTime)
@@ -156,8 +164,7 @@ public sealed class SolveCommand(IFileSystem fileSystem)
         this.Terminal.WriteLine(msg);
     }
 
-    private ISimplify<SolverGrid> BuildSimplifier(
-        Action? printGrid)
+    private ISimplify<SolverGrid> BuildSimplifier(Action? printGrid)
     {
         Action<int> onBeginIteration;
         Action<int> onEndIteration;
@@ -169,7 +176,8 @@ public sealed class SolveCommand(IFileSystem fileSystem)
         }
         else
         {
-            onBeginIteration = i => this.Terminal.WriteLine($"\rIteration {++k}");
+            onBeginIteration = i =>
+                this.Terminal.WriteLine($"\rIteration {++k}");
             onEndIteration = _ => printGrid.Invoke();
         }
 
@@ -178,7 +186,8 @@ public sealed class SolveCommand(IFileSystem fileSystem)
         return factory.BuildIterativeSimplifier(
             SimplifierStrength.MaxStrength,
             onBeginIteration,
-            onEndIteration);
+            onEndIteration
+        );
     }
 
     private Action BuildGridPrinter(Func<SolverGrid> data)
@@ -202,7 +211,8 @@ public sealed class SolveCommand(IFileSystem fileSystem)
             {
                 var path = fileSystem.Path.Combine(
                     folder.FullName,
-                    $"grid_{i++:0000}.html");
+                    $"grid_{i++:0000}.html"
+                );
                 var file = fileSystem.FileInfo.New(path);
                 data().Convert().WriteTo(file);
             }

@@ -5,7 +5,6 @@
 namespace Straights.Solver.Simplification;
 
 using Straights.Solver.Data;
-
 using ChangeDetectorProxy = ChangeDetectorProxy<IGetSnapshot<int>>;
 using IChangeDetector = IChangeDetector<IGetSnapshot<int>>;
 
@@ -15,42 +14,56 @@ using IChangeDetector = IChangeDetector<IGetSnapshot<int>>;
 /// <param name="options">The options to use.</param>
 public sealed class GridSimplifierFactory(SimplifierOptions options)
 {
-    public static ISimplify<SolverGrid> BuildIterativeSimplifier(SimplifierStrength strength)
+    public static ISimplify<SolverGrid> BuildIterativeSimplifier(
+        SimplifierStrength strength
+    )
     {
-        return new GridSimplifierFactory(new())
-            .BuildIterativeSimplifier(strength, _ => { }, _ => { });
+        return new GridSimplifierFactory(new()).BuildIterativeSimplifier(
+            strength,
+            _ => { },
+            _ => { }
+        );
     }
 
     public ISimplify<ISolverGrid> BuildIterativeSimplifier(
         SimplifierStrength strength,
         Action<int> onBeginIteration,
-        Action<int> onEndIteration)
+        Action<int> onEndIteration
+    )
     {
         void Simplify(ISolverGrid data)
         {
             var newSnapshotFunc = GetNewSnapshotFunc(data);
-            var changeDetector = new ChangeDetectorProxy(
-                defaultValue: true);
+            var changeDetector = new ChangeDetectorProxy(defaultValue: true);
 
-            var coreSimplifier = this.BuildGridSimplifier(changeDetector, strength);
+            var coreSimplifier = this.BuildGridSimplifier(
+                changeDetector,
+                strength
+            );
             ISimplify<ISolverGrid> gridSimplifier = coreSimplifier;
 
-            var iterativeGridSimplifier = new IterativeSimplifier<ISolverGrid, IGetSnapshot<int>>(
+            var iterativeGridSimplifier = new IterativeSimplifier<
+                ISolverGrid,
+                IGetSnapshot<int>
+            >(
                 newSnapshotFunc,
                 changeDetector,
                 gridSimplifier,
                 onBeginIteration,
-                onEndIteration);
+                onEndIteration
+            );
             iterativeGridSimplifier.Simplify(data);
         }
 
-        return Simplifier.Create<ISolverGrid>(Simplify).WithName(
-            $"Strength-{strength.Value} Iterative Grid Simplifier");
+        return Simplifier
+            .Create<ISolverGrid>(Simplify)
+            .WithName($"Strength-{strength.Value} Iterative Grid Simplifier");
     }
 
     internal static IEnumerable<ISimplify<SolverColumn>> GetColumnSimplifiers(
         SimplifierStrength strength,
-        IEnumerable<ISimplify<SolverBlock>> blockSimplifiers)
+        IEnumerable<ISimplify<SolverBlock>> blockSimplifiers
+    )
     {
         yield return new ColumnRemoveSolvedNumbers();
         if (strength >= 1)
@@ -75,7 +88,8 @@ public sealed class GridSimplifierFactory(SimplifierOptions options)
     }
 
     internal static IEnumerable<ISimplify<SolverBlock>> GetBlockSimplifiers(
-        SimplifierStrength strength)
+        SimplifierStrength strength
+    )
     {
         yield return new BlockMinimumAndMaximum();
 
@@ -96,14 +110,15 @@ public sealed class GridSimplifierFactory(SimplifierOptions options)
         }
     }
 
-    private static Func<IChangeDetector>
-        GetNewSnapshotFunc(ISolverGrid data)
+    private static Func<IChangeDetector> GetNewSnapshotFunc(ISolverGrid data)
     {
-        IEnumerable<IGetSnapshot<int>> trackables = [
-                data,
-                ..data.Columns,
-                ..data.Rows,
-                ..data.Rows.SelectMany(x => x.Blocks)];
+        IEnumerable<IGetSnapshot<int>> trackables =
+        [
+            data,
+            .. data.Columns,
+            .. data.Rows,
+            .. data.Rows.SelectMany(x => x.Blocks),
+        ];
 
         IChangeDetector<IGetSnapshot<int>> NewSnapshot()
         {
@@ -115,18 +130,16 @@ public sealed class GridSimplifierFactory(SimplifierOptions options)
 
     private ISimplify<ISolverGrid> BuildGridSimplifier(
         IChangeDetector changeDetector,
-        SimplifierStrength strength)
+        SimplifierStrength strength
+    )
     {
         var blockSimplifier = Simplifier
-        .Combine(
-            GetBlockSimplifiers(strength))
-        .WithShortcut(
-            changeDetector);
+            .Combine(GetBlockSimplifiers(strength))
+            .WithShortcut(changeDetector);
 
         var columnSimplifier = Simplifier
-        .Combine(
-            GetColumnSimplifiers(strength, [blockSimplifier]))
-        .WithShortcut(changeDetector);
+            .Combine(GetColumnSimplifiers(strength, [blockSimplifier]))
+            .WithShortcut(changeDetector);
 
         ISimplify<ISolverGrid> result = options.MultiThreaded
             ? new ParallelGridSimplifier(columnSimplifier)

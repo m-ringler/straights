@@ -6,15 +6,16 @@ namespace Straights;
 
 using System.Globalization;
 using System.Text.RegularExpressions;
-
 using Straights.Console;
 using Straights.Solver;
 using Straights.Solver.Builder;
 
-public sealed partial class InteractiveGridEditor(
-    ReadWriteConsole console)
+public sealed partial class InteractiveGridEditor(ReadWriteConsole console)
 {
-    public static bool TryParseBuilderField(string input, out BuilderField? value)
+    public static bool TryParseBuilderField(
+        string input,
+        out BuilderField? value
+    )
     {
         var match = MyRegex().Match(input);
         if (!match.Success)
@@ -31,7 +32,10 @@ public sealed partial class InteractiveGridEditor(
         bool isWhite = false;
         if (match.Groups[4].Success)
         {
-            fieldValue = int.Parse(match.Groups[4].Value, CultureInfo.InvariantCulture);
+            fieldValue = int.Parse(
+                match.Groups[4].Value,
+                CultureInfo.InvariantCulture
+            );
             isWhite = match.Groups[3].Success;
         }
 
@@ -48,7 +52,9 @@ public sealed partial class InteractiveGridEditor(
         while (true)
         {
             printer.Invoke();
-            writeConsole.WriteLine("Add black field [<y> <x> <n>?] or white field [<y> <x> w<n>]");
+            writeConsole.WriteLine(
+                "Add black field [<y> <x> <n>?] or white field [<y> <x> w<n>]"
+            );
             writeConsole.WriteLine("or [<x> <y> 0] to clear a field");
             writeConsole.WriteLine("or press ENTER when done: ");
             var str = readLine() ?? string.Empty;
@@ -85,7 +91,10 @@ public sealed partial class InteractiveGridEditor(
         return modified;
     }
 
-    [GeneratedRegex(@"^\s*(\d+)[\s,]+(\d+)(?:[\s,]+([wW])?(\d+))?\s*$", RegexOptions.Compiled)]
+    [GeneratedRegex(
+        @"^\s*(\d+)[\s,]+(\d+)(?:[\s,]+([wW])?(\d+))?\s*$",
+        RegexOptions.Compiled
+    )]
     private static partial Regex MyRegex();
 
     private Action BuildPrinter(GridBuilder b)

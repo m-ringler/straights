@@ -13,9 +13,7 @@ namespace Straights.Solver.Data;
 /// </summary>
 public abstract partial class SolverField
 {
-    private SolverField()
-    {
-    }
+    private SolverField() { }
 
     public abstract WhiteFieldData? GetWhiteFieldData();
 

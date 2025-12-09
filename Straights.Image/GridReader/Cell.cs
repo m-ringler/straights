@@ -1,4 +1,4 @@
-﻿// SPDX-FileCopyrightText: 2025 Moritz Ringler
+// SPDX-FileCopyrightText: 2025 Moritz Ringler
 //
 // SPDX-License-Identifier: MIT
 
@@ -6,9 +6,7 @@ namespace Straights.Image.GridReader;
 
 public record Cell
 {
-    private Cell()
-    {
-    }
+    private Cell() { }
 
     public interface IHasNumber
     {

@@ -27,7 +27,11 @@ public class ProgramTests
         parseResult.Configuration.Error = errorWriter;
         int exitCode = parseResult.Invoke();
         var errorOutput = errorWriter.ToString();
-        var stdOutput = outputWriter.ToString().Replace("testhost", "straights").Replace("Straights.Tests", "straights").TrimEnd();
+        var stdOutput = outputWriter
+            .ToString()
+            .Replace("testhost", "straights")
+            .Replace("Straights.Tests", "straights")
+            .TrimEnd();
 
         // ASSERT
         exitCode.Should().Be(0);

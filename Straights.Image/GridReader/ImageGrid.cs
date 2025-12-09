@@ -12,7 +12,10 @@ public record class ImageGrid
 
     public int NumCellY => this.HorizontalLines.Length - 1;
 
-    public ImmutableArray<(float Rho, float Theta)> HorizontalLines { get; init; }
+    public ImmutableArray<(
+        float Rho,
+        float Theta
+    )> HorizontalLines { get; init; }
 
     public ImmutableArray<(float Rho, float Theta)> VerticalLines { get; init; }
 
@@ -26,11 +29,11 @@ public record class ImageGrid
             TopLeft: Intersect(top, left),
             TopRight: Intersect(top, right),
             BottomRight: Intersect(bottom, right),
-            BottomLeft: Intersect(bottom, left));
+            BottomLeft: Intersect(bottom, left)
+        );
     }
 
-    public T[][] BuildArray<T>(
-        Func<SkewedGridCell, T> selectCellResult)
+    public T[][] BuildArray<T>(Func<SkewedGridCell, T> selectCellResult)
     {
         T[][] result = new T[this.NumCellY][];
 
@@ -49,14 +52,19 @@ public record class ImageGrid
         return result;
     }
 
-    private static PointF Intersect((float Rho, float Theta) a, (float Rho, float Theta) b)
+    private static PointF Intersect(
+        (float Rho, float Theta) a,
+        (float Rho, float Theta) b
+    )
     {
         var la = new LineSegmentPolar(a.Rho, a.Theta);
         var lb = new LineSegmentPolar(b.Rho, b.Theta);
         var pt = la.LineIntersection(lb);
         if (!pt.HasValue)
         {
-            throw new InvalidOperationException("Cannot intersect parallel lines.");
+            throw new InvalidOperationException(
+                "Cannot intersect parallel lines."
+            );
         }
 
         var p = pt.Value;

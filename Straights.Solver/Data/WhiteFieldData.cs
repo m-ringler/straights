@@ -9,7 +9,8 @@ using System.Globalization;
 using System.Numerics;
 
 public sealed class WhiteFieldData
- : IEquatable<WhiteFieldData>, IReadOnlyCollection<int>
+    : IEquatable<WhiteFieldData>,
+        IReadOnlyCollection<int>
 {
     public const int MaxSize = sizeof(ulong) * 8;
 
@@ -124,7 +125,9 @@ public sealed class WhiteFieldData
     {
         if (this.Size != other.Size)
         {
-            throw new ArgumentException($"You cannot intersect instances with different sizes: {this.Size} {other.Size}");
+            throw new ArgumentException(
+                $"You cannot intersect instances with different sizes: {this.Size} {other.Size}"
+            );
         }
 
         var result = this.Clone();
@@ -137,7 +140,9 @@ public sealed class WhiteFieldData
     {
         if (this.Size != other.Size)
         {
-            throw new ArgumentException($"You cannot union instances with different sizes: {this.Size} {other.Size}");
+            throw new ArgumentException(
+                $"You cannot union instances with different sizes: {this.Size} {other.Size}"
+            );
         }
 
         var result = this.Clone();
@@ -152,24 +157,23 @@ public sealed class WhiteFieldData
 
     public bool Equals(WhiteFieldData? other)
     {
-        return other != null &&
-               this.Size == other.Size &&
-               this.bitField == other.bitField;
+        return other != null
+            && this.Size == other.Size
+            && this.bitField == other.bitField;
     }
 
     public override bool Equals(object? obj)
     {
-        return obj is WhiteFieldData other &&
-                this.Equals(other);
+        return obj is WhiteFieldData other && this.Equals(other);
     }
 
     public override int GetHashCode()
     {
-        return HashCode
-            .Combine(
-                typeof(WhiteFieldData),
-                this.Size,
-                this.bitField);
+        return HashCode.Combine(
+            typeof(WhiteFieldData),
+            this.Size,
+            this.bitField
+        );
     }
 
     public string ToCompactString()
@@ -203,9 +207,8 @@ public sealed class WhiteFieldData
             k++;
             if (k == 6)
             {
-                result[ichar] = charValue == BraillePatternBlank
-                    ? ' '
-                    : (char)charValue;
+                result[ichar] =
+                    charValue == BraillePatternBlank ? ' ' : (char)charValue;
                 charValue = BraillePatternBlank;
                 k = 0;
                 ichar++;

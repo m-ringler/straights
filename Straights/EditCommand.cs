@@ -5,7 +5,6 @@
 namespace Straights;
 
 using System.IO.Abstractions;
-
 using Straights.Console;
 using Straights.Play;
 using Straights.Solver;
@@ -29,17 +28,14 @@ public sealed class EditCommand(IFileSystem fileSystem)
 
         this.SaveGrid(builder, suggestedSavePath);
 
-        new PlayUrl().PrintPlayUrl(
-            this.Terminal,
-            builder.Convert().SolverGrid);
+        new PlayUrl().PrintPlayUrl(this.Terminal, builder.Convert().SolverGrid);
 
         return 0;
     }
 
     private void SaveGrid(GridBuilder builder, string? suggestedPath)
     {
-        var saver =
-        new InteractiveGridSaver(fileSystem, this.Console);
+        var saver = new InteractiveGridSaver(fileSystem, this.Console);
 
         while (true)
         {
@@ -57,16 +53,16 @@ public sealed class EditCommand(IFileSystem fileSystem)
 
     private bool EditGrid(GridBuilder builder)
     {
-        return new InteractiveGridEditor(this.Console)
-            .Edit(builder);
+        return new InteractiveGridEditor(this.Console).Edit(builder);
     }
 
-    private (GridBuilder Builder, string? SuggestedSavePath)
-        InitializeGrid(IFileInfo? args)
+    private (GridBuilder Builder, string? SuggestedSavePath) InitializeGrid(
+        IFileInfo? args
+    )
     {
-        var (grid, _, suggestedSavePath) =
-            new InteractiveGridInitializer(this.Console)
-            .InitializeGrid(args);
+        var (grid, _, suggestedSavePath) = new InteractiveGridInitializer(
+            this.Console
+        ).InitializeGrid(args);
 
         return (grid.Builder, suggestedSavePath);
     }

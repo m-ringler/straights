@@ -6,7 +6,6 @@ namespace Straights.Tests;
 
 using System.IO.Abstractions;
 using System.IO.Abstractions.TestingHelpers;
-
 using XFS = System.IO.Abstractions.TestingHelpers.MockUnixSupport;
 
 /// <summary>
@@ -22,9 +21,7 @@ public class SolveCommandBuilderTests
         var runner = new RunCommandFunction<SolveCommand>(5);
         var sut = new SolveCommandBuilder(fileSystem, runner.Invoke);
 
-        string[] args = [
-            XFS.Path(@"C:\Foo\input.json"),
-        ];
+        string[] args = [XFS.Path(@"C:\Foo\input.json")];
 
         // ACT
         var command = sut.Build();
@@ -62,14 +59,18 @@ public class SolveCommandBuilderTests
         var errorOutput = errorWriter.ToString();
 
         // ASSERT
-        errorOutput.Trim().Should().Be("You must either provide an imageOrTextFile or use --interactive.");
+        errorOutput
+            .Trim()
+            .Should()
+            .Be(
+                "You must either provide an imageOrTextFile or use --interactive."
+            );
         exitCode.Should().NotBe(0);
         runner.InvokedCommand.Should().BeNull();
     }
 
     [Fact]
     public Task
-
 #if DEBUG
     Help_Debug()
 #else
@@ -77,13 +78,19 @@ public class SolveCommandBuilderTests
 #endif
     {
         return HelpVerifier.VerifyHelp<SolveCommand>(
-            execute =>
-                new SolveCommandBuilder(new MockFileSystem(), execute));
+            execute => new SolveCommandBuilder(new MockFileSystem(), execute)
+        );
     }
 
-    private static void ShouldHaveFileSystem(IFileInfo f, IFileSystem fileSystem)
+    private static void ShouldHaveFileSystem(
+        IFileInfo f,
+        IFileSystem fileSystem
+    )
     {
-        f.Should().BeOfType<FileInfoWrapper>().Which.FileSystem.Should().BeSameAs(fileSystem);
+        f.Should()
+            .BeOfType<FileInfoWrapper>()
+            .Which.FileSystem.Should()
+            .BeSameAs(fileSystem);
     }
 
     private static IFileSystem FileSystem()

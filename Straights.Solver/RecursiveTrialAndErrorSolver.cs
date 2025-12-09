@@ -20,8 +20,8 @@ using Straights.Solver.Simplification;
 /// generating puzzles.
 /// </remarks>.
 public sealed class RecursiveTrialAndErrorSolver(
-        ISimplify<SolverGrid> gridSimplifier)
-    : ISolver, ISolverWithCancellation
+    ISimplify<SolverGrid> gridSimplifier
+) : ISolver, ISolverWithCancellation
 {
     /// <summary>
     /// Initializes a new instance of the
@@ -29,10 +29,11 @@ public sealed class RecursiveTrialAndErrorSolver(
     /// that uses the default grid simplifier.
     /// </summary>
     public RecursiveTrialAndErrorSolver()
-    : this(
-        GridSimplifierFactory.BuildIterativeSimplifier(SimplifierStrength.DefaultStrength))
-    {
-    }
+        : this(
+            GridSimplifierFactory.BuildIterativeSimplifier(
+                SimplifierStrength.DefaultStrength
+            )
+        ) { }
 
     /// <summary>
     /// Gets the random number generator
@@ -68,7 +69,10 @@ public sealed class RecursiveTrialAndErrorSolver(
     }
 
     /// <inheritdoc/>
-    public SolverGrid Solve(SolverGrid data, CancellationToken cancellationToken)
+    public SolverGrid Solve(
+        SolverGrid data,
+        CancellationToken cancellationToken
+    )
     {
         SolverGrid workingData = data.CreateCopy();
         try
@@ -85,12 +89,16 @@ public sealed class RecursiveTrialAndErrorSolver(
         try
         {
             return this.GuessAndSimplify(
-                    workingData,
-                    cancellationToken,
-                    ref remainingRecursions);
+                workingData,
+                cancellationToken,
+                ref remainingRecursions
+            );
         }
         catch (Exception ex)
-        when (ex is SolvingAttemptFailedException or OperationCanceledException)
+            when (ex
+                    is SolvingAttemptFailedException
+                        or OperationCanceledException
+            )
         {
             return workingData;
         }
@@ -103,9 +111,10 @@ public sealed class RecursiveTrialAndErrorSolver(
 
     private static List<FieldIndex> GetUnsolvedIndices(SolverGrid data)
     {
-        var result = from index in data.Grid.AllFieldIndices()
-                     where GetField(data, index)?.IsSolved == false
-                     select index;
+        var result =
+            from index in data.Grid.AllFieldIndices()
+            where GetField(data, index)?.IsSolved == false
+            select index;
 
         return [.. result];
     }
@@ -113,7 +122,8 @@ public sealed class RecursiveTrialAndErrorSolver(
     private SolverGrid GuessAndSimplify(
         SolverGrid dataIn,
         CancellationToken cancellationToken,
-        ref int remainingNumRecurse)
+        ref int remainingNumRecurse
+    )
     {
         cancellationToken.ThrowIfCancellationRequested();
         if (remainingNumRecurse-- <= 0)
@@ -154,7 +164,8 @@ public sealed class RecursiveTrialAndErrorSolver(
                 var result = this.GuessAndSimplify(
                     trialData,
                     cancellationToken,
-                    ref remainingNumRecurse);
+                    ref remainingNumRecurse
+                );
 
                 if (result.IsSolved)
                 {
@@ -190,7 +201,5 @@ public sealed class RecursiveTrialAndErrorSolver(
         return dataIn;
     }
 
-    private sealed class SolvingAttemptFailedException : Exception
-    {
-    }
+    private sealed class SolvingAttemptFailedException : Exception { }
 }

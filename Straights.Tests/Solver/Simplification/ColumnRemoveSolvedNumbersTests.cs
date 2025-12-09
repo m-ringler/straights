@@ -18,7 +18,16 @@ public class ColumnRemoveSolvedNumbersTests
         // ARRANGE
         var column = SolverColumn.Create(
             3,
-            [[[1], [1, 2, 3]], [[1, 2, 3]]]);
+            [
+                [
+                    [1],
+                    [1, 2, 3],
+                ],
+                [
+                    [1, 2, 3],
+                ],
+            ]
+        );
 
         var simplifier = new ColumnRemoveSolvedNumbers();
 
@@ -26,12 +35,16 @@ public class ColumnRemoveSolvedNumbersTests
         simplifier.Simplify(column);
 
         // ASSERT
-        _ = column.DumpCode().Should().Be(
-"""
+        _ = column
+            .DumpCode()
+            .Should()
+            .Be(
+                """
 SolverColumn.Create(3,
 [[[1],
 [2, 3]],
 [[2, 3]]])
-""");
+"""
+            );
     }
 }

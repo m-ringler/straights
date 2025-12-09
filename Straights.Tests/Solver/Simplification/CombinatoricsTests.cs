@@ -16,7 +16,8 @@ public class CombinatoricsTests
     {
         int[] data = [3, 2, 7, 90];
 
-        int[][] expected = [
+        int[][] expected =
+        [
             [3],
             [2],
             [7],
@@ -42,7 +43,8 @@ public class CombinatoricsTests
     {
         int[] data = [3];
 
-        int[][] expected = [
+        int[][] expected =
+        [
             [3],
         ];
 

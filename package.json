@@ -1,7 +1,7 @@
 {
   "name": "straights",
   "private": true,
-  "version": "0.7.2",
+  "version": "0.7.3",
   "devDependencies": {
     "@edge-runtime/vm": "^5.0.0",
     "@types/jquery": "^3.5.33",
@@ -20,7 +20,7 @@
     "printWidth": 80
   },
   "scripts": {
-    "format": "prettier --write \"webdev/**/*.js\" \"**/*.{ts,tsx,css,html,json}\"",
+    "format": "prettier --write \"webdev/**/*.js\" \"**/*.{ts,css,html,json}\"",
     "tsc": "tsc -p tsconfig.json",
     "tsc:watch": "tsc -p tsconfig.json --watch",
     "test": "vitest",

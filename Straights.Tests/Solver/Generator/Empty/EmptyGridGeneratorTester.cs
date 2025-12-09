@@ -14,11 +14,13 @@ internal static class EmptyGridGeneratorTester
     public static string GenerateBuilderText(
         Func<GridParameters, IRandom, IEmptyGridGenerator> createSut,
         GridParameters? parameters = null,
-        string seed = "Pcg32-1f048cbcdccace6a-60303cf0947a7d0d")
+        string seed = "Pcg32-1f048cbcdccace6a-60303cf0947a7d0d"
+    )
     {
         // ARRANGE
         var rng = new RandNRandomFactory().CreatePcg32(seed);
-        GridParameters gridParameters = parameters ?? GridParameters.DefaultParameters;
+        GridParameters gridParameters =
+            parameters ?? GridParameters.DefaultParameters;
 
         var sut = createSut(gridParameters, rng);
 
@@ -34,20 +36,25 @@ internal static class EmptyGridGeneratorTester
 
     internal static void CheckFieldCounts(
         BuilderField?[][] grid,
-        GridParameters gridParameters)
+        GridParameters gridParameters
+    )
     {
         int blackNumbers = 0;
         int blackBlanks = 0;
         foreach (var field in grid.SelectMany(x => x).Where(x => x != null))
         {
-            field!.IsWhite.Should().BeFalse(because: "there should be no explicit white fields.");
+            field!
+                .IsWhite.Should()
+                .BeFalse(because: "there should be no explicit white fields.");
             if (field.Value == null)
             {
                 blackBlanks++;
             }
             else
             {
-                field.Value.Should().Be(0, because: "All black numbers should have value 0");
+                field
+                    .Value.Should()
+                    .Be(0, because: "All black numbers should have value 0");
                 blackNumbers++;
             }
         }

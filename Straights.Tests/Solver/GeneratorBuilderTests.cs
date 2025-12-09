@@ -9,7 +9,6 @@ using Argon;
 using Straights.Solver;
 using Straights.Solver.Generator;
 using Straights.Solver.Simplification;
-
 using GridLayout = Straights.Solver.Generator.GridLayout;
 
 public class GeneratorBuilderTests
@@ -25,13 +24,14 @@ public class GeneratorBuilderTests
             GridParameters = new GridParameters(
                 size: 5,
                 numberOfBlackBlanks: 2,
-                numberOfBlackNumbers: 1),
+                numberOfBlackNumbers: 1
+            ),
             Random = new SystemRandom { Core = new Random(123456) },
-        }
-        .Build();
+        }.Build();
 
         var grid = generator.GenerateGrid();
-        var gridText = grid?.Convert().ToBuilderText()
+        var gridText =
+            grid?.Convert().ToBuilderText()
             ?? throw new InvalidOperationException("Grid generation failed");
 
         return Verify(gridText);
@@ -47,27 +47,28 @@ public class GeneratorBuilderTests
             GridParameters = new GridParameters(
                 size: 5,
                 numberOfBlackBlanks: 2,
-                numberOfBlackNumbers: 1),
+                numberOfBlackNumbers: 1
+            ),
             Random = new RandomNumberGeneratorStub(),
             FailureThreshold = 100,
             Attempts = 200,
-        }
-        .Build();
+        }.Build();
 
         return Verify(generator)
-            .AddExtraSettings(
-                s => s.TypeNameHandling = TypeNameHandling.Objects);
+            .AddExtraSettings(s =>
+                s.TypeNameHandling = TypeNameHandling.Objects
+            );
     }
 
     [Fact]
     public Task Defaults()
     {
-        var generator = new GeneratorBuilder()
-            .Build();
+        var generator = new GeneratorBuilder().Build();
 
         return Verify(generator)
-            .AddExtraSettings(
-                s => s.TypeNameHandling = TypeNameHandling.Objects);
+            .AddExtraSettings(s =>
+                s.TypeNameHandling = TypeNameHandling.Objects
+            );
     }
 
     private sealed class RandomNumberGeneratorStub : IRandom

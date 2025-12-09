@@ -1,4 +1,4 @@
-﻿// SPDX-FileCopyrightText: 2025 Moritz Ringler
+// SPDX-FileCopyrightText: 2025 Moritz Ringler
 //
 // SPDX-License-Identifier: MIT
 
@@ -6,10 +6,10 @@ namespace Straights.Image.GridReader;
 
 internal static class AngleFilter
 {
-    public static (List<LineSegmentPolar> Horizontal, List<LineSegmentPolar> Vertical)
-        FilterAngles(
-            IEnumerable<LineSegmentPolar> lines,
-            float thresholdRad)
+    public static (
+        List<LineSegmentPolar> Horizontal,
+        List<LineSegmentPolar> Vertical
+    ) FilterAngles(IEnumerable<LineSegmentPolar> lines, float thresholdRad)
     {
         var result = ClusterAngles(lines);
         Filter(result, thresholdRad);
@@ -18,8 +18,12 @@ internal static class AngleFilter
     }
 
     private static void Filter(
-        (List<LineSegmentPolar> Horizontal, List<LineSegmentPolar> Vertical) result,
-        float thresholdRad)
+        (
+            List<LineSegmentPolar> Horizontal,
+            List<LineSegmentPolar> Vertical
+        ) result,
+        float thresholdRad
+    )
     {
         var (linesH, linesV) = result;
         var medianH = linesH[linesH.Count / 2].Theta;
@@ -28,9 +32,10 @@ internal static class AngleFilter
         Remove(linesV, l => Math.Abs(l.Theta - medianV) > thresholdRad);
     }
 
-    private static
-        (List<LineSegmentPolar> Horizontal, List<LineSegmentPolar> Vertical)
-            ClusterAngles(IEnumerable<LineSegmentPolar> lines)
+    private static (
+        List<LineSegmentPolar> Horizontal,
+        List<LineSegmentPolar> Vertical
+    ) ClusterAngles(IEnumerable<LineSegmentPolar> lines)
     {
         const float V = 0;
         const float H = (float)(Math.PI / 2);

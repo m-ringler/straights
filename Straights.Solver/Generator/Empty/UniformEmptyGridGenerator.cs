@@ -5,9 +5,7 @@
 namespace Straights.Solver.Generator.Empty;
 
 using System.Collections.Generic;
-
 using Straights.Solver.Builder;
-
 using static EmptyGridGenerator;
 
 internal sealed class UniformEmptyGridGenerator(GridParameters gridParameters)
@@ -21,7 +19,8 @@ internal sealed class UniformEmptyGridGenerator(GridParameters gridParameters)
     {
         return EmptyGridGenerator.GenerateGrid(
             this.GridParameters,
-            this.GenerateFieldIndices());
+            this.GenerateFieldIndices()
+        );
     }
 
     private IEnumerable<FieldIndex> GenerateFieldIndices()
@@ -29,6 +28,7 @@ internal sealed class UniformEmptyGridGenerator(GridParameters gridParameters)
         return PlaceFieldsUniform(
             this.RandomNumberGenerator,
             this.GridParameters.Size,
-            this.GridParameters.TotalNumberOfBlackFields);
+            this.GridParameters.TotalNumberOfBlackFields
+        );
     }
 }

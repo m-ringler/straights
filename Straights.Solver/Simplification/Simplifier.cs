@@ -14,14 +14,16 @@ public static class Simplifier
 {
     public static ISimplify<T> WithShortcut<T>(
         this ISimplify<T> simplifier,
-        IChangeDetector<T> changeDetector)
+        IChangeDetector<T> changeDetector
+    )
     {
         return new ShortcutSimplifier<T>(simplifier, changeDetector);
     }
 
     public static void SimplifyMany<T>(
         this ISimplify<T> simplifier,
-        IEnumerable<T> items)
+        IEnumerable<T> items
+    )
     {
         foreach (var item in items)
         {
@@ -31,7 +33,8 @@ public static class Simplifier
 
     public static void SimplifyManyParallel<T>(
         this ISimplify<T> simplifier,
-        IEnumerable<T> items)
+        IEnumerable<T> items
+    )
     {
         try
         {
@@ -55,14 +58,14 @@ public static class Simplifier
         }
     }
 
-    public static ISimplify<T> Combine<T>(
-        IEnumerable<ISimplify<T>> simplifiers)
+    public static ISimplify<T> Combine<T>(IEnumerable<ISimplify<T>> simplifiers)
     {
         return new CompositeSimplifier<T>(simplifiers);
     }
 
     public static ISimplify<IEnumerable<T>> AsAggregateSimplifier<T>(
-        this ISimplify<T> simplifier)
+        this ISimplify<T> simplifier
+    )
     {
         return new AggregateSimplifier<T>(simplifier);
     }
@@ -74,7 +77,8 @@ public static class Simplifier
 
     public static ISimplify<T> WithName<T>(
         this ISimplify<T> simplifier,
-        string name)
+        string name
+    )
     {
         return new NamedSimplifier<T>(simplifier, name);
     }

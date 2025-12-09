@@ -15,7 +15,7 @@ using Straights.Solver.Data;
 /// </param>
 /// <seealso cref="ParallelGridSimplifier"/>
 public class GridSimplifier(ISimplify<SolverColumn> columnSimplifier)
-: ISimplify<ISolverGrid>
+    : ISimplify<ISolverGrid>
 {
     public ISimplify<SolverColumn> ColumnSimplifier { get; } = columnSimplifier;
 

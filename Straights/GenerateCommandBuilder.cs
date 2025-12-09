@@ -8,27 +8,24 @@ using System.CommandLine;
 using System.CommandLine.Help;
 using System.CommandLine.Parsing;
 using System.IO.Abstractions;
-
 using RandN.Rngs;
-
 using Straights.Generate;
 using Straights.Solver.Generator;
 using Straights.Solver.Simplification;
 
 internal sealed class GenerateCommandBuilder(
-        IFileSystem fs,
-        Func<GenerateCommand, int> runCommand)
-    : ICommandBuilder
+    IFileSystem fs,
+    Func<GenerateCommand, int> runCommand
+) : ICommandBuilder
 {
     public const int DefaultAttempts = 10;
     public const int DefaultFailureThreshold = 50;
     public const GridLayout DefaultLayout = EmptyGrid.DefaultLayout;
     public static readonly int DefaultSize = EmptyGrid.DefaultSize;
-    public static readonly SimplifierStrength DefaultDifficulty
-        = SimplifierStrength.DefaultStrength;
+    public static readonly SimplifierStrength DefaultDifficulty =
+        SimplifierStrength.DefaultStrength;
 
-    private const string OutputOptionDescription =
-        """
+    private const string OutputOptionDescription = """
         Write the generated grid to the specified file.
         Currently the following formats are supported:
         * HTML (.htm, .html)
@@ -38,8 +35,7 @@ internal sealed class GenerateCommandBuilder(
 
         """;
 
-    private const string SeedOptionDescription =
-        """
+    private const string SeedOptionDescription = """
         The seed to use for the pseudo-random number generator.
         Use this if you want repeatable results. The command
         prints the used seed value for each generated grid.
@@ -50,23 +46,20 @@ internal sealed class GenerateCommandBuilder(
 
         """;
 
-    private const string AttemptsOptionDescription =
-        """
+    private const string AttemptsOptionDescription = """
         The maximum number of attempts to generate a grid
         with the specified parameters.
 
         """;
 
-    private const string FailureThresholdOptionDescription =
-        """
+    private const string FailureThresholdOptionDescription = """
         A positive number indicating a threshold when to regard
         a generation attempt as failed. Increasing this number
         will increase the average time it takes to generate a grid.
 
         """;
 
-    private const string DifficultyOptionDescription =
-        """
+    private const string DifficultyOptionDescription = """
         The difficulty of the generated grid, in the range 0 to 3.
         A higher value means you need to apply more and more complex
         rules to solve the generated grid.
@@ -76,16 +69,14 @@ internal sealed class GenerateCommandBuilder(
 
         """;
 
-    private readonly Option<FileInfo?> outputOption = new(
-        name: "--output")
+    private readonly Option<FileInfo?> outputOption = new(name: "--output")
     {
         Description = OutputOptionDescription,
         DefaultValueFactory = _ => null,
         HelpName = "file",
     };
 
-    private readonly Option<string?> seedOption = new(
-        name: "--seed")
+    private readonly Option<string?> seedOption = new(name: "--seed")
     {
         Description = SeedOptionDescription,
         Arity = ArgumentArity.ExactlyOne,
@@ -93,8 +84,7 @@ internal sealed class GenerateCommandBuilder(
         HelpName = "seed",
     };
 
-    private readonly Option<int> attemptsOption = new(
-        name: "--attempts")
+    private readonly Option<int> attemptsOption = new(name: "--attempts")
     {
         Description = AttemptsOptionDescription,
         Arity = ArgumentArity.ExactlyOne,
@@ -103,7 +93,8 @@ internal sealed class GenerateCommandBuilder(
     };
 
     private readonly Option<int> failureThresholdOption = new(
-        name: "--failure-threshold")
+        name: "--failure-threshold"
+    )
     {
         Description = FailureThresholdOptionDescription,
         Arity = ArgumentArity.ExactlyOne,
@@ -111,8 +102,7 @@ internal sealed class GenerateCommandBuilder(
         HelpName = "positive number",
     };
 
-    private readonly Option<int> difficultyOption = new(
-        name: "--difficulty")
+    private readonly Option<int> difficultyOption = new(name: "--difficulty")
     {
         Description = DifficultyOptionDescription,
         Arity = ArgumentArity.ExactlyOne,
@@ -123,9 +113,7 @@ internal sealed class GenerateCommandBuilder(
     private readonly EmptyGrid emptyGrid = new();
 
     public GenerateCommandBuilder(IFileSystem fs)
-        : this(fs, c => c.Run())
-    {
-    }
+        : this(fs, c => c.Run()) { }
 
     public Command Build()
     {
@@ -158,7 +146,8 @@ internal sealed class GenerateCommandBuilder(
             pr.CommandResult,
             out GridParameters? gridParameters,
             out GridLayout layout,
-            out FileInfo? template);
+            out FileInfo? template
+        );
 
         var random = this.CreateRandomNumberGenerator(pr);
 
@@ -171,7 +160,8 @@ internal sealed class GenerateCommandBuilder(
             Random = (random, random.Seed),
             Attempts = pr.GetValue(this.attemptsOption),
             FailureThreshold = pr.GetValue(this.failureThresholdOption),
-            DifficultyLevel = (SimplifierStrength)pr.GetValue(this.difficultyOption),
+            DifficultyLevel = (SimplifierStrength)
+                pr.GetValue(this.difficultyOption),
         };
 
         return runCommand(program);
@@ -188,9 +178,11 @@ internal sealed class GenerateCommandBuilder(
 
     private void Validate(CommandResult symbolResult)
     {
-        IReadOnlyCollection<string> errors = [
+        IReadOnlyCollection<string> errors =
+        [
             .. this.emptyGrid.GetValidationMessages(symbolResult),
-            .. this.GetOutOfRangeErrors(symbolResult)];
+            .. this.GetOutOfRangeErrors(symbolResult),
+        ];
 
         foreach (var error in errors)
         {
@@ -212,9 +204,7 @@ internal sealed class GenerateCommandBuilder(
             var result = r.GetResult(option);
             return result == null
                 ? []
-                : option.RequireMin(
-                    result.GetValueOrDefault<int>(),
-                    min);
+                : option.RequireMin(result.GetValueOrDefault<int>(), min);
         }
     }
 }

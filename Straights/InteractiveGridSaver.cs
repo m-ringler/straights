@@ -5,7 +5,6 @@
 namespace Straights;
 
 using System.IO.Abstractions;
-
 using Straights.Console;
 using Straights.Solver.Builder;
 using Straights.Solver.Converter;
@@ -13,9 +12,12 @@ using Straights.Solver.Converter;
 internal sealed class InteractiveGridSaver(
     IFileSystem fileSystem,
     ReadWriteConsole console,
-    string? homeFolder = null)
+    string? homeFolder = null
+)
 {
-    private string HomeFolder { get; } = homeFolder ?? Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+    private string HomeFolder { get; } =
+        homeFolder
+        ?? Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
 
     public void SaveGrid(GridBuilder builder, string? suggestedPath)
     {
@@ -37,7 +39,10 @@ internal sealed class InteractiveGridSaver(
         }
         else
         {
-            console.Terminal.Write($"Enter path or press return to use \"{suggestedPath}\":" + Environment.NewLine);
+            console.Terminal.Write(
+                $"Enter path or press return to use \"{suggestedPath}\":"
+                    + Environment.NewLine
+            );
         }
 
         answer = console.ReadLine()?.Trim() ?? string.Empty;
@@ -48,8 +53,7 @@ internal sealed class InteractiveGridSaver(
 
         if (answer.Length > 0)
         {
-            var file = fileSystem.FileInfo.New(
-                this.Expand(answer));
+            var file = fileSystem.FileInfo.New(this.Expand(answer));
 
             file.Directory?.Create();
 
@@ -66,8 +70,10 @@ internal sealed class InteractiveGridSaver(
 
     private string Expand(string answer)
     {
-        if (answer.StartsWith("~/", StringComparison.Ordinal)
-            && !fileSystem.Directory.Exists("./~"))
+        if (
+            answer.StartsWith("~/", StringComparison.Ordinal)
+            && !fileSystem.Directory.Exists("./~")
+        )
         {
             answer = this.HomeFolder + answer[1..];
         }

@@ -6,17 +6,18 @@
   </PropertyGroup>
 
   <PropertyGroup>
-      <EnablePackageValidation>true</EnablePackageValidation>
+    <EnablePackageValidation>true</EnablePackageValidation>
 
     <!-- Optional: Detect breaking changes from a previous version -->
     <!-- <PackageValidationBaselineVersion>1.0.0</PackageValidationBaselineVersion> -->
   </PropertyGroup>
-  
+
   <ItemGroup>
     <Content
       Include="..\onnx\bekhzod-olimov-printed-digits.onnx"
       Link="bekhzod-olimov-printed-digits.onnx"
-      Pack="true">
+      Pack="true"
+    >
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <PackageCopyToOutput>true</PackageCopyToOutput>
     </Content>

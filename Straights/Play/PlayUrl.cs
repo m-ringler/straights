@@ -5,36 +5,39 @@
 namespace Straights.Play;
 
 using System;
-
 using Straights.Console;
 using Straights.Solver;
 using Straights.Solver.Data;
 
 internal class PlayUrl
 {
-    public static readonly Uri DefaultBaseUri = new("https://m-ringler.github.io/straights/?code=");
+    public static readonly Uri DefaultBaseUri = new(
+        "https://m-ringler.github.io/straights/?code="
+    );
 
     public Uri BaseUri { get; init; } = DefaultBaseUri;
 
-    public Uri GetPlayUri(
-        SolverGrid unsolved,
-        Func<SolverGrid> solved)
+    public Uri GetPlayUri(SolverGrid unsolved, Func<SolverGrid> solved)
     {
         if (IsGridSizeSupported(unsolved.Grid.Size))
         {
             return new Uri(
-                this.BaseUri +
-                GridConverter
-                    .ToUrlParameter(solved().Grid, unsolved.Grid, 128));
+                this.BaseUri
+                    + GridConverter.ToUrlParameter(
+                        solved().Grid,
+                        unsolved.Grid,
+                        128
+                    )
+            );
         }
 
         throw new ArgumentException(
             paramName: nameof(unsolved),
-            message: $"Grid size {unsolved.Grid.Size} is not supported.");
+            message: $"Grid size {unsolved.Grid.Size} is not supported."
+        );
     }
 
-    public Uri GetPlayUri(
-        SolverGrid unsolved)
+    public Uri GetPlayUri(SolverGrid unsolved)
     {
         return this.GetPlayUri(unsolved, () => Solve(unsolved));
     }
@@ -42,7 +45,8 @@ internal class PlayUrl
     public void PrintPlayUrl(
         IWriteOnlyConsole terminal,
         SolverGrid unsolved,
-        Func<SolverGrid> solved)
+        Func<SolverGrid> solved
+    )
     {
         if (IsGridSizeSupported(unsolved.Grid.Size))
         {
@@ -64,22 +68,15 @@ internal class PlayUrl
     public void PrintPlayUrl(
         IWriteOnlyConsole terminal,
         SolverGrid unsolved,
-        ISolver solver)
+        ISolver solver
+    )
     {
-        this.PrintPlayUrl(
-            terminal,
-            unsolved,
-            () => solver.Solve(unsolved));
+        this.PrintPlayUrl(terminal, unsolved, () => solver.Solve(unsolved));
     }
 
-    public void PrintPlayUrl(
-        IWriteOnlyConsole terminal,
-        SolverGrid unsolved)
+    public void PrintPlayUrl(IWriteOnlyConsole terminal, SolverGrid unsolved)
     {
-        this.PrintPlayUrl(
-            terminal,
-            unsolved,
-            () => Solve(unsolved));
+        this.PrintPlayUrl(terminal, unsolved, () => Solve(unsolved));
     }
 
     private static bool IsGridSizeSupported(int size)

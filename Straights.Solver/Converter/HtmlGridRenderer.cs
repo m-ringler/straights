@@ -1,4 +1,4 @@
-﻿// SPDX-FileCopyrightText: 2025 Moritz Ringler
+// SPDX-FileCopyrightText: 2025 Moritz Ringler
 //
 // SPDX-License-Identifier: MIT
 
@@ -6,7 +6,6 @@ namespace Straights.Solver.Converter;
 
 using System.Globalization;
 using System.Text;
-
 using Straights.Solver.Data;
 
 /// <summary>
@@ -14,74 +13,73 @@ using Straights.Solver.Data;
 /// may change in future versions.
 /// The CSS is currently optimized for 9 x 9 grids.
 /// </summary>
-public sealed class HtmlGridRenderer
-    : ITextSaver<Grid<SolverField>>
+public sealed class HtmlGridRenderer : ITextSaver<Grid<SolverField>>
 {
     private const string HtmlHead = """
-            <head>
-            <title>Straights</title>
-            <meta name="description" content="Straights Puzzle for Printing">
-            <meta name="keywords" content="Straights, Str8ts, Puzzle">
-            <style>
-            * {
-              box-sizing: border-box;
-            }
+        <head>
+        <title>Straights</title>
+        <meta name="description" content="Straights Puzzle for Printing">
+        <meta name="keywords" content="Straights, Str8ts, Puzzle">
+        <style>
+        * {
+          box-sizing: border-box;
+        }
 
-            div.col {
-                float: left;
-            }
+        div.col {
+            float: left;
+        }
 
-            div.col div {
-              float: left;
-              clear: left;
-              padding-left: 4.5pt;
-              padding-top: 2pt;
-              padding-right: 4.5pt;
-              padding-bottom: 2pt;
-              color: #404090;
-            }
+        div.col div {
+          float: left;
+          clear: left;
+          padding-left: 4.5pt;
+          padding-top: 2pt;
+          padding-right: 4.5pt;
+          padding-bottom: 2pt;
+          color: #404090;
+        }
 
-            table.grid {
-               border-collapse: collapse;
-               font-family: LucidaSans, Helvetica, Arial, sans-serif;
-               font-size: 21pt;
-            }
+        table.grid {
+           border-collapse: collapse;
+           font-family: LucidaSans, Helvetica, Arial, sans-serif;
+           font-size: 21pt;
+        }
 
-            tr.grid-row td
-            {
-               border: solid 1px #909090;
-               margin: 0;
-               text-align: center;
-               height: 50pt;
-               min-width: 50pt;
-            }
+        tr.grid-row td
+        {
+           border: solid 1px #909090;
+           margin: 0;
+           text-align: center;
+           height: 50pt;
+           min-width: 50pt;
+        }
 
-            tr.grid-row
-            {
-               margin: 0;
-            }
+        tr.grid-row
+        {
+           margin: 0;
+        }
 
-            td.white-field-solved
-            {
-               background-color: white;
-               color: black;
-            }
+        td.white-field-solved
+        {
+           background-color: white;
+           color: black;
+        }
 
-            td.white-field-unsolved
-            {
-               font-size: 8pt;
-               padding-left: 0.37em;
-               padding-right: 0.37em;
-            }
+        td.white-field-unsolved
+        {
+           font-size: 8pt;
+           padding-left: 0.37em;
+           padding-right: 0.37em;
+        }
 
-            td.black-field
-            {
-                background-color: black;
-                color: white;
-            }
-            </style>
-            </head>
-            """;
+        td.black-field
+        {
+            background-color: black;
+            color: white;
+        }
+        </style>
+        </head>
+        """;
 
     public void Save(Grid<SolverField> grid, TextWriter writer)
     {
@@ -89,7 +87,8 @@ public sealed class HtmlGridRenderer
             """
             <!DOCTYPE html>
             <html lang="en">
-            """);
+            """
+        );
         writer.WriteLine(HtmlHead);
 
         writer.WriteLine("<body><table class=\"grid\">");
@@ -114,10 +113,13 @@ public sealed class HtmlGridRenderer
     {
         return field switch
         {
-            SolverField.WhiteField wf when wf.Data.IsSolved => wf.Data.Min.ToString(CultureInfo.InvariantCulture),
+            SolverField.WhiteField wf when wf.Data.IsSolved =>
+                wf.Data.Min.ToString(CultureInfo.InvariantCulture),
             SolverField.WhiteField wf => GetCellInnerHtml(wf.Data),
             SolverField.BlackBlank => "&nbsp;",
-            SolverField.BlackNumber bn => bn.Number.ToString(CultureInfo.InvariantCulture),
+            SolverField.BlackNumber bn => bn.Number.ToString(
+                CultureInfo.InvariantCulture
+            ),
             _ => throw UnknownFieldType(field),
         };
     }
@@ -135,7 +137,11 @@ public sealed class HtmlGridRenderer
 
             _ = result
                 .Append("<div>")
-                .Append(fieldData.Contains(i) ? i.ToString(CultureInfo.InvariantCulture) : "&nbsp;")
+                .Append(
+                    fieldData.Contains(i)
+                        ? i.ToString(CultureInfo.InvariantCulture)
+                        : "&nbsp;"
+                )
                 .Append("</div>");
 
             if (i % 3 == 0 || i == n)
@@ -151,7 +157,8 @@ public sealed class HtmlGridRenderer
     {
         return field switch
         {
-            SolverField.WhiteField wf when wf.Data.IsSolved => "white-field-solved",
+            SolverField.WhiteField wf when wf.Data.IsSolved =>
+                "white-field-solved",
             SolverField.WhiteField => "white-field-unsolved",
             SolverField.BlackBlank or SolverField.BlackNumber => "black-field",
             _ => throw UnknownFieldType(field),
@@ -161,7 +168,8 @@ public sealed class HtmlGridRenderer
     private static ArgumentException UnknownFieldType(SolverField field)
     {
         return new ArgumentException(
-                        paramName: nameof(field),
-                        message: "Unknown type of solver field: " + field.GetType());
+            paramName: nameof(field),
+            message: "Unknown type of solver field: " + field.GetType()
+        );
     }
 }

@@ -10,6 +10,4 @@ namespace Straights.Solver.Data;
 /// </summary>
 /// <param name="message">The exception message.</param>
 public class NotSolvableException(string message)
-    : InvalidOperationException(message)
-{
-}
+    : InvalidOperationException(message) { }

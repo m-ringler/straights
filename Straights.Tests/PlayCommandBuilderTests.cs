@@ -6,10 +6,8 @@ namespace Straights.Tests;
 
 using System.IO.Abstractions;
 using System.IO.Abstractions.TestingHelpers;
-
 using Straights.Console;
 using Straights.Play;
-
 using XFS = System.IO.Abstractions.TestingHelpers.MockUnixSupport;
 
 /// <summary>
@@ -24,17 +22,15 @@ public class PlayCommandBuilderTests
     [InlineData(new[] { "--offline" }, 7138)]
     public void BuildAndInvoke_WhenFileProvided_ExecutesExpected(
         string[] offlineTokens,
-        int? expectedPort)
+        int? expectedPort
+    )
     {
         // ARRANGE
         var fileSystem = FileSystem();
         var runner = new RunCommandFunction<PlayCommand>(5);
         var sut = new PlayCommandBuilder(fileSystem, runner.Invoke);
 
-        string[] args = [
-            XFS.Path(@"C:\Foo\input.json"),
-            .. offlineTokens,
-        ];
+        string[] args = [XFS.Path(@"C:\Foo\input.json"), .. offlineTokens];
 
         // ACT
         var command = sut.Build();
@@ -87,13 +83,19 @@ public class PlayCommandBuilderTests
     public Task Help()
     {
         return HelpVerifier.VerifyHelp<PlayCommand>(
-            execute =>
-                new PlayCommandBuilder(new MockFileSystem(), execute));
+            execute => new PlayCommandBuilder(new MockFileSystem(), execute)
+        );
     }
 
-    private static void ShouldHaveFileSystem(IFileInfo f, IFileSystem fileSystem)
+    private static void ShouldHaveFileSystem(
+        IFileInfo f,
+        IFileSystem fileSystem
+    )
     {
-        f.Should().BeOfType<FileInfoWrapper>().Which.FileSystem.Should().BeSameAs(fileSystem);
+        f.Should()
+            .BeOfType<FileInfoWrapper>()
+            .Which.FileSystem.Should()
+            .BeSameAs(fileSystem);
     }
 
     private static IFileSystem FileSystem()

@@ -7,7 +7,6 @@ namespace Straights;
 using System;
 using System.Diagnostics;
 using System.IO.Abstractions;
-
 using Straights.Console;
 using Straights.Play;
 using Straights.Solver;
@@ -20,22 +19,22 @@ public sealed class GenerateCommand
 {
     public required GridParameters GridParameters { get; init; }
 
-    public GridLayout Layout { get; init; }
-        = GenerateCommandBuilder.DefaultLayout;
+    public GridLayout Layout { get; init; } =
+        GenerateCommandBuilder.DefaultLayout;
 
     public required (IRandom Rng, string Seed) Random { get; init; }
 
-    public int Attempts { get; init; }
-        = GenerateCommandBuilder.DefaultAttempts;
+    public int Attempts { get; init; } = GenerateCommandBuilder.DefaultAttempts;
 
-    public int FailureThreshold { get; init; }
-        = GenerateCommandBuilder.DefaultFailureThreshold;
+    public int FailureThreshold { get; init; } =
+        GenerateCommandBuilder.DefaultFailureThreshold;
 
     public IFileInfo? OutputFile { get; init; }
 
     public IFileInfo? Template { get; init; }
 
-    public SimplifierStrength DifficultyLevel { get; init; } = SimplifierStrength.DefaultStrength;
+    public SimplifierStrength DifficultyLevel { get; init; } =
+        SimplifierStrength.DefaultStrength;
 
     public IWriteOnlyConsole Terminal { get; init; } = new Terminal();
 
@@ -49,7 +48,9 @@ public sealed class GenerateCommand
         GridBuilder? result = default;
         try
         {
-            var generator = new GeneratorBuilder(this.GetBuildEmptyGridGenerator())
+            var generator = new GeneratorBuilder(
+                this.GetBuildEmptyGridGenerator()
+            )
             {
                 GridParameters = this.GridParameters,
                 Layout = this.Layout,
@@ -84,20 +85,19 @@ public sealed class GenerateCommand
 
         this.WriteOutput(convertibleGrid);
 
-        new PlayUrl { BaseUri = this.PlayUri }
-            .PrintPlayUrl(
-                this.Terminal,
-                convertibleGrid.SolverGrid);
+        new PlayUrl { BaseUri = this.PlayUri }.PrintPlayUrl(
+            this.Terminal,
+            convertibleGrid.SolverGrid
+        );
 
         return 0;
     }
 
     private GeneratorBuilder.BuildEmptyGridGenerator GetBuildEmptyGridGenerator()
     {
-        return
-            this.Template == null
-                ? GeneratorBuilder.GetEmptyGridGenerator
-                : (_, _, _) => this.LoadTemplate();
+        return this.Template == null
+            ? GeneratorBuilder.GetEmptyGridGenerator
+            : (_, _, _) => this.LoadTemplate();
     }
 
     private IEmptyGridGenerator LoadTemplate()

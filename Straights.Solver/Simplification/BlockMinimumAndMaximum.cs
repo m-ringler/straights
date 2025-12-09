@@ -13,8 +13,7 @@ using Straights.Solver.Data;
 /// and eliminates all values outside that range.
 /// </summary>
 /// <seealso cref="BlockAnalyzer.GetMaxRange"/>
-public sealed class BlockMinimumAndMaximum
-    : ISimplify<SolverBlock>
+public sealed class BlockMinimumAndMaximum : ISimplify<SolverBlock>
 {
     public void Simplify(SolverBlock item)
     {

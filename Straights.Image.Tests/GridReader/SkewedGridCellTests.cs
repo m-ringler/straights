@@ -16,9 +16,9 @@ public class SkewedGridCellTests
             TopLeft: new(1.3f, 1.3f),
             TopRight: new(8.3f, 2.5f),
             BottomLeft: new(0.8f, 21.0f),
-            BottomRight: new(9.1f, 20.0f));
+            BottomRight: new(9.1f, 20.0f)
+        );
 
-        _ = sut.GetMaximumInscribedRect().Should().Be(
-            (2, 3, 7, 18));
+        _ = sut.GetMaximumInscribedRect().Should().Be((2, 3, 7, 18));
     }
 }

@@ -1,4 +1,4 @@
-﻿// SPDX-FileCopyrightText: 2025 Moritz Ringler
+// SPDX-FileCopyrightText: 2025 Moritz Ringler
 //
 // SPDX-License-Identifier: MIT
 
@@ -11,7 +11,10 @@ public class DigitFinderThreshold(int padding) : IDigitFinder
         using var binary = gridCell.Threshold(128, 255, ThresholdTypes.Binary);
         var binaryNormalized = binary;
 
-        var contours = binaryNormalized.FindContoursAsArray(RetrievalModes.External, ContourApproximationModes.ApproxSimple);
+        var contours = binaryNormalized.FindContoursAsArray(
+            RetrievalModes.External,
+            ContourApproximationModes.ApproxSimple
+        );
         if (contours.Length == 0)
         {
             return null;
@@ -21,7 +24,9 @@ public class DigitFinderThreshold(int padding) : IDigitFinder
         if (padding != 0)
         {
             rect.Inflate(padding, padding);
-            rect = rect.Intersect(new Rect(0, 0, gridCell.Width, gridCell.Height));
+            rect = rect.Intersect(
+                new Rect(0, 0, gridCell.Width, gridCell.Height)
+            );
         }
 
         return new Mat(gridCell, rect);

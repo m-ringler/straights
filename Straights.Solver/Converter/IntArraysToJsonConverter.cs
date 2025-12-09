@@ -96,8 +96,9 @@ internal static class IntArraysToJsonConverter
         }
 
         throw new ArgumentException(
-                        paramName: nameof(json),
-                        message: $"Missing closing bracket ].");
+            paramName: nameof(json),
+            message: $"Missing closing bracket ]."
+        );
     }
 
     private static IEnumerable<int> ReadNumbers(ReadOnlySpan<char> array)
@@ -110,15 +111,16 @@ internal static class IntArraysToJsonConverter
             var token = SkipLeadingWhitespace(item);
             if (token.Length != 0)
             {
-                result.Add(
-                    int.Parse(token, CultureInfo.InvariantCulture));
+                result.Add(int.Parse(token, CultureInfo.InvariantCulture));
             }
         }
 
         return result;
     }
 
-    private static ReadOnlySpan<char> SkipLeadingWhitespace(ReadOnlySpan<char> token)
+    private static ReadOnlySpan<char> SkipLeadingWhitespace(
+        ReadOnlySpan<char> token
+    )
     {
         int j = 0;
         for (; j < token.Length; j++)
@@ -157,7 +159,8 @@ internal static class IntArraysToJsonConverter
             ']' => bracketCount - 1,
             ',' => bracketCount,
             _ => throw new ArgumentException(
-                                $"Unexpected character {c}: Expecting one of '[],'."),
+                $"Unexpected character {c}: Expecting one of '[],'."
+            ),
         };
     }
 

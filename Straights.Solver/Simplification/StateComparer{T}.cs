@@ -19,21 +19,20 @@ namespace Straights.Solver.Simplification;
 /// </typeparam>
 public class StateComparer<T>(IEnumerable<IGetSnapshot<T>> itemsToMonitor)
     : IChangeDetector<IGetSnapshot<T>>
-      where T : IEquatable<T>
+    where T : IEquatable<T>
 {
     private readonly ImmutableDictionary<IGetSnapshot<T>, T> initialSnapshots =
         itemsToMonitor.ToImmutableDictionary(
             item => item,
-            item => item.GetSnapshot());
+            item => item.GetSnapshot()
+        );
 
-    public IEnumerable<IGetSnapshot<T>> MonitoredItems
-        => this.initialSnapshots.Keys;
+    public IEnumerable<IGetSnapshot<T>> MonitoredItems =>
+        this.initialSnapshots.Keys;
 
     public bool HasChanged(IGetSnapshot<T> item)
     {
-        if (!this.initialSnapshots.TryGetValue(
-                item,
-                out T? initialState))
+        if (!this.initialSnapshots.TryGetValue(item, out T? initialState))
         {
             return true;
         }

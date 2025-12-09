@@ -11,7 +11,8 @@ using System.Text;
 /// </summary>
 public static class Base64UrlEncoder
 {
-    private const string BASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+    private const string BASE =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
 
     public static string EncodeBase64Url(string binary)
     {

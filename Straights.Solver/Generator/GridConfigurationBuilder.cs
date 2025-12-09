@@ -1,4 +1,4 @@
-﻿// SPDX-FileCopyrightText: 2025 Moritz Ringler
+// SPDX-FileCopyrightText: 2025 Moritz Ringler
 //
 // SPDX-License-Identifier: MIT
 
@@ -12,7 +12,8 @@ public static class GridConfigurationBuilder
         GridLayout layout,
         int size,
         int? blackBlanksRaw,
-        int? blackNumbersRaw)
+        int? blackNumbersRaw
+    )
     {
         var divisor = SymmetryValidator.GetDivisor(layout, size);
 
@@ -20,10 +21,8 @@ public static class GridConfigurationBuilder
         int blackNumbers;
         if (divisor == 1 || (blackBlanksRaw != null && blackNumbersRaw != null))
         {
-            blackBlanks = blackBlanksRaw
-                ?? GetDefaultBlackBlanks(size);
-            blackNumbers = blackNumbersRaw
-                ?? GetDefaultBlackNumbers(size);
+            blackBlanks = blackBlanksRaw ?? GetDefaultBlackBlanks(size);
+            blackNumbers = blackNumbersRaw ?? GetDefaultBlackNumbers(size);
         }
         else if (blackBlanksRaw != null)
         {
@@ -33,8 +32,7 @@ public static class GridConfigurationBuilder
         }
         else
         {
-            blackNumbers = blackNumbersRaw
-                ?? GetDefaultBlackNumbers(size);
+            blackNumbers = blackNumbersRaw ?? GetDefaultBlackNumbers(size);
             blackBlanks = GetDefaultBlackBlanks(size);
             Adjust(blackNumbers, divisor, ref blackBlanks);
         }
@@ -46,14 +44,16 @@ public static class GridConfigurationBuilder
     {
         return ScaleDefaultNumberOfFields(
             DefaultParameters.NumberOfBlackBlanks,
-            size);
+            size
+        );
     }
 
     private static int GetDefaultBlackNumbers(int size)
     {
         return ScaleDefaultNumberOfFields(
             DefaultParameters.NumberOfBlackNumbers,
-            size);
+            size
+        );
     }
 
     private static int ScaleDefaultNumberOfFields(int n, int size)
@@ -65,7 +65,11 @@ public static class GridConfigurationBuilder
         return n * numberOfFields / defaultNumberOfFields;
     }
 
-    private static void Adjust(int fixedCount, int divisor, ref int variableCount)
+    private static void Adjust(
+        int fixedCount,
+        int divisor,
+        ref int variableCount
+    )
     {
         int totalCountRaw = fixedCount + variableCount;
         int multiplier = (int)Math.Round(totalCountRaw * 1.0 / divisor);

@@ -18,7 +18,14 @@ public class BlockMinimumAndMaximumTests
         // ARRANGE
         var column = SolverColumn.Create(
             9,
-            [[[9], [2, 4, 5, 6, 8], [7]]]);
+            [
+                [
+                    [9],
+                    [2, 4, 5, 6, 8],
+                    [7],
+                ],
+            ]
+        );
 
         var simplifier = new BlockMinimumAndMaximum();
 
@@ -26,13 +33,17 @@ public class BlockMinimumAndMaximumTests
         simplifier.Simplify(column.Blocks[0]);
 
         // ASSERT
-        _ = column.DumpCode().Should().Be(
-"""
+        _ = column
+            .DumpCode()
+            .Should()
+            .Be(
+                """
 SolverColumn.Create(9,
 [[[9],
 [8],
 [7]]])
-""");
+"""
+            );
     }
 
     [Fact]
@@ -41,7 +52,15 @@ SolverColumn.Create(9,
         // ARRANGE
         var column = SolverColumn.Create(
             9,
-            [[[1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2]]]);
+            [
+                [
+                    [1, 2, 3, 4, 5, 6, 7, 8, 9],
+                    [1, 2, 3, 4, 5, 6, 7, 8, 9],
+                    [1, 2, 3, 4, 5, 6, 7, 8, 9],
+                    [1, 2],
+                ],
+            ]
+        );
 
         var simplifier = new BlockMinimumAndMaximum();
 
@@ -49,14 +68,18 @@ SolverColumn.Create(9,
         simplifier.Simplify(column.Blocks[0]);
 
         // ASSERT
-        _ = column.DumpCode().Should().Be(
-"""
+        _ = column
+            .DumpCode()
+            .Should()
+            .Be(
+                """
 SolverColumn.Create(9,
 [[[1, 2, 3, 4, 5],
 [1, 2, 3, 4, 5],
 [1, 2, 3, 4, 5],
 [1, 2]]])
-""");
+"""
+            );
     }
 
     [Fact]
@@ -65,7 +88,15 @@ SolverColumn.Create(9,
         // ARRANGE
         var column = SolverColumn.Create(
             9,
-            [[[1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], [7, 8, 9]]]);
+            [
+                [
+                    [1, 2, 3, 4, 5, 6, 7, 8, 9],
+                    [1, 2, 3, 4, 5, 6, 7, 8, 9],
+                    [1, 2, 3, 4, 5, 6, 7, 8, 9],
+                    [7, 8, 9],
+                ],
+            ]
+        );
 
         var simplifier = new BlockMinimumAndMaximum();
 
@@ -73,14 +104,18 @@ SolverColumn.Create(9,
         simplifier.Simplify(column.Blocks[0]);
 
         // ASSERT
-        _ = column.DumpCode().Should().Be(
-"""
+        _ = column
+            .DumpCode()
+            .Should()
+            .Be(
+                """
 SolverColumn.Create(9,
 [[[4, 5, 6, 7, 8, 9],
 [4, 5, 6, 7, 8, 9],
 [4, 5, 6, 7, 8, 9],
 [7, 8, 9]]])
-""");
+"""
+            );
     }
 
     [Fact]
@@ -89,7 +124,16 @@ SolverColumn.Create(9,
         // ARRANGE
         var column = SolverColumn.Create(
             9,
-            [[[7], [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], [8], [1, 2, 3, 4, 5, 6, 7, 8, 9]]]);
+            [
+                [
+                    [7],
+                    [1, 2, 3, 4, 5, 6, 7, 8, 9],
+                    [1, 2, 3, 4, 5, 6, 7, 8, 9],
+                    [8],
+                    [1, 2, 3, 4, 5, 6, 7, 8, 9],
+                ],
+            ]
+        );
 
         var simplifier = new BlockMinimumAndMaximum();
 
@@ -97,14 +141,18 @@ SolverColumn.Create(9,
         simplifier.Simplify(column.Blocks[0]);
 
         // ASSERT
-        _ = column.DumpCode().Should().Be(
-"""
+        _ = column
+            .DumpCode()
+            .Should()
+            .Be(
+                """
 SolverColumn.Create(9,
 [[[7],
 [4, 5, 6, 7, 8, 9],
 [4, 5, 6, 7, 8, 9],
 [8],
 [4, 5, 6, 7, 8, 9]]])
-""");
+"""
+            );
     }
 }
