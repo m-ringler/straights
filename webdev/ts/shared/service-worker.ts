@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-const CACHE_NAME = 'v0.7.2';
+const CACHE_NAME = 'v0.7.3';
 const urlsToCache = [
   './',
   './encoder.js',
