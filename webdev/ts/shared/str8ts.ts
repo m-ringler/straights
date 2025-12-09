@@ -674,18 +674,18 @@ export class UIController {
     await this._handleGameLoadAsync();
 
     // event handlers for UI elements
-    this.$('td[id^="ce"]').on('click', (evt: Event) => {
-      // Game fields
+    const gridCells = this.$('td[id^="ce"]');
+    gridCells.on('click', (evt: Event) => {
       const { row, col } = this.getRowAndColumnOfTargetCell(evt);
       this.selectCell(row, col);
     });
-    this.$('td[id^="ce"]').on('dblclick', (evt: Event) => {
-      // Game fields
+    gridCells.on('dblclick', (evt: Event) => {
       const { row, col } = this.getRowAndColumnOfTargetCell(evt);
       this.toggleNoOrAllNotes(row, col);
     });
-    this.$('td[data-button^="bn"]').on('click', (evt) => {
-      // Number buttons
+
+    const numberButtons = this.$('td[data-button^="bn"]');
+    numberButtons.on('click', (evt: Event) => {
       const el = evt.currentTarget as Element;
       const num = Number(this.$(el).text());
       this.handleNumberInput(num);
@@ -772,7 +772,7 @@ export class UIController {
 
     // generic close buttons for dialogs (hide overlay)
     this.$('.close-button')
-      .not('#hint-close')
+      .not('#hint-close') // special handler above
       .on('click', async () => await this.showDialogAsync(false));
   }
 
