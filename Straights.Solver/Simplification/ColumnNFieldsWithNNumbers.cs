@@ -5,7 +5,6 @@
 namespace Straights.Solver.Simplification;
 
 using System;
-
 using Straights.Solver.Data;
 
 /// <summary>
@@ -27,7 +26,8 @@ public sealed class ColumnNFieldsWithNNumbers : ISimplify<SolverColumn>
 
         for (int n = 2; n <= fieldsByCount.MaxCount; n++)
         {
-            var fieldsWithAtMostNValues = fieldsByCount.GetFieldsWithAtMostNValues(n);
+            var fieldsWithAtMostNValues =
+                fieldsByCount.GetFieldsWithAtMostNValues(n);
             if (fieldsWithAtMostNValues.Count < n)
             {
                 continue;
@@ -37,30 +37,36 @@ public sealed class ColumnNFieldsWithNNumbers : ISimplify<SolverColumn>
             fieldsWithAtMostNValues.Sort((a, b) => b.Count.CompareTo(a.Count));
 
             // Find combinations of n fields that contain at most n distinct values.
-            var combinationFinder = new CombinationFinder<WhiteFieldData, WhiteFieldData?>(
+            var combinationFinder = new CombinationFinder<
+                WhiteFieldData,
+                WhiteFieldData?
+            >(
                 aggregate: (agg, a) => agg?.Union(a) ?? a,
-                isEligible: agg => agg != null && agg.Count <= n);
+                isEligible: agg => agg != null && agg.Count <= n
+            );
 
             var combinations = combinationFinder.EnumerateEligibleCombinations(
                 fieldsWithAtMostNValues,
                 null,
-                n);
+                n
+            );
 
             foreach (var fieldGroup in combinations)
             {
                 // Perform the lazy enumeration of fieldGroup
                 // and store the result as a set.
                 var theFields = fieldGroup.ToHashSet();
-                var theValues = theFields.Union()
-                    ?? Enumerable.Empty<int>();
-                item.Fields.Where(x => !theFields.Contains(x)).Remove(theValues);
+                var theValues = theFields.Union() ?? Enumerable.Empty<int>();
+                item.Fields.Where(x => !theFields.Contains(x))
+                    .Remove(theValues);
             }
         }
     }
 
     private sealed class FieldsByCount(int maxCount)
     {
-        private readonly Dictionary<int, List<WhiteFieldData>> fieldsByCount = new();
+        private readonly Dictionary<int, List<WhiteFieldData>> fieldsByCount =
+            new();
 
         public int MaxCount { get; } = maxCount;
 

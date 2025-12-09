@@ -18,11 +18,18 @@ public class ColumnConsistentRangesTests
         // ARRANGE
         var column = SolverColumn.Create(
             9,
-            [[[2, 3, 4, 5],
-            [4, 6],
-            [2, 3, 4, 5, 7]],
-            [[5, 6, 7, 8],
-            [4, 6, 7]]]);
+            [
+                [
+                    [2, 3, 4, 5],
+                    [4, 6],
+                    [2, 3, 4, 5, 7],
+                ],
+                [
+                    [5, 6, 7, 8],
+                    [4, 6, 7],
+                ],
+            ]
+        );
 
         var simplifier = new ColumnConsistentRanges();
 
@@ -30,15 +37,19 @@ public class ColumnConsistentRangesTests
         simplifier.Simplify(column);
 
         // ASSERT
-        _ = column.DumpCode().Should().Be(
-"""
+        _ = column
+            .DumpCode()
+            .Should()
+            .Be(
+                """
 SolverColumn.Create(9,
 [[[2, 3, 4, 5],
 [4, 6],
 [2, 3, 4, 5]],
 [[5, 6, 7, 8],
 [6, 7]]])
-""");
+"""
+            );
     }
 
     [Fact]
@@ -47,14 +58,25 @@ SolverColumn.Create(9,
         // ARRANGE
         var column = SolverColumn.Create(
             9,
-            [[[1, 2, 3, 4, 5, 6, 8],
-            [1, 2, 3, 4, 7]],
-            [[9]],
-            [[2, 3, 4, 5],
-            [4, 6],
-            [2, 3, 4, 5, 7]],
-            [[5, 6, 7, 8],
-            [6, 7]]]);
+            [
+                [
+                    [1, 2, 3, 4, 5, 6, 8],
+                    [1, 2, 3, 4, 7],
+                ],
+                [
+                    [9],
+                ],
+                [
+                    [2, 3, 4, 5],
+                    [4, 6],
+                    [2, 3, 4, 5, 7],
+                ],
+                [
+                    [5, 6, 7, 8],
+                    [6, 7],
+                ],
+            ]
+        );
 
         var simplifier = new ColumnConsistentRanges();
 
@@ -62,8 +84,11 @@ SolverColumn.Create(9,
         simplifier.Simplify(column);
 
         // ASSERT
-        _ = column.DumpCode().Should().Be(
-"""
+        _ = column
+            .DumpCode()
+            .Should()
+            .Be(
+                """
 SolverColumn.Create(9,
 [[[1, 2, 3, 5, 6, 8],
 [1, 2, 3, 7]],
@@ -73,6 +98,7 @@ SolverColumn.Create(9,
 [2, 3, 4, 5]],
 [[5, 6, 7, 8],
 [6, 7]]])
-""");
+"""
+            );
     }
 }

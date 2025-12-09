@@ -6,8 +6,9 @@ namespace Straights.Solver.Generator.Empty;
 
 using Straights.Solver.Builder;
 
-internal sealed class DiagonallySymmetricEmptyGridGenerator(GridParameters gridParameters)
-    : IEmptyGridGenerator
+internal sealed class DiagonallySymmetricEmptyGridGenerator(
+    GridParameters gridParameters
+) : IEmptyGridGenerator
 {
     public required IRandom RandomNumberGenerator { get; init; }
 
@@ -17,7 +18,8 @@ internal sealed class DiagonallySymmetricEmptyGridGenerator(GridParameters gridP
     {
         return EmptyGridGenerator.GenerateGrid(
             this.GridParameters,
-            this.GenerateFieldIndices(5));
+            this.GenerateFieldIndices(5)
+        );
     }
 
 #if false
@@ -40,9 +42,10 @@ internal sealed class DiagonallySymmetricEmptyGridGenerator(GridParameters gridP
         int size = this.GridParameters.Size;
 
         var index1D = Enumerable.Range(0, size);
-        var allIndices = from y in index1D
-                         from x in Enumerable.Range(0, y + 1)
-                         select new FieldIndex(x, y);
+        var allIndices =
+            from y in index1D
+            from x in Enumerable.Range(0, y + 1)
+            select new FieldIndex(x, y);
 
         var all = allIndices.ToList();
         this.RandomNumberGenerator.Shuffle(all);
@@ -84,7 +87,9 @@ internal sealed class DiagonallySymmetricEmptyGridGenerator(GridParameters gridP
             return maxRecurse > 0
                 ? this.GenerateFieldIndices(maxRecurse - 1)
                 : throw new InvalidOperationException(
-                    "Failed to build a grid for parameters " + this.GridParameters);
+                    "Failed to build a grid for parameters "
+                        + this.GridParameters
+                );
         }
 
         this.RandomNumberGenerator.Shuffle(result);

@@ -18,4 +18,5 @@ public record struct Hint(
     int NumberToRemove,
     FieldIndex Location,
     Type Simplifier,
-    bool IsHorizontal);
+    bool IsHorizontal
+);

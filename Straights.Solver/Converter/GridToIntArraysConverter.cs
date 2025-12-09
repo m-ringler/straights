@@ -21,9 +21,16 @@ internal static class GridToIntArraysConverter
                 row[ix] = field switch
                 {
                     SolverField.BlackBlank => [0],
-                    SolverField.BlackNumber b => [b.Number == 0 && b.GetWhiteFieldData().IsSolved ? -b.GetWhiteFieldData().Min : -b.Number],
+                    SolverField.BlackNumber b =>
+                    [
+                        b.Number == 0 && b.GetWhiteFieldData().IsSolved
+                            ? -b.GetWhiteFieldData().Min
+                            : -b.Number,
+                    ],
                     SolverField.WhiteField w => [.. w.Data],
-                    _ => throw new InvalidOperationException("Unknown field type " + field.GetType()),
+                    _ => throw new InvalidOperationException(
+                        "Unknown field type " + field.GetType()
+                    ),
                 };
             }
         }
@@ -45,10 +52,16 @@ internal static class GridToIntArraysConverter
                 {
                     SolverField field = row[ix] switch
                     {
-                        int[] x when x.Length == 0 => new SolverField.WhiteField(new WhiteFieldData(size)),
+                        int[] x when x.Length == 0 =>
+                            new SolverField.WhiteField(
+                                new WhiteFieldData(size)
+                            ),
                         int[] x when x.Length == 1 && x[0] == 0 => bb,
-                        int[] x when x.Length == 1 && x[0] < 0 => new SolverField.BlackNumber(-x[0], size),
-                        int[] x => new SolverField.WhiteField(CreateWhiteFieldData(x, size)),
+                        int[] x when x.Length == 1 && x[0] < 0 =>
+                            new SolverField.BlackNumber(-x[0], size),
+                        int[] x => new SolverField.WhiteField(
+                            CreateWhiteFieldData(x, size)
+                        ),
                     };
 
                     yield return field;
@@ -62,13 +75,13 @@ internal static class GridToIntArraysConverter
     public static Grid<SolverField> GridFromJson(string json)
     {
         return GridFromIntArrays(
-            IntArraysToJsonConverter.IntArraysFromJson(json));
+            IntArraysToJsonConverter.IntArraysFromJson(json)
+        );
     }
 
     public static string ToJson(this Grid<SolverField> grid)
     {
-        return IntArraysToJsonConverter.ToJson(
-            ToIntArrays(grid));
+        return IntArraysToJsonConverter.ToJson(ToIntArrays(grid));
     }
 
     private static WhiteFieldData CreateWhiteFieldData(int[] x, int size)

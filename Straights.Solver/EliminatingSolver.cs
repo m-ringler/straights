@@ -18,8 +18,7 @@ using Straights.Solver.Simplification;
 /// This solver can solve all grids that have a unique solution,
 /// and fails to solve grids that have multiple solutions.
 /// </remarks>
-public sealed class EliminatingSolver(
-        ISimplify<SolverGrid> gridSimplifier)
+public sealed class EliminatingSolver(ISimplify<SolverGrid> gridSimplifier)
     : ISolver
 {
     /// <summary>
@@ -27,9 +26,11 @@ public sealed class EliminatingSolver(
     /// that uses the default simplifier of the <see cref="GridSimplifierFactory" />.
     /// </summary>
     public EliminatingSolver()
-    : this(GridSimplifierFactory.BuildIterativeSimplifier(SimplifierStrength.DefaultStrength))
-    {
-    }
+        : this(
+            GridSimplifierFactory.BuildIterativeSimplifier(
+                SimplifierStrength.DefaultStrength
+            )
+        ) { }
 
     /// <summary>
     /// Gets the grid simplifier used by the current instance.
@@ -66,7 +67,8 @@ public sealed class EliminatingSolver(
             this.GuessAndSimplify(
                 guessFieldIndex,
                 new Queue<int>(currentGuessField),
-                ref workingData);
+                ref workingData
+            );
 
             if (workingData.IsSolved)
             {
@@ -84,9 +86,10 @@ public sealed class EliminatingSolver(
 
     private static List<FieldIndex> GetUnsolvedIndices(SolverGrid data)
     {
-        var result = from index in data.Grid.AllFieldIndices()
-                     where GetField(data, index)?.IsSolved == false
-                     select index;
+        var result =
+            from index in data.Grid.AllFieldIndices()
+            where GetField(data, index)?.IsSolved == false
+            select index;
 
         return [.. result];
     }
@@ -94,7 +97,8 @@ public sealed class EliminatingSolver(
     private void GuessAndSimplify(
         FieldIndex fieldIndex,
         Queue<int> guessValues,
-        ref SolverGrid data)
+        ref SolverGrid data
+    )
     {
         while (guessValues.TryDequeue(out int currentGuess))
         {

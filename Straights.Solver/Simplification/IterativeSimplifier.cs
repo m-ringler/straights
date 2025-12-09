@@ -5,12 +5,12 @@
 namespace Straights.Solver.Simplification;
 
 public sealed class IterativeSimplifier<TTarget, TSnapshottable>(
-        Func<IChangeDetector<TSnapshottable>> newSnapshotFunc,
-        ChangeDetectorProxy<TSnapshottable> changeDetector,
-        ISimplify<TTarget> coreSimplifier,
-        Action<int> onBeginIteration,
-        Action<int> onEndIteration)
-    : ISimplify<TTarget>
+    Func<IChangeDetector<TSnapshottable>> newSnapshotFunc,
+    ChangeDetectorProxy<TSnapshottable> changeDetector,
+    ISimplify<TTarget> coreSimplifier,
+    Action<int> onBeginIteration,
+    Action<int> onEndIteration
+) : ISimplify<TTarget>
     where TTarget : TSnapshottable
 {
     public void Simplify(TTarget data)
@@ -34,7 +34,6 @@ public sealed class IterativeSimplifier<TTarget, TSnapshottable>(
             coreSimplifier.Simplify(data);
             onEndIteration(i);
             i++;
-        }
-        while (previousState.HasChanged(data));
+        } while (previousState.HasChanged(data));
     }
 }

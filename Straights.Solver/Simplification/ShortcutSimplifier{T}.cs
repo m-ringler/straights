@@ -20,8 +20,8 @@ namespace Straights.Solver.Simplification;
 /// </param>
 public class ShortcutSimplifier<T>(
     ISimplify<T> core,
-    IChangeDetector<T> changeDetector)
-     : ISimplify<T>
+    IChangeDetector<T> changeDetector
+) : ISimplify<T>
 {
     public ISimplify<T> Core { get; } = core;
 

@@ -26,7 +26,9 @@ public class RandomEmptyGridGeneratorFactory(IRandom randomNumberGenerator)
         };
     }
 
-    public IEmptyGridGenerator GetUniformIndependent(GridParameters gridParameters)
+    public IEmptyGridGenerator GetUniformIndependent(
+        GridParameters gridParameters
+    )
     {
         return new UniformIndependentEmptyGridGenerator(gridParameters)
         {
@@ -34,7 +36,9 @@ public class RandomEmptyGridGeneratorFactory(IRandom randomNumberGenerator)
         };
     }
 
-    public IEmptyGridGenerator GetDiagonallySymmetric(GridParameters gridParameters)
+    public IEmptyGridGenerator GetDiagonallySymmetric(
+        GridParameters gridParameters
+    )
     {
         return new DiagonallySymmetricEmptyGridGenerator(gridParameters)
         {
@@ -42,7 +46,9 @@ public class RandomEmptyGridGeneratorFactory(IRandom randomNumberGenerator)
         };
     }
 
-    public IEmptyGridGenerator GetHorizontallySymmetric(GridParameters gridParameters)
+    public IEmptyGridGenerator GetHorizontallySymmetric(
+        GridParameters gridParameters
+    )
     {
         return new HorizontallySymmetricEmptyGridGenerator(gridParameters)
         {
@@ -50,17 +56,23 @@ public class RandomEmptyGridGeneratorFactory(IRandom randomNumberGenerator)
         };
     }
 
-    public IEmptyGridGenerator GetVerticallySymmetric(GridParameters gridParameters)
+    public IEmptyGridGenerator GetVerticallySymmetric(
+        GridParameters gridParameters
+    )
     {
         return new VerticallySymmetricEmptyGridGenerator(
             gridParameters,
-            this.RandomNumberGenerator);
+            this.RandomNumberGenerator
+        );
     }
 
-    public IEmptyGridGenerator GetHorizontallyAndVerticallySymmetric(GridParameters gridParameters)
+    public IEmptyGridGenerator GetHorizontallyAndVerticallySymmetric(
+        GridParameters gridParameters
+    )
     {
         return new HorizontallyAndVerticallySymmetricEmptyGridGenerator(
-            gridParameters)
+            gridParameters
+        )
         {
             RandomNumberGenerator = this.RandomNumberGenerator,
         };
@@ -68,8 +80,7 @@ public class RandomEmptyGridGeneratorFactory(IRandom randomNumberGenerator)
 
     public IEmptyGridGenerator GetPointSymmetric(GridParameters gridParameters)
     {
-        return new PointSymmetricEmptyGridGenerator(
-            gridParameters)
+        return new PointSymmetricEmptyGridGenerator(gridParameters)
         {
             RandomNumberGenerator = this.RandomNumberGenerator,
         };

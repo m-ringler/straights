@@ -11,4 +11,5 @@ namespace Straights.Console;
 /// <param name="ReadLine">The read-line function of the console.</param>
 public readonly record struct ReadWriteConsole(
     IWriteOnlyConsole Terminal,
-    Func<string?> ReadLine);
+    Func<string?> ReadLine
+);

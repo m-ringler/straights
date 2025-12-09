@@ -5,12 +5,13 @@
 namespace Straights;
 
 using System.IO.Abstractions;
-
 using Straights.Console;
 using Straights.Play;
 
 public sealed class PlayCommand(
-    IBrowserLauncher browserLauncher, IFileSystem fs)
+    IBrowserLauncher browserLauncher,
+    IFileSystem fs
+)
 {
     public IWriteOnlyConsole Terminal { get; init; } = new Terminal();
 
@@ -36,8 +37,7 @@ public sealed class PlayCommand(
 
         Uri playUrl = this.GetPlayUri(baseUri);
 
-        this.Terminal.WriteLine(
-            "Launching " + playUrl);
+        this.Terminal.WriteLine("Launching " + playUrl);
 
         _ = browserLauncher.OpenBrowser(playUrl.ToString());
         serverTask?.Wait();
@@ -54,11 +54,9 @@ public sealed class PlayCommand(
 
         var (grid, _, _) = new GridLoader().LoadGrid(inputFile);
 
-        Uri playUrl = new PlayUrl
-        {
-            BaseUri = baseUri,
-        }
-        .GetPlayUri(grid.SolverGrid);
+        Uri playUrl = new PlayUrl { BaseUri = baseUri }.GetPlayUri(
+            grid.SolverGrid
+        );
         return playUrl;
     }
 

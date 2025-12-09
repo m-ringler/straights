@@ -4,7 +4,8 @@
 
 namespace Straights.Image.DigitReader;
 
-public class DigitReader1to9(IDigitFinder finder, IDigitClassifier classifier) : IDigitReader
+public class DigitReader1to9(IDigitFinder finder, IDigitClassifier classifier)
+    : IDigitReader
 {
     public int? TryReadDigit(Mat img)
     {

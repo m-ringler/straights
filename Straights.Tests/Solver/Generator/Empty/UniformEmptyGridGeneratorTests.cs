@@ -15,10 +15,14 @@ public class UniformEmptyGridGeneratorTests
     public void Size9_CreatesExpectedGrid()
     {
         var actual = EmptyGridGeneratorTester.GenerateBuilderText(
-            (p, r) => new UniformEmptyGridGenerator(p) { RandomNumberGenerator = r });
+            (p, r) =>
+                new UniformEmptyGridGenerator(p) { RandomNumberGenerator = r }
+        );
 
-        actual.Should().Be(
-"""
+        actual
+            .Should()
+            .Be(
+                """
 9
 _,b1,_,_,_,_,_,_,b
 _,b2,b,_,_,_,_,_,_
@@ -30,6 +34,7 @@ _,b,_,_,_,_,b4,_,_
 _,_,_,b5,_,b,_,_,b
 _,_,_,_,b,b,_,_,_
 
-""");
+"""
+            );
     }
 }

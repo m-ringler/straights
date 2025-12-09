@@ -9,8 +9,7 @@ using System.Runtime.InteropServices;
 /// <summary>
 /// A random number generator wrapper for the .NET <see cref="Random"/> class.
 /// </summary>
-public sealed record SystemRandom
-     : IRandom
+public sealed record SystemRandom : IRandom
 {
     /// <summary>
     /// Gets the core <see cref="Random"/> instance.
@@ -38,8 +37,7 @@ public sealed record SystemRandom
         }
         else if (list is List<T> concreteList)
         {
-            this.Core.Shuffle(
-                CollectionsMarshal.AsSpan(concreteList));
+            this.Core.Shuffle(CollectionsMarshal.AsSpan(concreteList));
         }
         else
         {

@@ -7,17 +7,20 @@ namespace Straights.Solver.Data;
 using System.Collections;
 using System.Collections.Immutable;
 using System.Text;
-
 using Straights.Solver.Simplification;
 
 public class SolverColumn
-     : IEnumerable<SolverBlock>, IGetSnapshot<int>, IReadOnlyCollection<WhiteFieldData>
+    : IEnumerable<SolverBlock>,
+        IGetSnapshot<int>,
+        IReadOnlyCollection<WhiteFieldData>
 {
     public ImmutableArray<SolverBlock> Blocks { get; init; }
 
-    public IEnumerable<WhiteFieldData> Fields => this.Blocks.SelectMany(x => x.Fields);
+    public IEnumerable<WhiteFieldData> Fields =>
+        this.Blocks.SelectMany(x => x.Fields);
 
-    int IReadOnlyCollection<WhiteFieldData>.Count => this.Blocks.Sum(x => x.Count);
+    int IReadOnlyCollection<WhiteFieldData>.Count =>
+        this.Blocks.Sum(x => x.Count);
 
     public static SolverColumn Create(int gridSize, int[][][] blocks)
     {
@@ -99,7 +102,10 @@ public class SolverColumn
         _ = builder.Append(']');
     }
 
-    private static void AppendField(StringBuilder builder, WhiteFieldData whiteFieldData)
+    private static void AppendField(
+        StringBuilder builder,
+        WhiteFieldData whiteFieldData
+    )
     {
         _ = builder.Append('[');
         _ = builder.AppendJoin(", ", whiteFieldData);

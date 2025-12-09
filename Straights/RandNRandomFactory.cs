@@ -5,7 +5,6 @@
 namespace Straights;
 
 using System.Text.RegularExpressions;
-
 using RandN;
 using RandN.Rngs;
 
@@ -42,7 +41,10 @@ public partial class RandNRandomFactory
         return CreatePcg32(seed, seedString);
     }
 
-    private static RandNRandom<Pcg32> CreatePcg32(Pcg32.Seed seed, string? seedString)
+    private static RandNRandom<Pcg32> CreatePcg32(
+        Pcg32.Seed seed,
+        string? seedString
+    )
     {
         var factory = Pcg32.GetFactory();
         var rng = factory.Create(seed);
@@ -64,7 +66,8 @@ public partial class RandNRandomFactory
         {
             throw new ArgumentException(
                 "The seed string is not in a recognized format.",
-                nameof(seed));
+                nameof(seed)
+            );
         }
 
         var stateHex = match.Groups[1].Value;
@@ -74,6 +77,9 @@ public partial class RandNRandomFactory
         return new Pcg32.Seed(state: state, stream: stream);
     }
 
-    [GeneratedRegex("^Pcg32-([0-9a-f]{16})-([0-9a-f]{16})$", RegexOptions.IgnoreCase)]
+    [GeneratedRegex(
+        "^Pcg32-([0-9a-f]{16})-([0-9a-f]{16})$",
+        RegexOptions.IgnoreCase
+    )]
     private static partial Regex SeedRegex();
 }

@@ -19,7 +19,9 @@ public class Grid<TField>
         int n = (int)Math.Sqrt(n2);
         if (n2 != n * n)
         {
-            throw new ArgumentException("The number of fields must be a square number.");
+            throw new ArgumentException(
+                "The number of fields must be a square number."
+            );
         }
 
         this.Size = n;
@@ -62,15 +64,15 @@ public class Grid<TField>
     {
         var range = Enumerable.Range(0, this.Size);
         return from ix in range
-               select from iy in range
-                      select this.GetField(ix, iy);
+            select from iy in range
+            select this.GetField(ix, iy);
     }
 
     public IEnumerable<IEnumerable<TField>> GetRows()
     {
         var range = Enumerable.Range(0, this.Size);
         return from iy in range
-               select from ix in range
-                      select this.GetField(ix, iy);
+            select from ix in range
+            select this.GetField(ix, iy);
     }
 }

@@ -5,10 +5,11 @@
 namespace Straights.Solver.Data;
 
 using System.Collections;
-
 using Straights.Solver.Simplification;
 
-public class SolverBlock : IGetSnapshot<int>, IReadOnlyCollection<WhiteFieldData>
+public class SolverBlock
+    : IGetSnapshot<int>,
+        IReadOnlyCollection<WhiteFieldData>
 {
     public required ImmutableArray<WhiteFieldData> Fields { get; init; }
 

@@ -7,7 +7,8 @@ namespace Straights.Solver.Generator;
 public static class SymmetryValidator
 {
     public static IEnumerable<string> GetSymmetryViolationErrors(
-        UnvalidatedGridConfiguration grid)
+        UnvalidatedGridConfiguration grid
+    )
     {
         var divisor = GetDivisor(grid.Layout, grid.Size);
 
@@ -26,8 +27,8 @@ public static class SymmetryValidator
 
         var divisor = layout switch
         {
-            GridLayout.HorizontallySymmetric or
-            GridLayout.VerticallySymmetric => 2,
+            GridLayout.HorizontallySymmetric
+            or GridLayout.VerticallySymmetric => 2,
             GridLayout.PointSymmetric => 2,
             GridLayout.HorizontallyAndVerticallySymmetric => 4,
             _ => 1,

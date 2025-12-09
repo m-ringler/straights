@@ -15,22 +15,30 @@ public sealed record FieldLocation(int X, int Y)
     {
         if (this.X < 1)
         {
-            throw new ValidationException("X must not be less than one " + this);
+            throw new ValidationException(
+                "X must not be less than one " + this
+            );
         }
 
         if (this.Y < 1)
         {
-            throw new ValidationException("Y must not be less than one " + this);
+            throw new ValidationException(
+                "Y must not be less than one " + this
+            );
         }
 
         if (size < this.X)
         {
-            throw new ValidationException($"X must not be greater than {size} " + this);
+            throw new ValidationException(
+                $"X must not be greater than {size} " + this
+            );
         }
 
         if (size < this.Y)
         {
-            throw new ValidationException($"Y must not be greater than {size} " + this);
+            throw new ValidationException(
+                $"Y must not be greater than {size} " + this
+            );
         }
     }
 }

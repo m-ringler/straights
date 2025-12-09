@@ -34,7 +34,8 @@ public sealed class ThreeMeansCellClassifier : ICellClassifier
     }
 
     private static (double Min, double Max, double Mean) MinMaxMean(
-        IEnumerable<double> values)
+        IEnumerable<double> values
+    )
     {
         double sum = 0;
         int count = 0;
@@ -77,8 +78,7 @@ public sealed class ThreeMeansCellClassifier : ICellClassifier
         int i = 0;
         for (int ix = 0; ix < 3; ix++)
         {
-            using Mat subcellMat
-                = new(img, new Rect(xx[ix], h, ww[ix], h));
+            using Mat subcellMat = new(img, new Rect(xx[ix], h, ww[ix], h));
             result[i++] = subcellMat.Mean().Val0;
         }
 

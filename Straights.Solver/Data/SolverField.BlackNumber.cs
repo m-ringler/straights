@@ -6,8 +6,7 @@ namespace Straights.Solver.Data;
 
 public partial class SolverField
 {
-    public sealed class BlackNumber(int number, int size)
-        : SolverField
+    public sealed class BlackNumber(int number, int size) : SolverField
     {
         private WhiteFieldData? data;
 

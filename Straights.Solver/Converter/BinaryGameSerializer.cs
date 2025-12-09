@@ -5,16 +5,13 @@
 namespace Straights.Solver.Converter;
 
 using System.Numerics;
-
 using Straights.Solver.Data;
 
 internal static class BinaryGameSerializer
 {
     public const byte EncodingVersion = 0b10000000;
 
-    public static void ToBinary(
-        in Game game,
-        IBitWriter writer)
+    public static void ToBinary(in Game game, IBitWriter writer)
     {
         var (solved, unsolved) = game;
         byte size = (byte)solved.Size;
@@ -30,8 +27,13 @@ internal static class BinaryGameSerializer
             var unsolvedField = unsolved.GetField(index);
 
             bool black = field is not SolverField.WhiteField;
-            bool isKnown = field is SolverField.BlackNumber ||
-                (field is SolverField.WhiteField && unsolvedField is SolverField.WhiteField wf && wf.Data.IsSolved);
+            bool isKnown =
+                field is SolverField.BlackNumber
+                || (
+                    field is SolverField.WhiteField
+                    && unsolvedField is SolverField.WhiteField wf
+                    && wf.Data.IsSolved
+                );
             var value = field.GetWhiteFieldData();
             uint number = value switch
             {
@@ -39,7 +41,8 @@ internal static class BinaryGameSerializer
                 WhiteFieldData x when x.IsSolved => (uint)(x.Min - 1),
                 _ => throw new ArgumentException(
                     paramName: nameof(game),
-                    message: $"There must not be any unsolved field in {nameof(game.Solved)}."),
+                    message: $"There must not be any unsolved field in {nameof(game.Solved)}."
+                ),
             };
 
             writer.WriteBit(black);
@@ -54,14 +57,14 @@ internal static class BinaryGameSerializer
         if (version != EncodingVersion)
         {
             throw new InvalidDataException(
-                $"Unsupported encoding version: {version}");
+                $"Unsupported encoding version: {version}"
+            );
         }
 
         uint size = reader.ReadNumber(5);
         if (size is < 1 or > 31)
         {
-            throw new InvalidDataException(
-                $"Invalid grid size: {size}");
+            throw new InvalidDataException($"Invalid grid size: {size}");
         }
 
         int numFields = (int)(size * size);
@@ -95,7 +98,8 @@ internal static class BinaryGameSerializer
         {
             throw new ArgumentOutOfRangeException(
                 nameof(size),
-                "Grid size must be between 1 and 31.");
+                "Grid size must be between 1 and 31."
+            );
         }
     }
 
@@ -103,7 +107,8 @@ internal static class BinaryGameSerializer
         uint size,
         bool[] black,
         bool[] known,
-        int[] numbers)
+        int[] numbers
+    )
     {
         var solved = ImmutableArray.CreateBuilder<SolverField>();
         var unsolved = ImmutableArray.CreateBuilder<SolverField>();
@@ -133,6 +138,7 @@ internal static class BinaryGameSerializer
 
         return new(
             new(solved.DrainToImmutable()),
-            new(unsolved.DrainToImmutable()));
+            new(unsolved.DrainToImmutable())
+        );
     }
 }

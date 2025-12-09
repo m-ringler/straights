@@ -18,14 +18,18 @@ public class GridBuilderTests
     public void WhenAddNoFields_ToStringReturnsExpected()
     {
         var sut = new GridBuilder(3);
-        _ = sut.ToString().ReplaceLineEndings().Should().Be(
-            """
-            3
-            _,_,_
-            _,_,_
-            _,_,_
+        _ = sut.ToString()
+            .ReplaceLineEndings()
+            .Should()
+            .Be(
+                """
+                3
+                _,_,_
+                _,_,_
+                _,_,_
 
-            """.ReplaceLineEndings());
+                """.ReplaceLineEndings()
+            );
     }
 
     [Fact]
@@ -37,14 +41,18 @@ public class GridBuilderTests
         sut.SetWhite(1, 3, 3);
         sut.SetBlack(3, 1, 2);
         sut.SetBlack(3, 3);
-        _ = sut.ToString().ReplaceLineEndings().Should().Be(
-            """
-            3
-            _,_,w3
-            b3,b2,_
-            b2,_,b
+        _ = sut.ToString()
+            .ReplaceLineEndings()
+            .Should()
+            .Be(
+                """
+                3
+                _,_,w3
+                b3,b2,_
+                b2,_,b
 
-            """.ReplaceLineEndings());
+                """.ReplaceLineEndings()
+            );
     }
 
     [Fact]
@@ -59,21 +67,24 @@ public class GridBuilderTests
         sut.Clear(1, 3);
         sut.Clear(3, 3);
         sut.Clear(2, 1);
-        _ = sut.ToString().ReplaceLineEndings().Should().Be(
-            """
-            3
-            _,_,_
-            _,b2,_
-            b2,_,_
+        _ = sut.ToString()
+            .ReplaceLineEndings()
+            .Should()
+            .Be(
+                """
+                3
+                _,_,_
+                _,b2,_
+                b2,_,_
 
-            """.ReplaceLineEndings());
+                """.ReplaceLineEndings()
+            );
     }
 
     [Fact]
     public void AsBase64UrlString_ReturnsExpected()
     {
-        const string grid =
-"""
+        const string grid = """
 9
 _,b,_,_,_,_,b,_,w7
 b,_,_,_,w2,_,w1,_,_
@@ -95,21 +106,27 @@ w4,_,b,_,_,_,_,b9,_
         var binary = GridConverter.ToBinaryString(
             solved.Grid,
             unsolved.Grid,
-            LuisWalterBinaryConverter.EncodingVersion);
+            LuisWalterBinaryConverter.EncodingVersion
+        );
         var base64 = Base64UrlEncoder.EncodeBase64Url(binary);
 
-        _ = binary.Should().Be(
-            "00000010000101101111000001000000000010000011101111000111010110101111000110000011000010010001000100010000000101000111101111000100000010000001000011110000110111000110110101000110000101101111110111000000000001000010000100000011001000101111000101000110010100000010000011101111000001000111000011000100000101000110111000101111000001000010101111000000101111101111000101010110000100010011101111010100000001000110000011011000010111000101010010101111010011000010101111000100000111000101000110111000000000");
+        _ = binary
+            .Should()
+            .Be(
+                "00000010000101101111000001000000000010000011101111000111010110101111000110000011000010010001000100010000000101000111101111000100000010000001000011110000110111000110110101000110000101101111110111000000000001000010000100000011001000101111000101000110010100000010000011101111000001000111000011000100000101000110111000101111000001000010101111000000101111101111000101010110000100010011101111010100000001000110000011011000010111000101010010101111010011000010101111000100000111000101000110111000000000"
+            );
 
-        _ = base64.Should().Be(
-            "AhbwQAg7x1rxgwkREBR7xAgQ8NxtRhb9wAQhAyLxRlAg7wRwxBRuLwQrwL7xVhE71ARg2FxUr0wrxBxRuAA");
+        _ = base64
+            .Should()
+            .Be(
+                "AhbwQAg7x1rxgwkREBR7xAgQ8NxtRhb9wAQhAyLxRlAg7wRwxBRuLwQrwL7xVhE71ARg2FxUr0wrxBxRuAA"
+            );
     }
 
     [Fact]
     public void Gen4()
     {
-        const string grid =
-"""
+        const string grid = """
 9
 _,b9,b,_,_,_,w1,w2,_
 _,_,b,_,b,_,b9,_,_
@@ -129,11 +146,22 @@ w8,_,_,_,w1,_,_,_,_
         var solved = solver.Solve(unsolved);
 
         var base64 = AsBase64UrlString(solved.Grid, unsolved.Grid);
-        _ = base64.Should().Be("AhuLwwhUERAQLxLx-Ag0gULxBhbxxb0Qg7xL1lAwgRQFxiAxOML7xhxbxlR-AgQ7yB7xgVAxQlxRiEAwhAQ");
+        _ = base64
+            .Should()
+            .Be(
+                "AhuLwwhUERAQLxLx-Ag0gULxBhbxxb0Qg7xL1lAwgRQFxiAxOML7xhxbxlR-AgQ7yB7xgVAxQlxRiEAwhAQ"
+            );
     }
 
-    private static string AsBase64UrlString(Grid<SolverField> solved, Grid<SolverField> unsolved)
+    private static string AsBase64UrlString(
+        Grid<SolverField> solved,
+        Grid<SolverField> unsolved
+    )
     {
-        return GridConverter.ToUrlParameter(solved, unsolved, LuisWalterBinaryConverter.EncodingVersion);
+        return GridConverter.ToUrlParameter(
+            solved,
+            unsolved,
+            LuisWalterBinaryConverter.EncodingVersion
+        );
     }
 }

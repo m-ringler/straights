@@ -5,7 +5,6 @@
 namespace Straights.Solver.Simplification;
 
 using Straights.Solver.Data;
-
 using static GridSimplifierFactory;
 
 /// <summary>
@@ -29,7 +28,7 @@ public sealed class HintGenerator(SimplifierStrength maxStrength)
 
         var changeDetector = new StateComparer<int>([
             grid,
-            ..grid.Grid.Fields.OfType<SolverField.WhiteField>(),
+            .. grid.Grid.Fields.OfType<SolverField.WhiteField>(),
         ]);
 
         while (provider.CurrentStrength <= this.maxStrength)
@@ -43,34 +42,46 @@ public sealed class HintGenerator(SimplifierStrength maxStrength)
                     bool hasChanged = changeDetector.HasChanged(grid);
                     if (hasChanged)
                     {
-                        var index = GetChangedFieldIndex(grid.Grid, changeDetector);
+                        var index = GetChangedFieldIndex(
+                            grid.Grid,
+                            changeDetector
+                        );
                         int removedNumber = GetRemovedNumber(
                             originalGrid.Grid.GetField(index),
-                            grid.Grid.GetField(index));
+                            grid.Grid.GetField(index)
+                        );
 
                         return new Hint(
                             removedNumber,
                             index,
                             provider.GetType(simplifier),
-                            isHorizontal);
+                            isHorizontal
+                        );
                     }
                 }
             }
         }
 
-        throw new NotSolvableException($"No hints found within maximum strength {this.maxStrength}");
+        throw new NotSolvableException(
+            $"No hints found within maximum strength {this.maxStrength}"
+        );
     }
 
-    private static int GetRemovedNumber(SolverField original, SolverField simplified)
+    private static int GetRemovedNumber(
+        SolverField original,
+        SolverField simplified
+    )
     {
-        return original.GetWhiteFieldData()!
+        return original
+            .GetWhiteFieldData()!
             .Except(simplified.GetWhiteFieldData()!)
             .FirstOrDefault();
     }
 
     private static FieldIndex GetChangedFieldIndex(
         Grid<SolverField> grid,
-        StateComparer<int> changeDetector)
+        StateComparer<int> changeDetector
+    )
     {
         var locations =
             from idx in grid.AllFieldIndices()
@@ -81,14 +92,14 @@ public sealed class HintGenerator(SimplifierStrength maxStrength)
         return locations.First();
     }
 
-    private static IEnumerable<(SolverColumn Data, bool IsHorizontal)> GetRowsAndColumns(
-        SolverGrid grid)
+    private static IEnumerable<(
+        SolverColumn Data,
+        bool IsHorizontal
+    )> GetRowsAndColumns(SolverGrid grid)
     {
-        var rows = from r in grid.Rows
-                   select (r, isHorizontal: true);
+        var rows = from r in grid.Rows select (r, isHorizontal: true);
 
-        var columns = from c in grid.Columns
-                      select (c, isHorizontal: false);
+        var columns = from c in grid.Columns select (c, isHorizontal: false);
 
         return rows.Concat(columns);
     }
@@ -98,9 +109,11 @@ public sealed class HintGenerator(SimplifierStrength maxStrength)
         private readonly HashSet<Type> alreadyReturnedSimplifiers = [];
         private readonly Dictionary<ISimplify<SolverColumn>, Type> types = [];
 
-        public SimplifierStrength CurrentStrength { get; private set; } = new(0);
+        public SimplifierStrength CurrentStrength { get; private set; } =
+            new(0);
 
-        public Type GetType(ISimplify<SolverColumn> simplifier) => this.types[simplifier];
+        public Type GetType(ISimplify<SolverColumn> simplifier) =>
+            this.types[simplifier];
 
         public IEnumerable<ISimplify<SolverColumn>> GetNextSimplifiers()
         {
@@ -118,7 +131,10 @@ public sealed class HintGenerator(SimplifierStrength maxStrength)
             this.CurrentStrength = new(this.CurrentStrength.Value + 1);
         }
 
-        private IEnumerable<(ISimplify<SolverColumn> Simplifier, Type Type)> GetAllSimplifiersForCurrentStrength()
+        private IEnumerable<(
+            ISimplify<SolverColumn> Simplifier,
+            Type Type
+        )> GetAllSimplifiersForCurrentStrength()
         {
             var blockSimplifiers =
                 from bs in GetBlockSimplifiers(this.CurrentStrength)

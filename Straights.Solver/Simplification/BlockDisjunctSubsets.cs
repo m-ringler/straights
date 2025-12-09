@@ -27,8 +27,7 @@ public sealed class BlockDisjunctSubsets : ISimplify<SolverBlock>
             var splitter = e.Current;
             var splitRange = new IntRun(currentMin, splitter - 1);
 
-            if (!splitRange.IsEmpty &&
-                    splitRange.Count < item.Count)
+            if (!splitRange.IsEmpty && splitRange.Count < item.Count)
             {
                 (tooShortSplits ??= []).AddRange(splitRange);
             }

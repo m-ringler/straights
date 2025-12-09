@@ -4,8 +4,7 @@
 
 namespace Straights.Image.GridReader;
 
-public class PerspectiveGridCellExtractor
-    : IGridCellExtractor
+public class PerspectiveGridCellExtractor : IGridCellExtractor
 {
     public Mat ExtractGridCell(Mat img, SkewedGridCell cell)
     {
@@ -18,18 +17,11 @@ public class PerspectiveGridCellExtractor
             cell.TopRight,
             cell.BottomRight,
             cell.BottomLeft,
-        }
-        .Select(p => new Point2f(p.X, p.Y));
+        }.Select(p => new Point2f(p.X, p.Y));
 
-        Point2f[] pointsDst = [
-            new(0, 0),
-            new(s, 0),
-            new(s, s),
-            new(0, s)];
+        Point2f[] pointsDst = [new(0, 0), new(s, 0), new(s, s), new(0, s)];
 
-        using var transform = Cv2.GetPerspectiveTransform(
-            pointsSrc,
-            pointsDst);
+        using var transform = Cv2.GetPerspectiveTransform(pointsSrc, pointsDst);
 
         var output = new Mat();
         Cv2.WarpPerspective(img, output, transform, new(s, s));

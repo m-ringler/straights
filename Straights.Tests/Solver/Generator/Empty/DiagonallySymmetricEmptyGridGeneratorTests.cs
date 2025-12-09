@@ -15,10 +15,17 @@ public class DiagonallySymmetricEmptyGridGeneratorTests
     public void Size9_CreatesExpectedGrid()
     {
         var actual = EmptyGridGeneratorTester.GenerateBuilderText(
-            (p, r) => new DiagonallySymmetricEmptyGridGenerator(p) { RandomNumberGenerator = r });
+            (p, r) =>
+                new DiagonallySymmetricEmptyGridGenerator(p)
+                {
+                    RandomNumberGenerator = r,
+                }
+        );
 
-        actual.Should().Be(
-"""
+        actual
+            .Should()
+            .Be(
+                """
 9
 _,b1,_,_,b2,b,_,_,_
 b,_,_,_,_,b,_,b,_
@@ -30,6 +37,7 @@ _,_,_,_,_,_,_,_,b
 _,b,_,_,_,_,_,_,_
 _,_,_,_,b5,_,b,_,_
 
-""");
+"""
+            );
     }
 }

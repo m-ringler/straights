@@ -23,7 +23,9 @@ public static class Combinatorics
     /// If there are duplicate items in the input there will be duplicate
     /// items in the output. The items are not compared by this method.
     /// </remarks>
-    public static List<List<T>> GetUnorderedCombinations<T>(this IEnumerable<T> items)
+    public static List<List<T>> GetUnorderedCombinations<T>(
+        this IEnumerable<T> items
+    )
     {
         var queue = new Queue<T>(items);
         return queue.Count == 0 ? [] : GetCombinations(queue);

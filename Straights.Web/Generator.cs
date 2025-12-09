@@ -6,7 +6,6 @@ namespace Straights.Web;
 
 using System.Runtime.InteropServices;
 using System.Text;
-
 using static Straights.Solver.Play;
 
 /// <summary>
@@ -28,11 +27,16 @@ public class Generator
     /// </returns>
     /// <seealso cref="Memory.Allocate(nuint)"/>
     [UnmanagedCallersOnly(EntryPoint = "Generator_Generate")]
-    public static int Generate(int size, int difficulty, nint result, int resultLength)
+    public static int Generate(
+        int size,
+        int difficulty,
+        nint result,
+        int resultLength
+    )
     {
-        return new StringOp(result, resultLength)
-            .RunAndMarshal(
-                () => GenerateGameCode(size, difficulty));
+        return new StringOp(result, resultLength).RunAndMarshal(() =>
+            GenerateGameCode(size, difficulty)
+        );
     }
 
     /// <summary>
@@ -57,11 +61,13 @@ public class Generator
     [UnmanagedCallersOnly(EntryPoint = "Generator_Hint")]
     public static int Hint(nint buffer, int bufferLength, int gameLength)
     {
-        var gameAsJson = Marshal.PtrToStringUTF8(buffer, gameLength)
+        var gameAsJson =
+            Marshal.PtrToStringUTF8(buffer, gameLength)
             ?? throw new ArgumentNullException(nameof(buffer));
 
-        return new StringOp(buffer, bufferLength)
-            .RunAndMarshal(() => GenerateHint(gameAsJson));
+        return new StringOp(buffer, bufferLength).RunAndMarshal(() =>
+            GenerateHint(gameAsJson)
+        );
     }
 
     private sealed class StringOp(nint buffer, int bufferLength)
@@ -92,9 +98,7 @@ public class Generator
                     Marshal.Copy(bytes, 0, buffer, bytes.Length);
                 }
             }
-            catch
-            {
-            }
+            catch { }
         }
 
         private void WriteAsUTF8(string r)
@@ -103,7 +107,8 @@ public class Generator
             if (bytes.Length > bufferLength)
             {
                 throw new ArgumentException(
-                    $"Buffer size {bufferLength} is too small to hold the result, required size: {bytes.Length}.");
+                    $"Buffer size {bufferLength} is too small to hold the result, required size: {bytes.Length}."
+                );
             }
 
             Marshal.Copy(bytes, 0, buffer, bytes.Length);

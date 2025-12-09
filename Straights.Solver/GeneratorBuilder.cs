@@ -21,9 +21,7 @@ public class GeneratorBuilder(GeneratorBuilder.BuildEmptyGridGenerator empty)
     /// </summary>
     /// <seealso cref="GetEmptyGridGenerator"/>
     public GeneratorBuilder()
-      : this(GetEmptyGridGenerator)
-    {
-    }
+        : this(GetEmptyGridGenerator) { }
 
     /// <summary>
     /// A function that creates an empty grid generator.
@@ -37,13 +35,15 @@ public class GeneratorBuilder(GeneratorBuilder.BuildEmptyGridGenerator empty)
     public delegate IEmptyGridGenerator BuildEmptyGridGenerator(
         IRandom rng,
         GridLayout layout,
-        GridParameters gridParameters);
+        GridParameters gridParameters
+    );
 
     /// <summary>
     /// Gets the grid parameters to use.
     /// </summary>
     /// <remarks>Defaults to <see cref="GridParameters.DefaultParameters"/>.</remarks>
-    public GridParameters GridParameters { get; init; } = GridParameters.DefaultParameters;
+    public GridParameters GridParameters { get; init; } =
+        GridParameters.DefaultParameters;
 
     /// <summary>
     /// Gets the grid layout to use.
@@ -51,8 +51,7 @@ public class GeneratorBuilder(GeneratorBuilder.BuildEmptyGridGenerator empty)
     /// <remarks>
     /// Defaults to <see cref="GridLayout.PointSymmetric"/>.
     /// </remarks>
-    public GridLayout Layout { get; init; }
-        = GridLayout.PointSymmetric;
+    public GridLayout Layout { get; init; } = GridLayout.PointSymmetric;
 
     /// <summary>
     /// Gets the random number generator to use.
@@ -84,7 +83,8 @@ public class GeneratorBuilder(GeneratorBuilder.BuildEmptyGridGenerator empty)
     /// <remarks>
     /// The default value is <see cref="SimplifierStrength.DefaultStrength"/>.
     /// </remarks>
-    public SimplifierStrength DifficultyLevel { get; init; } = SimplifierStrength.DefaultStrength;
+    public SimplifierStrength DifficultyLevel { get; init; } =
+        SimplifierStrength.DefaultStrength;
 
     /// <summary>
     /// Gets the default empty grid generator for the specified layout and parameters.
@@ -101,21 +101,25 @@ public class GeneratorBuilder(GeneratorBuilder.BuildEmptyGridGenerator empty)
     public static IEmptyGridGenerator GetEmptyGridGenerator(
         IRandom rng,
         GridLayout layout,
-        GridParameters gridParameters)
+        GridParameters gridParameters
+    )
     {
         var factory = new RandomEmptyGridGeneratorFactory(rng);
-        Func<GridParameters, IEmptyGridGenerator> factoryMethod =
-        layout switch
+        Func<GridParameters, IEmptyGridGenerator> factoryMethod = layout switch
         {
             GridLayout.Random => factory.GetRandom,
             GridLayout.Uniform => factory.GetUniform,
             GridLayout.UniformIndependent => factory.GetUniformIndependent,
             GridLayout.DiagonallySymmetric => factory.GetDiagonallySymmetric,
-            GridLayout.HorizontallySymmetric => factory.GetHorizontallySymmetric,
+            GridLayout.HorizontallySymmetric =>
+                factory.GetHorizontallySymmetric,
             GridLayout.VerticallySymmetric => factory.GetVerticallySymmetric,
-            GridLayout.HorizontallyAndVerticallySymmetric => factory.GetHorizontallyAndVerticallySymmetric,
+            GridLayout.HorizontallyAndVerticallySymmetric =>
+                factory.GetHorizontallyAndVerticallySymmetric,
             GridLayout.PointSymmetric => factory.GetPointSymmetric,
-            _ => throw new InvalidOperationException("Unknown grid layout " + layout),
+            _ => throw new InvalidOperationException(
+                "Unknown grid layout " + layout
+            ),
         };
 
         return factoryMethod(gridParameters);
@@ -137,19 +141,23 @@ public class GeneratorBuilder(GeneratorBuilder.BuildEmptyGridGenerator empty)
         };
 
         var difficultyTuner = new DifficultyAdjuster(
-            GridSimplifierFactory.BuildIterativeSimplifier(this.DifficultyLevel).ToSolver())
+            GridSimplifierFactory
+                .BuildIterativeSimplifier(this.DifficultyLevel)
+                .ToSolver()
+        )
         {
             RandomNumberGenerator = this.Random,
         };
 
-        var generator =
-            difficultyTuner.Decorate(
-                new GridGenerator(
-                    solver,
-                    empty(this.Random, this.Layout, this.GridParameters))
-                {
-                    MaximumNumberOfAttempts = this.Attempts,
-                });
+        var generator = difficultyTuner.Decorate(
+            new GridGenerator(
+                solver,
+                empty(this.Random, this.Layout, this.GridParameters)
+            )
+            {
+                MaximumNumberOfAttempts = this.Attempts,
+            }
+        );
 
         return generator;
     }

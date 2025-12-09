@@ -4,9 +4,7 @@
 
 namespace Straights.Solver.Simplification;
 
-internal record NamedSimplifier<T>(
-        ISimplify<T> Core,
-        string Name)
+internal record NamedSimplifier<T>(ISimplify<T> Core, string Name)
     : ISimplify<T>
 {
     public void Simplify(T data)

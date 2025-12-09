@@ -10,12 +10,14 @@ using System.CommandLine;
 internal static class OptionValidator
 {
     public static IEnumerable<string> RequireMin(
-        this Option option, int value, int minInclusive)
+        this Option option,
+        int value,
+        int minInclusive
+    )
     {
         if (value < minInclusive)
         {
-            yield return
-                $"{option.Name} must be greater than or equal to {minInclusive}.";
+            yield return $"{option.Name} must be greater than or equal to {minInclusive}.";
         }
     }
 
@@ -23,12 +25,12 @@ internal static class OptionValidator
         this Option option,
         int value,
         int maxInclusive,
-        string? when = null)
+        string? when = null
+    )
     {
         if (value > maxInclusive)
         {
-            yield return
-                $"{option.Name} must be less than or equal to {maxInclusive}{when}.";
+            yield return $"{option.Name} must be less than or equal to {maxInclusive}{when}.";
         }
     }
 
@@ -36,12 +38,13 @@ internal static class OptionValidator
         this Option option,
         int value,
         (int MinInclusive, int MaxInclusive) limits,
-        string? when = null)
+        string? when = null
+    )
     {
         return
         [
             .. RequireMin(option, value, limits.MinInclusive),
-            .. RequireMax(option, value, limits.MaxInclusive, when)
+            .. RequireMax(option, value, limits.MaxInclusive, when),
         ];
     }
 }

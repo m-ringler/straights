@@ -6,13 +6,10 @@ namespace Straights.Tests;
 
 using System.IO.Abstractions;
 using System.IO.Abstractions.TestingHelpers;
-
 using Moq;
-
 using Straights.Console;
 using Straights.Play;
 using Straights.Tests.Console;
-
 using XFS = System.IO.Abstractions.TestingHelpers.MockUnixSupport;
 
 /// <summary>
@@ -20,8 +17,7 @@ using XFS = System.IO.Abstractions.TestingHelpers.MockUnixSupport;
 /// </summary>
 public class PlayCommandTests
 {
-    private const string GridAsText =
-"""
+    private const string GridAsText = """
 9
 _,b,_,_,_,_,b,_,w7
 b,_,_,_,w2,_,w1,_,_
@@ -53,7 +49,10 @@ w4,_,b,_,_,_,_,b9,_
     public Task OnlineWithInput()
     {
         // ARRANGE
-        var sut = CreateSut(out var getConsoleOutput, XFS.Path(@"C:\foo\grid.txt"));
+        var sut = CreateSut(
+            out var getConsoleOutput,
+            XFS.Path(@"C:\foo\grid.txt")
+        );
 
         // ACT
         var exitCode = sut.Run();
@@ -74,37 +73,44 @@ w4,_,b,_,_,_,_,b9,_
 
         // ASSERT
         exitCode.Should().Be(0);
-        return Verify(getConsoleOutput()).UseFileName(
-            $"{nameof(PlayCommandTests)}.{nameof(this.OfflineNoInput)}.IsUnix={XFS.IsUnixPlatform()}");
+        return Verify(getConsoleOutput())
+            .UseFileName(
+                $"{nameof(PlayCommandTests)}.{nameof(this.OfflineNoInput)}.IsUnix={XFS.IsUnixPlatform()}"
+            );
     }
 
     [Fact]
     public Task OfflineWithInput()
     {
         // ARRANGE
-        var sut = CreateSut(out var getConsoleOutput, XFS.Path(@"C:\foo\grid.txt"), 3556);
+        var sut = CreateSut(
+            out var getConsoleOutput,
+            XFS.Path(@"C:\foo\grid.txt"),
+            3556
+        );
 
         // ACT
         var exitCode = sut.Run();
 
         // ASSERT
         exitCode.Should().Be(0);
-        return Verify(getConsoleOutput()).UseFileName(
-            $"{nameof(PlayCommandTests)}.{nameof(this.OfflineWithInput)}.IsUnix={XFS.IsUnixPlatform()}");
+        return Verify(getConsoleOutput())
+            .UseFileName(
+                $"{nameof(PlayCommandTests)}.{nameof(this.OfflineWithInput)}.IsUnix={XFS.IsUnixPlatform()}"
+            );
     }
 
     private static PlayCommand CreateSut(
         out Func<string> getConsoleOutput,
         string? inputFile = null,
         int? portOnLocalHost = null,
-        Task? webAppTask = null)
+        Task? webAppTask = null
+    )
     {
         var fs = new MockFileSystem();
         if (inputFile != null)
         {
-            fs.AddFile(
-                inputFile,
-                new MockFileData(GridAsText));
+            fs.AddFile(inputFile, new MockFileData(GridAsText));
         }
 
         IWriteOnlyConsole console = new StringBuilderConsole();
@@ -118,7 +124,8 @@ w4,_,b,_,_,_,_,b9,_
                 {
                     console.WriteLine($"WebApp serving {folder} at {url}");
                     return webAppTask ?? Task.CompletedTask;
-                });
+                }
+            );
 
         var browserLauncher = new Mock<IBrowserLauncher>();
         browserLauncher

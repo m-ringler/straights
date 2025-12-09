@@ -18,10 +18,15 @@ public class BlockNFieldsWithNValuesInCertainRangeTests
         // ARRANGE
         var column = SolverColumn.Create(
             9,
-            [[[1, 2, 5],
-            [3],
-            [2, 4],
-            [1, 2]]]);
+            [
+                [
+                    [1, 2, 5],
+                    [3],
+                    [2, 4],
+                    [1, 2],
+                ],
+            ]
+        );
 
         var simplifier = new BlockNFieldsWithNValuesInCertainRange();
 
@@ -29,14 +34,18 @@ public class BlockNFieldsWithNValuesInCertainRangeTests
         simplifier.Simplify(column.Blocks[0]);
 
         // ASSERT
-        _ = column.DumpCode().Should().Be(
-"""
+        _ = column
+            .DumpCode()
+            .Should()
+            .Be(
+                """
 SolverColumn.Create(9,
 [[[1, 2, 5],
 [3],
 [4],
 [1, 2]]])
-""");
+"""
+            );
     }
 
     [Fact]
@@ -45,7 +54,14 @@ SolverColumn.Create(9,
         // ARRANGE
         var column = SolverColumn.Create(
             9,
-            [[[6, 9], [6, 7], [6, 7, 8]]]);
+            [
+                [
+                    [6, 9],
+                    [6, 7],
+                    [6, 7, 8],
+                ],
+            ]
+        );
 
         var simplifier = new BlockNFieldsWithNValuesInCertainRange();
 
@@ -53,12 +69,16 @@ SolverColumn.Create(9,
         simplifier.Simplify(column.Blocks[0]);
 
         // ASSERT
-        _ = column.DumpCode().Should().Be(
-"""
+        _ = column
+            .DumpCode()
+            .Should()
+            .Be(
+                """
 SolverColumn.Create(9,
 [[[6, 9],
 [7],
 [8]]])
-""");
+"""
+            );
     }
 }

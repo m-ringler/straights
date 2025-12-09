@@ -4,8 +4,10 @@
 
 namespace Straights.Image.GridReader;
 
-public class DebugGridCellExtractor(IGridCellExtractor core, IDebugInfoWriter debug)
-    : IGridCellExtractor
+public class DebugGridCellExtractor(
+    IGridCellExtractor core,
+    IDebugInfoWriter debug
+) : IGridCellExtractor
 {
     private int i;
 

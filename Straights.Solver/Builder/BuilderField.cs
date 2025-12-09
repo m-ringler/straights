@@ -12,9 +12,7 @@ namespace Straights.Solver.Builder;
 public sealed partial record BuilderField(FieldLocation Location, int? Value)
 {
     public BuilderField(FieldLocation location)
-    : this(location, null)
-    {
-    }
+        : this(location, null) { }
 
     public bool IsWhite { get; init; }
 
@@ -34,12 +32,16 @@ public sealed partial record BuilderField(FieldLocation Location, int? Value)
         var number = this.Value.Value;
         if (number < 1)
         {
-            throw new ValidationException("Value must not be less than 1 " + this);
+            throw new ValidationException(
+                "Value must not be less than 1 " + this
+            );
         }
 
         if (number > size)
         {
-            throw new ValidationException($"Value must not be greater than {size} " + this);
+            throw new ValidationException(
+                $"Value must not be greater than {size} " + this
+            );
         }
     }
 }

@@ -18,13 +18,24 @@ public class ColumnRemoveForeignRangesTests
         // ARRANGE
         var column = SolverColumn.Create(
             9,
-            [[[3, 4, 5],
-            [3, 4]],
-            [[2]],
-            [[9],
-            [8]],
-            [[1, 3, 4, 5, 6, 7],
-            [1, 3, 4, 6, 7]]]);
+            [
+                [
+                    [3, 4, 5],
+                    [3, 4],
+                ],
+                [
+                    [2],
+                ],
+                [
+                    [9],
+                    [8],
+                ],
+                [
+                    [1, 3, 4, 5, 6, 7],
+                    [1, 3, 4, 6, 7],
+                ],
+            ]
+        );
 
         var simplifier = new ColumnRemoveForeignRanges();
 
@@ -32,8 +43,11 @@ public class ColumnRemoveForeignRangesTests
         simplifier.Simplify(column);
 
         // ASSERT
-        _ = column.DumpCode().Should().Be(
-"""
+        _ = column
+            .DumpCode()
+            .Should()
+            .Be(
+                """
 SolverColumn.Create(9,
 [[[3, 4, 5],
 [3, 4]],
@@ -42,6 +56,7 @@ SolverColumn.Create(9,
 [8]],
 [[1, 3, 5, 6, 7],
 [1, 3, 6, 7]]])
-""");
+"""
+            );
     }
 }

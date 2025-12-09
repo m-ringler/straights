@@ -12,24 +12,23 @@ public class GridReaderFactory
 
     public string ModelName { get; set; } = "bekhzod-olimov-printed-digits";
 
-    public IBlackAndWhiteGridReader CreateGridReader(
-        string? debugFolder = null)
+    public IBlackAndWhiteGridReader CreateGridReader(string? debugFolder = null)
     {
         // Relying on finalizer to clean up the InferenceSession.
-        var digitClassifier = new DigitClassifierOnnx(
-            this.ModelName);
+        var digitClassifier = new DigitClassifierOnnx(this.ModelName);
 
-        IDebugInfoWriter infoWriter = debugFolder == null
-            ? new NullDebugInfoWriter()
-            : new DebugInfoWriter(debugFolder);
+        IDebugInfoWriter infoWriter =
+            debugFolder == null
+                ? new NullDebugInfoWriter()
+                : new DebugInfoWriter(debugFolder);
 
-        IGridCellExtractor cellExtractor
-            = new CombinedGridCellExtractor();
+        IGridCellExtractor cellExtractor = new CombinedGridCellExtractor();
         if (debugFolder != null)
         {
             cellExtractor = new DebugGridCellExtractor(
                 cellExtractor,
-                infoWriter);
+                infoWriter
+            );
         }
 
         var gridReader = new BlackAndWhiteGridReader8Bit(
@@ -37,7 +36,9 @@ public class GridReaderFactory
             new ThreeMeansCellClassifier(),
             new DigitReader1to9(
                 new DigitFinderThreshold(this.DigitPadding),
-                digitClassifier));
+                digitClassifier
+            )
+        );
 
         var gridFinder = new GridFinder(infoWriter);
         return new FullGridReader(gridFinder, gridReader);
@@ -45,8 +46,8 @@ public class GridReaderFactory
 
     private sealed record class FullGridReader(
         GridFinder GridFinder,
-        BlackAndWhiteGridReader8Bit GridReader)
-        : IBlackAndWhiteGridReader
+        BlackAndWhiteGridReader8Bit GridReader
+    ) : IBlackAndWhiteGridReader
     {
         public Cell[][] ReadGrid(Mat img)
         {

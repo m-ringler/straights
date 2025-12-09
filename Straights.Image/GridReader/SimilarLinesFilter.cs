@@ -10,12 +10,12 @@ internal static class SimilarLinesFilter
     public static LineSegmentPolar[] FilterSimilarLines(
         LineSegmentPolar[] lines,
         float rho_threshold,
-        float theta_threshold)
+        float theta_threshold
+    )
     {
-        Dictionary<int, int> numberOfSimilarLines =
-            Enumerable.Range(0, lines.Length).ToDictionary(
-                i => i,
-                _ => 0);
+        Dictionary<int, int> numberOfSimilarLines = Enumerable
+            .Range(0, lines.Length)
+            .ToDictionary(i => i, _ => 0);
 
         int remainingCount = lines.Length;
         for (int i = 0; i < lines.Length - 1; i++)
@@ -31,10 +31,12 @@ internal static class SimilarLinesFilter
         bool[] keepLines = new bool[lines.Length];
         Array.Fill(keepLines, true);
 
-        int[] lineIndicesOrdered = [..
-            from kvp in numberOfSimilarLines
+        int[] lineIndicesOrdered =
+        [
+            .. from kvp in numberOfSimilarLines
             orderby kvp.Value descending
-            select kvp.Key];
+            select kvp.Key,
+        ];
 
         remainingCount = lineIndicesOrdered.Length;
         for (int i = 0; i < lineIndicesOrdered.Length - 1; i++)
@@ -46,25 +48,29 @@ internal static class SimilarLinesFilter
                 continue;
             }
 
-            var candidateIndices = from j in Enumerable.Range(i + 1, remainingCount)
-                                   select lineIndicesOrdered[j];
+            var candidateIndices =
+                from j in Enumerable.Range(i + 1, remainingCount)
+                select lineIndicesOrdered[j];
             foreach (int j in GetSimilarLines(lines, index, candidateIndices))
             {
                 keepLines[j] = false;
             }
         }
 
-        LineSegmentPolar[] filteredLines = [..
-                from i in Enumerable.Range(0, lines.Length)
-                where keepLines[i]
-                select lines[i]];
+        LineSegmentPolar[] filteredLines =
+        [
+            .. from i in Enumerable.Range(0, lines.Length)
+            where keepLines[i]
+            select lines[i],
+        ];
         return filteredLines;
 
         // Helper function
         IEnumerable<int> GetSimilarLines(
             LineSegmentPolar[] lines,
             int i,
-            IEnumerable<int> candidateIndices)
+            IEnumerable<int> candidateIndices
+        )
         {
             var a = Deconstruct(lines[i]);
             foreach (var item in candidateIndices)
@@ -81,7 +87,7 @@ internal static class SimilarLinesFilter
         bool IsSimilar((float Rho, float Theta) a, (float Rho, float Theta) b)
         {
             return Math.Abs(a.Rho - b.Rho) < rho_threshold
-                    && Math.Abs(a.Theta - b.Theta) < theta_threshold;
+                && Math.Abs(a.Theta - b.Theta) < theta_threshold;
         }
     }
 

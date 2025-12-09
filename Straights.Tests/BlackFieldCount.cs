@@ -11,14 +11,18 @@ internal record struct BlackFieldCount(int Numbers, int Blanks)
 {
     public static implicit operator BlackFieldCount(GridParameters p)
     {
-        return new BlackFieldCount(p.NumberOfBlackNumbers, p.NumberOfBlackBlanks);
+        return new BlackFieldCount(
+            p.NumberOfBlackNumbers,
+            p.NumberOfBlackBlanks
+        );
     }
 
-    public static BlackFieldCount operator +(BlackFieldCount a, BlackFieldCount b)
+    public static BlackFieldCount operator +(
+        BlackFieldCount a,
+        BlackFieldCount b
+    )
     {
-        return new BlackFieldCount(
-            a.Numbers + b.Numbers,
-            a.Blanks + b.Blanks);
+        return new BlackFieldCount(a.Numbers + b.Numbers, a.Blanks + b.Blanks);
     }
 
     public static BlackFieldCount Of(BuilderField? bf)
@@ -44,8 +48,7 @@ internal record struct BlackFieldCount(int Numbers, int Blanks)
     public static BlackFieldCount Of(IEnumerable<BuilderField?> builderFields)
     {
         BlackFieldCount zero = new(0, 0);
-        var count = builderFields
-                    .Aggregate(zero, (cnt, bf) => cnt + Of(bf));
+        var count = builderFields.Aggregate(zero, (cnt, bf) => cnt + Of(bf));
         return count;
     }
 }

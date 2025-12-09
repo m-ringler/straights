@@ -21,7 +21,8 @@ public class FieldLocationTests
         Action act = () => location.Validate(5);
 
         // ASSERT
-        act.Should().Throw<ValidationException>()
+        act.Should()
+            .Throw<ValidationException>()
             .WithMessage("X must not be less than one " + location);
     }
 
@@ -35,7 +36,8 @@ public class FieldLocationTests
         Action act = () => location.Validate(5);
 
         // ASSERT
-        act.Should().Throw<ValidationException>()
+        act.Should()
+            .Throw<ValidationException>()
             .WithMessage("Y must not be less than one " + location);
     }
 
@@ -49,7 +51,8 @@ public class FieldLocationTests
         Action act = () => location.Validate(5);
 
         // ASSERT
-        act.Should().Throw<ValidationException>()
+        act.Should()
+            .Throw<ValidationException>()
             .WithMessage("X must not be greater than 5 " + location);
     }
 
@@ -63,7 +66,8 @@ public class FieldLocationTests
         Action act = () => location.Validate(5);
 
         // ASSERT
-        act.Should().Throw<ValidationException>()
+        act.Should()
+            .Throw<ValidationException>()
             .WithMessage("Y must not be greater than 5 " + location);
     }
 

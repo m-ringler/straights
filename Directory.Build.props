@@ -10,7 +10,7 @@
 
     <!-- Nuget -->
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-    
+
     <!-- Version -->
     <VersionPrefix>0.7.3</VersionPrefix>
 
@@ -28,8 +28,10 @@
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    
+
     <!-- Deterministic builds -->
-    <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
+    <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'"
+      >true</ContinuousIntegrationBuild
+    >
   </PropertyGroup>
 </Project>

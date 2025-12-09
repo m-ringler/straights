@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
-
 using PlayCore = Straights.Solver.Play;
 
 /// <summary>
@@ -37,13 +36,15 @@ internal class WebApp : IWebApp
     /// <returns>A task representing the asynchronous operation.</returns>
     public Task Run(string url, IDirectoryInfo folder)
     {
-        var builder = WebApplication.CreateBuilder(new WebApplicationOptions
-        {
-            WebRootPath = folder.FullName,
-        });
+        var builder = WebApplication.CreateBuilder(
+            new WebApplicationOptions { WebRootPath = folder.FullName }
+        );
         _ = builder.WebHost.UseUrls(url);
 #if DEBUG
-        _ = builder.WebHost.UseSetting(WebHostDefaults.DetailedErrorsKey, "true");
+        _ = builder.WebHost.UseSetting(
+            WebHostDefaults.DetailedErrorsKey,
+            "true"
+        );
 #endif
         _ = builder.Services.AddControllers();
 
@@ -55,40 +56,38 @@ internal class WebApp : IWebApp
         {
             _ = endpoints.MapControllers();
 
-            _ = endpoints.MapGet(
-                "/generate",
-                GetRequestDelegate(GenerateGame));
+            _ = endpoints.MapGet("/generate", GetRequestDelegate(GenerateGame));
 
-            _ = endpoints.MapPost(
-                "/hint",
-                GetRequestDelegate(GenerateHint));
+            _ = endpoints.MapPost("/hint", GetRequestDelegate(GenerateHint));
         });
 
         return app.RunAsync();
     }
 
     private static RequestDelegate GetRequestDelegate(
-        Func<HttpRequest, Task<string>> func)
+        Func<HttpRequest, Task<string>> func
+    )
     {
         return context => HandleEndpointAsync(context, func);
     }
 
     private static async Task HandleEndpointAsync(
         HttpContext context,
-        Func<HttpRequest, Task<string>> operation)
+        Func<HttpRequest, Task<string>> operation
+    )
     {
         context.Response.ContentType = "application/json";
 
         try
         {
             var result = await operation(context.Request);
-            await context.Response.WriteAsJsonAsync(
-                new ApiResponse(0, result));
+            await context.Response.WriteAsJsonAsync(new ApiResponse(0, result));
         }
         catch (Exception ex)
         {
             await context.Response.WriteAsJsonAsync(
-                new ApiResponse(1, ex.Message));
+                new ApiResponse(1, ex.Message)
+            );
         }
     }
 
@@ -96,7 +95,8 @@ internal class WebApp : IWebApp
     {
         var result = PlayCore.GenerateGameCode(
             GetValue(request.Query["gridSize"], 9),
-            GetValue(request.Query["difficulty"], 3));
+            GetValue(request.Query["difficulty"], 3)
+        );
         return Task.FromResult(result);
     }
 
@@ -111,7 +111,8 @@ internal class WebApp : IWebApp
             request.Body,
             Encoding.UTF8,
             detectEncodingFromByteOrderMarks: false,
-            leaveOpen: true);
+            leaveOpen: true
+        );
         var gameAsJson = await utf8Reader.ReadToEndAsync();
         return PlayCore.GenerateHint(gameAsJson);
     }

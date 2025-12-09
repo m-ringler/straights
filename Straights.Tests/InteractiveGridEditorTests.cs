@@ -8,7 +8,6 @@ using Straights.Console;
 using Straights.Solver;
 using Straights.Solver.Builder;
 using Straights.Tests.Console;
-
 using static Straights.InteractiveGridEditor;
 
 /// <summary>
@@ -41,7 +40,11 @@ public class InteractiveGridEditorTests
     {
         _ = TryParseBuilderField(input, out var result).Should().BeTrue();
 
-        _ = result.Should().Be(new BuilderField(new FieldLocation(4, 3), 5) { IsWhite = true });
+        _ = result
+            .Should()
+            .Be(
+                new BuilderField(new FieldLocation(4, 3), 5) { IsWhite = true }
+            );
     }
 
     [Theory]
@@ -61,19 +64,20 @@ public class InteractiveGridEditorTests
     {
         // ARRANGE
         var builder = new GridBuilder(9);
-        IReadOnlyList<string> lines = [
-                "1 3", // black blank
-                "2 3 3", // black number
-                "7 4 w5",
-                "7 4 0", // clear
-                "7 5 w7",
-                "7 5 w8", // overwrite
-                "2 3 5",
-                "2 4 5", // conflict
-                "a b c", // invalid
-                "7 7 w6", // white number
-                "9 1"
-            ];
+        IReadOnlyList<string> lines =
+        [
+            "1 3", // black blank
+            "2 3 3", // black number
+            "7 4 w5",
+            "7 4 0", // clear
+            "7 5 w7",
+            "7 5 w8", // overwrite
+            "2 3 5",
+            "2 4 5", // conflict
+            "a b c", // invalid
+            "7 7 w6", // white number
+            "9 1",
+        ];
 
         IWriteOnlyConsole stringConsole = new StringBuilderConsole();
         using var e = lines.GetEnumerator();
@@ -84,10 +88,14 @@ public class InteractiveGridEditorTests
             return result;
         }
 
-        var editor = new InteractiveGridEditor(new(stringConsole, ReadNextLine));
+        var editor = new InteractiveGridEditor(
+            new(stringConsole, ReadNextLine)
+        );
         var result = editor.Edit(builder);
         _ = result.Should().BeTrue();
-        await Verify(builder.Convert().ToBuilderText()).UseFileName($"{nameof(InteractiveGridEditorTests)}.Builder");
-        await Verify(stringConsole.ToString()).UseFileName($"{nameof(InteractiveGridEditorTests)}.Console");
+        await Verify(builder.Convert().ToBuilderText())
+            .UseFileName($"{nameof(InteractiveGridEditorTests)}.Builder");
+        await Verify(stringConsole.ToString())
+            .UseFileName($"{nameof(InteractiveGridEditorTests)}.Console");
     }
 }

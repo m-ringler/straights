@@ -6,12 +6,16 @@ namespace Straights.Solver.Data;
 
 public static class WhiteFieldDataEnumerable
 {
-    public static IEnumerable<WhiteFieldData> Solved(this IEnumerable<WhiteFieldData> self)
+    public static IEnumerable<WhiteFieldData> Solved(
+        this IEnumerable<WhiteFieldData> self
+    )
     {
         return self.Where(f => f.IsSolved);
     }
 
-    public static IEnumerable<WhiteFieldData> Unsolved(this IEnumerable<WhiteFieldData> self)
+    public static IEnumerable<WhiteFieldData> Unsolved(
+        this IEnumerable<WhiteFieldData> self
+    )
     {
         return self.Where(f => !f.IsSolved);
     }
@@ -47,7 +51,10 @@ public static class WhiteFieldDataEnumerable
     /// </summary>
     /// <param name="self">The collection of fields.</param>
     /// <param name="numbers">The numbers to remove.</param>
-    public static void Remove(this IEnumerable<WhiteFieldData> self, IEnumerable<int> numbers)
+    public static void Remove(
+        this IEnumerable<WhiteFieldData> self,
+        IEnumerable<int> numbers
+    )
     {
         foreach (var field in self)
         {
@@ -61,7 +68,8 @@ public static class WhiteFieldDataEnumerable
     /// <param name="self">The collection of fields.</param>
     /// <returns>The union of all fields or null if the collecton is empty.</returns>
     public static WhiteFieldData? Union(
-        this IReadOnlyCollection<WhiteFieldData> self)
+        this IReadOnlyCollection<WhiteFieldData> self
+    )
     {
         if (self.Count == 0)
         {

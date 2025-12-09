@@ -6,9 +6,7 @@ namespace Straights.Image.GridReader;
 
 public record Cell
 {
-    private Cell()
-    {
-    }
+    private Cell() { }
 
     public interface IHasNumber
     {

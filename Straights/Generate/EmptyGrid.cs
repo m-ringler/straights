@@ -8,10 +8,8 @@ using System.Collections.Immutable;
 using System.CommandLine;
 using System.CommandLine.Parsing;
 using System.Diagnostics;
-
 using Straights;
 using Straights.Solver.Generator;
-
 using static Straights.Solver.Generator.GridParameters;
 
 internal class EmptyGrid
@@ -19,39 +17,33 @@ internal class EmptyGrid
     public const GridLayout DefaultLayout = GridLayout.Uniform;
     public static readonly int DefaultSize = DefaultParameters.Size;
 
-    private const string SizeOptionDescription =
-        """
+    private const string SizeOptionDescription = """
         The size of the grid to generate.
         """;
 
-    private const string TemplateOptionDescription =
-        """
+    private const string TemplateOptionDescription = """
         A file (.png, .jpg, .txt, .json) with a straights grid
         to use as a template. The numbers in the grid will be ignored,
         but its layout will be reused.
         """;
 
-    private const string LayoutOptionDescription =
-        """
+    private const string LayoutOptionDescription = """
         The strategy used to place the black fields on the grid.
         """;
 
-    private static readonly string BlackBlanksOptionDescription =
-        $"""
+    private static readonly string BlackBlanksOptionDescription = $"""
         The number of black blanks to generate. Must be less than or equal to
         {MaximumPercentageOfBlackBlanks} % of the number of fields.
         The default value of this option depends on the size and layout.
         """;
 
-    private static readonly string BlackNumbersOptionDescription =
-        $"""
+    private static readonly string BlackNumbersOptionDescription = $"""
         The number of black numbers to generate. Must be less than or equal to
         {MaximumPercentageOfBlackNumbers} % of the number of fields.
         The default value of this option depends on the size and layout.
         """;
 
-    private readonly Option<int> sizeOption = new(
-        name: "--size")
+    private readonly Option<int> sizeOption = new(name: "--size")
     {
         Description = SizeOptionDescription,
         DefaultValueFactory = _ => DefaultSize,
@@ -60,7 +52,8 @@ internal class EmptyGrid
     };
 
     private readonly Option<int?> blackBlanksOption = new(
-        name: "--black-blanks")
+        name: "--black-blanks"
+    )
     {
         Description = BlackBlanksOptionDescription,
         DefaultValueFactory = _ => null,
@@ -69,7 +62,8 @@ internal class EmptyGrid
     };
 
     private readonly Option<int?> blackNumbersOption = new(
-        name: "--black-numbers")
+        name: "--black-numbers"
+    )
     {
         Description = BlackNumbersOptionDescription,
         DefaultValueFactory = _ => null,
@@ -77,8 +71,7 @@ internal class EmptyGrid
         HelpName = "non-negative number",
     };
 
-    private readonly Option<FileInfo?> templateOption = new(
-        name: "--template")
+    private readonly Option<FileInfo?> templateOption = new(name: "--template")
     {
         Description = TemplateOptionDescription,
         DefaultValueFactory = _ => null,
@@ -86,8 +79,7 @@ internal class EmptyGrid
         HelpName = "file",
     };
 
-    private readonly Option<GridLayout> layoutOption = new(
-        name: "--layout")
+    private readonly Option<GridLayout> layoutOption = new(name: "--layout")
     {
         Description = LayoutOptionDescription,
         DefaultValueFactory = _ => DefaultLayout,
@@ -104,11 +96,7 @@ internal class EmptyGrid
             this.layoutOption,
         ];
 
-        this.Options =
-        [
-            .. this.NonTemplateOptions,
-            this.templateOption
-        ];
+        this.Options = [.. this.NonTemplateOptions, this.templateOption];
     }
 
     public ImmutableArray<Option> Options { get; }
@@ -119,7 +107,8 @@ internal class EmptyGrid
         SymbolResult r,
         out GridParameters? gridParameters,
         out GridLayout layout,
-        out FileInfo? template)
+        out FileInfo? template
+    )
     {
         template = r.GetValue(this.templateOption);
         if (template != null)
@@ -131,12 +120,13 @@ internal class EmptyGrid
         {
             layout = r.GetValue(this.layoutOption);
 
-            gridParameters = (GridParameters)GridConfigurationBuilder
-                .GetUnvalidatedGridParameters(
+            gridParameters = (GridParameters)
+                GridConfigurationBuilder.GetUnvalidatedGridParameters(
                     layout: layout,
                     size: r.GetValue(this.sizeOption),
                     blackBlanksRaw: r.GetValue(this.blackBlanksOption),
-                    blackNumbersRaw: r.GetValue(this.blackNumbersOption));
+                    blackNumbersRaw: r.GetValue(this.blackNumbersOption)
+                );
         }
     }
 
@@ -148,7 +138,8 @@ internal class EmptyGrid
     private void GetUnvalidatedGridParameters(
         SymbolResult r,
         out UnvalidatedGridConfiguration? gridParameters,
-        out FileInfo? template)
+        out FileInfo? template
+    )
     {
         T? GetValue<T>(Option<T> o)
         {
@@ -159,13 +150,15 @@ internal class EmptyGrid
         }
 
         template = GetValue(this.templateOption);
-        gridParameters = template != null
-            ? default
-            : GridConfigurationBuilder.GetUnvalidatedGridParameters(
-                GetValue(this.layoutOption),
-                GetValue(this.sizeOption),
-                GetValue(this.blackBlanksOption),
-                GetValue(this.blackNumbersOption));
+        gridParameters =
+            template != null
+                ? default
+                : GridConfigurationBuilder.GetUnvalidatedGridParameters(
+                    GetValue(this.layoutOption),
+                    GetValue(this.sizeOption),
+                    GetValue(this.blackBlanksOption),
+                    GetValue(this.blackNumbersOption)
+                );
     }
 
     private class Validator(EmptyGrid owner, SymbolResult r)
@@ -175,15 +168,21 @@ internal class EmptyGrid
             owner.GetUnvalidatedGridParameters(
                 r,
                 out var gridParameters,
-                out var template);
+                out var template
+            );
 
             if (template == null)
             {
-                Debug.Assert(gridParameters != null, "Non-null when template is null.");
+                Debug.Assert(
+                    gridParameters != null,
+                    "Non-null when template is null."
+                );
                 return
                 [
                     .. this.GetGridParameterMinMaxErrors(gridParameters.Value),
-                    .. SymmetryValidator.GetSymmetryViolationErrors(gridParameters.Value)
+                    .. SymmetryValidator.GetSymmetryViolationErrors(
+                        gridParameters.Value
+                    ),
                 ];
             }
             else
@@ -192,37 +191,46 @@ internal class EmptyGrid
             }
         }
 
-        private IEnumerable<string> GetGridParameterMinMaxErrors(UnvalidatedGridConfiguration gridParameters)
+        private IEnumerable<string> GetGridParameterMinMaxErrors(
+            UnvalidatedGridConfiguration gridParameters
+        )
         {
             int size = gridParameters.Size;
 
             int numberOfFields = size * size;
-            int maxBlackBlanks = MaximumPercentageOfBlackBlanks * numberOfFields / 100;
-            int maxBlackNumbers = MaximumPercentageOfBlackNumbers * numberOfFields / 100;
+            int maxBlackBlanks =
+                MaximumPercentageOfBlackBlanks * numberOfFields / 100;
+            int maxBlackNumbers =
+                MaximumPercentageOfBlackNumbers * numberOfFields / 100;
             string whenSize = $" for size {size}";
 
-            return [
-            .. owner.sizeOption.RequireMinMax(
-                size,
-                (MinimumSize, MaximumSize)),
-            .. owner.blackBlanksOption.RequireMinMax(
-                gridParameters.NumberOfBlackBlanks,
-                (0, maxBlackBlanks),
-                whenSize),
-            .. owner.blackNumbersOption.RequireMinMax(
-                gridParameters.NumberOfBlackNumbers,
-                (0, maxBlackNumbers),
-                whenSize),
+            return
+            [
+                .. owner.sizeOption.RequireMinMax(
+                    size,
+                    (MinimumSize, MaximumSize)
+                ),
+                .. owner.blackBlanksOption.RequireMinMax(
+                    gridParameters.NumberOfBlackBlanks,
+                    (0, maxBlackBlanks),
+                    whenSize
+                ),
+                .. owner.blackNumbersOption.RequireMinMax(
+                    gridParameters.NumberOfBlackNumbers,
+                    (0, maxBlackNumbers),
+                    whenSize
+                ),
             ];
         }
 
         private IReadOnlyCollection<string> GetTemplateOptionErrors()
         {
-            return [..
-            from o in owner.NonTemplateOptions
-            where this.IsUserOption(o)
-            select
-            $"You cannot use the {o.Name} and {owner.templateOption.Name} options together."];
+            return
+            [
+                .. from o in owner.NonTemplateOptions
+                where this.IsUserOption(o)
+                select $"You cannot use the {o.Name} and {owner.templateOption.Name} options together.",
+            ];
         }
 
         private bool IsUserOption(Option o)

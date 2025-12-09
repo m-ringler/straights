@@ -26,7 +26,10 @@ public sealed class BlockNoNeighbors : ISimplify<SolverBlock>
             var otherFieldsValues = otherFields.Union()!;
             foreach (var value in field.Clone())
             {
-                if (!otherFieldsValues.Contains(value + 1) && !otherFieldsValues.Contains(value - 1))
+                if (
+                    !otherFieldsValues.Contains(value + 1)
+                    && !otherFieldsValues.Contains(value - 1)
+                )
                 {
                     _ = field.Remove(value);
                 }

@@ -14,7 +14,8 @@ namespace Straights.Solver.Data;
 /// the interval is empty. All empty intervals equal each other.
 /// </remarks>
 public readonly record struct IntRun(int Min, int Max)
-    : IReadOnlyCollection<int>, IEquatable<IntRun>
+    : IReadOnlyCollection<int>,
+        IEquatable<IntRun>
 {
     /// <summary>
     /// Gets the number of values in the interval.
@@ -27,7 +28,8 @@ public readonly record struct IntRun(int Min, int Max)
     {
         return new IntRun(
             Math.Max(this.Min, other.Min),
-            Math.Min(this.Max, other.Max));
+            Math.Min(this.Max, other.Max)
+        );
     }
 
     public bool Intersects(IntRun other)

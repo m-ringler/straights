@@ -10,13 +10,11 @@ using System.IO.Abstractions;
 
 internal sealed class ConvertCommandBuilder : ICommandBuilder
 {
-    private const string FileArgumentDescription =
-"""
+    private const string FileArgumentDescription = """
 An image file with a Straights grid, or a Straights grid saved as .txt or .json.
 """;
 
-    private const string OutputOptionDescription =
-        """
+    private const string OutputOptionDescription = """
         Write the generated grid to the specified file.
         Currently the following formats are supported:
         * HTML (.htm, .html)
@@ -41,8 +39,9 @@ An image file with a Straights grid, or a Straights grid saved as .txt or .json.
     };
 
     public ConvertCommandBuilder(
-            IFileSystem fs,
-            Func<ConvertCommand, int> runCommand)
+        IFileSystem fs,
+        Func<ConvertCommand, int> runCommand
+    )
     {
         this.fs = fs;
         this.runCommand = runCommand;
@@ -51,9 +50,7 @@ An image file with a Straights grid, or a Straights grid saved as .txt or .json.
     }
 
     public ConvertCommandBuilder(IFileSystem fs)
-        : this(fs, program => program.Run())
-    {
-    }
+        : this(fs, program => program.Run()) { }
 
     public Command Build()
     {

@@ -5,7 +5,6 @@
 namespace Straights.Solver.Generator.Empty;
 
 using Straights.Solver.Builder;
-
 using static EmptyGridGenerator;
 
 internal sealed class RandomEmptyGridGenerator(GridParameters gridParameters)
@@ -39,6 +38,7 @@ internal sealed class RandomEmptyGridGenerator(GridParameters gridParameters)
         return EmptyGridGenerator.GetFreeRandomLocation(
             this.RandomNumberGenerator,
             this.GridParameters.Size,
-            index => fields[index.Y][index.X] != null);
+            index => fields[index.Y][index.X] != null
+        );
     }
 }

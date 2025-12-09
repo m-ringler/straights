@@ -5,7 +5,6 @@
 namespace Straights.Console;
 
 using System.Globalization;
-
 using Straights.Solver.Data;
 
 /// <summary>
@@ -19,12 +18,10 @@ public sealed class ConsoleGridRenderer(IWriteOnlyConsole console)
     /// Writes the specified grid to the console.
     /// </summary>
     /// <param name="grid">The grid fields.</param>
-    public void WriteToConsole(
-        IReadOnlyCollection<SolverField> grid)
+    public void WriteToConsole(IReadOnlyCollection<SolverField> grid)
     {
         int size = (int)Math.Sqrt(grid.Count);
-        var fields = grid
-            .Select(GetRenderData).ToList();
+        var fields = grid.Select(GetRenderData).ToList();
         var maxLength = fields.Max(x => x.Text.Length);
         var e = fields.GetEnumerator();
 
@@ -51,16 +48,21 @@ public sealed class ConsoleGridRenderer(IWriteOnlyConsole console)
     {
         return sf switch
         {
-            SolverField.BlackBlank
-                => (" ", ColorPair.WhiteOnBlack),
+            SolverField.BlackBlank => (" ", ColorPair.WhiteOnBlack),
 
-            SolverField.BlackNumber bn
-                => (bn.Number.ToString(CultureInfo.InvariantCulture), ColorPair.WhiteOnBlack),
+            SolverField.BlackNumber bn => (
+                bn.Number.ToString(CultureInfo.InvariantCulture),
+                ColorPair.WhiteOnBlack
+            ),
 
-            SolverField.WhiteField wf
-                => (wf.GetWhiteFieldData()!.ToCompactString(), ColorPair.BlackOnWhite),
+            SolverField.WhiteField wf => (
+                wf.GetWhiteFieldData()!.ToCompactString(),
+                ColorPair.BlackOnWhite
+            ),
 
-            _ => throw new InvalidOperationException("Unknown field type:" + sf.GetType()),
+            _ => throw new InvalidOperationException(
+                "Unknown field type:" + sf.GetType()
+            ),
         };
     }
 
@@ -86,15 +88,21 @@ public sealed class ConsoleGridRenderer(IWriteOnlyConsole console)
         console.Write(' ');
     }
 
-    private readonly record struct ColorPair(ConsoleColor Foreground, ConsoleColor Background)
+    private readonly record struct ColorPair(
+        ConsoleColor Foreground,
+        ConsoleColor Background
+    )
     {
-        public ConsoleColor AltBackground => this.Background == ConsoleColor.White
-            ? ConsoleColor.Gray
-            : this.Background;
+        public ConsoleColor AltBackground =>
+            this.Background == ConsoleColor.White
+                ? ConsoleColor.Gray
+                : this.Background;
 
-        public static ColorPair WhiteOnBlack { get; } = new(ConsoleColor.White, ConsoleColor.Black);
+        public static ColorPair WhiteOnBlack { get; } =
+            new(ConsoleColor.White, ConsoleColor.Black);
 
-        public static ColorPair BlackOnWhite { get; } = new(ConsoleColor.Black, ConsoleColor.White);
+        public static ColorPair BlackOnWhite { get; } =
+            new(ConsoleColor.Black, ConsoleColor.White);
 
         public static ColorPair Capture(IWriteOnlyConsole c)
         {

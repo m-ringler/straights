@@ -11,7 +11,4 @@ namespace Straights.Solver.Converter;
 /// <typeparam name="T">
 /// The type of the serialized instances.
 /// </typeparam>
-public interface ITextPersister<T>
- : ITextSaver<T>, ITextLoader<T>
-{
-}
+public interface ITextPersister<T> : ITextSaver<T>, ITextLoader<T> { }

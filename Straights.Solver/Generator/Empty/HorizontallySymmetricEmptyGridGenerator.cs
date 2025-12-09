@@ -6,8 +6,9 @@ namespace Straights.Solver.Generator.Empty;
 
 using Straights.Solver.Builder;
 
-internal sealed class HorizontallySymmetricEmptyGridGenerator(GridParameters gridParameters)
-    : IEmptyGridGenerator
+internal sealed class HorizontallySymmetricEmptyGridGenerator(
+    GridParameters gridParameters
+) : IEmptyGridGenerator
 {
     public required IRandom RandomNumberGenerator { get; init; }
 
@@ -17,16 +18,21 @@ internal sealed class HorizontallySymmetricEmptyGridGenerator(GridParameters gri
     {
         return EmptyGridGenerator.GenerateGrid(
             this.GridParameters,
-            this.GenerateFieldIndices(5));
+            this.GenerateFieldIndices(5)
+        );
     }
 
     private static GridParameters Validate(GridParameters gridParameters)
     {
-        if (gridParameters.Size % 2 == 0 && gridParameters.TotalNumberOfBlackFields % 2 != 0)
+        if (
+            gridParameters.Size % 2 == 0
+            && gridParameters.TotalNumberOfBlackFields % 2 != 0
+        )
         {
             throw new ArgumentException(
                 paramName: nameof(gridParameters),
-                message: $"The total number of black fields must be even for size {gridParameters.Size}.");
+                message: $"The total number of black fields must be even for size {gridParameters.Size}."
+            );
         }
 
         return gridParameters;
@@ -38,9 +44,10 @@ internal sealed class HorizontallySymmetricEmptyGridGenerator(GridParameters gri
         int size = this.GridParameters.Size;
 
         var index1D = Enumerable.Range(0, size);
-        var allIndices = from y in index1D
-                         from x in Enumerable.Range(0, (size + 1) / 2)
-                         select new FieldIndex(x, y);
+        var allIndices =
+            from y in index1D
+            from x in Enumerable.Range(0, (size + 1) / 2)
+            select new FieldIndex(x, y);
 
         var all = allIndices.ToList();
         this.RandomNumberGenerator.Shuffle(all);
@@ -83,7 +90,9 @@ internal sealed class HorizontallySymmetricEmptyGridGenerator(GridParameters gri
             return maxRecurse > 0
                 ? this.GenerateFieldIndices(maxRecurse - 1)
                 : throw new InvalidOperationException(
-                    "Failed to build a grid for parameters " + this.GridParameters);
+                    "Failed to build a grid for parameters "
+                        + this.GridParameters
+                );
         }
 
         this.RandomNumberGenerator.Shuffle(result);

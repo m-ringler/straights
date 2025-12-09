@@ -28,22 +28,34 @@ public readonly record struct SimplifierStrength
         return new SimplifierStrength(value);
     }
 
-    public static bool operator <(SimplifierStrength left, SimplifierStrength right)
+    public static bool operator <(
+        SimplifierStrength left,
+        SimplifierStrength right
+    )
     {
         return left.CompareTo(right) < 0;
     }
 
-    public static bool operator <=(SimplifierStrength left, SimplifierStrength right)
+    public static bool operator <=(
+        SimplifierStrength left,
+        SimplifierStrength right
+    )
     {
         return left.CompareTo(right) <= 0;
     }
 
-    public static bool operator >(SimplifierStrength left, SimplifierStrength right)
+    public static bool operator >(
+        SimplifierStrength left,
+        SimplifierStrength right
+    )
     {
         return left.CompareTo(right) > 0;
     }
 
-    public static bool operator >=(SimplifierStrength left, SimplifierStrength right)
+    public static bool operator >=(
+        SimplifierStrength left,
+        SimplifierStrength right
+    )
     {
         return left.CompareTo(right) >= 0;
     }

@@ -19,9 +19,9 @@ using Straights.Solver.Data;
 /// The strategy to use to generate empty grids.
 /// </param>
 public class GridGenerator(
-        ISolver solver,
-        IEmptyGridGenerator emptyGridGenerator)
-    : IGridGenerator
+    ISolver solver,
+    IEmptyGridGenerator emptyGridGenerator
+) : IGridGenerator
 {
     public ISolver Solver { get; } = solver;
 
@@ -33,7 +33,8 @@ public class GridGenerator(
     {
         for (int i = 0; i < this.MaximumNumberOfAttempts; i++)
         {
-            BuilderField?[][] emptyGrid = this.EmptyGridGenerator.GenerateGrid();
+            BuilderField?[][] emptyGrid =
+                this.EmptyGridGenerator.GenerateGrid();
             var solverGrid = this.Solver.Solve(ToSolverGrid(emptyGrid));
             if (solverGrid.IsSolved)
             {
@@ -48,6 +49,7 @@ public class GridGenerator(
     {
         // Circumnavigate the validation in unsolvedGrid.Convert()
         return SolverGrid.FromFieldGrid(
-            BuilderToSolverGridConverter.ToSolverFields(unsolvedGrid));
+            BuilderToSolverGridConverter.ToSolverFields(unsolvedGrid)
+        );
     }
 }

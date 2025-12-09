@@ -8,19 +8,20 @@ using System.Collections.Immutable;
 
 internal sealed class SolverColumnBuilder()
 {
-    private readonly ImmutableArray<SolverBlock>.Builder column = ImmutableArray.CreateBuilder<SolverBlock>();
+    private readonly ImmutableArray<SolverBlock>.Builder column =
+        ImmutableArray.CreateBuilder<SolverBlock>();
 
-    private readonly ImmutableArray<WhiteFieldData>.Builder currentBlock = ImmutableArray.CreateBuilder<WhiteFieldData>();
+    private readonly ImmutableArray<WhiteFieldData>.Builder currentBlock =
+        ImmutableArray.CreateBuilder<WhiteFieldData>();
 
     public ImmutableArray<SolverColumn> CreateMany(
-        IEnumerable<IEnumerable<SolverField>> columns)
+        IEnumerable<IEnumerable<SolverField>> columns
+    )
     {
-        return [.. from column in columns
-                       select this.Create(column)];
+        return [.. from column in columns select this.Create(column)];
     }
 
-    public SolverColumn Create(
-        IEnumerable<SolverField> column)
+    public SolverColumn Create(IEnumerable<SolverField> column)
     {
         this.Clear();
         foreach (var field in column)
@@ -60,10 +61,7 @@ internal sealed class SolverColumnBuilder()
     public SolverColumn Drain()
     {
         this.FinishBlock();
-        var result = new SolverColumn
-        {
-            Blocks = this.column.ToImmutable(),
-        };
+        var result = new SolverColumn { Blocks = this.column.ToImmutable() };
 
         this.column.Clear();
         return result;

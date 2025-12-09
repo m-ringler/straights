@@ -10,8 +10,7 @@ using Straights.Solver.Simplification;
 
 public class GridConverterTests
 {
-    private const string BuilderText5 =
-"""
+    private const string BuilderText5 = """
 5
 _,_,w3,_,b
 w1,b,_,_,_
@@ -21,8 +20,7 @@ b,_,_,_,_
 
 """;
 
-    private const string BuilderText9 =
-"""
+    private const string BuilderText9 = """
 9
 b,b9,_,_,_,b,_,b,_
 _,b,w8,_,b,_,_,_,_
@@ -36,8 +34,7 @@ _,_,b,_,w7,_,_,w4,_
 
 """;
 
-    private const string Json5 =
-"""
+    private const string Json5 = """
 [
   [
     [1, 2, 3, 4, 5],
@@ -78,8 +75,7 @@ _,_,b,_,w7,_,_,w4,_
 
 """;
 
-    private const string Json5Compact =
-"""
+    private const string Json5Compact = """
 [
   [[ ], [ ], [3],  [ ], [0]],
   [[1], [0], [ ],  [ ], [ ]],
@@ -93,9 +89,7 @@ _,_,b,_,w7,_,_,w4,_
     [Fact]
     public void BuilderToJson()
     {
-        var json = GridConverter
-            .ParseBuilderText(BuilderText5)
-            .ToJson();
+        var json = GridConverter.ParseBuilderText(BuilderText5).ToJson();
 
         _ = json.Should().Be(Json5);
     }
@@ -105,8 +99,10 @@ _,_,b,_,w7,_,_,w4,_
     {
         var actual = SolveJsonGrid(Json5Compact);
 
-        _ = actual.Should().Be(
-"""
+        _ = actual
+            .Should()
+            .Be(
+                """
 [
   [[2], [4], [3], [1], [0]],
   [[1], [0], [2], [4], [3]],
@@ -115,15 +111,14 @@ _,_,b,_,w7,_,_,w4,_
   [[0], [1], [4], [3], [2]]
 ]
 
-""");
+"""
+            );
     }
 
     [Fact]
     public void BuilderToLuisWalter()
     {
-        var unsolved = GridConverter
-            .ParseBuilderText(BuilderText9)
-            .SolverGrid;
+        var unsolved = GridConverter.ParseBuilderText(BuilderText9).SolverGrid;
 
         var solved = GridSimplifierFactory
             .BuildIterativeSimplifier(SimplifierStrength.DefaultStrength)
@@ -133,18 +128,21 @@ _,_,b,_,w7,_,_,w4,_
         var actual = GridConverter.ToUrlParameter(
             unsolved: unsolved.Grid,
             solved: solved.Grid,
-            encodingVersion: LuisWalterBinaryConverter.EncodingVersion);
+            encodingVersion: LuisWalterBinaryConverter.EncodingVersion
+        );
 
-        _ = actual.Should().Be(
-            "Ar-BhxbwrwRb1yLwRAgxFeLw7wEQhrxQwhAULwgbxVBg-" +
-            "F01AQkFRryOEgBgQxxRAAwkd7xVBgQLxFhyExQ");
+        _ = actual
+            .Should()
+            .Be(
+                "Ar-BhxbwrwRb1yLwRAgxFeLw7wEQhrxQwhAULwgbxVBg-"
+                    + "F01AQkFRryOEgBgQxxRAAwkd7xVBgQLxFhyExQ"
+            );
     }
 
     [Fact]
     public void JsonToBuilder()
     {
-        var actual = GridConverter.ParseJson(Json5)
-            .ToBuilderText();
+        var actual = GridConverter.ParseJson(Json5).ToBuilderText();
 
         _ = actual.Should().Be(BuilderText5);
     }

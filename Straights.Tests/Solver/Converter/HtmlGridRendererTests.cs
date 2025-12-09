@@ -14,8 +14,7 @@ using Straights.Solver.Simplification;
 /// </summary>
 public class HtmlGridRendererTests
 {
-    internal const string Grid9x9 =
-"""
+    internal const string Grid9x9 = """
 9
 w1,_,_,b,_,_,_,b,b
 _,_,_,_,_,_,_,w9,_

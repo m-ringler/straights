@@ -7,7 +7,8 @@ namespace Straights.Tests;
 internal static class HelpVerifier
 {
     public static Task VerifyHelp<TCommand>(
-        Func<Func<TCommand, int>, ICommandBuilder> builderFactory)
+        Func<Func<TCommand, int>, ICommandBuilder> builderFactory
+    )
     {
         // ARRANGE
         var runner = new RunCommandFunction<TCommand>(0);

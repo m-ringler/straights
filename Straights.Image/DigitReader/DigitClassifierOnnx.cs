@@ -6,15 +6,15 @@ namespace Straights.Image.DigitReader;
 
 using System.IO;
 using System.Numerics.Tensors;
-
 using Microsoft.ML.OnnxRuntime;
 
-public sealed class DigitClassifierOnnx(string modelName) : IDisposable, IDigitClassifier
+public sealed class DigitClassifierOnnx(string modelName)
+    : IDisposable,
+        IDigitClassifier
 {
     private readonly Lazy<InferenceSession> session = new(() =>
     {
-        var path = GetData(
-            $"{modelName}.onnx");
+        var path = GetData($"{modelName}.onnx");
         return new InferenceSession(path);
     });
 
@@ -33,18 +33,20 @@ public sealed class DigitClassifierOnnx(string modelName) : IDisposable, IDigitC
 
         using var inputOrtValue = OrtValue.CreateTensorValueFromMemory(
             data,
-            [.. inputSize.Select(x => (long)x)]);
+            [.. inputSize.Select(x => (long)x)]
+        );
 
         var inputs = new Dictionary<string, OrtValue>
         {
-            { this.Session.InputNames[0],  inputOrtValue },
+            { this.Session.InputNames[0], inputOrtValue },
         };
 
         using RunOptions ro = new();
         using var output = this.Session.Run(
             ro,
             inputs,
-            [this.Session.OutputNames[0]]);
+            [this.Session.OutputNames[0]]
+        );
 
         var output_0 = output[0];
         var outputData = output_0.GetTensorDataAsSpan<float>();
@@ -77,18 +79,18 @@ public sealed class DigitClassifierOnnx(string modelName) : IDisposable, IDigitC
         var resizeImage = convertedImage;
 
         using Mat src28 = resizeImage.Resize(
-            new Size(dimensions[^2], dimensions[^1]));
+            new Size(dimensions[^2], dimensions[^1])
+        );
 
         if (!src28.GetArray<float>(out var data))
         {
             throw new ArgumentException(
-                $"Failed to get float array out of {src28}.");
+                $"Failed to get float array out of {src28}."
+            );
         }
 
         int numChannels = dimensions[1];
-        return numChannels == 1
-                ? data
-                : Repeat(data, numChannels);
+        return numChannels == 1 ? data : Repeat(data, numChannels);
     }
 
     private static float[] Repeat(float[] data, int numChannels)

@@ -15,16 +15,15 @@ public class SolverTests
     [Fact]
     public Task ReadmeSampleCode()
     {
-        var unsolvedGridText =
-        """
-        5
-        _,b,b1,_,w4
-        _,w4,_,_,_
-        b,_,b,_,_
-        b,w5,_,_,_
-        w3,_,_,_,w1
+        var unsolvedGridText = """
+            5
+            _,b,b1,_,w4
+            _,w4,_,_,_
+            b,_,b,_,_
+            b,w5,_,_,_
+            w3,_,_,_,w1
 
-        """;
+            """;
 
         var unsolvedGrid = GridConverter.ParseBuilderText(unsolvedGridText);
         var solver = new EliminatingSolver();
@@ -54,8 +53,7 @@ public class SolverTests
 
     private static void TestSolver(ISolver solver)
     {
-        const string unsolvedGrid =
-"""
+        const string unsolvedGrid = """
 9
 b,_,b9,b,_,w4,_,b,w2
 _,_,_,_,w4,_,_,_,b9
@@ -69,9 +67,7 @@ w1,_,_,b9,_,w5,_,_,_
 
 """;
 
-        var grid = GridConverter
-            .ParseBuilderText(unsolvedGrid)
-            .SolverGrid;
+        var grid = GridConverter.ParseBuilderText(unsolvedGrid).SolverGrid;
 
         // ACT
         var solvedGrid = solver.Solve(grid);
@@ -79,21 +75,25 @@ w1,_,_,b9,_,w5,_,_,_
         // ASSERT
         _ = solvedGrid.IsSolved.Should().BeTrue();
 
-        _ = solvedGrid.Convert()
-            .ToJson().Should().Be(
-        """
-        [
-          [[0], [7], [-9], [0], [5], [4], [3], [0], [2]],
-          [[8], [6], [5], [7], [4], [1], [2], [3], [-9]],
-          [[7], [0], [4], [1], [2], [3], [0], [6], [0]],
-          [[9], [0], [6], [5], [3], [2], [7], [8], [4]],
-          [[0], [5], [7], [6], [-1], [0], [4], [2], [3]],
-          [[3], [4], [8], [2], [6], [7], [9], [5], [0]],
-          [[2], [3], [-1], [4], [7], [8], [5], [9], [6]],
-          [[4], [0], [0], [3], [0], [6], [8], [7], [5]],
-          [[1], [2], [3], [-9], [8], [5], [6], [4], [7]]
-        ]
+        _ = solvedGrid
+            .Convert()
+            .ToJson()
+            .Should()
+            .Be(
+                """
+                [
+                  [[0], [7], [-9], [0], [5], [4], [3], [0], [2]],
+                  [[8], [6], [5], [7], [4], [1], [2], [3], [-9]],
+                  [[7], [0], [4], [1], [2], [3], [0], [6], [0]],
+                  [[9], [0], [6], [5], [3], [2], [7], [8], [4]],
+                  [[0], [5], [7], [6], [-1], [0], [4], [2], [3]],
+                  [[3], [4], [8], [2], [6], [7], [9], [5], [0]],
+                  [[2], [3], [-1], [4], [7], [8], [5], [9], [6]],
+                  [[4], [0], [0], [3], [0], [6], [8], [7], [5]],
+                  [[1], [2], [3], [-9], [8], [5], [6], [4], [7]]
+                ]
 
-        """);
+                """
+            );
     }
 }

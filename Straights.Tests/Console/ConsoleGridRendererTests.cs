@@ -13,8 +13,7 @@ using Straights.Solver.Data;
 /// </summary>
 public class ConsoleGridRendererTests
 {
-    private const string Grid9x9 =
-"""
+    private const string Grid9x9 = """
 9
 w1,_,_,b,_,_,_,b,b
 _,_,_,_,_,_,_,w9,_
@@ -41,8 +40,10 @@ b,b,_,_,_,b5,_,_,_
 
         // ASSERT
         var actual = console.ToString();
-        _ = actual.Should().Be(
-"""
+        _ = actual
+            .Should()
+            .Be(
+                """
 │ 1  │ ⠿⠇ │ ⠿⠇ │    │ ⠿⠇ │ ⠿⠇ │ ⠿⠇ │    │    │
 │ ⠿⠇ │ ⠿⠇ │ ⠿⠇ │ ⠿⠇ │ ⠿⠇ │ ⠿⠇ │ ⠿⠇ │ 9  │ ⠿⠇ │
 │    │ ⠿⠇ │ ⠿⠇ │ ⠿⠇ │ 1  │    │ 9  │ ⠿⠇ │ ⠿⠇ │
@@ -53,7 +54,8 @@ b,b,_,_,_,b5,_,_,_
 │ ⠿⠇ │ ⠿⠇ │ ⠿⠇ │ ⠿⠇ │ ⠿⠇ │ ⠿⠇ │ ⠿⠇ │ ⠿⠇ │ ⠿⠇ │
 │    │    │ ⠿⠇ │ ⠿⠇ │ ⠿⠇ │ 5  │ ⠿⠇ │ ⠿⠇ │ ⠿⠇ │
 
-""");
+"""
+            );
     }
 
     private static Grid<SolverField> ToGrid(string builderText)

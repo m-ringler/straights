@@ -5,7 +5,6 @@
 namespace Straights.Solver.Simplification;
 
 using System.Collections.Generic;
-
 using Straights.Solver.Data;
 
 /// <summary>
@@ -13,8 +12,7 @@ using Straights.Solver.Data;
 /// in the column. It retains only those ranges for which the other blocks
 /// can still be solved.
 /// </summary>
-public sealed class ColumnConsistentRanges
-    : ISimplify<SolverColumn>
+public sealed class ColumnConsistentRanges : ISimplify<SolverColumn>
 {
     public void Simplify(SolverColumn item)
     {
@@ -45,13 +43,17 @@ public sealed class ColumnConsistentRanges
     /// For each of the <paramref name="unsolvedBlocks"/> the set of
     /// allowed values.
     /// </returns>
-    private static HashSet<int>[] GetConsistentValues(SolverBlock[] unsolvedBlocks)
+    private static HashSet<int>[] GetConsistentValues(
+        SolverBlock[] unsolvedBlocks
+    )
     {
         // We identify a block with its possible ranges here.
         // For example, a length-3 block with values in the 2 .. 5 range,
         // is represented as [[2, 3, 4], [3, 4, 5]].
-        IntRun[][] blocks = [.. from b in unsolvedBlocks
-                                select b.GetAllRanges().ToArray()];
+        IntRun[][] blocks =
+        [
+            .. from b in unsolvedBlocks select b.GetAllRanges().ToArray(),
+        ];
         var remainingNumbers = new HashSet<int>[blocks.Length];
         for (int i = 0; i < blocks.Length; i++)
         {
@@ -59,10 +61,12 @@ public sealed class ColumnConsistentRanges
             var otherBlocks = new LinkedList<IntRun[]>(
                 from b in blocks
                 where b != block
-                select b);
-            var consistentRanges = from range in block
-                                   where IsConsistent([range], otherBlocks.First!)
-                                   select range;
+                select b
+            );
+            var consistentRanges =
+                from range in block
+                where IsConsistent([range], otherBlocks.First!)
+                select range;
             remainingNumbers[i] = [.. consistentRanges.SelectMany(x => x)];
         }
 
@@ -71,11 +75,13 @@ public sealed class ColumnConsistentRanges
 
     private static bool IsConsistent(
         IEnumerable<IntRun> selectedRanges,
-        LinkedListNode<IntRun[]> remainingBlocks)
+        LinkedListNode<IntRun[]> remainingBlocks
+    )
     {
         var currentBlock = remainingBlocks.Value;
-        var currentBlockAllowedRanges = currentBlock.Where(
-            x => !selectedRanges.Any(r => r.Intersects(x)));
+        var currentBlockAllowedRanges = currentBlock.Where(x =>
+            !selectedRanges.Any(r => r.Intersects(x))
+        );
 
         var nextIterationRemainingBlocks = remainingBlocks.Next;
         if (nextIterationRemainingBlocks == null)
@@ -83,9 +89,11 @@ public sealed class ColumnConsistentRanges
             return currentBlockAllowedRanges.Any();
         }
 
-        return currentBlockAllowedRanges.Any(
-            range => IsConsistent(
+        return currentBlockAllowedRanges.Any(range =>
+            IsConsistent(
                 selectedRanges.Append(range),
-                nextIterationRemainingBlocks));
+                nextIterationRemainingBlocks
+            )
+        );
     }
 }

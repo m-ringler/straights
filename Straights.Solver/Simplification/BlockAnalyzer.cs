@@ -44,9 +44,11 @@ public static class BlockAnalyzer
     {
         var maxRange = item.GetMaxRange();
         int n = item.Count;
-        for (IntRun range = new(maxRange.Min, maxRange.Min + n - 1);
+        for (
+            IntRun range = new(maxRange.Min, maxRange.Min + n - 1);
             range.Max <= maxRange.Max;
-            range = new(range.Min + 1, range.Max + 1))
+            range = new(range.Min + 1, range.Max + 1)
+        )
         {
             yield return range;
         }

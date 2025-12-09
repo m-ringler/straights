@@ -5,7 +5,6 @@
 namespace Straights.Tests.Solver.Data;
 
 using AwesomeAssertions.Equivalency;
-
 using Straights.Solver;
 using Straights.Solver.Data;
 
@@ -14,8 +13,7 @@ public class SolverGridTests
     [Fact]
     public void Clone_WhenInvoked_CreatesExactCopy()
     {
-        string gridText =
-"""
+        string gridText = """
 3
 _,_,w3
 b3,b2,_
@@ -28,16 +26,15 @@ b2,_,b
         var clone = sut.CreateCopy();
 
         // ASSERT
-        _ = clone.Should().BeEquivalentTo(
-            sut,
-            TreatSolverColumnAsSeveralBlocks);
+        _ = clone
+            .Should()
+            .BeEquivalentTo(sut, TreatSolverColumnAsSeveralBlocks);
     }
 
     [Fact]
     public void Clone_WhenOriginalIsModified_CloneRemainsUnchanged()
     {
-        string gridText =
-"""
+        string gridText = """
 3
 _,_,w3
 b3,b2,_
@@ -59,17 +56,16 @@ b2,_,b
         return GridConverter.ParseBuilderText(builderText).SolverGrid;
     }
 
-    private static EquivalencyOptions<SolverGrid>
-        TreatSolverColumnAsSeveralBlocks(EquivalencyOptions<SolverGrid> cfg)
+    private static EquivalencyOptions<SolverGrid> TreatSolverColumnAsSeveralBlocks(
+        EquivalencyOptions<SolverGrid> cfg
+    )
     {
-        return cfg
-            .Using<SolverColumn>(
-                ctx =>
-                {
-                    IEnumerable<SolverBlock> subject = ctx.Subject;
-                    IEnumerable<SolverBlock> expectation = ctx.Expectation;
-                    _ = subject.Should().BeEquivalentTo(expectation);
-                })
+        return cfg.Using<SolverColumn>(ctx =>
+            {
+                IEnumerable<SolverBlock> subject = ctx.Subject;
+                IEnumerable<SolverBlock> expectation = ctx.Expectation;
+                _ = subject.Should().BeEquivalentTo(expectation);
+            })
             .WhenTypeIs<SolverColumn>();
     }
 }

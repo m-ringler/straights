@@ -34,7 +34,8 @@ public class BuilderFieldTests
         Action act = () => field.Validate(size: 5);
 
         // ASSERT
-        act.Should().Throw<ValidationException>()
+        act.Should()
+            .Throw<ValidationException>()
             .WithMessage("Value must not be less than 1 *");
     }
 
@@ -48,7 +49,8 @@ public class BuilderFieldTests
         Action act = () => field.Validate(5);
 
         // ASSERT
-        act.Should().Throw<ValidationException>()
+        act.Should()
+            .Throw<ValidationException>()
             .WithMessage("Value must not be greater than 5 *");
     }
 

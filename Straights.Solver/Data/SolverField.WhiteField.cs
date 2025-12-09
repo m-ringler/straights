@@ -9,7 +9,8 @@ using Straights.Solver.Simplification;
 public partial class SolverField
 {
     public sealed class WhiteField(WhiteFieldData data)
-        : SolverField, IGetSnapshot<int>
+        : SolverField,
+            IGetSnapshot<int>
     {
         public WhiteFieldData Data { get; } = data;
 

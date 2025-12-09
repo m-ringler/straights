@@ -26,15 +26,19 @@ public class GridFinder(IDebugInfoWriter debug)
         LineSegmentPolar[] lines = FindLines(edges);
         this.Save(img, lines, "lines0");
 
-        LineSegmentPolar[] filteredLines = SimilarLinesFilter.FilterSimilarLines(
-            lines,
-            rho_threshold: this.MinimumLineDistancePixel / 3.0f,
-            theta_threshold: 30 * Degree);
+        LineSegmentPolar[] filteredLines =
+            SimilarLinesFilter.FilterSimilarLines(
+                lines,
+                rho_threshold: this.MinimumLineDistancePixel / 3.0f,
+                theta_threshold: 30 * Degree
+            );
         this.Save(img, filteredLines, "lines1");
 
         // remove angle outliers
-        var (linesH, linesV) = AngleFilter
-            .FilterAngles(filteredLines, 15 * Degree);
+        var (linesH, linesV) = AngleFilter.FilterAngles(
+            filteredLines,
+            15 * Degree
+        );
 
         filteredLines = [.. linesH, .. linesV];
         this.Save(img, filteredLines, "lines2");
@@ -51,7 +55,8 @@ public class GridFinder(IDebugInfoWriter debug)
         this.Save(
             img,
             [linesH[0], linesH[^1], linesV[0], linesV[^1]],
-            "gridBounds");
+            "gridBounds"
+        );
 
         return new ImageGrid
         {
@@ -69,17 +74,13 @@ public class GridFinder(IDebugInfoWriter debug)
         // some spurious lines.
         const int approximateNumberOfLines = 20;
 
-        LineSegmentPolar[] lines = FindLines(
-            edges,
-            approximateNumberOfLines);
+        LineSegmentPolar[] lines = FindLines(edges, approximateNumberOfLines);
 
         Normalize(lines);
         return lines;
     }
 
-    private static LineSegmentPolar[] FindLines(
-        Mat edges,
-        int targetNumLines)
+    private static LineSegmentPolar[] FindLines(Mat edges, int targetNumLines)
     {
         int minimumNumberOfPointsOnLine = 300;
         const double resolutionRho = 1.0;
@@ -94,10 +95,11 @@ public class GridFinder(IDebugInfoWriter debug)
         {
             previous = lines;
             lines = Cv2.HoughLines(
-                    edges,
-                    resolutionRho,
-                    resolutionTheta,
-                    threshold: minimumNumberOfPointsOnLine);
+                edges,
+                resolutionRho,
+                resolutionTheta,
+                threshold: minimumNumberOfPointsOnLine
+            );
             minimumNumberOfPointsOnLine -= 20;
         }
 
@@ -108,8 +110,10 @@ public class GridFinder(IDebugInfoWriter debug)
         // start seeing lines that are not there.
         // Therefore, this works even with a rough estimate of the
         // correct number of lines.
-        if (previous.Length != 0 &&
-            targetNumLines - previous.Length < lines.Length - targetNumLines)
+        if (
+            previous.Length != 0
+            && targetNumLines - previous.Length < lines.Length - targetNumLines
+        )
         {
             lines = previous;
         }
