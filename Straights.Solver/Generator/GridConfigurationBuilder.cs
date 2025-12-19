@@ -65,6 +65,14 @@ public static class GridConfigurationBuilder
         return n * numberOfFields / defaultNumberOfFields;
     }
 
+    /// <summary>
+    /// Adjusts variableCount so that
+    /// <c><paramref name="fixedCount"/> + <paramref name="variableCount"/></c>
+    /// is a multiple of <paramref name="divisor"/>.
+    /// </summary>
+    /// <param name="fixedCount">The fixed count.</param>
+    /// <param name="divisor">The positive divisor.</param>
+    /// <param name="variableCount">The variable count to adjust.</param>
     private static void Adjust(
         int fixedCount,
         int divisor,

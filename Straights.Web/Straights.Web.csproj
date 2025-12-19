@@ -43,13 +43,14 @@
     <Content Include="LICENSE">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content
-      Include="..\webdev\base\shared\*.*;..\webdev\base\wasm\*.*;..\webdev\tsc-out\shared\*.*;..\webdev\tsc-out\wasm\*.*"
-      LinkBase="."
-    >
+    <Content Include="..\webdev\base\shared\**\*.*;..\webdev\tsc-out\shared\*.*">
+      <LinkBase></LinkBase>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\webdev\base\shared\favicon\*.*" LinkBase="favicon/">
+    <Content
+      Include="..\webdev\tsc-out\wasm\*.*;..\webdev\base\wasm\*.*"
+      LinkBase=""
+    >
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

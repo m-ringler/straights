@@ -21,3 +21,5 @@ webdev/tsc-out/
 
 # Python
 .venv/*
+
+/imagedev

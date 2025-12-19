@@ -30,6 +30,7 @@ type HintData = {
 // UIController. We intentionally keep this small and focused so the
 // UIController can be constructed with a thin mock in tests.
 interface JQuerySelection {
+  empty(): unknown;
   on(event: string, handler?: any): this;
   css(props: any): this;
   css(key: string, val: any): this;
@@ -50,11 +51,36 @@ interface JQuerySelection {
   height(): number | undefined;
   width(): number | undefined;
   not(selector: string): JQuerySelection;
+
+  // slick carousel methods
+  slick(options: any, arg1?: any): any;
+  on(
+    event: 'afterChange',
+    callback: (event: Event, slick: any, currentSlide: number) => void
+  ): void;
 }
 
 interface JQueryLike {
   (selector: any, ...args: any[]): JQuerySelection;
 }
+
+const GridLayoutOptions = [
+  { id: 'PointSymmetric', caption: 'Point Symmetric', apiValue: 7 },
+  { id: 'DiagonallySymmetric', caption: 'Diagonally Symmetric', apiValue: 3 },
+  {
+    id: 'HorizontallySymmetric',
+    caption: 'Horizontally Symmetric',
+    apiValue: 4,
+  },
+  { id: 'VerticallySymmetric', caption: 'Vertically Symmetric', apiValue: 5 },
+  {
+    id: 'HorizontallyAndVerticallySymmetric',
+    caption: 'Horiz. & Vert. Symmetric',
+    apiValue: 6,
+  },
+  { id: 'Random', caption: 'Random', apiValue: 0 },
+  { id: 'Uniform', caption: 'Uniform', apiValue: 1 },
+];
 
 const dialogs = {
   NEW_GAME: 1,
@@ -81,6 +107,7 @@ export class UIController {
   private generateDifficulty = DEFAULT_DIFFICULTY;
   private currentGridSize = 12;
   private generateGridSize = DEFAULT_GRID_SIZE;
+  private generateLayout = 'PointSymmetric';
   private undoStack!: UndoStack<Str8ts.Field>;
   private hintField: Str8ts.Field | null = null;
   private buttonColors: ButtonColors;
@@ -90,6 +117,9 @@ export class UIController {
   // injected dependencies
   private $: JQueryLike;
   private win: Window;
+  private setSelectedLayoutOption:
+    | ((selectedOption: string) => void)
+    | undefined;
 
   constructor($: JQueryLike, win: Window) {
     this.$ = $;
@@ -317,9 +347,17 @@ export class UIController {
     clearInterval(this.timer);
     this.$('#confirm-new-game-button').prop('disabled', true);
     try {
+      let layoutOption = GridLayoutOptions.find(
+        (o) => o.id === this.generateLayout
+      );
+      if (layoutOption === undefined) {
+        console.error('Invalid layout option selected:', this.generateLayout);
+        layoutOption = GridLayoutOptions[0];
+      }
       const data = await api.generate(
         this.generateGridSize,
-        this.generateDifficulty
+        this.generateDifficulty,
+        layoutOption.apiValue
       );
       if (data.status === 0 && data.message.length > Str8ts.minCodeSize) {
         console.log('Game:', data.message);
@@ -346,6 +384,8 @@ export class UIController {
 
     this.generateGridSize = values.generateGridSize;
     this.generateDifficulty = values.generateDifficulty;
+    this.generateLayout = values.generateLayout;
+    this.setSelectedLayoutOption!(this.generateLayout);
   }
 
   changeDifficulty() {
@@ -361,6 +401,11 @@ export class UIController {
     this.generateGridSize = Number(this.$('#grid-size-slider').val());
     this.$('#grid-size-text').text(this.generateGridSize);
     localStorage.setItem('generate.gridSize', String(this.generateGridSize));
+  }
+
+  changeLayoutOption(selectedOption: string) {
+    this.generateLayout = selectedOption ? selectedOption : 'PointSymmetric';
+    localStorage.setItem('generate.layout', this.generateLayout);
   }
 
   private async startGameAsync() {
@@ -437,6 +482,8 @@ export class UIController {
           break;
         case dialogs.NEW_GAME:
           this.$('#new-game-dialog').show();
+          // Force a re-render of the carousel to fix display issues
+          this.$('.carousel').slick('setPosition');
           break;
         case dialogs.SOLUTION:
           if (!this.game.isSolved) {
@@ -670,6 +717,8 @@ export class UIController {
     // initial UI setup
     this.createGrid();
     await this._onResizeAsync();
+
+    this.renderLayoutCarousel();
     this.loadSettings();
     await this._handleGameLoadAsync();
 
@@ -782,6 +831,49 @@ export class UIController {
     const col = Number(selection.attr('data-col'));
     return { row, col };
   }
+
+  private renderLayoutCarousel() {
+    const $carousel = this.$('.carousel');
+    $carousel.empty(); // Clear any existing content
+
+    GridLayoutOptions.forEach((option) => {
+      $carousel.append(`
+      <div class="carousel-slide" data-id="${option.id}">
+        <img src="layout-img/g_${option.id}.png" alt="${option.caption}" loading="lazy">
+        <div class="caption">${option.caption}</div>
+      </div>
+    `);
+    });
+
+    // Wait for the next animation frame to ensure DOM is updated
+    requestAnimationFrame(() => {
+      $carousel.slick({
+        dots: true,
+        infinite: false,
+        speed: 300,
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        arrows: true,
+      });
+
+      $carousel.on(
+        'afterChange',
+        (event: Event, slick: any, currentSlide: number) => {
+          const currentOption = GridLayoutOptions[currentSlide];
+          this.changeLayoutOption(currentOption.id);
+        }
+      );
+    });
+
+    this.setSelectedLayoutOption = (selectedOption: string) => {
+      const index = GridLayoutOptions.findIndex(
+        (option) => option.id === selectedOption
+      );
+      if (index !== -1) {
+        $carousel.slick('slickGoTo', index);
+      }
+    };
+  }
 }
 
 interface ButtonColors {
@@ -806,7 +898,11 @@ function getButtonColors(darkMode: boolean): ButtonColors {
 function loadNewGameSettings(
   $$: JQueryLike,
   getStoredValue: (key: string) => string | null
-): { generateGridSize: number; generateDifficulty: number } {
+): {
+  generateGridSize: number;
+  generateDifficulty: number;
+  generateLayout: string;
+} {
   function loadSetting(
     sliderId: string,
     storageKey: string,
@@ -832,6 +928,7 @@ function loadNewGameSettings(
   }
 
   try {
+    const layout = getStoredValue('generate.layout') || 'PointSymmetric';
     return {
       generateGridSize: loadSetting(
         'grid-size-slider',
@@ -843,12 +940,14 @@ function loadNewGameSettings(
         'generate.difficulty',
         DEFAULT_DIFFICULTY
       ),
+      generateLayout: layout,
     };
   } catch (error) {
     console.warn('Failed to load settings:', error, 'Using defaults.');
     return {
       generateGridSize: DEFAULT_GRID_SIZE,
       generateDifficulty: DEFAULT_DIFFICULTY,
+      generateLayout: 'PointSymmetric',
     };
   }
 }

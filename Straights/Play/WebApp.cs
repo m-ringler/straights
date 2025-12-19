@@ -21,7 +21,7 @@ using PlayCore = Straights.Solver.Play;
 /// <para/>
 /// The web app consists of static HTML and Javascript
 /// plus a) the endpoint to generate a new game code which is
-/// mapped to the <see cref="PlayCore.GenerateGameCode(int, int)"/>
+/// mapped to the <see cref="PlayCore.GenerateGameCode(int, int, int)"/>
 /// method and b) the endpoint to generate a hint which is
 /// mapped to the <see cref="PlayCore.GenerateHint(string)"/>
 /// method.
@@ -95,7 +95,8 @@ internal class WebApp : IWebApp
     {
         var result = PlayCore.GenerateGameCode(
             GetValue(request.Query["gridSize"], 9),
-            GetValue(request.Query["difficulty"], 3)
+            GetValue(request.Query["difficulty"], 3),
+            GetValue(request.Query["gridLayout"], 7)
         );
         return Task.FromResult(result);
     }

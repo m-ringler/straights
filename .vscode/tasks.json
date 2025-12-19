@@ -120,6 +120,25 @@
       "problemMatcher": []
     },
     {
+      "label": "publish Straights.Web content",
+      "command": "dotnet",
+      "args": [
+        "build",
+        "Straights.Web/Straights.Web.csproj",
+        "/t:CopyContent",
+        "/p:OutputPath=${workspaceFolder}/publish/Straights.Web",
+        "--no-restore"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "emrun",
+      "command": "emrun",
+      "type": "shell",
+      "args": ["${workspaceFolder}/publish/Straights.Web/index.html"],
+      "problemMatcher": []
+    },
+    {
       "label": "test",
       "command": "dotnet",
       "type": "process",
