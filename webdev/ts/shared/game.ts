@@ -681,6 +681,12 @@ export class Game {
           fieldStart + 2 + bitsPerNumber
         );
         const value = parseInt(numberBits, 2) + 1;
+        if (isNaN(value)) {
+          console.warn(
+            `Cannot parse game: invalid value ${value} at (${row}, ${col}).`
+          );
+          return null; // Invalid data
+        }
 
         const mode = isBlack
           ? isKnown
@@ -715,16 +721,29 @@ export class Game {
 
   parseGame(code: string) {
     const decoded = base64GameCodeToBinary(code);
+
+    let result: Game | null | undefined = null;
     switch (decoded.encodingVersion) {
       case 1:
         // not supported any more
-        return null;
+        break;
       case 128:
         // 0b10000000: arbitrary size game encoding
-        return this.#parseGameV128(decoded.binary);
+        result = this.#parseGameV128(decoded.binary);
+        break;
+      case 2:
+        result = this.#parseGameV002(decoded.binary);
+        break;
       default:
-        return this.#parseGameV002(decoded.binary);
+        // Unknown encoding version
+        break;
     }
+
+    if (!result) {
+      console.warn('Failed to parse game from code: ', code);
+    }
+
+    return result;
   }
 
   toJsonArray() {
