@@ -360,11 +360,8 @@ export class UIController {
         layoutOption.apiValue
       );
       if (data.status === 0 && data.message.length > Str8ts.minCodeSize) {
-        console.log('Game:', data.message);
-        this.gameUrl =
-          this.win.location.href.split('?')[0] + '?code=' + data.message;
-        this.gameCode = data.message;
-        await this._startNewGameAsync();
+        const code = data.message;
+        await this.startGameCodeAsync(code);
         return;
       } else {
         console.error('Error generating game:', data.message);
@@ -377,6 +374,13 @@ export class UIController {
     this.$('#confirm-new-game-button').prop('disabled', false);
   }
 
+  private async startGameCodeAsync(code: string) {
+    console.log('Game:', code);
+    this.gameUrl = this.win.location.href.split('?')[0] + '?code=' + code;
+    this.gameCode = code;
+    await this.startGameAsync(true);
+  }
+
   private loadSettings() {
     var values = loadNewGameSettings(this.$, (key) =>
       localStorage.getItem(key)
@@ -385,7 +389,6 @@ export class UIController {
     this.generateGridSize = values.generateGridSize;
     this.generateDifficulty = values.generateDifficulty;
     this.generateLayout = values.generateLayout;
-    this.setSelectedLayoutOption!(this.generateLayout);
   }
 
   changeDifficulty() {
@@ -408,7 +411,7 @@ export class UIController {
     localStorage.setItem('generate.layout', this.generateLayout);
   }
 
-  private async startGameAsync() {
+  private async startGameAsync(shouldSetLocationHref: boolean) {
     let hasGame = false;
     if (this.gameCode && this.gameCode.length > Str8ts.minCodeSize) {
       this.undoStack.clear();
@@ -426,6 +429,11 @@ export class UIController {
 
         this.restartTimer();
         this.renderCounters();
+
+        if (shouldSetLocationHref && this.gameUrl != this.win.location.href) {
+          this.SetLocationHref(new URL(this.gameUrl));
+          this.saveState();
+        }
       }
     }
 
@@ -484,6 +492,7 @@ export class UIController {
           this.$('#new-game-dialog').show();
           // Force a re-render of the carousel to fix display issues
           this.$('.carousel').slick('setPosition');
+          this.setSelectedLayoutOption!(this.generateLayout);
           break;
         case dialogs.SOLUTION:
           if (!this.game.isSolved) {
@@ -513,9 +522,8 @@ export class UIController {
     }
   }
 
-  private async _startNewGameAsync() {
-    this.win.history.pushState({}, '', this.gameUrl);
-    await this.startGameAsync();
+  private SetLocationHref(url: string | URL) {
+    this.win.history.pushState({}, '', url);
   }
 
   private onKeyDown(e: KeyboardEvent) {
@@ -650,29 +658,22 @@ export class UIController {
     }
   }
 
-  private async _handleGameLoadAsync(popstate = false) {
+  private async _handleGameLoadAsync() {
     const code = this.getURLParameter('code');
     const currentKey = this.win.location.href;
 
     if (code && code.length > Str8ts.minCodeSize) {
       this.gameUrl = currentKey;
       this.gameCode = code;
-      if (popstate) {
-        await this.startGameAsync();
-      } else {
-        await this._startNewGameAsync();
-      }
-    } else {
-      const latestKey = this.gameHistory.getLatestGameKey();
-      if (latestKey) {
-        // Reload the current page with the latest game code
-        this.win.location.href =
-          this.win.location.href.split('?')[0] + '?code=' + latestKey;
-        return;
-      }
 
-      // Nothing stored, show new game dialog.
-      await this.showDialogAsync(dialogs.NEW_GAME);
+      await this.startGameAsync(false);
+    } else {
+      let latestKey = this.gameHistory.getLatestGameKey();
+      if (latestKey) {
+        await this.startGameCodeAsync(latestKey);
+      } else {
+        await this.generateNewGameAsync();
+      }
     }
   }
 
@@ -742,7 +743,7 @@ export class UIController {
 
     // wire page-level events here so they can call private methods
     this.win.addEventListener('popstate', async () => {
-      await this._handleGameLoadAsync(true);
+      await this._handleGameLoadAsync();
     });
     this.$(document).on('keydown', (e: KeyboardEvent) => {
       this.onKeyDown(e);
