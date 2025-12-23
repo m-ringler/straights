@@ -191,6 +191,13 @@
       "problemMatcher": "$msCompile"
     },
     {
+      "label": "verify accept",
+      "type": "shell",
+      "command": "dotnet",
+      "args": ["verify", "accept", "-y"],
+      "problemMatcher": []
+    },
+    {
       "label": "generate coverage report",
       "command": "reportgenerator",
       "type": "shell",
