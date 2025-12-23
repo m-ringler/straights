@@ -33,7 +33,7 @@ public class ConvertCommandBuilderTests
         var command = sut.Build();
         using var errorWriter = new StringWriter();
         var pr = command.Parse(args);
-        pr.Configuration.Error = errorWriter;
+        pr.InvocationConfiguration.Error = errorWriter;
         int exitCode = pr.Invoke();
         var errorOutput = errorWriter.ToString();
 
@@ -61,7 +61,7 @@ public class ConvertCommandBuilderTests
         var command = sut.Build();
         var parseResult = command.Parse(args);
         using var errorWriter = new StringWriter();
-        parseResult.Configuration.Error = errorWriter;
+        parseResult.InvocationConfiguration.Error = errorWriter;
         int exitCode = parseResult.Invoke();
         var errorOutput = errorWriter.ToString();
 
@@ -84,7 +84,7 @@ public class ConvertCommandBuilderTests
         var command = sut.Build();
         var parseResult = command.Parse(args);
         using var errorWriter = new StringWriter();
-        parseResult.Configuration.Error = errorWriter;
+        parseResult.InvocationConfiguration.Error = errorWriter;
         int exitCode = parseResult.Invoke();
         var errorOutput = errorWriter.ToString();
 

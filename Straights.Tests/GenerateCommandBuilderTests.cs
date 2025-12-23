@@ -66,7 +66,7 @@ public class GenerateCommandBuilderTests
         var command = sut.Build();
         var parseResult = command.Parse(args);
         using var errorWriter = new StringWriter();
-        parseResult.Configuration.Error = errorWriter;
+        parseResult.InvocationConfiguration.Error = errorWriter;
         int exitCode = parseResult.Invoke();
         var errorOutput = errorWriter.ToString();
 
@@ -101,7 +101,7 @@ public class GenerateCommandBuilderTests
         var command = sut.Build();
         var parseResult = command.Parse(args);
         using var errorWriter = new StringWriter();
-        parseResult.Configuration.Error = errorWriter;
+        parseResult.InvocationConfiguration.Error = errorWriter;
         int exitCode = parseResult.Invoke();
         var errorOutput = errorWriter.ToString();
 
@@ -155,7 +155,7 @@ public class GenerateCommandBuilderTests
         var command = sut.Build();
         var parseResult = command.Parse(args);
         using var errorWriter = new StringWriter();
-        parseResult.Configuration.Error = errorWriter;
+        parseResult.InvocationConfiguration.Error = errorWriter;
         int exitCode = parseResult.Invoke();
         var errorOutput = errorWriter.ToString();
 
@@ -177,7 +177,7 @@ public class GenerateCommandBuilderTests
         var command = sut.Build();
         var parseResult = command.Parse([]);
         using var errorWriter = new StringWriter();
-        parseResult.Configuration.Error = errorWriter;
+        parseResult.InvocationConfiguration.Error = errorWriter;
         int exitCode = parseResult.Invoke();
         var errorOutput = errorWriter.ToString();
 
@@ -211,13 +211,13 @@ public class GenerateCommandBuilderTests
         var command = sut.Build();
         var parseResult1 = command.Parse([]);
         using var errorWriter1 = new StringWriter();
-        parseResult1.Configuration.Error = errorWriter1;
+        parseResult1.InvocationConfiguration.Error = errorWriter1;
         _ = parseResult1.Invoke();
         var seed1 = runner.InvokedCommand!.Random.Seed;
 
         var parseResult2 = command.Parse([]);
         using var errorWriter2 = new StringWriter();
-        parseResult2.Configuration.Error = errorWriter2;
+        parseResult2.InvocationConfiguration.Error = errorWriter2;
         _ = parseResult2.Invoke();
         var seed2 = runner.InvokedCommand!.Random.Seed;
 
@@ -271,7 +271,7 @@ public class GenerateCommandBuilderTests
         var command = sut.Build();
         var parseResult = command.Parse(args);
         using var errorWriter = new StringWriter();
-        parseResult.Configuration.Error = errorWriter;
+        parseResult.InvocationConfiguration.Error = errorWriter;
         int exitCode = parseResult.Invoke();
         var errorOutput = errorWriter.ToString();
 
@@ -322,7 +322,7 @@ public class GenerateCommandBuilderTests
         var command = sut.Build();
         var parseResult = command.Parse(args);
         using var errorWriter = new StringWriter();
-        parseResult.Configuration.Error = errorWriter;
+        parseResult.InvocationConfiguration.Error = errorWriter;
         int exitCode = parseResult.Invoke();
         var errorOutput = errorWriter.ToString();
 
@@ -368,7 +368,7 @@ public class GenerateCommandBuilderTests
         var command = sut.Build();
         var parseResult = command.Parse(args);
         using var errorWriter = new StringWriter();
-        parseResult.Configuration.Error = errorWriter;
+        parseResult.InvocationConfiguration.Error = errorWriter;
         int exitCode = parseResult.Invoke();
         var errorOutput = errorWriter.ToString();
 
@@ -414,7 +414,7 @@ public class GenerateCommandBuilderTests
         var command = sut.Build();
         var parseResult = command.Parse(args);
         using var errorWriter = new StringWriter();
-        parseResult.Configuration.Error = errorWriter;
+        parseResult.InvocationConfiguration.Error = errorWriter;
         int exitCode = parseResult.Invoke();
         var errorOutput = errorWriter.ToString();
 
@@ -486,7 +486,7 @@ public class GenerateCommandBuilderTests
         var command = sut.Build();
         var parseResult = command.Parse(args);
         using var errorWriter = new StringWriter();
-        parseResult.Configuration.Error = errorWriter;
+        parseResult.InvocationConfiguration.Error = errorWriter;
         int exitCode = parseResult.Invoke();
         var errorOutput = errorWriter.ToString();
 

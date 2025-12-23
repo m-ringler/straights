@@ -21,8 +21,8 @@ internal static class HelpVerifier
         var pr = command.Parse(args);
         using var outputWriter = new StringWriter();
         using var errorWriter = new StringWriter();
-        pr.Configuration.Output = outputWriter;
-        pr.Configuration.Error = errorWriter;
+        pr.InvocationConfiguration.Output = outputWriter;
+        pr.InvocationConfiguration.Error = errorWriter;
         int exitCode = pr.Invoke();
         var errorOutput = errorWriter.ToString();
         var stdOutput = outputWriter.ToString();

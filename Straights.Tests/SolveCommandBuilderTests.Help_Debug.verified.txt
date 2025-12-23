@@ -7,7 +7,6 @@ Usage:
 Arguments:
   <imageOrTextFile>  An image file with a Straights grid, or a Straights grid saved as .txt or .json.
                      When this argument is omitted, the grid editor is started.
-                      []
 
 Options:
   --mode <AnySolution|SimplifyOnly|UniqueSolution>  The solver mode to use.
@@ -22,10 +21,8 @@ Options:
                                                     * HTML (.htm, .html)
                                                     * JSON (.json)
                                                     More formats may be supported in the future.
-                                                     []
-  --interactive                                     Flag that turns on interactive mode. [default: False]
-  --multi-threaded                                  Flag that turns on multi-threading. [default: False]
+  --interactive                                     Flag that turns on interactive mode.
+  --multi-threaded                                  Flag that turns on multi-threading.
   --write-debug-data-to <directory>                 When this option is provided, debug data is written to the specified directory.
                                                     Existing data in the directory will be overwritten without warning.
-                                                     []
   -?, -h, --help                                    Show help and usage information
