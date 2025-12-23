@@ -17,14 +17,9 @@ DISABLE_LINTERS:
   - REPOSITORY_TRIVY  # this linter seems currently broken, so we disable it here for now
 SHOW_ELAPSED_TIME: true
 FILEIO_REPORTER: false
-FILTER_REGEX_EXCLUDE: (webdev/shared/slick/.*)
 UPDATED_SOURCES_REPORTER: false
 TEXT_REPORTER: true
 EMAIL_REPORTER: false
 VALIDATE_ALL_CODEBASE: true
 YAML_V8R_FILTER_REGEX_EXCLUDE: (.jsonlintrc.yml|advanced-issue-labeler.yml)
 EDITORCONFIG_EDITORCONFIG_CHECKER_CONFIG_FILE: .editorconfig-checker.json
-CSS_STYLELINT:
-  file_extensions: ["css"]
-  filter_regex_exclude: "(.*\\.min\\.css)$"
-
