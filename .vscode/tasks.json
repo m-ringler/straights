@@ -16,6 +16,20 @@
       "problemMatcher": []
     },
     {
+      "label": "npm upgrade",
+      "type": "shell",
+      "command": "npx",
+      "args": ["npm-check-updates", "-u"],
+      "problemMatcher": []
+    },
+    {
+      "label": "nupu",
+      "type": "shell",
+      "command": "dotnet",
+      "args": ["nupu"],
+      "problemMatcher": []
+    },
+    {
       "label": "test ts",
       "type": "shell",
       "command": "npm",
