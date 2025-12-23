@@ -23,8 +23,8 @@ public class ProgramTests
         var parseResult = command.Parse(args);
         using var outputWriter = new StringWriter();
         using var errorWriter = new StringWriter();
-        parseResult.Configuration.Output = outputWriter;
-        parseResult.Configuration.Error = errorWriter;
+        parseResult.InvocationConfiguration.Output = outputWriter;
+        parseResult.InvocationConfiguration.Error = errorWriter;
         int exitCode = parseResult.Invoke();
         var errorOutput = errorWriter.ToString();
         var stdOutput = outputWriter

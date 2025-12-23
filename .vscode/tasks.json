@@ -16,6 +16,20 @@
       "problemMatcher": []
     },
     {
+      "label": "npm upgrade",
+      "type": "shell",
+      "command": "npx",
+      "args": ["npm-check-updates", "-u"],
+      "problemMatcher": []
+    },
+    {
+      "label": "nupu",
+      "type": "shell",
+      "command": "dotnet",
+      "args": ["nupu"],
+      "problemMatcher": []
+    },
+    {
       "label": "test ts",
       "type": "shell",
       "command": "npm",
@@ -120,6 +134,25 @@
       "problemMatcher": []
     },
     {
+      "label": "publish Straights.Web content",
+      "command": "dotnet",
+      "args": [
+        "build",
+        "Straights.Web/Straights.Web.csproj",
+        "/t:CopyContent",
+        "/p:OutputPath=${workspaceFolder}/publish/Straights.Web",
+        "--no-restore"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "emrun",
+      "command": "emrun",
+      "type": "shell",
+      "args": ["${workspaceFolder}/publish/Straights.Web/index.html"],
+      "problemMatcher": []
+    },
+    {
       "label": "test",
       "command": "dotnet",
       "type": "process",
@@ -156,6 +189,13 @@
         "/p:ExcludeByFile=**/*.axaml%2c**/*.g.cs"
       ],
       "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "verify accept",
+      "type": "shell",
+      "command": "dotnet",
+      "args": ["verify", "accept", "-y"],
+      "problemMatcher": []
     },
     {
       "label": "generate coverage report",

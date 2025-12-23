@@ -321,3 +321,21 @@ a {
 a:visited {
   color: var(--color-visited-link);
 }
+
+.carousel {
+  width: 100%;
+  margin: 0 auto;
+}
+
+.carousel-slide {
+  text-align: center;
+  padding: 0 10px;
+  box-sizing: border-box;
+}
+
+.carousel-slide img {
+  margin: 5px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}

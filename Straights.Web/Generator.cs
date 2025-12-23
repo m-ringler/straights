@@ -19,6 +19,7 @@ public class Generator
     /// </summary>
     /// <param name="size">The size of the game board to generate.</param>
     /// <param name="difficulty">The difficulty level of the game to generate.</param>
+    /// <param name="gridLayout">The grid layout of the game to generate.</param>
     /// <param name="result">A pointer to the buffer where the generated game code will be stored.</param>
     /// <param name="resultLength">The length of the buffer pointed to by <paramref name="result"/>.</param>
     /// <returns>
@@ -30,12 +31,13 @@ public class Generator
     public static int Generate(
         int size,
         int difficulty,
+        int gridLayout,
         nint result,
         int resultLength
     )
     {
         return new StringOp(result, resultLength).RunAndMarshal(() =>
-            GenerateGameCode(size, difficulty)
+            GenerateGameCode(size, difficulty, gridLayout)
         );
     }
 

@@ -114,7 +114,7 @@ public sealed class GenerateCommand
         this.PrintSeed();
         if (file != null)
         {
-            grid.WriteTo(file!);
+            grid.WriteTo(file);
         }
     }
 

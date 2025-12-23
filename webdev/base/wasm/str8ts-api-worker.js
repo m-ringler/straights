@@ -14,7 +14,7 @@ self.onmessage = async (e) => {
 
 function _run(data) {
   if (data.method === 'generate') {
-    return _generate(data.size, data.difficulty);
+    return _generate(data.size, data.difficulty, data.gridLayout);
   } else if (data.method === 'hint') {
     return _hint(data.gameAsJson);
   }
@@ -37,7 +37,7 @@ function _hint(gameAsJson) {
   }
 }
 
-function _generate(size, difficulty) {
+function _generate(size, difficulty, gridLayout) {
   const bufferSize = 512;
   const bufferPtr = Module._Memory_Allocate(bufferSize);
 
@@ -45,6 +45,7 @@ function _generate(size, difficulty) {
     const status = Module._Generator_Generate(
       size,
       difficulty,
+      gridLayout,
       bufferPtr,
       bufferSize
     );

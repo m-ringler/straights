@@ -7,7 +7,6 @@ Usage:
 Arguments:
   <imageOrTextFile>  An image file with a Straights grid, or a Straights grid saved as .txt or .json.
                      When this argument is omitted, the grid editor is started.
-                      []
 
 Options:
   --mode <AnySolution|SimplifyOnly|UniqueSolution>  The solver mode to use.
@@ -22,6 +21,5 @@ Options:
                                                     * HTML (.htm, .html)
                                                     * JSON (.json)
                                                     More formats may be supported in the future.
-                                                     []
-  --interactive                                     Flag that turns on interactive mode. [default: False]
+  --interactive                                     Flag that turns on interactive mode.
   -?, -h, --help                                    Show help and usage information

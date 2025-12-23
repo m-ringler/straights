@@ -9,10 +9,11 @@ export type ApiResult = { status: number; message: string };
 
 export async function generate(
   size: number,
-  difficulty: number
+  difficulty: number,
+  gridLayout: number
 ): Promise<ApiResult> {
   const response = await fetch(
-    `/generate?gridSize=${size}&difficulty=${difficulty - 1}`
+    `/generate?gridSize=${size}&difficulty=${difficulty - 1}&gridLayout=${gridLayout}`
   );
   const data = await response.json();
   return data as ApiResult;

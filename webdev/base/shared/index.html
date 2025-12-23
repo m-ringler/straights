@@ -18,6 +18,8 @@ SPDX-License-Identifier: GPL-3.0-or-later
       rel="stylesheet"
     />
     <link rel="stylesheet" type="text/css" href="./str8ts.css" />
+    <link rel="stylesheet" type="text/css" href="./slick/slick.min.css" />
+    <link rel="stylesheet" type="text/css" href="./slick/slick-theme.min.css" />
     <link rel="icon" type="image/x-icon" href="./favicon.ico" />
     <link
       rel="icon"
@@ -64,6 +66,7 @@ SPDX-License-Identifier: GPL-3.0-or-later
   </head>
   <body>
     <script src="jquery-3.7.1.min.js"></script>
+    <script src="slick/slick.min.js"></script>
     <div class="wrapper">
       <table class="container" cellspacing="0"></table>
       <div class="controls">
@@ -203,6 +206,9 @@ SPDX-License-Identifier: GPL-3.0-or-later
               autocomplete="off"
             />
           </div>
+
+          <div class="carousel"></div>
+
           <span class="dialog-button full-width" id="confirm-new-game-button"
             >Generate new game</span
           >
@@ -243,7 +249,7 @@ SPDX-License-Identifier: GPL-3.0-or-later
         <div class="dialog" id="about-dialog">
           <span class="close-button">×</span>
           <div class="dialog-title">
-            Straights.Web <span id="version">0.7.3</span>
+            Straights.Web <span id="version">0.7.4</span>
           </div>
           <div>© 2020 Luis Walter, 2025 Moritz Ringler</div>
           <ul>

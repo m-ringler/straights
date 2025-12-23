@@ -12,20 +12,33 @@ public static class Play
     /// <summary>
     /// Generates a game code for the given size and difficulty.
     /// </summary>
-    /// <param name="size">The size of the grid, must be greater than or equal to 4.</param>
-    /// <param name="difficulty">The difficulty level, must be grater than zero.</param>
+    /// <param name="size">
+    /// The size of the grid, must be greater than or equal to 4.
+    /// </param>
+    /// <param name="difficulty">
+    /// The difficulty level, must be grater than zero.
+    /// </param>
+    /// <param name="gridLayout">
+    /// The layout of the grid, the value must be one of the
+    ///  <see cref="GridLayout"/> values.</param>
     /// <returns>A game code.</returns>
     /// <exception cref="InvalidOperationException">
     /// Thrown when a grid could not be generated.
     /// </exception>
-    public static string GenerateGameCode(int size, int difficulty)
+    public static string GenerateGameCode(
+        int size,
+        int difficulty,
+        int gridLayout
+    )
     {
         var difficultyLevel = (SimplifierStrength)difficulty;
+        var layout = (GridLayout)gridLayout;
         var generator = new GeneratorBuilder
         {
-            GridParameters = GetGridParameters(size),
+            GridParameters = GetGridParameters(size, layout),
             DifficultyLevel = difficultyLevel,
             Attempts = 100,
+            Layout = layout,
         }.Build();
 
         var grid =
@@ -118,13 +131,16 @@ public static class Play
         }
     }
 
-    private static GridParameters GetGridParameters(int size)
+    private static GridParameters GetGridParameters(
+        int size,
+        GridLayout gridLayout
+    )
     {
         var result = GridConfigurationBuilder.GetUnvalidatedGridParameters(
             size: size,
             blackBlanksRaw: null,
             blackNumbersRaw: null,
-            layout: GridLayout.PointSymmetric
+            layout: gridLayout
         );
         return (GridParameters)result;
     }

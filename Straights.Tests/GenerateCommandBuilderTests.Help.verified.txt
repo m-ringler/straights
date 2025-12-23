@@ -11,18 +11,17 @@ Options:
                                                                                                                                                                 * TEXT (.txt)
                                                                                                                                                                 * JSON (.json)
                                                                                                                                                                 More formats may be supported in the future.
-                                                                                                                                                                 []
   --size <number greater than 3>                                                                                                                                The size of the grid to generate. [default: 9]
   --black-blanks <non-negative number>                                                                                                                          The number of black blanks to generate. Must be less than or equal to
                                                                                                                                                                 25 % of the number of fields.
-                                                                                                                                                                The default value of this option depends on the size and layout. []
+                                                                                                                                                                The default value of this option depends on the size and layout.
   --black-numbers <non-negative number>                                                                                                                         The number of black numbers to generate. Must be less than or equal to
                                                                                                                                                                 10 % of the number of fields.
-                                                                                                                                                                The default value of this option depends on the size and layout. []
+                                                                                                                                                                The default value of this option depends on the size and layout.
   --layout <DiagonallySymmetric|HorizontallyAndVerticallySymmetric|HorizontallySymmetric|PointSymmetric|Random|Uniform|UniformIndependent|VerticallySymmetric>  The strategy used to place the black fields on the grid. [default: Uniform]
   --template <file>                                                                                                                                             A file (.png, .jpg, .txt, .json) with a straights grid
                                                                                                                                                                 to use as a template. The numbers in the grid will be ignored,
-                                                                                                                                                                but its layout will be reused. []
+                                                                                                                                                                but its layout will be reused.
   --seed <seed>                                                                                                                                                 The seed to use for the pseudo-random number generator.
                                                                                                                                                                 Use this if you want repeatable results. The command
                                                                                                                                                                 prints the used seed value for each generated grid.
@@ -30,7 +29,6 @@ Options:
                                                                                                                                                                 change between program versions, because of changes in the
                                                                                                                                                                 grid generation algorithm. Store the generated grids,
                                                                                                                                                                 not the seed values.
-                                                                                                                                                                 []
   --attempts <positive number>                                                                                                                                  The maximum number of attempts to generate a grid
                                                                                                                                                                 with the specified parameters.
                                                                                                                                                                  [default: 10]

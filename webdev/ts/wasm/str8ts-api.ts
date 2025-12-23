@@ -7,11 +7,16 @@ export type ApiResult = { status: number; message: string };
 
 const worker = new Worker('str8ts-api-worker.js');
 
-export function generate(size: number, difficulty: number): Promise<ApiResult> {
+export function generate(
+  size: number,
+  difficulty: number,
+  gridLayout: number
+): Promise<ApiResult> {
   return run_in_worker({
     method: 'generate',
     size,
     difficulty,
+    gridLayout,
   });
 }
 
@@ -24,7 +29,12 @@ export function generateHint(gameAsJson: number[][][]): Promise<ApiResult> {
 
 function run_in_worker(
   message:
-    | { method: 'generate'; size?: number; difficulty?: number }
+    | {
+        method: 'generate';
+        size: number;
+        difficulty: number;
+        gridLayout: number;
+      }
     | { method: 'hint'; gameAsJson: string }
 ): Promise<ApiResult> {
   return new Promise((resolve, reject) => {

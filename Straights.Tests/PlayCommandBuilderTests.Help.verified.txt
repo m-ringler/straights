@@ -7,9 +7,8 @@ Usage:
 Arguments:
   <imageOrTextFile>  An image file with a Straights grid, or a Straights grid saved as .txt or .json;
                      when omitted a new grid is generated.
-                      []
 
 Options:
-  --offline                      Serve the game on localhost, instead of using the default website. [default: False]
+  --offline                      Serve the game on localhost, instead of using the default website.
   --offline-port <offline-port>  Serve the game on localhost on the specified port (implies --offline). [default: 7138]
   -?, -h, --help                 Show help and usage information

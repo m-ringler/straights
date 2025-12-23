@@ -36,7 +36,7 @@ public class PlayCommandBuilderTests
         var command = sut.Build();
         var parseResult = command.Parse(args);
         using var errorWriter = new StringWriter();
-        parseResult.Configuration.Error = errorWriter;
+        parseResult.InvocationConfiguration.Error = errorWriter;
         int exitCode = parseResult.Invoke();
         var errorOutput = errorWriter.ToString();
 
@@ -66,7 +66,7 @@ public class PlayCommandBuilderTests
         var command = sut.Build();
         var parseResult = command.Parse(args);
         using var errorWriter = new StringWriter();
-        parseResult.Configuration.Error = errorWriter;
+        parseResult.InvocationConfiguration.Error = errorWriter;
         int exitCode = parseResult.Invoke();
         var errorOutput = errorWriter.ToString();
 
