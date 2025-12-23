@@ -846,25 +846,22 @@ export class UIController {
     `);
     });
 
-    // Wait for the next animation frame to ensure DOM is updated
-    requestAnimationFrame(() => {
-      $carousel.slick({
-        dots: true,
-        infinite: false,
-        speed: 300,
-        slidesToShow: 1,
-        slidesToScroll: 1,
-        arrows: true,
-      });
-
-      $carousel.on(
-        'afterChange',
-        (event: Event, slick: any, currentSlide: number) => {
-          const currentOption = GridLayoutOptions[currentSlide];
-          this.changeLayoutOption(currentOption.id);
-        }
-      );
+    $carousel.slick({
+      dots: true,
+      infinite: false,
+      speed: 300,
+      slidesToShow: 1,
+      slidesToScroll: 1,
+      arrows: true,
     });
+
+    $carousel.on(
+      'afterChange',
+      (event: Event, slick: any, currentSlide: number) => {
+        const currentOption = GridLayoutOptions[currentSlide];
+        this.changeLayoutOption(currentOption.id);
+      }
+    );
 
     this.setSelectedLayoutOption = (selectedOption: string) => {
       const index = GridLayoutOptions.findIndex(
