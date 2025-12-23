@@ -5,6 +5,29 @@
 import { BitmaskEncoder } from './encoder.js';
 import type { EncodedResult } from './encoder.js';
 
+const chistmasEmojis = [
+  '🔔',
+  '🎁',
+  '🕯️',
+  '🎅',
+  '👼',
+  '🎶',
+  '❄️',
+  '☃️',
+  '⛄',
+  '🌟',
+  '🎄',
+  '🍷',
+  '🦌',
+  '🌨️',
+  '🎆',
+  '🎇',
+  '🧦',
+  '🎀',
+  '🧸',
+  '🍀',
+];
+
 const modes = {
   USER: 0,
   WHITEKNOWN: 1,
@@ -317,6 +340,8 @@ export class Field {
       element.text(this.value!);
     } else if (this.mode === modes.WHITEKNOWN) {
       element.text(this.value!);
+    } else if (this.mode === modes.BLACK) {
+      fillBlackField(element);
     }
   }
 
@@ -751,6 +776,19 @@ export class Game {
   }
 }
 
+function setEmoji(element: JQuery<HTMLElement>, emojis: string[]) {
+  let emoji = element.data('festive-emoji') as string | undefined;
+  if (!emoji) {
+    emoji = randomItem(emojis);
+    element.data('festive-emoji', emoji);
+  }
+  element.text(emoji);
+}
+
+function randomItem(emojis: string[]) {
+  return emojis[Math.floor(Math.random() * emojis.length)];
+}
+
 function base64GameCodeToBinary(gameCode: string) {
   const base64urlCharacters =
     'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
@@ -778,4 +816,17 @@ function toFieldUserData(notes: Set<number>) {
 
   const userData = { user, notes };
   return userData;
+}
+
+function fillBlackField(element: JQuery<HTMLElement>) {
+  const now = new Date();
+  if (isChristmasTime(now)) {
+    setEmoji(element, chistmasEmojis);
+  }
+}
+
+function isChristmasTime(now: Date) {
+  const month = now.getMonth(); // 0 = Jan, 11 = Dec
+  const day = now.getDate();
+  return (month === 11 && day >= 20) || (month === 0 && day <= 6);
 }
