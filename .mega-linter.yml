@@ -17,6 +17,7 @@ DISABLE_LINTERS:
   - REPOSITORY_TRIVY  # this linter seems currently broken, so we disable it here for now
 SHOW_ELAPSED_TIME: true
 FILEIO_REPORTER: false
+FILTER_REGEX_EXCLUDE: (webdev/shared/slick/.*\.js)
 UPDATED_SOURCES_REPORTER: false
 TEXT_REPORTER: true
 EMAIL_REPORTER: false
