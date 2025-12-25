@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { BitmaskEncoder } from './encoder.js';
-import type { EncodedResult } from './encoder.js';
+import * as EncoderModule from './encoder.js';
 
 const chistmasEmojis = [
   '🔔',
@@ -370,11 +370,23 @@ export interface FieldUserData {
   notes: Iterable<number>;
 }
 
-export type DumpedState = {
+export interface HistoryData {
+  gameState: string;
+  checkerBoard: string;
+  size: number;
+  created: Date;
+  percentSolved: number;
+}
+
+export interface DumpedState<TData> {
   check_count: number;
   hint_count: number;
-  data: FieldUserData[][];
-};
+  data: TData;
+}
+
+export type DumpedStateRead = DumpedState<FieldUserData[][] | HistoryData>;
+
+export type DumpedStateWrite = DumpedState<HistoryData>;
 
 // class to store and modify the current game state
 export class Game {
@@ -429,8 +441,10 @@ export class Game {
   activeFieldIndex: null | FieldIndex;
   check_count: number;
   hint_count: number;
+  createdDate: Date = new Date();
+  private checkerBoardDump: string | null = null;
 
-  constructor($: any, darkMode: boolean, size: number = 0) {
+  constructor($: JQueryStatic, darkMode: boolean, size: number = 0) {
     this.$ = $;
     this.colors = darkMode ? Game.gameColorsDark : Game.gameColorsLight;
     this.darkMode = darkMode;
@@ -453,30 +467,73 @@ export class Game {
     return this.data[row][col];
   }
 
-  dumpState(): DumpedState {
-    const fieldData = this.data.map((row) =>
-      row.map((field) => ({
-        user: field.user,
-        notes: Array.from(field.notes),
-      }))
-    );
+  dumpState(): DumpedState<HistoryData> {
+    const state = this.dumpStateBase64();
+    const historyData: HistoryData = {
+      gameState: state,
+      checkerBoard: this.getCheckerBoardDump(),
+      size: this.size,
+      created: this.createdDate,
+      percentSolved: this.getPercentSolved(),
+    };
 
     const result = {
       check_count: this.check_count,
       hint_count: this.hint_count,
-      data: fieldData,
+      data: historyData,
     };
 
     return result;
   }
 
-  restoreState(dumpedState: FieldUserData[][] | DumpedState) {
+  private getPercentSolved(): number {
+    let numUserFields = 0;
+    let solved = 0;
+    this.#getUserFields().forEach((f) => {
+      numUserFields++;
+      if (f.isSolved()) {
+        solved += 1;
+      } else if (f.notes.size === 0) {
+        // blank field: no progress
+      } else {
+        solved += 1 - (f.notes.size - 1) / (this.size - 1);
+      }
+    });
+
+    const percentSolved =
+      numUserFields === 0 ? 100 : Math.floor((solved / numUserFields) * 100);
+    return percentSolved;
+  }
+
+  private getCheckerBoardDump(): string {
+    if (this.checkerBoardDump === null) {
+      const cb: boolean[][] = [];
+      for (const row of this.data) {
+        cb.push(
+          row.map((f) => f.mode === modes.BLACK || f.mode === modes.BLACKKNOWN)
+        );
+      }
+
+      this.checkerBoardDump = EncoderModule.encodeGridToBase64Url(cb);
+    }
+
+    return this.checkerBoardDump;
+  }
+
+  async restoreStateAsync(dumpedState: FieldUserData[][] | DumpedStateRead) {
     if (Object.hasOwn(dumpedState, 'check_count')) {
       // new format including check and hint count
-      const ds = dumpedState as DumpedState;
+      const ds = dumpedState as DumpedStateRead;
       this.check_count = ds.check_count;
       this.hint_count = ds.hint_count;
-      this.restoreState(ds.data);
+      const data = ds.data;
+      if (Object.hasOwn(data, 'gameState')) {
+        const historyData = data as HistoryData;
+        await this.restoreStateBase64Async(historyData.gameState);
+        this.createdDate = historyData.created;
+      } else {
+        await this.restoreStateAsync(data as FieldUserData[][]);
+      }
     } else {
       // old format (just field data) also used in
       // recursive call from above
@@ -505,19 +562,30 @@ export class Game {
     );
   }
 
-  async dumpStateBase64(): Promise<string> {
+  private dumpStateBase64(): string {
     const encoder = this.#getEncoder();
-
-    var data = this.#getUserFields().map((f) => (f.user ? [f.user] : f.notes));
-
-    const encoded = await encoder.encode(this.size, data);
+    var data = this.getState();
+    const encoded = encoder.encodeUncompressed(this.size, data);
     return encoded.base64Data;
   }
 
-  async restoreStateBase64(base64Data: string) {
+  private getState() {
+    return this.#getUserFields().map((f) => (f.user ? [f.user] : f.notes));
+  }
+
+  async dumpStateBase64Async(): Promise<string> {
+    const encoder = this.#getEncoder();
+
+    var data = this.getState();
+
+    const encoded = await encoder.encodeAsync(this.size, data);
+    return encoded.base64Data;
+  }
+
+  async restoreStateBase64Async(base64Data: string) {
     const userFields = this.#getUserFields();
     const count = userFields.length;
-    const decoded = await this.#getEncoder().decode(
+    const decoded = await this.#getEncoder().decodeAsync(
       { base64Data, count },
       this.size
     );

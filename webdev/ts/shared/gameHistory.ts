@@ -12,7 +12,7 @@ export interface StorageProvider {
 
 export interface GameLike<TState> {
   dumpState(): TState;
-  restoreState(state: TState): void;
+  restoreStateAsync(state: TState): Promise<void>;
 }
 
 type GameState<TState> = {
@@ -65,11 +65,14 @@ export class GameHistory<TState> {
     this.ensureStorageLimit();
   }
 
-  public restoreGameState(key: string, game: GameLike<TState>): void {
+  public async restoreGameStateAsync(
+    key: string,
+    game: GameLike<TState>
+  ): Promise<void> {
     this.migrate();
     const savedGameState = this.loadGameStateData(this.storagePrefix + key);
     if (savedGameState) {
-      game.restoreState(savedGameState.data);
+      await game.restoreStateAsync(savedGameState.data);
     }
   }
 

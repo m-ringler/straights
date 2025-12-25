@@ -52,7 +52,7 @@ export class BitmaskEncoder {
    * @returns EncodedResult containing compression flag and base64url-encoded
    *     data
    */
-  async encode(
+  async encodeAsync(
     n: number,
     sets: Iterable<Iterable<number>>
   ): Promise<EncodedResult> {
@@ -60,6 +60,61 @@ export class BitmaskEncoder {
       throw new Error(`n must be between 1 and ${this.maxN}`);
     }
 
+    // Convert sets to array for processing
+    // First byte of buffer is CONTROL_BYTE_UNCOMPRESSED
+    const { buffer, numberOfSets } = this.createUncompressedBitMaskBuffer(
+      n,
+      sets
+    );
+    const totalBytes = buffer.length;
+
+    let resultBuffer: Uint8Array<ArrayBufferLike> = buffer;
+    // Check if we should compress
+    if (totalBytes - 1 > this.compressionThreshold) {
+      const dataToCompress = buffer.slice(1); // Exclude control byte
+      const compressed = await compressData(
+        dataToCompress,
+        CONTROL_BYTE_COMPRESSED
+      );
+
+      // Subtract control byte from comparison
+      const compressionRatio = (compressed.length - 1) / dataToCompress.length;
+      if (compressionRatio < this.minCompressionRatio) {
+        // Use compressed data (already has control byte set to compressed)
+        resultBuffer = compressed;
+      }
+    }
+
+    // Encode as base64url
+    const base64Data = toBase64Url(resultBuffer);
+
+    return { base64Data, count: numberOfSets };
+  }
+
+  encodeUncompressed(
+    n: number,
+    sets: Iterable<Iterable<number>>
+  ): EncodedResult {
+    if (n < 1 || n > this.maxN) {
+      throw new Error(`n must be between 1 and ${this.maxN}`);
+    }
+
+    // First byte of buffer is CONTROL_BYTE_UNCOMPRESSED
+    const { buffer, numberOfSets } = this.createUncompressedBitMaskBuffer(
+      n,
+      sets
+    );
+
+    // Encode as base64url
+    const base64Data = toBase64Url(buffer);
+
+    return { base64Data, count: numberOfSets };
+  }
+
+  private createUncompressedBitMaskBuffer(
+    n: number,
+    sets: Iterable<Iterable<number>>
+  ) {
     // Convert sets to array for processing
     const setsArray = Array.from(sets);
 
@@ -101,30 +156,9 @@ export class BitmaskEncoder {
       }
     }
 
-    // Check if we should compress
-    if (totalBytes - 1 > this.compressionThreshold) {
-      const dataToCompress = buffer.slice(1); // Exclude control byte
-      const compressed = await compressData(
-        dataToCompress,
-        CONTROL_BYTE_COMPRESSED
-      );
-
-      // Subtract control byte from comparison
-      const compressionRatio = (compressed.length - 1) / dataToCompress.length;
-      if (compressionRatio < this.minCompressionRatio) {
-        // Use compressed data (already has control byte set to compressed)
-        const base64Data = toBase64Url(compressed);
-        return { base64Data, count: setsArray.length };
-      }
-    }
-
     // Not compressed: set control byte to uncompressed
     buffer[0] = CONTROL_BYTE_UNCOMPRESSED;
-
-    // Encode as base64url
-    const base64Data = toBase64Url(buffer);
-
-    return { base64Data, count: setsArray.length };
+    return { buffer, numberOfSets: setsArray.length };
   }
 
   /**
@@ -134,7 +168,7 @@ export class BitmaskEncoder {
    *     domain
    * @returns Array of sets containing the decoded numbers
    */
-  async decode(encoded: EncodedResult, n: number): Promise<Set<number>[]> {
+  async decodeAsync(encoded: EncodedResult, n: number): Promise<Set<number>[]> {
     if (n < 1 || n > this.maxN) {
       throw new Error(`n must be between 1 and ${this.maxN}`);
     }
@@ -322,4 +356,74 @@ function fromBase64Url(base64url: string): Uint8Array {
     bytes[i] = binary.charCodeAt(i);
   }
   return bytes;
+}
+
+/**
+ * Packs a 2D boolean array into a Uint8Array (8 booleans per byte).
+ * @param grid 2D array of booleans (e.g., 10x10).
+ * @returns Uint8Array with packed bits.
+ */
+function encodeGridToUint8Array(grid: boolean[][]): Uint8Array {
+  const flat = grid.flat();
+  const byteLength = Math.ceil(flat.length / 8);
+  const bytes = new Uint8Array(byteLength);
+
+  for (let i = 0; i < flat.length; i++) {
+    const byteIndex = Math.floor(i / 8);
+    const bitIndex = i % 8;
+    if (flat[i]) {
+      bytes[byteIndex] |= 1 << (7 - bitIndex); // Set bit
+    }
+  }
+
+  return bytes;
+}
+
+/**
+ * Packs a 2D boolean array into a Uint8Array (8 booleans per byte).
+ * @param grid 2D array of booleans (e.g., 10x10).
+ * @returns Uint8Array with packed bits.
+ */
+export function encodeGridToBase64Url(grid: boolean[][]): string {
+  const bytes = encodeGridToUint8Array(grid);
+  return toBase64Url(bytes);
+}
+
+export function decodeGridFromBase64Url(
+  base64url: string,
+  gridSize: number
+): boolean[][] {
+  const bytes = fromBase64Url(base64url);
+  return decodeGrid(bytes, gridSize);
+}
+
+/**
+ * Unpacks a Uint8Array back into a 2D boolean array.
+ * @param bytes Packed Uint8Array.
+ * @param gridSize Size of the grid (e.g., 10 for 10x10).
+ * @returns 2D array of booleans.
+ */
+function decodeGrid(bytes: Uint8Array, gridSize: number): boolean[][] {
+  if (bytes.length * 8 < gridSize * gridSize) {
+    throw new Error('Input data is too short for the expected grid size');
+  }
+
+  const result: boolean[][] = [];
+  let row: boolean[] = [];
+  for (let i = 0; i < bytes.length; i++) {
+    for (let j = 0; j < 8; j++) {
+      row.push((bytes[i] & (1 << (7 - j))) !== 0);
+      if (row.length === gridSize) {
+        result.push(row);
+        row = [];
+        if (result.length === gridSize) {
+          // We've read all the data we need
+          return result;
+        }
+      }
+    }
+  }
+
+  // Should never reach here
+  throw new Error('Decoded data does not match expected grid size');
 }

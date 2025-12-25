@@ -112,7 +112,7 @@ export class UIController {
   private hintField: Str8ts.Field | null = null;
   private buttonColors: ButtonColors;
   private numberInput: NumberInput;
-  private gameHistory: GameHistory<Str8ts.DumpedState>;
+  private gameHistory: GameHistory<Str8ts.DumpedStateRead>;
 
   // injected dependencies
   private $: JQueryLike;
@@ -127,8 +127,8 @@ export class UIController {
     this.undoStack = new UndoStack(this.renderUndoButton.bind(this));
     const darkMode = win.matchMedia('(prefers-color-scheme: dark)').matches;
     this.buttonColors = getButtonColors(darkMode);
-    this.game = new Str8ts.Game(this.$, darkMode);
-    this.gameHistory = new GameHistory<Str8ts.DumpedState>(localStorage);
+    this.game = new Str8ts.Game(this.$ as any, darkMode);
+    this.gameHistory = new GameHistory<Str8ts.DumpedStateRead>(localStorage);
     this.numberInput = new NumberInput((num: number) =>
       this.handleNumberInput(num)
     );
@@ -425,7 +425,7 @@ export class UIController {
 
         this.changeGridSize(this.game.size);
 
-        this._restoreGameState();
+        await this._restoreGameStateAsync();
 
         this.restartTimer();
         this.renderCounters();
@@ -442,9 +442,9 @@ export class UIController {
     }
   }
 
-  private _restoreGameState() {
+  private async _restoreGameStateAsync() {
     if (!this._tryLoadStateFromUrlParameter()) {
-      this.gameHistory.restoreGameState(this.gameCode, this.game);
+      await this.gameHistory.restoreGameStateAsync(this.gameCode, this.game);
     }
   }
 
@@ -456,7 +456,7 @@ export class UIController {
 
     try {
       this.removeURLParameter('state');
-      this.game.restoreStateBase64(stateUrlParameter);
+      this.game.restoreStateBase64Async(stateUrlParameter);
       this.saveState();
       return true;
     } catch (ex) {
@@ -640,7 +640,7 @@ export class UIController {
   private async _getCurrentLinkAsync() {
     let link = this.win.location.href;
     if (this.game) {
-      const stateBase64 = await this.game.dumpStateBase64();
+      const stateBase64 = await this.game.dumpStateBase64Async();
       link += `&state=${stateBase64}`;
     }
     return link;
