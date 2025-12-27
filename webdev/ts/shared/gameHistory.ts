@@ -15,7 +15,7 @@ export interface GameLike<TState> {
   restoreStateAsync(state: TState): Promise<void>;
 }
 
-type GameState<TState> = {
+export type GameState<TState> = {
   timestamp: number;
   data: TState;
 };
@@ -91,6 +91,24 @@ export class GameHistory<TState> {
     });
 
     return latestKey;
+  }
+
+  public getAllSavedGames(): { key: string; data: GameState<TState> }[] {
+    this.migrate();
+    const prefixedKeys = this.getPrefixedHistoryKeys();
+    const result: { key: string; data: GameState<TState> }[] = [];
+
+    prefixedKeys.forEach((prefixedKey) => {
+      const gameState = this.loadGameStateData(prefixedKey);
+      if (gameState) {
+        result.push({
+          key: prefixedKey.substring(this.storagePrefix.length),
+          data: gameState,
+        });
+      }
+    });
+
+    return result;
   }
 
   private getPrefixedHistoryKeys(): string[] {

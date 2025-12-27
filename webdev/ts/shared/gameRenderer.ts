@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later';
 
-import * as Str8ts from './game';
+import * as Str8ts from './game.js';
 
 const chistmasEmojis = [
   '🔔',

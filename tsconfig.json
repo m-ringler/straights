@@ -13,8 +13,7 @@
     "strict": true,
     "skipLibCheck": true,
     "sourceMap": false,
-    "verbatimModuleSyntax": true,
-    "types": ["vitest/globals"]
+    "verbatimModuleSyntax": true
   },
   "include": ["webdev/ts/**/*.ts"],
   "exclude": ["webdev/ts/**/test/*.ts"]
