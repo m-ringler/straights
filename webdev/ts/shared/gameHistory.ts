@@ -159,6 +159,7 @@ export class GameHistory<TState> {
   }
 
   private migrate(): void {
+    // migrates from old storage format (no prefixes, no version) to new format
     if (this.storage.getItem(this.versionKey)) {
       return;
     }

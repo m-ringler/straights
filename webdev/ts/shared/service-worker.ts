@@ -20,6 +20,7 @@ const urlsToCache = [
   './favicon/maskable_icon_x512.png',
   './game.js',
   './gameHistory.js',
+  './gameRenderer.js',
   './index.html',
   './jquery-3.7.1.min.js',
   './layout-img/g_DiagonallySymmetric.png',

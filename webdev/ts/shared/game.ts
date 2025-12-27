@@ -5,30 +5,7 @@
 import { BitmaskEncoder } from './encoder.js';
 import * as EncoderModule from './encoder.js';
 
-const chistmasEmojis = [
-  '🔔',
-  '🎁',
-  '🕯️',
-  '🎅',
-  '👼',
-  '🎶',
-  '❄️',
-  '☃️',
-  '⛄',
-  '🌟',
-  '🎄',
-  '🍷',
-  '🦌',
-  '🌨️',
-  '🎆',
-  '🎇',
-  '🧦',
-  '🎀',
-  '🧸',
-  '🍀',
-];
-
-const modes = {
+export const FieldModes = {
   USER: 0,
   WHITEKNOWN: 1,
   BLACK: 2,
@@ -75,10 +52,6 @@ export class Field {
     this.notes = new Set();
   }
 
-  getSelector() {
-    return `#ce${this.row}_${this.col}`;
-  }
-
   setUser(input: number) {
     if (this.isEditable()) {
       this.wrong = false;
@@ -108,7 +81,7 @@ export class Field {
   }
 
   isEditable() {
-    return this.mode === modes.USER;
+    return this.mode === FieldModes.USER;
   }
 
   setNote(value: number) {
@@ -234,24 +207,6 @@ export class Field {
     }
   }
 
-  /**
-   * Retrieves the single DOM element associated with the field.
-   * @returns A jQuery object containing exactly one HTMLElement.
-   * @throws {Error} If no element is found or if multiple elements are found.
-   */
-  getElement() {
-    const result = this.game.$(this.getSelector());
-    if (result.length == 0) {
-      throw new Error(`Element not found: ${this.getSelector()}`);
-    }
-
-    if (result.length > 1) {
-      throw new Error(`Multiple elements found: ${this.getSelector()}`);
-    }
-
-    return result;
-  }
-
   reset(template: FieldUserData | null = null) {
     this.user = undefined;
     this.notes.clear();
@@ -265,92 +220,16 @@ export class Field {
     this.render();
   }
 
-  #getBackgroundColor() {
-    const colors = this.game.colors;
-    if (this.mode === modes.BLACK || this.mode === modes.BLACKKNOWN) {
-      return colors.BG_BLACK;
-    }
-
-    if (this.mode === modes.WHITEKNOWN) {
-      return colors.BG_WHITEKNOWN;
-    }
-
-    if (this.hint) {
-      return colors.BG_HINT;
-    }
-
-    if (this.isActive()) {
-      return this.wrong ? colors.BG_USER_WRONG_ACTIVE : colors.BG_USER_ACTIVE;
-    }
-
-    return this.wrong ? colors.BG_USER_WRONG : colors.BG_USER;
-  }
-
-  #getTextColor() {
-    const colors = this.game.colors;
-    if (this.mode === modes.BLACKKNOWN || this.mode === modes.BLACK) {
-      return colors.FG_BLACK;
-    }
-
-    if (!this.isEditable()) {
-      return colors.FG_WHITEKNOWN;
-    }
-
-    if (this.wrong) {
-      return colors.FG_USER_WRONG;
-    }
-
-    if (this.isShowingSolution) {
-      if (this.user !== this.value) {
-        return colors.FG_SOLUTION;
-      }
-    }
-
-    return colors.FG_USER;
-  }
-
   render() {
-    const element = this.getElement();
-    element.empty();
-    element.css('background-color', this.#getBackgroundColor());
-    element.css('color', this.#getTextColor());
-    if (this.isEditable()) {
-      if (this.isShowingSolution) {
-        element.text(this.value!);
-      } else {
-        if (this.user) {
-          element.text(this.user);
-        } else if (this.notes.size > 0) {
-          let notes = '<table class="mini" cellspacing="0">';
-          for (let i = 1; i <= this.game.size; i++) {
-            if ((i - 1) % 3 === 0) notes += '<tr>';
-            if (this.notes.has(i)) {
-              const class_attribute = this.hint === i ? ' class="hint"' : '';
-              notes += `<td${class_attribute}>${i}</td>`;
-            } else {
-              notes += `<td class="transparent">${i}</td>`;
-            }
-            if (i % 3 === 0) notes += '</tr>';
-          }
-          notes += '</table>';
-          element.append(notes);
-        }
-      }
-    } else if (this.mode === modes.BLACKKNOWN) {
-      element.text(this.value!);
-    } else if (this.mode === modes.WHITEKNOWN) {
-      element.text(this.value!);
-    } else if (this.mode === modes.BLACK) {
-      fillBlackField(element);
-    }
+    this.game.renderer.renderField(this);
   }
 
   toJsonArray() {
-    if (this.mode === modes.BLACK) {
+    if (this.mode === FieldModes.BLACK) {
       return [0]; // black empty field
-    } else if (this.mode === modes.BLACKKNOWN) {
+    } else if (this.mode === FieldModes.BLACKKNOWN) {
       return [-this.value!]; // black known field
-    } else if (this.mode === modes.WHITEKNOWN) {
+    } else if (this.mode === FieldModes.WHITEKNOWN) {
       return [this.value!]; // white known field
     } else if (this.user) {
       return [this.user]; // white field with user guess
@@ -366,15 +245,18 @@ export interface FieldIndex {
 }
 
 export interface FieldUserData {
-  user: number | undefined;
+  user?: number | undefined;
   notes: Iterable<number>;
 }
 
-export interface HistoryData {
+export interface HistoryDataRead {
   gameState: string;
+  created: Date;
+}
+
+export interface HistoryData extends HistoryDataRead {
   checkerBoard: string;
   size: number;
-  created: Date;
   percentSolved: number;
 }
 
@@ -384,57 +266,16 @@ export interface DumpedState<TData> {
   data: TData;
 }
 
-export type DumpedStateRead = DumpedState<FieldUserData[][] | HistoryData>;
+export interface FieldRenderer {
+  renderField(field: Field): void;
+}
+
+export type DumpedStateRead = DumpedState<FieldUserData[][] | HistoryDataRead>;
 
 export type DumpedStateWrite = DumpedState<HistoryData>;
 
 // class to store and modify the current game state
 export class Game {
-  static gameColorsLight = {
-    FG_BLACK: '#ffffff',
-    FG_USER: '#003378',
-    FG_USER_WRONG: '#5f0052ff',
-    FG_SOLUTION: '#5f0052ff',
-    FG_WHITEKNOWN: '#000000',
-    BG_BLACK: '#000000',
-    BG_USER: '#ffffff',
-    BG_USER_ACTIVE: '#c7ddff',
-    BG_USER_WRONG: '#ffc7c7',
-    BG_USER_WRONG_ACTIVE: '#eeaaff',
-    BG_WHITEKNOWN: '#ffffff',
-    BG_HINT: '#ffff99',
-  };
-
-  static gameColorsDark = {
-    FG_BLACK: '#aaaaaa',
-    FG_USER: '#003378',
-    FG_USER_WRONG: '#5f0052ff',
-    FG_SOLUTION: '#5f0052ff',
-    FG_WHITEKNOWN: '#000000',
-    BG_BLACK: '#000000',
-    BG_USER: '#aaaaaa',
-    BG_USER_ACTIVE: '#7379bf',
-    BG_USER_WRONG: '#ffc7c7',
-    BG_USER_WRONG_ACTIVE: '#eeaaff',
-    BG_WHITEKNOWN: '#aaaaaa',
-    BG_HINT: '#ffff99',
-  };
-  $: JQueryStatic;
-  colors: {
-    FG_BLACK: string;
-    FG_USER: string;
-    FG_USER_WRONG: string;
-    FG_SOLUTION: string;
-    FG_WHITEKNOWN: string;
-    BG_BLACK: string;
-    BG_USER: string;
-    BG_USER_ACTIVE: string;
-    BG_USER_WRONG: string;
-    BG_USER_WRONG_ACTIVE: string;
-    BG_WHITEKNOWN: string;
-    BG_HINT: string;
-  };
-  darkMode: boolean;
   size: number;
   data: Field[][];
   isSolved: boolean;
@@ -444,10 +285,10 @@ export class Game {
   createdDate: Date = new Date();
   private checkerBoardDump: string | null = null;
 
-  constructor($: JQueryStatic, darkMode: boolean, size: number = 0) {
-    this.$ = $;
-    this.colors = darkMode ? Game.gameColorsDark : Game.gameColorsLight;
-    this.darkMode = darkMode;
+  constructor(
+    public renderer: FieldRenderer,
+    size: number = 0
+  ) {
     this.size = size;
     this.data = [];
     this.activeFieldIndex = null;
@@ -510,7 +351,10 @@ export class Game {
       const cb: boolean[][] = [];
       for (const row of this.data) {
         cb.push(
-          row.map((f) => f.mode === modes.BLACK || f.mode === modes.BLACKKNOWN)
+          row.map(
+            (f) =>
+              f.mode === FieldModes.BLACK || f.mode === FieldModes.BLACKKNOWN
+          )
         );
       }
 
@@ -527,16 +371,19 @@ export class Game {
       this.check_count = ds.check_count;
       this.hint_count = ds.hint_count;
       const data = ds.data;
+
       if (Object.hasOwn(data, 'gameState')) {
-        const historyData = data as HistoryData;
+        // current format F2.2: data is HistoryData
+        const historyData = data as HistoryDataRead;
         await this.restoreStateBase64Async(historyData.gameState);
         this.createdDate = historyData.created;
       } else {
+        // previous format F2.1: data is FieldUserData[][]
         await this.restoreStateAsync(data as FieldUserData[][]);
       }
     } else {
-      // old format (just field data) also used in
-      // recursive call from above
+      // first format F1 (just field data) also used in
+      // recursive call for format F2.1
       const ds = dumpedState as FieldUserData[][];
       ds.forEach((row: FieldUserData[], r: number) => {
         row.forEach((field, c) => {
@@ -558,7 +405,7 @@ export class Game {
 
   #getUserFields() {
     return Array.from(this.loopFields(), (x) => x.field).filter(
-      (x) => x.mode === modes.USER
+      (x) => x.mode === FieldModes.USER
     );
   }
 
@@ -761,7 +608,7 @@ export class Game {
 
     const bitsPerNumber = Math.floor(Math.log2(size - 1)) + 1;
     const bitsPerField = 2 + bitsPerNumber; // black + known + number
-    const result = new Game(this.$, this.darkMode, size);
+    const result = new Game(this.renderer, size);
 
     for (let row = 0; row < size; row++) {
       for (let col = 0; col < size; col++) {
@@ -783,11 +630,11 @@ export class Game {
 
         const mode = isBlack
           ? isKnown
-            ? modes.BLACKKNOWN
-            : modes.BLACK
+            ? FieldModes.BLACKKNOWN
+            : FieldModes.BLACK
           : isKnown
-            ? modes.WHITEKNOWN
-            : modes.USER;
+            ? FieldModes.WHITEKNOWN
+            : FieldModes.USER;
 
         result.#setValues(row, col, mode, value);
       }
@@ -797,7 +644,7 @@ export class Game {
   }
 
   #parseGameV002(binary: string) {
-    const result = new Game(this.$, this.darkMode, 9);
+    const result = new Game(this.renderer, 9);
     if (binary.length < 6 * 81 || binary.length > 6 * 81 + 8) {
       return; // Invalid data
     }
@@ -844,19 +691,6 @@ export class Game {
   }
 }
 
-function setEmoji(element: JQuery<HTMLElement>, emojis: string[]) {
-  let emoji = element.data('festive-emoji') as string | undefined;
-  if (!emoji) {
-    emoji = randomItem(emojis);
-    element.data('festive-emoji', emoji);
-  }
-  element.text(emoji);
-}
-
-function randomItem(emojis: string[]) {
-  return emojis[Math.floor(Math.random() * emojis.length)];
-}
-
 function base64GameCodeToBinary(gameCode: string) {
   const base64urlCharacters =
     'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
@@ -884,17 +718,4 @@ function toFieldUserData(notes: Set<number>) {
 
   const userData = { user, notes };
   return userData;
-}
-
-function fillBlackField(element: JQuery<HTMLElement>) {
-  const now = new Date();
-  if (isChristmasTime(now)) {
-    setEmoji(element, chistmasEmojis);
-  }
-}
-
-function isChristmasTime(now: Date) {
-  const month = now.getMonth(); // 0 = Jan, 11 = Dec
-  const day = now.getDate();
-  return (month === 11 && day >= 20) || (month === 0 && day <= 6);
 }

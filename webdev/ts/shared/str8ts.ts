@@ -4,6 +4,7 @@
 
 // module imports
 import * as Str8ts from './game.js';
+import * as Renderer from './gameRenderer.js';
 import * as api from './str8ts-api.js';
 import * as Popup from './popup.js';
 
@@ -117,6 +118,7 @@ export class UIController {
   // injected dependencies
   private $: JQueryLike;
   private win: Window;
+  private renderer: Renderer.JQueryFieldRenderer;
   private setSelectedLayoutOption:
     | ((selectedOption: string) => void)
     | undefined;
@@ -127,7 +129,8 @@ export class UIController {
     this.undoStack = new UndoStack(this.renderUndoButton.bind(this));
     const darkMode = win.matchMedia('(prefers-color-scheme: dark)').matches;
     this.buttonColors = getButtonColors(darkMode);
-    this.game = new Str8ts.Game(this.$ as any, darkMode);
+    this.renderer = new Renderer.JQueryFieldRenderer(this.$ as any, darkMode);
+    this.game = new Str8ts.Game(this.renderer);
     this.gameHistory = new GameHistory<Str8ts.DumpedStateRead>(localStorage);
     this.numberInput = new NumberInput((num: number) =>
       this.handleNumberInput(num)
@@ -207,7 +210,7 @@ export class UIController {
       popup.css(
         Popup.getPopupPosition(
           popup,
-          this.hintField.getElement()[0].getBoundingClientRect(),
+          this.renderer.getElement(this.hintField)[0].getBoundingClientRect(),
           this.win.document.body.getBoundingClientRect()
         )
       );
