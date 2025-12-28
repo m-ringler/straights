@@ -13,6 +13,7 @@
         "**/*.props",
         "**/*.targets",
         "**/*.xml",
+        "**/*.slnx",
         "**/*.config"
       ]
     },
@@ -20,7 +21,6 @@
       "name": "prettier",
       "group": "pre-commit",
       "pathMode": "absolute",
-      "cwd": "Client",
       "command": "npx",
       "args": ["prettier", "--write", "${staged}"],
       "include": [
