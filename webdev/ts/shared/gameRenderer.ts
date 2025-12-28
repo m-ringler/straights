@@ -213,8 +213,8 @@ function setEmoji(element: JQuery<HTMLElement>, emojis: string[]) {
   if (!emoji) {
     emoji = randomItem(emojis);
     element.data('festive-emoji', emoji);
+    element.text(emoji);
   }
-  element.text(emoji);
 }
 
 function randomItem(emojis: string[]) {
