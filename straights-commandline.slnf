@@ -1,6 +1,6 @@
 {
   "solution": {
-    "path": "straights.sln",
+    "path": "straights.slnx",
     "projects": [
       "Straights\\Straights.csproj",
       "Straights.Tests\\Straights.Tests.csproj",

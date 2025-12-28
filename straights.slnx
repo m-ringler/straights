@@ -1,0 +1,16 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+  </Configurations>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path="global.json" />
+  </Folder>
+  <Project Path="Straights.Image.Tests/Straights.Image.Tests.csproj" />
+  <Project Path="Straights.Image/Straights.Image.csproj" />
+  <Project Path="Straights.Solver/Straights.Solver.csproj" />
+  <Project Path="Straights.Tests/Straights.Tests.csproj" />
+  <Project Path="Straights.Web/Straights.Web.csproj" />
+  <Project Path="Straights/Straights.csproj" />
+</Solution>

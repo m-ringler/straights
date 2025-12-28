@@ -29,7 +29,7 @@ public partial class SolveCommandTests
             var folder = GetTestDataFolder();
             if (folder == null)
             {
-                return [null];
+                return [default(TestDataItem?)];
             }
 
             var fs = folder.FileSystem;
