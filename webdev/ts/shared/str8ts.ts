@@ -593,7 +593,7 @@ export class UIController {
   }
 
   private async updateHistoryDivAsync() {
-    await this.historyRenderer.renderHistoryAsync();
+    await this.historyRenderer.renderHistoryAsync(this.gameCode);
   }
 
   private SetLocationHref(url: string | URL) {
