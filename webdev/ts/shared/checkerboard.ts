@@ -15,9 +15,9 @@ export function renderCheckerboard(
   const {
     gridSize,
     cellSizePixels = 10,
-    borderColor = 'black',
-    trueColor = 'white',
-    falseColor = '#333', // Lighter black for fill
+    borderColor = '#133',
+    trueColor = '#333',
+    falseColor = 'white',
   } = options;
 
   const ctx = canvas.getContext('2d');

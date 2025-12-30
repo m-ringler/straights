@@ -251,7 +251,7 @@ export interface FieldUserData {
 
 export interface HistoryDataRead {
   gameState: string;
-  created: Date;
+  created: number;
 }
 
 export interface HistoryData extends HistoryDataRead {
@@ -282,7 +282,7 @@ export class Game {
   activeFieldIndex: null | FieldIndex;
   check_count: number;
   hint_count: number;
-  createdDate: Date = new Date();
+  created: number;
   private checkerBoardDump: string | null = null;
 
   constructor(
@@ -302,6 +302,7 @@ export class Game {
 
     this.check_count = 0;
     this.hint_count = 0;
+    this.created = Date.now();
   }
 
   get(row: number, col: number): Field {
@@ -314,7 +315,7 @@ export class Game {
       gameState: state,
       checkerBoard: this.getCheckerBoardDump(),
       size: this.size,
-      created: this.createdDate,
+      created: this.created,
       percentSolved: this.getPercentSolved(),
     };
 
@@ -376,7 +377,7 @@ export class Game {
         // current format F2.2: data is HistoryData
         const historyData = data as HistoryDataRead;
         await this.restoreStateBase64Async(historyData.gameState);
-        this.createdDate = historyData.created;
+        this.created = historyData.created;
       } else {
         // previous format F2.1: data is FieldUserData[][]
         await this.restoreStateAsync(data as FieldUserData[][]);

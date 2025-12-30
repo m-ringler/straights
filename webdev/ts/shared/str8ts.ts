@@ -12,6 +12,9 @@ import * as Popup from './popup.js';
 import { UndoStack } from './undoStack.js';
 import { NumberInput } from './numberInput.js';
 import { GameHistory } from './gameHistory.js';
+import * as HistoryRendererModule from './historyRenderer.js';
+import * as CheckerboardModule from './checkerboard.js';
+import { decodeGridFromBase64Url } from './encoder.js';
 
 // type imports
 import type { ApiResult } from './str8ts-api.js';
@@ -90,6 +93,7 @@ const dialogs = {
   RESTART: 5,
   ABOUT: 6,
   HINT: 7,
+  HISTORY: 8,
 };
 const MIN_GRID_SIZE = 4;
 const MAX_GRID_SIZE = 12;
@@ -114,6 +118,7 @@ export class UIController {
   private buttonColors: ButtonColors;
   private numberInput: NumberInput;
   private gameHistory: GameHistory<Str8ts.DumpedStateRead>;
+  private historyRenderer: HistoryRendererModule.HistoryRenderer;
 
   // injected dependencies
   private $: JQueryLike;
@@ -135,6 +140,63 @@ export class UIController {
     this.numberInput = new NumberInput((num: number) =>
       this.handleNumberInput(num)
     );
+
+    this.historyRenderer = new HistoryRendererModule.HistoryRenderer(
+      this.$ as any,
+      this.$('#history-div') as any,
+      async () => await this.getHistoryRendererDataAsync()
+    );
+  }
+
+  private async getHistoryRendererDataAsync(): Promise<
+    HistoryRendererModule.HistoryRendererData[]
+  > {
+    const historyData = this.gameHistory.getAllSavedGames();
+    const historyRendererData: HistoryRendererModule.HistoryRendererData[] = [];
+    const borderColor = this.$(':root').css(
+      '--color-cell-border'
+    ) as unknown as string;
+    const trueColor = this.renderer.colors.BG_BLACK;
+    const falseColor = this.renderer.colors.BG_WHITEKNOWN;
+
+    for (const entry of historyData) {
+      const dump = entry.data.data.data;
+      if (!Object.hasOwn(dump, 'checkerBoard')) {
+        continue;
+      }
+
+      const coreData = dump as Str8ts.HistoryData;
+      const modified = new Date(entry.data.timestamp);
+      const created = new Date(coreData.created);
+      const size = coreData.size;
+      const cb64 = coreData.checkerBoard;
+      const code = entry.key;
+      const cbOptions = {
+        gridSize: size,
+        cellSizePixels: 100.0 / size,
+        borderColor: borderColor,
+        trueColor: trueColor,
+        falseColor: falseColor,
+      };
+      const entryRendererData: HistoryRendererModule.HistoryRendererData = {
+        id: entry.key,
+        modified: modified,
+        created: created,
+        size: coreData.size,
+        percentSolved: coreData.percentSolved,
+        renderGrid: (canvas) => {
+          const cb = decodeGridFromBase64Url(cb64, size);
+          CheckerboardModule.renderCheckerboard(canvas, cb, cbOptions);
+        },
+        startGameAsync: async () => {
+          await this.startGameCodeAsync(code);
+        },
+      };
+
+      historyRendererData.push(entryRendererData);
+    }
+
+    return historyRendererData;
   }
 
   // Button Functions
@@ -480,6 +542,7 @@ export class UIController {
     this.$('#restart-dialog').hide();
     this.$('#about-dialog').hide();
     this.$('#hint-dialog').hide();
+    this.$('#history-dialog').hide();
 
     if (dialog != dialogs.HINT) {
       await this.closeHintAsync();
@@ -519,10 +582,18 @@ export class UIController {
         case dialogs.HINT:
           this.$('#hint-dialog').show();
           break;
+        case dialogs.HISTORY:
+          await this.updateHistoryDivAsync();
+          this.$('#history-dialog').show();
+          break;
       }
     } else {
       this.$('.dialog-outer-container').hide();
     }
+  }
+
+  private async updateHistoryDivAsync() {
+    await this.historyRenderer.renderHistoryAsync();
   }
 
   private SetLocationHref(url: string | URL) {
@@ -540,6 +611,9 @@ export class UIController {
       handled = this.handleDigitKey(Number(key));
     } else if (key == 'n') {
       this.toggleNoteMode();
+      handled = true;
+    } else if (key == 'h' && e.altKey) {
+      this.showDialogAsync(dialogs.HISTORY);
       handled = true;
     } else if (key == 'z' && e.ctrlKey) {
       this.undo();
