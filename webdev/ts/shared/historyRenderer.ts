@@ -71,15 +71,13 @@ export class HistoryRenderer {
         $entry.append($canvas);
 
         const $info = this.$('<div>').addClass('history-info');
-        const $created = this.$('<div>').text(
-          `Created: ${formatDate(data.created)}`
-        );
+        const $created = this.$('<div>').text(`✨ ${formatDate(data.created)}`);
         const $modified = this.$('<div>').text(
-          `Modified: ${formatDate(data.modified)}`
+          `⏸️ ${formatDate(data.modified)}`
         );
-        const $size = this.$('<div>').text(`Size: ${data.size}`);
+        const $size = this.$('<div>').text(`Size ${data.size}`);
 
-        $info.append($created, $modified, $size);
+        $info.append($size, $created, $modified);
         $entry.append($info);
 
         // Bind start action
@@ -138,16 +136,16 @@ function drawPercentOverlay(
   const p = Math.max(0, Math.min(100, percent));
   const w = canvas.width;
   const h = canvas.height;
-  const cx = w / 2;
-  const cy = h / 2;
-  const radius = Math.min(w, h) / 2 - 4;
+  const radius = Math.min(w, h) / 8;
+  const cx = w - 1.25 * radius;
+  const cy = h - 1.25 * radius;
   const start = -Math.PI / 2;
   const end = start + (p / 100) * 2 * Math.PI;
 
-  const filledColor = options?.filledColor || 'rgba(83, 168, 147, 0.6)';
-  const unfilledColor = options?.unfilledColor || 'rgba(0,0,0,0.1)';
-  const borderColor = options?.borderColor || 'rgba(0,0,0,0.1)';
-  const textColor = options?.textColor || 'rgba(255,255,255,0.8)';
+  const filledColor = options?.filledColor || 'rgba(83, 168, 147, 0.9)';
+  const unfilledColor = options?.unfilledColor || 'rgba(50,50,50,0.9)';
+  const borderColor = options?.borderColor || 'rgba(200,200,200,0.5)';
+  const textColor = options?.textColor || 'white';
 
   ctx.save();
 
@@ -177,11 +175,13 @@ function drawPercentOverlay(
   ctx.stroke();
 
   ctx.fillStyle = textColor;
-  const fontSize = 9;
+  ctx.strokeStyle = borderColor;
+  const fontSize = 8;
   ctx.font = `${fontSize}pt sans-serif`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillText(`${Math.round(p)}%`, cx, cy);
+  ctx.textRendering = 'optimizeLegibility';
+  ctx.fillText(`${Math.round(p)} %`, cx, cy, 2 * radius);
 
   ctx.restore();
 }
