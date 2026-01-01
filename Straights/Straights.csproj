@@ -1,5 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
     <OutputType>Exe</OutputType>
     <PublishTrimmed>false</PublishTrimmed>
     <IsPackable>false</IsPackable>

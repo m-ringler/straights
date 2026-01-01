@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Luis Walter, 2025 Moritz Ringler
+ * SPDX-FileCopyrightText: 2020 Luis Walter, 2025-2026 Moritz Ringler
  *
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
@@ -139,6 +139,11 @@ html {
   width: 80px;
 }
 
+.set-slimmer {
+  width: 50px;
+  font-size: 16pt;
+}
+
 .button:hover {
   box-shadow: 2px 2px var(--color-button-hover-shadow);
 }
@@ -218,6 +223,7 @@ table.mini td {
   padding-bottom: 20px;
   width: 235px;
   position: relative;
+  max-height: 90vh;
 }
 
 .close-button {
@@ -338,4 +344,30 @@ a:visited {
   display: block;
   margin-left: auto;
   margin-right: auto;
+}
+
+.history {
+  position: relative;
+  max-height: 250px;
+  overflow-y: scroll;
+  margin-right: -15px;
+  padding-right: 15px;
+}
+
+.history-entry {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 6px;
+  margin-bottom: 6px;
+}
+
+.history-canvas {
+  width: 100px;
+  height: 100px;
+  flex-shrink: 0;
+}
+
+.history-info {
+  font-size: 9pt;
 }

@@ -102,8 +102,7 @@
         "${workspaceFolder}/Straights/Straights.csproj",
         "-c",
         "Release",
-        "--use-current-runtime",
-        "true"
+        "--use-current-runtime"
       ],
       "dependsOn": "tsc",
       "problemMatcher": "$msCompile"

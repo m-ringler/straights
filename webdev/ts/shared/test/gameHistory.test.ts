@@ -55,7 +55,7 @@ class TestGame implements Sut.GameLike<TestGameState> {
     return { ...this.state };
   }
 
-  restoreState(state: TestGameState): void {
+  async restoreStateAsync(state: TestGameState): Promise<void> {
     this.state = { ...state };
   }
 
@@ -82,7 +82,7 @@ describe('GameHistory', () => {
     );
   });
 
-  it('migrates and restores unversioned game state', () => {
+  it('migrates and restores unversioned game state', async () => {
     // Save the initial state
     const ts1 = 1765132672690;
     const ts2 = 1765132674000;
@@ -96,7 +96,7 @@ describe('GameHistory', () => {
     storage.setItem('noData', '{ "timestamp": 1234567890 }');
 
     // Restore the saved state
-    history.restoreGameState('testKey', game);
+    await history.restoreGameStateAsync('testKey', game);
 
     // Check if the state was restored correctly
     expect(game.getState()).toEqual({ level: 3, score: 89 });
@@ -113,7 +113,7 @@ describe('GameHistory', () => {
     expect(storage.getItem('version')).toBe('1');
   });
 
-  it('restores version 1 game state', () => {
+  it('restores version 1 game state', async () => {
     // Save the initial state
     const ts1 = 1765132672690;
     const ts2 = 1765132674000;
@@ -125,7 +125,7 @@ describe('GameHistory', () => {
     storage.setItem('history.otherKey', storedData2);
 
     // Restore the saved state
-    history.restoreGameState('testKey', game);
+    await history.restoreGameStateAsync('testKey', game);
 
     // Check if the state was restored correctly
     expect(game.getState()).toEqual({ level: 3, score: 89 });
@@ -142,15 +142,15 @@ describe('GameHistory', () => {
     expect(storage.getItem('version')).toBe('1');
   });
 
-  it('saves and restores game state', () => {
+  it('saves and restores game state', async () => {
     // Save the initial state
     history.saveGameState('testKey', game);
 
     // Modify the game state
-    game.restoreState({ level: 2, score: 100 });
+    await game.restoreStateAsync({ level: 2, score: 100 });
 
     // Restore the saved state
-    history.restoreGameState('testKey', game);
+    await history.restoreGameStateAsync('testKey', game);
 
     // Check if the state was restored correctly
     expect(game.getState()).toEqual({ level: 1, score: 0 });

@@ -1,11 +1,12 @@
-// SPDX-FileCopyrightText: 2025 Moritz Ringler
+// SPDX-FileCopyrightText: 2025-2026 Moritz Ringler
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-const CACHE_NAME = 'v0.7.4';
+const CACHE_NAME = 'v0.8.0';
 const urlsToCache = [
   './',
   './.htaccess',
+  './checkerboard.js',
   './encoder.js',
   './favicon.ico',
   './favicon/android-chrome-192x192.png',
@@ -20,6 +21,8 @@ const urlsToCache = [
   './favicon/maskable_icon_x512.png',
   './game.js',
   './gameHistory.js',
+  './gameRenderer.js',
+  './historyRenderer.js',
   './index.html',
   './jquery-3.7.1.min.js',
   './layout-img/g_DiagonallySymmetric.png',

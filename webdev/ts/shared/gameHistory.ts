@@ -12,10 +12,11 @@ export interface StorageProvider {
 
 export interface GameLike<TState> {
   dumpState(): TState;
-  restoreState(state: TState): void;
+  created: number;
+  restoreStateAsync(state: TState): Promise<void>;
 }
 
-type GameState<TState> = {
+export type GameState<TState> = {
   timestamp: number;
   data: TState;
 };
@@ -65,11 +66,20 @@ export class GameHistory<TState> {
     this.ensureStorageLimit();
   }
 
-  public restoreGameState(key: string, game: GameLike<TState>): void {
+  public async restoreGameStateAsync(
+    key: string,
+    game: GameLike<TState>
+  ): Promise<void> {
     this.migrate();
     const savedGameState = this.loadGameStateData(this.storagePrefix + key);
     if (savedGameState) {
-      game.restoreState(savedGameState.data);
+      await game.restoreStateAsync(savedGameState.data);
+
+      // We use the last modification timme, if we do not have stored
+      // information about the time the game was created
+      if (game.created > savedGameState.timestamp) {
+        game.created = savedGameState.timestamp;
+      }
     }
   }
 
@@ -88,6 +98,24 @@ export class GameHistory<TState> {
     });
 
     return latestKey;
+  }
+
+  public getAllSavedGames(): { key: string; data: GameState<TState> }[] {
+    this.migrate();
+    const prefixedKeys = this.getPrefixedHistoryKeys();
+    const result: { key: string; data: GameState<TState> }[] = [];
+
+    prefixedKeys.forEach((prefixedKey) => {
+      const gameState = this.loadGameStateData(prefixedKey);
+      if (gameState) {
+        result.push({
+          key: prefixedKey.substring(this.storagePrefix.length),
+          data: gameState,
+        });
+      }
+    });
+
+    return result;
   }
 
   private getPrefixedHistoryKeys(): string[] {
@@ -156,6 +184,7 @@ export class GameHistory<TState> {
   }
 
   private migrate(): void {
+    // migrates from old storage format (no prefixes, no version) to new format
     if (this.storage.getItem(this.versionKey)) {
       return;
     }

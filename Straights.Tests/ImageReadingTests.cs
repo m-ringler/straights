@@ -25,7 +25,7 @@ public class ImageReadingTests
             var folder = GetTestImageFolder();
             if (folder == null)
             {
-                return [null];
+                return [default(TestImage?)];
             }
 
             var filesByBaseName = folder

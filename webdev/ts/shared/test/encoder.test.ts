@@ -4,6 +4,7 @@
 
 import { describe, it, expect } from 'vitest';
 import { EncodedResult, BitmaskEncoder } from '../encoder';
+import * as encoderModule from '../encoder';
 
 // Simple seeded random number generator for deterministic tests
 function seededRandom(seed: number) {
@@ -24,14 +25,14 @@ const encoder = new BitmaskEncoder({
 describe('Bitmask Encoder', () => {
   describe('encode', () => {
     it('should encode empty sets for n=1', async () => {
-      const result = await encoder.encode(1, []);
+      const result = await encoder.encodeAsync(1, []);
       expect(result.base64Data).toBe('AA'); // Single flag byte (0 = not gzipped)
       expect(result.count).toBe(0);
     });
 
     it('should encode a single set with one element for n=3', async () => {
       const sets = [new Set([1])];
-      const result = await encoder.encode(3, sets);
+      const result = await encoder.encodeAsync(3, sets);
       expect(result.base64Data).toBeTruthy();
     });
 
@@ -42,19 +43,19 @@ describe('Bitmask Encoder', () => {
         new Set([1, 3]),
         new Set([2, 4]),
       ];
-      const result = await encoder.encode(4, sets);
+      const result = await encoder.encodeAsync(4, sets);
       expect(result.base64Data).toBeTruthy();
     });
 
     it('should handle full sets (all numbers present)', async () => {
       const sets = [new Set([1, 2, 3, 4, 5]), new Set([1, 2, 3, 4, 5])];
-      const result = await encoder.encode(5, sets);
+      const result = await encoder.encodeAsync(5, sets);
       expect(result.base64Data).toBeTruthy();
     });
 
     it('should handle empty sets', async () => {
       const sets: Set<number>[] = [new Set(), new Set(), new Set()];
-      const result = await encoder.encode(3, sets);
+      const result = await encoder.encodeAsync(3, sets);
       expect(result.base64Data).toBeTruthy();
     });
 
@@ -64,7 +65,7 @@ describe('Bitmask Encoder', () => {
       for (let i = 0; i < 100; i++) {
         sets.push(new Set([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]));
       }
-      const result = await encoder.encode(10, sets);
+      const result = await encoder.encodeAsync(10, sets);
       // Verify encoding completes successfully (compression may or may not work in test environment)
       expect(result.base64Data).toBeTruthy();
       expect(result.count).toBe(100);
@@ -76,64 +77,68 @@ describe('Bitmask Encoder', () => {
       for (let i = 0; i < 9; i++) {
         sets.push(new Set([1, 2]));
       }
-      const result = await encoder.encode(3, sets);
+      const result = await encoder.encodeAsync(3, sets);
       expect(result.base64Data).toBeTruthy();
     });
 
     it('should work with n=12 (maximum)', async () => {
       const sets = [new Set([1, 6, 12])];
-      const result = await encoder.encode(12, sets);
+      const result = await encoder.encodeAsync(12, sets);
       expect(result.base64Data).toBeTruthy();
     });
 
     it('should work with n=1 (minimum)', async () => {
       const sets: Set<number>[] = [new Set([1])];
-      const result = await encoder.encode(1, sets);
+      const result = await encoder.encodeAsync(1, sets);
       expect(result.base64Data).toBeTruthy();
     });
 
     it('should produce expected base64 output for known input', async () => {
       const sets = [new Set([1, 2, 3]), new Set([2, 4]), new Set([1, 3, 5])];
-      const result = await encoder.encode(5, sets);
+      const result = await encoder.encodeAsync(5, sets);
       expect(result.count).toBe(3);
       // First byte is flag (0 = not gzipped), followed by packed bitmasks
       expect(result.base64Data).toBe('AEdV');
     });
 
     it('should throw error for n < 1', async () => {
-      await expect(encoder.encode(0, [])).rejects.toThrow(
+      await expect(encoder.encodeAsync(0, [])).rejects.toThrow(
         'n must be between 1 and 12'
       );
     });
 
     it('should throw error for n > 12', async () => {
-      await expect(encoder.encode(13, [])).rejects.toThrow(
+      await expect(encoder.encodeAsync(13, [])).rejects.toThrow(
         'n must be between 1 and 12'
       );
     });
 
     it('should throw error for invalid set values', async () => {
       const sets = [new Set([0, 1, 2])]; // 0 is invalid
-      await expect(encoder.encode(3, sets)).rejects.toThrow('invalid value');
+      await expect(encoder.encodeAsync(3, sets)).rejects.toThrow(
+        'invalid value'
+      );
     });
 
     it('should throw error for set values exceeding n', async () => {
       const sets = [new Set([1, 2, 5])]; // 5 > n=3
-      await expect(encoder.encode(3, sets)).rejects.toThrow('invalid value');
+      await expect(encoder.encodeAsync(3, sets)).rejects.toThrow(
+        'invalid value'
+      );
     });
   });
 
   describe('decode', () => {
     it('should decode empty encoded data', async () => {
-      const encoded = await encoder.encode(3, []);
-      const decoded = await encoder.decode(encoded, 3);
+      const encoded = await encoder.encodeAsync(3, []);
+      const decoded = await encoder.decodeAsync(encoded, 3);
       expect(decoded).toEqual([]);
     });
 
     it('should decode single set correctly', async () => {
       const original = [new Set([1, 3])];
-      const encoded = await encoder.encode(5, original);
-      const decoded = await encoder.decode(encoded, 5);
+      const encoded = await encoder.encodeAsync(5, original);
+      const decoded = await encoder.decodeAsync(encoded, 5);
       expect(decoded).toHaveLength(1);
       expect(decoded[0]).toEqual(original[0]);
     });
@@ -145,8 +150,8 @@ describe('Bitmask Encoder', () => {
         new Set([1, 2, 3]),
         new Set(),
       ];
-      const encoded = await encoder.encode(3, original);
-      const decoded = await encoder.decode(encoded, 3);
+      const encoded = await encoder.encodeAsync(3, original);
+      const decoded = await encoder.decodeAsync(encoded, 3);
       expect(decoded).toHaveLength(4);
       for (let i = 0; i < original.length; i++) {
         expect(decoded[i]).toEqual(original[i]);
@@ -158,10 +163,10 @@ describe('Bitmask Encoder', () => {
       for (let i = 0; i < 64; i++) {
         original.push(new Set([1, 2, 3, 4, 5, 6, 7, 8]));
       }
-      const encoded = await encoder.encode(8, original);
+      const encoded = await encoder.encodeAsync(8, original);
       // Data should be compressed (gzipped flag encoded in first bit)
 
-      const decoded = await encoder.decode(encoded, 8);
+      const decoded = await encoder.decodeAsync(encoded, 8);
       expect(decoded).toHaveLength(64);
       for (let i = 0; i < original.length; i++) {
         expect(decoded[i]).toEqual(original[i]);
@@ -170,14 +175,14 @@ describe('Bitmask Encoder', () => {
 
     it('should throw error for n < 1', async () => {
       const encoded: EncodedResult = { base64Data: 'AA', count: 0 };
-      await expect(encoder.decode(encoded, 0)).rejects.toThrow(
+      await expect(encoder.decodeAsync(encoded, 0)).rejects.toThrow(
         'n must be between 1 and 12'
       );
     });
 
     it('should throw error for n > 12', async () => {
       const encoded: EncodedResult = { base64Data: 'AA', count: 0 };
-      await expect(encoder.decode(encoded, 13)).rejects.toThrow(
+      await expect(encoder.decodeAsync(encoded, 13)).rejects.toThrow(
         'n must be between 1 and 12'
       );
     });
@@ -185,7 +190,7 @@ describe('Bitmask Encoder', () => {
     it('should throw error for invalid control byte', async () => {
       // Create encoded result with invalid control byte (2)
       const encoded: EncodedResult = { base64Data: 'Ag', count: 1 }; // 'Ag' decodes to [2]
-      await expect(encoder.decode(encoded, 3)).rejects.toThrow(
+      await expect(encoder.decodeAsync(encoded, 3)).rejects.toThrow(
         'Unknown control byte: 2'
       );
     });
@@ -194,8 +199,8 @@ describe('Bitmask Encoder', () => {
   describe('round-trip encoding', () => {
     it('should correctly round-trip for n=1', async () => {
       const original: Set<number>[] = [new Set([1])];
-      const encoded = await encoder.encode(1, original);
-      const decoded = await encoder.decode(encoded, 1);
+      const encoded = await encoder.encodeAsync(1, original);
+      const decoded = await encoder.decodeAsync(encoded, 1);
       expect(decoded).toEqual(original);
     });
 
@@ -206,8 +211,8 @@ describe('Bitmask Encoder', () => {
         new Set([1, 2, 3, 4, 5, 6]),
         new Set(),
       ];
-      const encoded = await encoder.encode(6, original);
-      const decoded = await encoder.decode(encoded, 6);
+      const encoded = await encoder.encodeAsync(6, original);
+      const decoded = await encoder.decodeAsync(encoded, 6);
       expect(decoded).toEqual(original);
     });
 
@@ -222,8 +227,8 @@ describe('Bitmask Encoder', () => {
         }
         original.push(set);
       }
-      const encoded = await encoder.encode(12, original);
-      const decoded = await encoder.decode(encoded, 12);
+      const encoded = await encoder.encodeAsync(12, original);
+      const decoded = await encoder.decodeAsync(encoded, 12);
       expect(decoded).toEqual(original);
     });
 
@@ -241,8 +246,8 @@ describe('Bitmask Encoder', () => {
           }
           original.push(set);
         }
-        const encoded = await encoder.encode(n, original);
-        const decoded = await encoder.decode(encoded, n);
+        const encoded = await encoder.encodeAsync(n, original);
+        const decoded = await encoder.decodeAsync(encoded, n);
         expect(decoded).toEqual(original);
       }
     });
@@ -253,10 +258,10 @@ describe('Bitmask Encoder', () => {
       for (let i = 0; i < 100; i++) {
         original.push(new Set([1, 3, 5, 7, 9]));
       }
-      const encoded = await encoder.encode(10, original);
+      const encoded = await encoder.encodeAsync(10, original);
       // Large repetitive data should be compressed
 
-      const decoded = await encoder.decode(encoded, 10);
+      const decoded = await encoder.decodeAsync(encoded, 10);
       expect(decoded).toEqual(original);
     });
   });
@@ -264,14 +269,14 @@ describe('Bitmask Encoder', () => {
   describe('base64url encoding', () => {
     it('should produce base64url-safe characters', async () => {
       const sets = [new Set([1, 2, 3])];
-      const result = await encoder.encode(5, sets);
+      const result = await encoder.encodeAsync(5, sets);
       // base64url should not contain +, /, or =
       expect(result.base64Data).not.toMatch(/[+/=]/);
     });
 
     it('should produce different encodings for different inputs', async () => {
-      const result1 = await encoder.encode(3, [new Set([1])]);
-      const result2 = await encoder.encode(3, [new Set([2])]);
+      const result1 = await encoder.encodeAsync(3, [new Set([1])]);
+      const result2 = await encoder.encodeAsync(3, [new Set([2])]);
       expect(result1.base64Data).not.toBe(result2.base64Data);
     });
   });
@@ -280,7 +285,7 @@ describe('Bitmask Encoder', () => {
     it('should not compress data <= 200 bytes', async () => {
       // Small dataset
       const sets = Array(25).fill(new Set([1, 2, 3]));
-      const result = await encoder.encode(5, sets);
+      const result = await encoder.encodeAsync(5, sets);
       expect(result.base64Data).toBeTruthy();
     });
 
@@ -290,7 +295,7 @@ describe('Bitmask Encoder', () => {
       for (let i = 0; i < 100; i++) {
         sets.push(new Set([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]));
       }
-      const result = await encoder.encode(10, sets);
+      const result = await encoder.encodeAsync(10, sets);
       // Large repetitive data should be compressed (first bit set to 1)
       expect(result.base64Data).toBeTruthy();
       expect(result.count).toBe(100);
@@ -371,7 +376,7 @@ describe('Bitmask Encoder', () => {
           maxN: 16,
         });
         const sets = [new Set([1, 8, 16])];
-        const result = await encoder.encode(16, sets);
+        const result = await encoder.encodeAsync(16, sets);
         expect(result.base64Data).toBeTruthy();
       });
 
@@ -382,7 +387,7 @@ describe('Bitmask Encoder', () => {
           maxN: 32,
         });
         const sets = [new Set([1, 16, 32])];
-        const result = await encoder.encode(32, sets);
+        const result = await encoder.encodeAsync(32, sets);
         expect(result.base64Data).toBeTruthy();
       });
 
@@ -392,7 +397,7 @@ describe('Bitmask Encoder', () => {
           minCompressionRatio: 0.9,
           maxN: 10,
         });
-        await expect(encoder.encode(11, [])).rejects.toThrow(
+        await expect(encoder.encodeAsync(11, [])).rejects.toThrow(
           'n must be between 1 and 10'
         );
       });
@@ -403,7 +408,7 @@ describe('Bitmask Encoder', () => {
           minCompressionRatio: 0.9,
           maxN: 20,
         });
-        const result = await encoder.encode(20, [new Set([1, 10, 20])]);
+        const result = await encoder.encodeAsync(20, [new Set([1, 10, 20])]);
         expect(result.base64Data).toBeTruthy();
       });
     });
@@ -416,8 +421,8 @@ describe('Bitmask Encoder', () => {
           maxN: 16,
         });
         const original = [new Set([1, 8, 16])];
-        const encoded = await encoder.encode(16, original);
-        const decoded = await encoder.decode(encoded, 16);
+        const encoded = await encoder.encodeAsync(16, original);
+        const decoded = await encoder.decodeAsync(encoded, 16);
         expect(decoded).toEqual(original);
       });
 
@@ -428,8 +433,8 @@ describe('Bitmask Encoder', () => {
           maxN: 32,
         });
         const original = [new Set([1, 16, 32])];
-        const encoded = await encoder.encode(32, original);
-        const decoded = await encoder.decode(encoded, 32);
+        const encoded = await encoder.encodeAsync(32, original);
+        const decoded = await encoder.decodeAsync(encoded, 32);
         expect(decoded).toEqual(original);
       });
 
@@ -440,7 +445,7 @@ describe('Bitmask Encoder', () => {
           maxN: 10,
         });
         const encoded: EncodedResult = { base64Data: 'AA', count: 0 };
-        await expect(encoder.decode(encoded, 11)).rejects.toThrow(
+        await expect(encoder.decodeAsync(encoded, 11)).rejects.toThrow(
           'n must be between 1 and 10'
         );
       });
@@ -457,7 +462,7 @@ describe('Bitmask Encoder', () => {
         for (let i = 0; i < 20; i++) {
           sets.push(new Set([1, 2, 3, 4, 5]));
         }
-        const result = await encoder.encode(5, sets);
+        const result = await encoder.encodeAsync(5, sets);
         expect(result.base64Data).toBeTruthy();
       });
 
@@ -471,7 +476,7 @@ describe('Bitmask Encoder', () => {
         for (let i = 0; i < 100; i++) {
           sets.push(new Set([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]));
         }
-        const result = await encoder.encode(10, sets);
+        const result = await encoder.encodeAsync(10, sets);
         // With strict ratio, compression should be used (first bit = 1)
         expect(result.base64Data).toBeTruthy();
       });
@@ -486,7 +491,7 @@ describe('Bitmask Encoder', () => {
         for (let i = 0; i < 100; i++) {
           sets.push(new Set([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]));
         }
-        const result = await encoder.encode(10, sets);
+        const result = await encoder.encodeAsync(10, sets);
         expect(result.base64Data).toBeTruthy();
       });
     });
@@ -503,8 +508,8 @@ describe('Bitmask Encoder', () => {
           new Set([2, 4, 8, 16]),
           new Set(),
         ];
-        const encoded = await encoder.encode(20, original);
-        const decoded = await encoder.decode(encoded, 20);
+        const encoded = await encoder.encodeAsync(20, original);
+        const decoded = await encoder.decodeAsync(encoded, 20);
         expect(decoded).toEqual(original);
       });
 
@@ -518,8 +523,8 @@ describe('Bitmask Encoder', () => {
           new Set([1, 12, 24]),
           new Set([6, 12, 18]),
         ];
-        const encoded = await encoder.encode(24, original);
-        const decoded = await encoder.decode(encoded, 24);
+        const encoded = await encoder.encodeAsync(24, original);
+        const decoded = await encoder.decodeAsync(encoded, 24);
         expect(decoded).toEqual(original);
       });
 
@@ -537,8 +542,8 @@ describe('Bitmask Encoder', () => {
           set.add(32);
           original.push(set);
         }
-        const encoded = await encoder.encode(32, original);
-        const decoded = await encoder.decode(encoded, 32);
+        const encoded = await encoder.encodeAsync(32, original);
+        const decoded = await encoder.decodeAsync(encoded, 32);
         expect(decoded).toEqual(original);
       });
     });
@@ -551,7 +556,9 @@ describe('Bitmask Encoder', () => {
           maxN: 30,
         });
         const sets = [new Set([1, 2, 26])]; // 26 > n=25
-        await expect(encoder.encode(25, sets)).rejects.toThrow('invalid value');
+        await expect(encoder.encodeAsync(25, sets)).rejects.toThrow(
+          'invalid value'
+        );
       });
 
       it('should handle full sets with large n', async () => {
@@ -565,10 +572,10 @@ describe('Bitmask Encoder', () => {
           fullSet.add(i);
         }
         const sets = [fullSet];
-        const result = await encoder.encode(32, sets);
+        const result = await encoder.encodeAsync(32, sets);
         expect(result.base64Data).toBeTruthy();
 
-        const decoded = await encoder.decode(result, 32);
+        const decoded = await encoder.decodeAsync(result, 32);
         expect(decoded[0]).toEqual(fullSet);
       });
     });
@@ -594,7 +601,7 @@ describe('Bitmask Encoder', () => {
       // Encode sets
       const sets = [new Set([1, 2, 3]), new Set([2, 4]), new Set([1, 3, 5])];
 
-      const encoded = await encoder.encode(5, sets);
+      const encoded = await encoder.encodeAsync(5, sets);
       console.log(encoded);
       // {
       //   base64Data: "AEdV",
@@ -602,7 +609,7 @@ describe('Bitmask Encoder', () => {
       // }
 
       // Decode back to sets
-      const decoded = await encoder.decode(encoded, 5);
+      const decoded = await encoder.decodeAsync(encoded, 5);
       console.log(decoded);
       // [Set(3) {1, 2, 3}, Set(2) {2, 4}, Set(3) {1, 3, 5}]
 
@@ -615,5 +622,51 @@ describe('Bitmask Encoder', () => {
         new Set([1, 3, 5]),
       ]);
     });
+  });
+});
+
+describe('BooleanGridEncoding', () => {
+  // Test 1: Round-trip starting with Uint8Array
+  it('should round-trip encode/decode from Uint8Array', () => {
+    // Example 10x10 grid (checkerboard pattern)
+    const grid: boolean[][] = [
+      [true, false, true, false, true, false, true, false, true, false],
+      [false, true, false, true, false, true, false, true, false, true],
+      [true, false, true, false, true, false, true, false, true, false],
+      [false, true, false, true, false, true, false, true, false, true],
+      [true, false, true, false, true, false, true, false, true, false],
+      [false, true, false, true, false, true, false, true, false, true],
+      [true, false, true, false, true, false, true, false, true, false],
+      [false, true, false, true, false, true, false, true, false, true],
+      [true, false, true, false, true, false, true, false, true, false],
+      [false, true, false, true, false, true, false, true, false, true],
+    ];
+
+    // Encode to Uint8Array
+    const packed = encoderModule.encodeGridToBase64Url(grid);
+    // Decode back to grid
+    const unpacked = encoderModule.decodeGridFromBase64Url(packed, 10);
+
+    // Verify round-trip
+    expect(unpacked).toEqual(grid);
+  });
+
+  // Test 2: Round-trip starting with Base64URL
+  it('should round-trip encode/decode from Base64URL', () => {
+    const base64Data = '9ELZYnF0Fb-GdIuSYA';
+    const grid = encoderModule.decodeGridFromBase64Url(base64Data, 10);
+    const packed = encoderModule.encodeGridToBase64Url(grid);
+
+    // Verify round-trip
+    expect(packed).toEqual(base64Data);
+  });
+  // Test 3: Guard clause for insufficient input data
+  it('should throw an error if input data is too short', () => {
+    const base64Data = 'te13V-4EBvgUXXLv'; // Intentionally short data
+
+    // Expect an error when decoding
+    expect(() => encoderModule.decodeGridFromBase64Url(base64Data, 10)).toThrow(
+      'Input data is too short for the expected grid size'
+    );
   });
 });

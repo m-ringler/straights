@@ -3,32 +3,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { BitmaskEncoder } from './encoder.js';
-import type { EncodedResult } from './encoder.js';
+import * as EncoderModule from './encoder.js';
 
-const chistmasEmojis = [
-  '🔔',
-  '🎁',
-  '🕯️',
-  '🎅',
-  '👼',
-  '🎶',
-  '❄️',
-  '☃️',
-  '⛄',
-  '🌟',
-  '🎄',
-  '🍷',
-  '🦌',
-  '🌨️',
-  '🎆',
-  '🎇',
-  '🧦',
-  '🎀',
-  '🧸',
-  '🍀',
-];
-
-const modes = {
+export const FieldModes = {
   USER: 0,
   WHITEKNOWN: 1,
   BLACK: 2,
@@ -75,10 +52,6 @@ export class Field {
     this.notes = new Set();
   }
 
-  getSelector() {
-    return `#ce${this.row}_${this.col}`;
-  }
-
   setUser(input: number) {
     if (this.isEditable()) {
       this.wrong = false;
@@ -108,7 +81,7 @@ export class Field {
   }
 
   isEditable() {
-    return this.mode === modes.USER;
+    return this.mode === FieldModes.USER;
   }
 
   setNote(value: number) {
@@ -234,24 +207,6 @@ export class Field {
     }
   }
 
-  /**
-   * Retrieves the single DOM element associated with the field.
-   * @returns A jQuery object containing exactly one HTMLElement.
-   * @throws {Error} If no element is found or if multiple elements are found.
-   */
-  getElement() {
-    const result = this.game.$(this.getSelector());
-    if (result.length == 0) {
-      throw new Error(`Element not found: ${this.getSelector()}`);
-    }
-
-    if (result.length > 1) {
-      throw new Error(`Multiple elements found: ${this.getSelector()}`);
-    }
-
-    return result;
-  }
-
   reset(template: FieldUserData | null = null) {
     this.user = undefined;
     this.notes.clear();
@@ -265,92 +220,16 @@ export class Field {
     this.render();
   }
 
-  #getBackgroundColor() {
-    const colors = this.game.colors;
-    if (this.mode === modes.BLACK || this.mode === modes.BLACKKNOWN) {
-      return colors.BG_BLACK;
-    }
-
-    if (this.mode === modes.WHITEKNOWN) {
-      return colors.BG_WHITEKNOWN;
-    }
-
-    if (this.hint) {
-      return colors.BG_HINT;
-    }
-
-    if (this.isActive()) {
-      return this.wrong ? colors.BG_USER_WRONG_ACTIVE : colors.BG_USER_ACTIVE;
-    }
-
-    return this.wrong ? colors.BG_USER_WRONG : colors.BG_USER;
-  }
-
-  #getTextColor() {
-    const colors = this.game.colors;
-    if (this.mode === modes.BLACKKNOWN || this.mode === modes.BLACK) {
-      return colors.FG_BLACK;
-    }
-
-    if (!this.isEditable()) {
-      return colors.FG_WHITEKNOWN;
-    }
-
-    if (this.wrong) {
-      return colors.FG_USER_WRONG;
-    }
-
-    if (this.isShowingSolution) {
-      if (this.user !== this.value) {
-        return colors.FG_SOLUTION;
-      }
-    }
-
-    return colors.FG_USER;
-  }
-
   render() {
-    const element = this.getElement();
-    element.empty();
-    element.css('background-color', this.#getBackgroundColor());
-    element.css('color', this.#getTextColor());
-    if (this.isEditable()) {
-      if (this.isShowingSolution) {
-        element.text(this.value!);
-      } else {
-        if (this.user) {
-          element.text(this.user);
-        } else if (this.notes.size > 0) {
-          let notes = '<table class="mini" cellspacing="0">';
-          for (let i = 1; i <= this.game.size; i++) {
-            if ((i - 1) % 3 === 0) notes += '<tr>';
-            if (this.notes.has(i)) {
-              const class_attribute = this.hint === i ? ' class="hint"' : '';
-              notes += `<td${class_attribute}>${i}</td>`;
-            } else {
-              notes += `<td class="transparent">${i}</td>`;
-            }
-            if (i % 3 === 0) notes += '</tr>';
-          }
-          notes += '</table>';
-          element.append(notes);
-        }
-      }
-    } else if (this.mode === modes.BLACKKNOWN) {
-      element.text(this.value!);
-    } else if (this.mode === modes.WHITEKNOWN) {
-      element.text(this.value!);
-    } else if (this.mode === modes.BLACK) {
-      fillBlackField(element);
-    }
+    this.game.renderer.renderField(this);
   }
 
   toJsonArray() {
-    if (this.mode === modes.BLACK) {
+    if (this.mode === FieldModes.BLACK) {
       return [0]; // black empty field
-    } else if (this.mode === modes.BLACKKNOWN) {
+    } else if (this.mode === FieldModes.BLACKKNOWN) {
       return [-this.value!]; // black known field
-    } else if (this.mode === modes.WHITEKNOWN) {
+    } else if (this.mode === FieldModes.WHITEKNOWN) {
       return [this.value!]; // white known field
     } else if (this.user) {
       return [this.user]; // white field with user guess
@@ -366,74 +245,50 @@ export interface FieldIndex {
 }
 
 export interface FieldUserData {
-  user: number | undefined;
+  user?: number | undefined;
   notes: Iterable<number>;
 }
 
-export type DumpedState = {
+export interface HistoryDataRead {
+  gameState: string;
+  created: number;
+}
+
+export interface HistoryData extends HistoryDataRead {
+  checkerboard: string;
+  size: number;
+  percentSolved: number;
+}
+
+export interface DumpedState<TData> {
   check_count: number;
   hint_count: number;
-  data: FieldUserData[][];
-};
+  data: TData;
+}
+
+export interface FieldRenderer {
+  renderField(field: Field): void;
+}
+
+export type DumpedStateRead = DumpedState<FieldUserData[][] | HistoryDataRead>;
+
+export type DumpedStateWrite = DumpedState<HistoryData>;
 
 // class to store and modify the current game state
 export class Game {
-  static gameColorsLight = {
-    FG_BLACK: '#ffffff',
-    FG_USER: '#003378',
-    FG_USER_WRONG: '#5f0052ff',
-    FG_SOLUTION: '#5f0052ff',
-    FG_WHITEKNOWN: '#000000',
-    BG_BLACK: '#000000',
-    BG_USER: '#ffffff',
-    BG_USER_ACTIVE: '#c7ddff',
-    BG_USER_WRONG: '#ffc7c7',
-    BG_USER_WRONG_ACTIVE: '#eeaaff',
-    BG_WHITEKNOWN: '#ffffff',
-    BG_HINT: '#ffff99',
-  };
-
-  static gameColorsDark = {
-    FG_BLACK: '#aaaaaa',
-    FG_USER: '#003378',
-    FG_USER_WRONG: '#5f0052ff',
-    FG_SOLUTION: '#5f0052ff',
-    FG_WHITEKNOWN: '#000000',
-    BG_BLACK: '#000000',
-    BG_USER: '#aaaaaa',
-    BG_USER_ACTIVE: '#7379bf',
-    BG_USER_WRONG: '#ffc7c7',
-    BG_USER_WRONG_ACTIVE: '#eeaaff',
-    BG_WHITEKNOWN: '#aaaaaa',
-    BG_HINT: '#ffff99',
-  };
-  $: JQueryStatic;
-  colors: {
-    FG_BLACK: string;
-    FG_USER: string;
-    FG_USER_WRONG: string;
-    FG_SOLUTION: string;
-    FG_WHITEKNOWN: string;
-    BG_BLACK: string;
-    BG_USER: string;
-    BG_USER_ACTIVE: string;
-    BG_USER_WRONG: string;
-    BG_USER_WRONG_ACTIVE: string;
-    BG_WHITEKNOWN: string;
-    BG_HINT: string;
-  };
-  darkMode: boolean;
   size: number;
   data: Field[][];
   isSolved: boolean;
   activeFieldIndex: null | FieldIndex;
   check_count: number;
   hint_count: number;
+  created: number;
+  private checkerboardDump: string | null = null;
 
-  constructor($: any, darkMode: boolean, size: number = 0) {
-    this.$ = $;
-    this.colors = darkMode ? Game.gameColorsDark : Game.gameColorsLight;
-    this.darkMode = darkMode;
+  constructor(
+    public renderer: FieldRenderer,
+    size: number = 0
+  ) {
     this.size = size;
     this.data = [];
     this.activeFieldIndex = null;
@@ -447,39 +302,89 @@ export class Game {
 
     this.check_count = 0;
     this.hint_count = 0;
+    this.created = Date.now();
   }
 
   get(row: number, col: number): Field {
     return this.data[row][col];
   }
 
-  dumpState(): DumpedState {
-    const fieldData = this.data.map((row) =>
-      row.map((field) => ({
-        user: field.user,
-        notes: Array.from(field.notes),
-      }))
-    );
+  dumpState(): DumpedState<HistoryData> {
+    const state = this.dumpStateBase64();
+    const historyData: HistoryData = {
+      gameState: state,
+      checkerboard: this.getCheckerboardDump(),
+      size: this.size,
+      created: this.created,
+      percentSolved: this.getPercentSolved(),
+    };
 
     const result = {
       check_count: this.check_count,
       hint_count: this.hint_count,
-      data: fieldData,
+      data: historyData,
     };
 
     return result;
   }
 
-  restoreState(dumpedState: FieldUserData[][] | DumpedState) {
+  private getPercentSolved(): number {
+    let numUserFields = 0;
+    let solved = 0;
+    this.#getUserFields().forEach((f) => {
+      numUserFields++;
+      if (f.isSolved()) {
+        solved += 1;
+      } else if (f.notes.size === 0) {
+        // blank field: no progress
+      } else {
+        solved += 1 - (f.notes.size - 1) / (this.size - 1);
+      }
+    });
+
+    const percentSolved =
+      numUserFields === 0 ? 100 : Math.floor((solved / numUserFields) * 100);
+    return percentSolved;
+  }
+
+  private getCheckerboardDump(): string {
+    if (this.checkerboardDump === null) {
+      const cb: boolean[][] = [];
+      for (const row of this.data) {
+        cb.push(
+          row.map(
+            (f) =>
+              f.mode === FieldModes.BLACK || f.mode === FieldModes.BLACKKNOWN
+          )
+        );
+      }
+
+      this.checkerboardDump = EncoderModule.encodeGridToBase64Url(cb);
+    }
+
+    return this.checkerboardDump;
+  }
+
+  async restoreStateAsync(dumpedState: FieldUserData[][] | DumpedStateRead) {
     if (Object.hasOwn(dumpedState, 'check_count')) {
       // new format including check and hint count
-      const ds = dumpedState as DumpedState;
+      const ds = dumpedState as DumpedStateRead;
       this.check_count = ds.check_count;
       this.hint_count = ds.hint_count;
-      this.restoreState(ds.data);
+      const data = ds.data;
+
+      if (Object.hasOwn(data, 'gameState')) {
+        // current format F2.2: data is HistoryData
+        const historyData = data as HistoryDataRead;
+        await this.restoreStateBase64Async(historyData.gameState);
+        this.created = historyData.created;
+      } else {
+        // previous format F2.1: data is FieldUserData[][]
+        await this.restoreStateAsync(data as FieldUserData[][]);
+      }
     } else {
-      // old format (just field data) also used in
-      // recursive call from above
+      // first format F1 (just field data) also used in
+      // recursive call for format F2.1
       const ds = dumpedState as FieldUserData[][];
       ds.forEach((row: FieldUserData[], r: number) => {
         row.forEach((field, c) => {
@@ -501,23 +406,34 @@ export class Game {
 
   #getUserFields() {
     return Array.from(this.loopFields(), (x) => x.field).filter(
-      (x) => x.mode === modes.USER
+      (x) => x.mode === FieldModes.USER
     );
   }
 
-  async dumpStateBase64(): Promise<string> {
+  private dumpStateBase64(): string {
     const encoder = this.#getEncoder();
-
-    var data = this.#getUserFields().map((f) => (f.user ? [f.user] : f.notes));
-
-    const encoded = await encoder.encode(this.size, data);
+    var data = this.getState();
+    const encoded = encoder.encodeUncompressed(this.size, data);
     return encoded.base64Data;
   }
 
-  async restoreStateBase64(base64Data: string) {
+  private getState() {
+    return this.#getUserFields().map((f) => (f.user ? [f.user] : f.notes));
+  }
+
+  async dumpStateBase64Async(): Promise<string> {
+    const encoder = this.#getEncoder();
+
+    var data = this.getState();
+
+    const encoded = await encoder.encodeAsync(this.size, data);
+    return encoded.base64Data;
+  }
+
+  async restoreStateBase64Async(base64Data: string) {
     const userFields = this.#getUserFields();
     const count = userFields.length;
-    const decoded = await this.#getEncoder().decode(
+    const decoded = await this.#getEncoder().decodeAsync(
       { base64Data, count },
       this.size
     );
@@ -693,7 +609,7 @@ export class Game {
 
     const bitsPerNumber = Math.floor(Math.log2(size - 1)) + 1;
     const bitsPerField = 2 + bitsPerNumber; // black + known + number
-    const result = new Game(this.$, this.darkMode, size);
+    const result = new Game(this.renderer, size);
 
     for (let row = 0; row < size; row++) {
       for (let col = 0; col < size; col++) {
@@ -715,11 +631,11 @@ export class Game {
 
         const mode = isBlack
           ? isKnown
-            ? modes.BLACKKNOWN
-            : modes.BLACK
+            ? FieldModes.BLACKKNOWN
+            : FieldModes.BLACK
           : isKnown
-            ? modes.WHITEKNOWN
-            : modes.USER;
+            ? FieldModes.WHITEKNOWN
+            : FieldModes.USER;
 
         result.#setValues(row, col, mode, value);
       }
@@ -729,7 +645,7 @@ export class Game {
   }
 
   #parseGameV002(binary: string) {
-    const result = new Game(this.$, this.darkMode, 9);
+    const result = new Game(this.renderer, 9);
     if (binary.length < 6 * 81 || binary.length > 6 * 81 + 8) {
       return; // Invalid data
     }
@@ -776,19 +692,6 @@ export class Game {
   }
 }
 
-function setEmoji(element: JQuery<HTMLElement>, emojis: string[]) {
-  let emoji = element.data('festive-emoji') as string | undefined;
-  if (!emoji) {
-    emoji = randomItem(emojis);
-    element.data('festive-emoji', emoji);
-  }
-  element.text(emoji);
-}
-
-function randomItem(emojis: string[]) {
-  return emojis[Math.floor(Math.random() * emojis.length)];
-}
-
 function base64GameCodeToBinary(gameCode: string) {
   const base64urlCharacters =
     'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
@@ -816,17 +719,4 @@ function toFieldUserData(notes: Set<number>) {
 
   const userData = { user, notes };
   return userData;
-}
-
-function fillBlackField(element: JQuery<HTMLElement>) {
-  const now = new Date();
-  if (isChristmasTime(now)) {
-    setEmoji(element, chistmasEmojis);
-  }
-}
-
-function isChristmasTime(now: Date) {
-  const month = now.getMonth(); // 0 = Jan, 11 = Dec
-  const day = now.getDate();
-  return (month === 11 && day >= 20) || (month === 0 && day <= 6);
 }

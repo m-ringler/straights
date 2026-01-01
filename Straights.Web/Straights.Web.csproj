@@ -4,7 +4,7 @@
       even though its not used, and this confuses the toolchain. Hence ...-->
     <MSBuildEnableWorkloadResolver>false</MSBuildEnableWorkloadResolver>
 
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
 
     <PublishTrimmed>true</PublishTrimmed>
     <SelfContained>true</SelfContained>

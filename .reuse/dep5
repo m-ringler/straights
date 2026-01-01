@@ -4,13 +4,13 @@ Upstream-Contact: Moritz Ringler <42344272+m-ringler@users.noreply.github.com>
 Source: https://github.com/m-ringler/straights
 
 Files: *
-Copyright: 2025 Moritz Ringler
+Copyright: 2025-2026 Moritz Ringler
 License: MIT
 
 Files: Straights/*
-Copyright: 2025 Moritz Ringler
+Copyright: 2025-2026 Moritz Ringler
 License: GPL-3.0-or-later
 
 Files: Straights.Web/*
-Copyright: 2025 Moritz Ringler
+Copyright: 2025-2026 Moritz Ringler
 License: GPL-3.0-or-later

@@ -6,7 +6,7 @@ set -o pipefail
 for f in test/*.txt test/*.png test/local/*.txt test/local/*.png; do
 	echo "$f"
 	sol="${f%.*}.solution"
-	if ! Straights/bin/Debug/net9.0/straights solve "$f" | head -n -1 >"$sol"; then
+	if ! Straights/bin/Debug/net10.0/straights solve "$f" | head -n -1 >"$sol"; then
 		echo Failed
 		rm "$sol"
 	fi

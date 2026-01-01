@@ -4,6 +4,16 @@
 
 version: 2
 updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    groups:
+      typescript:
+        applies-to: version-updates
+        patterns:
+          - "*"
+
   - package-ecosystem: "nuget"
     directory: "/"
     schedule:
@@ -13,6 +23,7 @@ updates:
         applies-to: version-updates
         patterns:
           - "*"
+
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:

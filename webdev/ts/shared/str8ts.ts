@@ -1,16 +1,20 @@
-// SPDX-FileCopyrightText: 2020 Luis Walter, 2025 Moritz Ringler
+// SPDX-FileCopyrightText: 2020 Luis Walter, 2025-2026 Moritz Ringler
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 // module imports
 import * as Str8ts from './game.js';
+import * as Renderer from './gameRenderer.js';
 import * as api from './str8ts-api.js';
 import * as Popup from './popup.js';
 
 // module member imports
 import { UndoStack } from './undoStack.js';
 import { NumberInput } from './numberInput.js';
-import { GameHistory } from './gameHistory.js';
+import { GameHistory, type GameState } from './gameHistory.js';
+import * as HistoryRendererModule from './historyRenderer.js';
+import * as CheckerboardModule from './checkerboard.js';
+import { decodeGridFromBase64Url } from './encoder.js';
 
 // type imports
 import type { ApiResult } from './str8ts-api.js';
@@ -89,6 +93,7 @@ const dialogs = {
   RESTART: 5,
   ABOUT: 6,
   HINT: 7,
+  HISTORY: 8,
 };
 const MIN_GRID_SIZE = 4;
 const MAX_GRID_SIZE = 12;
@@ -112,11 +117,13 @@ export class UIController {
   private hintField: Str8ts.Field | null = null;
   private buttonColors: ButtonColors;
   private numberInput: NumberInput;
-  private gameHistory: GameHistory<Str8ts.DumpedState>;
+  private gameHistory: GameHistory<Str8ts.DumpedStateRead>;
+  private historyRenderer: HistoryRendererModule.HistoryRenderer;
 
   // injected dependencies
   private $: JQueryLike;
   private win: Window;
+  private renderer: Renderer.JQueryFieldRenderer;
   private setSelectedLayoutOption:
     | ((selectedOption: string) => void)
     | undefined;
@@ -127,11 +134,76 @@ export class UIController {
     this.undoStack = new UndoStack(this.renderUndoButton.bind(this));
     const darkMode = win.matchMedia('(prefers-color-scheme: dark)').matches;
     this.buttonColors = getButtonColors(darkMode);
-    this.game = new Str8ts.Game(this.$, darkMode);
-    this.gameHistory = new GameHistory<Str8ts.DumpedState>(localStorage);
+    this.renderer = new Renderer.JQueryFieldRenderer(this.$ as any, darkMode);
+    this.game = new Str8ts.Game(this.renderer);
+    this.gameHistory = new GameHistory<Str8ts.DumpedStateRead>(localStorage);
     this.numberInput = new NumberInput((num: number) =>
       this.handleNumberInput(num)
     );
+
+    this.historyRenderer = new HistoryRendererModule.HistoryRenderer(
+      this.$ as any,
+      this.$('#history-div') as any,
+      async () => await this.getHistoryRendererDataAsync()
+    );
+  }
+
+  private async getHistoryRendererDataAsync(): Promise<
+    HistoryRendererModule.HistoryRendererData[]
+  > {
+    const historyData = this.gameHistory.getAllSavedGames();
+    const cbOptions = this.getHistoryCheckerboardOptions();
+
+    const result: HistoryRendererModule.HistoryRendererData[] = historyData.map(
+      (entry) => this.getHistoryRendererDataItem(entry, cbOptions)
+    );
+
+    return result;
+  }
+
+  private getHistoryCheckerboardOptions(): CheckerboardModule.CheckerboardOptions {
+    const borderColor = this.$(':root').css(
+      '--color-cell-border'
+    ) as unknown as string;
+    const cbOptions = {
+      gridSizePixels: 100.0,
+      borderColor: borderColor,
+      trueColor: this.renderer.colors.BG_BLACK,
+      falseColor: this.renderer.colors.BG_WHITEKNOWN,
+    };
+    return cbOptions;
+  }
+
+  private getHistoryRendererDataItem(
+    entry: { key: string; data: GameState<Str8ts.DumpedStateRead> },
+    cbOptions: CheckerboardModule.CheckerboardOptions
+  ) {
+    const modified = new Date(entry.data.timestamp);
+    const historyData = (entry.data.data?.data ??
+      {}) as Partial<Str8ts.HistoryData>;
+    const code = entry.key;
+
+    const created = historyData.created
+      ? new Date(historyData.created)
+      : undefined;
+    const cb =
+      historyData.size && historyData.checkerboard
+        ? { checkerboard: historyData.checkerboard, size: historyData.size }
+        : { checkerboard: 'HBEQQCBgQCAACAA=', size: 9 };
+    return {
+      id: entry.key,
+      modified: modified,
+      created: created,
+      size: historyData.size,
+      percentSolved: historyData.percentSolved,
+      renderGrid: (canvas: HTMLCanvasElement) => {
+        const cb1 = decodeGridFromBase64Url(cb.checkerboard, cb.size);
+        CheckerboardModule.renderCheckerboard(canvas, cb1, cbOptions);
+      },
+      startGameAsync: async () => {
+        await this.startGameCodeAsync(code);
+      },
+    };
   }
 
   // Button Functions
@@ -207,7 +279,7 @@ export class UIController {
       popup.css(
         Popup.getPopupPosition(
           popup,
-          this.hintField.getElement()[0].getBoundingClientRect(),
+          this.renderer.getElement(this.hintField)[0].getBoundingClientRect(),
           this.win.document.body.getBoundingClientRect()
         )
       );
@@ -425,15 +497,16 @@ export class UIController {
 
         this.changeGridSize(this.game.size);
 
-        this._restoreGameState();
+        await this.restoreGameStateAsync();
 
         this.restartTimer();
         this.renderCounters();
 
         if (shouldSetLocationHref && this.gameUrl != this.win.location.href) {
           this.SetLocationHref(new URL(this.gameUrl));
-          this.saveState();
         }
+
+        this.saveState();
       }
     }
 
@@ -442,13 +515,14 @@ export class UIController {
     }
   }
 
-  private _restoreGameState() {
-    if (!this._tryLoadStateFromUrlParameter()) {
-      this.gameHistory.restoreGameState(this.gameCode, this.game);
+  private async restoreGameStateAsync() {
+    const stateLoadedFromUrl = await this.tryLoadStateFromUrlParameterAsync();
+    if (!stateLoadedFromUrl) {
+      await this.gameHistory.restoreGameStateAsync(this.gameCode, this.game);
     }
   }
 
-  private _tryLoadStateFromUrlParameter() {
+  private async tryLoadStateFromUrlParameterAsync() {
     const stateUrlParameter = this.getURLParameter('state');
     if (!stateUrlParameter) {
       return false;
@@ -456,7 +530,7 @@ export class UIController {
 
     try {
       this.removeURLParameter('state');
-      this.game.restoreStateBase64(stateUrlParameter);
+      await this.game.restoreStateBase64Async(stateUrlParameter);
       this.saveState();
       return true;
     } catch (ex) {
@@ -477,6 +551,7 @@ export class UIController {
     this.$('#restart-dialog').hide();
     this.$('#about-dialog').hide();
     this.$('#hint-dialog').hide();
+    this.$('#history-dialog').hide();
 
     if (dialog != dialogs.HINT) {
       await this.closeHintAsync();
@@ -516,10 +591,18 @@ export class UIController {
         case dialogs.HINT:
           this.$('#hint-dialog').show();
           break;
+        case dialogs.HISTORY:
+          await this.updateHistoryDivAsync();
+          this.$('#history-dialog').show();
+          break;
       }
     } else {
       this.$('.dialog-outer-container').hide();
     }
+  }
+
+  private async updateHistoryDivAsync() {
+    await this.historyRenderer.renderHistoryAsync(this.gameCode);
   }
 
   private SetLocationHref(url: string | URL) {
@@ -537,6 +620,9 @@ export class UIController {
       handled = this.handleDigitKey(Number(key));
     } else if (key == 'n') {
       this.toggleNoteMode();
+      handled = true;
+    } else if (key == 'h' && e.altKey) {
+      this.showDialogAsync(dialogs.HISTORY);
       handled = true;
     } else if (key == 'z' && e.ctrlKey) {
       this.undo();
@@ -640,7 +726,7 @@ export class UIController {
   private async _getCurrentLinkAsync() {
     let link = this.win.location.href;
     if (this.game) {
-      const stateBase64 = await this.game.dumpStateBase64();
+      const stateBase64 = await this.game.dumpStateBase64Async();
       link += `&state=${stateBase64}`;
     }
     return link;
@@ -658,7 +744,7 @@ export class UIController {
     }
   }
 
-  private async _handleGameLoadAsync() {
+  private async handleGameLoadAsync() {
     const code = this.getURLParameter('code');
     const currentKey = this.win.location.href;
 
@@ -721,7 +807,7 @@ export class UIController {
 
     this.renderLayoutCarousel();
     this.loadSettings();
-    await this._handleGameLoadAsync();
+    await this.handleGameLoadAsync();
 
     // event handlers for UI elements
     const gridCells = this.$('td[id^="ce"]');
@@ -743,7 +829,7 @@ export class UIController {
 
     // wire page-level events here so they can call private methods
     this.win.addEventListener('popstate', async () => {
-      await this._handleGameLoadAsync();
+      await this.handleGameLoadAsync();
     });
     this.$(document).on('keydown', (e: KeyboardEvent) => {
       this.onKeyDown(e);
@@ -778,6 +864,10 @@ export class UIController {
     this.$('#show-about-dialog-button').on(
       'click',
       async () => await this.showDialogAsync(dialogs.ABOUT)
+    );
+    this.$('#show-history-dialog-button').on(
+      'click',
+      async () => await this.showDialogAsync(dialogs.HISTORY)
     );
 
     this.$('#grid-size-slider').on('input', () => this.changeGenerateSize());

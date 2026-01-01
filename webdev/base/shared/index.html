@@ -1,6 +1,6 @@
 <!doctype html>
 <!--
-SPDX-FileCopyrightText: 2020 Luis Walter, 2025 Moritz Ringler
+SPDX-FileCopyrightText: 2020 Luis Walter, 2025-2026 Moritz Ringler
 
 SPDX-License-Identifier: GPL-3.0-or-later
 -->
@@ -150,14 +150,21 @@ SPDX-License-Identifier: GPL-3.0-or-later
         <table cellspacing="7px">
           <tr>
             <td
-              class="button set-slim"
+              class="button set-slimmer"
               id="show-new-game-dialog-button"
               title="New game"
             >
               ✨
             </td>
             <td
-              class="button set-slim"
+              class="button set-slimmer"
+              id="show-history-dialog-button"
+              title="History"
+            >
+              🕓
+            </td>
+            <td
+              class="button set-slimmer"
               id="show-restart-dialog-button"
               title="Start over"
             >
@@ -249,9 +256,9 @@ SPDX-License-Identifier: GPL-3.0-or-later
         <div class="dialog" id="about-dialog">
           <span class="close-button">×</span>
           <div class="dialog-title">
-            Straights.Web <span id="version">0.7.4</span>
+            Straights.Web <span id="version">0.8.0</span>
           </div>
-          <div>© 2020 Luis Walter, 2025 Moritz Ringler</div>
+          <div>© 2020 Luis Walter, 2025-2026 Moritz Ringler</div>
           <ul>
             <li>
               License:
@@ -292,6 +299,11 @@ SPDX-License-Identifier: GPL-3.0-or-later
               >Update App</span
             >
           </div>
+        </div>
+        <div class="dialog" id="history-dialog">
+          <span class="close-button">×</span>
+          <div class="dialog-title">History</div>
+          <div id="history-div" class="history"></div>
         </div>
       </div>
     </div>
