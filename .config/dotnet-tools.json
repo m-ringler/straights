@@ -3,23 +3,31 @@
   "isRoot": true,
   "tools": {
     "dotnet-serve": {
-      "version": "1.10.193",
-      "commands": ["dotnet-serve"],
+      "version": "1.10.194",
+      "commands": [
+        "dotnet-serve"
+      ],
       "rollForward": false
     },
     "nupu": {
       "version": "1.0.50",
-      "commands": ["nupu"],
+      "commands": [
+        "nupu"
+      ],
       "rollForward": false
     },
     "csharpier": {
-      "version": "1.2.1",
-      "commands": ["csharpier"],
+      "version": "1.2.5",
+      "commands": [
+        "csharpier"
+      ],
       "rollForward": false
     },
     "husky": {
       "version": "0.8.0",
-      "commands": ["husky"],
+      "commands": [
+        "husky"
+      ],
       "rollForward": false
     }
   }
