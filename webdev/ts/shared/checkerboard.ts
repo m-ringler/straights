@@ -1,4 +1,7 @@
-// checkerboard.ts
+// SPDX-FileCopyrightText: 2025-2026 Moritz Ringler
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 interface CheckerboardOptions {
   gridSize: number;
   cellSizePixels?: number;

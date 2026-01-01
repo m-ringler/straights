@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2025-2026 Moritz Ringler
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 export interface HistoryRendererData {
   created: Date;
   id: string;
@@ -65,7 +69,7 @@ export class HistoryRenderer {
           .addClass('history-entry') as JQuery<HTMLElement>;
         existingEntries.set(data.id, $entry);
 
-        const $canvas = this.$('<canvas>')
+        const $canvas = this.$('<canvas title="Click to Play">')
           .attr({ width: 100, height: 100 })
           .addClass('history-canvas') as JQuery<HTMLCanvasElement>;
         $entry.append($canvas);
