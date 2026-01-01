@@ -11,7 +11,7 @@ import * as Popup from './popup.js';
 // module member imports
 import { UndoStack } from './undoStack.js';
 import { NumberInput } from './numberInput.js';
-import { GameHistory } from './gameHistory.js';
+import { GameHistory, type GameState } from './gameHistory.js';
 import * as HistoryRendererModule from './historyRenderer.js';
 import * as CheckerboardModule from './checkerboard.js';
 import { decodeGridFromBase64Url } from './encoder.js';
@@ -152,7 +152,16 @@ export class UIController {
     HistoryRendererModule.HistoryRendererData[]
   > {
     const historyData = this.gameHistory.getAllSavedGames();
-    const historyRendererData: HistoryRendererModule.HistoryRendererData[] = [];
+    const cbOptions = this.getHistoryCheckerboardOptions();
+
+    const result: HistoryRendererModule.HistoryRendererData[] = historyData.map(
+      (entry) => this.getHistoryRendererDataItem(entry, cbOptions)
+    );
+
+    return result;
+  }
+
+  private getHistoryCheckerboardOptions(): CheckerboardModule.CheckerboardOptions {
     const borderColor = this.$(':root').css(
       '--color-cell-border'
     ) as unknown as string;
@@ -162,38 +171,39 @@ export class UIController {
       trueColor: this.renderer.colors.BG_BLACK,
       falseColor: this.renderer.colors.BG_WHITEKNOWN,
     };
+    return cbOptions;
+  }
 
-    for (const entry of historyData) {
-      const dump = entry.data.data.data;
-      if (dump === undefined || !Object.hasOwn(dump, 'checkerboard')) {
-        continue;
-      }
+  private getHistoryRendererDataItem(
+    entry: { key: string; data: GameState<Str8ts.DumpedStateRead> },
+    cbOptions: CheckerboardModule.CheckerboardOptions
+  ) {
+    const modified = new Date(entry.data.timestamp);
+    const historyData = (entry.data.data?.data ??
+      {}) as Partial<Str8ts.HistoryData>;
+    const code = entry.key;
 
-      const coreData = dump as Str8ts.HistoryData;
-      const modified = new Date(entry.data.timestamp);
-      const created = new Date(coreData.created);
-      const size = coreData.size;
-      const cb64 = coreData.checkerboard;
-      const code = entry.key;
-      const entryRendererData: HistoryRendererModule.HistoryRendererData = {
-        id: entry.key,
-        modified: modified,
-        created: created,
-        size: coreData.size,
-        percentSolved: coreData.percentSolved,
-        renderGrid: (canvas) => {
-          const cb = decodeGridFromBase64Url(cb64, size);
-          CheckerboardModule.renderCheckerboard(canvas, cb, cbOptions);
-        },
-        startGameAsync: async () => {
-          await this.startGameCodeAsync(code);
-        },
-      };
-
-      historyRendererData.push(entryRendererData);
-    }
-
-    return historyRendererData;
+    const created = historyData.created
+      ? new Date(historyData.created)
+      : undefined;
+    const cb =
+      historyData.size && historyData.checkerboard
+        ? { checkerboard: historyData.checkerboard, size: historyData.size }
+        : { checkerboard: 'HBEQQCBgQCAACAA=', size: 9 };
+    return {
+      id: entry.key,
+      modified: modified,
+      created: created,
+      size: historyData.size,
+      percentSolved: historyData.percentSolved,
+      renderGrid: (canvas: HTMLCanvasElement) => {
+        const cb1 = decodeGridFromBase64Url(cb.checkerboard, cb.size);
+        CheckerboardModule.renderCheckerboard(canvas, cb1, cbOptions);
+      },
+      startGameAsync: async () => {
+        await this.startGameCodeAsync(code);
+      },
+    };
   }
 
   // Button Functions

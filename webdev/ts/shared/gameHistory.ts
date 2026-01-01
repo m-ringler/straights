@@ -12,6 +12,7 @@ export interface StorageProvider {
 
 export interface GameLike<TState> {
   dumpState(): TState;
+  created: number;
   restoreStateAsync(state: TState): Promise<void>;
 }
 
@@ -73,6 +74,12 @@ export class GameHistory<TState> {
     const savedGameState = this.loadGameStateData(this.storagePrefix + key);
     if (savedGameState) {
       await game.restoreStateAsync(savedGameState.data);
+
+      // We use the last modification timme, if we do not have stored
+      // information about the time the game was created
+      if (game.created > savedGameState.timestamp) {
+        game.created = savedGameState.timestamp;
+      }
     }
   }
 

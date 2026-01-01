@@ -3,11 +3,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 export interface HistoryRendererData {
-  created: Date;
+  created?: Date;
   id: string;
   modified: Date;
-  size: number;
-  percentSolved: number;
+  size?: number;
+  percentSolved?: number;
 
   renderGrid(canvas: HTMLCanvasElement): void;
   startGameAsync(): Promise<void>;
@@ -75,13 +75,26 @@ export class HistoryRenderer {
         $entry.append($canvas);
 
         const $info = this.$('<div>').addClass('history-info');
-        const $created = this.$('<div>').text(`✨ ${formatDate(data.created)}`);
+
+        if (data.size) {
+          const $size = this.$('<div>').text(`Size ${data.size}`);
+          $info.append($size);
+        } else {
+          $info.append(this.$('<p>').text('<old history entry>'));
+        }
+
+        if (data.created) {
+          const $created = this.$('<div>').text(
+            `✨ ${formatDate(data.created)}`
+          );
+          $info.append($created);
+        }
+
         const $modified = this.$('<div>').text(
           `⏸️ ${formatDate(data.modified)}`
         );
-        const $size = this.$('<div>').text(`Size ${data.size}`);
 
-        $info.append($size, $created, $modified);
+        $info.append($modified);
         $entry.append($info);
 
         // Bind start action
@@ -89,8 +102,14 @@ export class HistoryRenderer {
           await data.startGameAsync();
         });
 
-        data.renderGrid($canvas[0]);
-        drawPercentOverlay($canvas[0], data.percentSolved, this.options);
+        if (data.renderGrid) {
+          data.renderGrid($canvas[0]);
+        }
+
+        if (data.percentSolved !== undefined) {
+          drawPercentOverlay($canvas[0], data.percentSolved, this.options);
+        }
+
         this.historyDiv.append($entry);
       } else {
         // Ensure correct order by appending existing element

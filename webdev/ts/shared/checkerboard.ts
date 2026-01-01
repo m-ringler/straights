@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-interface CheckerboardOptions {
+export interface CheckerboardOptions {
   gridSizePixels?: number;
   borderColor?: string;
   trueColor?: string;
