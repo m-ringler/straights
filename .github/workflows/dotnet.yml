@@ -54,7 +54,7 @@ jobs:
         run: echo "STRAIGHTS_TARGET_OS=${{ matrix.config.os }}" >> "$GITHUB_ENV"
 
       - name: Cache nugets
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ${{ github.workspace }}/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('Directory.Packages.props') }}
@@ -125,7 +125,7 @@ jobs:
           -p:Exclude='[netczicompress]netczicompress.Views.*'
 
       - name: Upload dotnet test results
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: test-results-${{ matrix.config.os }}-${{ matrix.build }}
           path: TestResults
@@ -134,7 +134,7 @@ jobs:
 
       - name: Upload Verify Received Files
         if: failure()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: verify-test-results-${{ matrix.config.os }}-${{ matrix.build }}
           path: |
@@ -157,7 +157,7 @@ jobs:
           find "${{ github.workspace }}/publish" -type f
 
       - name: Upload published binaries
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         if: ${{ (github.event_name != 'pull_request') && (matrix.build == 'Release') }}
         with:
           name: Straights_${{ steps.get-set-version.outputs.version }}_${{ matrix.config.os}}-x64
@@ -208,7 +208,7 @@ jobs:
           ls -la "${{ github.workspace }}/nuget"
 
       - name: Upload nuget artifacts
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         if: ${{ (matrix.config.os == 'ubuntu-22.04' && github.event_name != 'pull_request') && (matrix.build == 'Release') }}
         with:
           name: Straights_${{ steps.get-set-version.outputs.version }}_Nugets
