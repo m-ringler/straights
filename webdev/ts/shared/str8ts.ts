@@ -165,7 +165,7 @@ export class UIController {
 
     for (const entry of historyData) {
       const dump = entry.data.data.data;
-      if (!Object.hasOwn(dump, 'checkerboard')) {
+      if (dump === undefined || !Object.hasOwn(dump, 'checkerboard')) {
         continue;
       }
 
@@ -494,8 +494,9 @@ export class UIController {
 
         if (shouldSetLocationHref && this.gameUrl != this.win.location.href) {
           this.SetLocationHref(new URL(this.gameUrl));
-          this.saveState();
         }
+
+        this.saveState();
       }
     }
 
