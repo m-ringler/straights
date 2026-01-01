@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2020 Luis Walter, 2025 Moritz Ringler
+// SPDX-FileCopyrightText: 2020 Luis Walter, 2025-2026 Moritz Ringler
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -855,6 +855,10 @@ export class UIController {
     this.$('#show-about-dialog-button').on(
       'click',
       async () => await this.showDialogAsync(dialogs.ABOUT)
+    );
+    this.$('#show-history-dialog-button').on(
+      'click',
+      async () => await this.showDialogAsync(dialogs.HISTORY)
     );
 
     this.$('#grid-size-slider').on('input', () => this.changeGenerateSize());

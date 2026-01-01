@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Luis Walter, 2025 Moritz Ringler
+ * SPDX-FileCopyrightText: 2020 Luis Walter, 2025-2026 Moritz Ringler
  *
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
@@ -137,6 +137,10 @@ html {
 
 .set-slim {
   width: 80px;
+}
+
+.set-slimmer {
+  width: 50px;
 }
 
 .button:hover {
