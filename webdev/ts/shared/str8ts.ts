@@ -490,7 +490,7 @@ export class UIController {
 
         this.changeGridSize(this.game.size);
 
-        await this._restoreGameStateAsync();
+        await this.restoreGameStateAsync();
 
         this.restartTimer();
         this.renderCounters();
@@ -507,13 +507,14 @@ export class UIController {
     }
   }
 
-  private async _restoreGameStateAsync() {
-    if (!this._tryLoadStateFromUrlParameter()) {
+  private async restoreGameStateAsync() {
+    const stateLoadedFromUrl = await this.tryLoadStateFromUrlParameterAsync();
+    if (!stateLoadedFromUrl) {
       await this.gameHistory.restoreGameStateAsync(this.gameCode, this.game);
     }
   }
 
-  private _tryLoadStateFromUrlParameter() {
+  private async tryLoadStateFromUrlParameterAsync() {
     const stateUrlParameter = this.getURLParameter('state');
     if (!stateUrlParameter) {
       return false;
@@ -521,7 +522,7 @@ export class UIController {
 
     try {
       this.removeURLParameter('state');
-      this.game.restoreStateBase64Async(stateUrlParameter);
+      await this.game.restoreStateBase64Async(stateUrlParameter);
       this.saveState();
       return true;
     } catch (ex) {
@@ -735,7 +736,7 @@ export class UIController {
     }
   }
 
-  private async _handleGameLoadAsync() {
+  private async handleGameLoadAsync() {
     const code = this.getURLParameter('code');
     const currentKey = this.win.location.href;
 
@@ -798,7 +799,7 @@ export class UIController {
 
     this.renderLayoutCarousel();
     this.loadSettings();
-    await this._handleGameLoadAsync();
+    await this.handleGameLoadAsync();
 
     // event handlers for UI elements
     const gridCells = this.$('td[id^="ce"]');
@@ -820,7 +821,7 @@ export class UIController {
 
     // wire page-level events here so they can call private methods
     this.win.addEventListener('popstate', async () => {
-      await this._handleGameLoadAsync();
+      await this.handleGameLoadAsync();
     });
     this.$(document).on('keydown', (e: KeyboardEvent) => {
       this.onKeyDown(e);

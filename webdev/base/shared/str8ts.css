@@ -141,6 +141,7 @@ html {
 
 .set-slimmer {
   width: 50px;
+  font-size: 16pt;
 }
 
 .button:hover {
@@ -222,6 +223,7 @@ table.mini td {
   padding-bottom: 20px;
   width: 235px;
   position: relative;
+  overflow-x: visible;
   overflow-y: scroll;
   max-height: 90vh;
 }
