@@ -223,8 +223,6 @@ table.mini td {
   padding-bottom: 20px;
   width: 235px;
   position: relative;
-  overflow-x: visible;
-  overflow-y: scroll;
   max-height: 90vh;
 }
 
@@ -348,7 +346,14 @@ a:visited {
   margin-right: auto;
 }
 
-/* History renderer styles */
+.history {
+  position: relative;
+  max-height: 250px;
+  overflow-y: scroll;
+  margin-right: -15px;
+  padding-right: 15px;
+}
+
 .history-entry {
   display: flex;
   gap: 8px;
