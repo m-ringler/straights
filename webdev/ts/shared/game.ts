@@ -255,7 +255,7 @@ export interface HistoryDataRead {
 }
 
 export interface HistoryData extends HistoryDataRead {
-  checkerBoard: string;
+  checkerboard: string;
   size: number;
   percentSolved: number;
 }
@@ -283,7 +283,7 @@ export class Game {
   check_count: number;
   hint_count: number;
   created: number;
-  private checkerBoardDump: string | null = null;
+  private checkerboardDump: string | null = null;
 
   constructor(
     public renderer: FieldRenderer,
@@ -313,7 +313,7 @@ export class Game {
     const state = this.dumpStateBase64();
     const historyData: HistoryData = {
       gameState: state,
-      checkerBoard: this.getCheckerBoardDump(),
+      checkerboard: this.getCheckerboardDump(),
       size: this.size,
       created: this.created,
       percentSolved: this.getPercentSolved(),
@@ -347,8 +347,8 @@ export class Game {
     return percentSolved;
   }
 
-  private getCheckerBoardDump(): string {
-    if (this.checkerBoardDump === null) {
+  private getCheckerboardDump(): string {
+    if (this.checkerboardDump === null) {
       const cb: boolean[][] = [];
       for (const row of this.data) {
         cb.push(
@@ -359,10 +359,10 @@ export class Game {
         );
       }
 
-      this.checkerBoardDump = EncoderModule.encodeGridToBase64Url(cb);
+      this.checkerboardDump = EncoderModule.encodeGridToBase64Url(cb);
     }
 
-    return this.checkerBoardDump;
+    return this.checkerboardDump;
   }
 
   async restoreStateAsync(dumpedState: FieldUserData[][] | DumpedStateRead) {

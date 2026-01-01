@@ -124,7 +124,7 @@ vt.describe('Game', () => {
         data: {
           gameState:
             'AAIAAAAAAABYsBMAAIAHAACAAoAAAJgAAAAAMADgoQUAAD4AAADgAQAAAD4AAAAAAIAPAEAAAADgAQAA',
-          checkerBoard: 'QEUChANRACkUQAA',
+          checkerboard: 'QEUChANRACkUQAA',
           size: 9,
           created: new Date('2025-12-27T20:45:25.053Z'),
           percentSolved: 23,
@@ -152,7 +152,7 @@ vt.describe('Game', () => {
       data: {
         gameState:
           'ALRtmYQgADAKNBAQEBCAmzck0AgIBABMCAlw5IBJgAcPATBmICASAwYBQYECAgQyJEYUQJACIA',
-        checkerBoard: 'AA4IiAQCeQR6AAA',
+        checkerboard: 'AA4IiAQCeQR6AAA',
         size: 9,
         percentSolved: 84,
       },
@@ -173,7 +173,7 @@ vt.describe('Game', () => {
       data: {
         gameState:
           'ALRtmYQgADAKNBAQEBCAmzck0AgIBABMCAlw5IBJgAcPATBmICASAwYBQYECAgQyJEYUQJACIA',
-        checkerBoard: 'AA4IiAQCeQR6AAA',
+        checkerboard: 'AA4IiAQCeQR6AAA',
         size: 9,
         percentSolved: 84,
       },
@@ -190,7 +190,7 @@ vt.describe('Game', () => {
         data: {
           gameState:
             'AAIAAAAAAABYsBMAAIAHAACAAoAAAJgAAAAAMADgoQUAAD4AAADgAQAAAD4AAAAAAIAPAEAAAADgAQAA',
-          checkerBoard: 'QEUChANRACkUQAA',
+          checkerboard: 'QEUChANRACkUQAA',
           size: 9,
           percentSolved: 23,
         },

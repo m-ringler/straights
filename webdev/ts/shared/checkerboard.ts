@@ -3,8 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 interface CheckerboardOptions {
-  gridSize: number;
-  cellSizePixels?: number;
+  gridSizePixels?: number;
   borderColor?: string;
   trueColor?: string;
   falseColor?: string;
@@ -16,19 +15,20 @@ export function renderCheckerboard(
   options: CheckerboardOptions
 ) {
   const {
-    gridSize,
-    cellSizePixels = 10,
+    gridSizePixels = 100,
     borderColor = '#133',
     trueColor = '#333',
     falseColor = 'white',
   } = options;
 
+  const gridSize = data.length;
+  const cellSizePixels = (gridSizePixels * 1.0) / gridSize;
   const ctx = canvas.getContext('2d');
   if (!ctx) throw new Error('Could not get canvas context');
 
   // Set canvas dimensions
-  canvas.width = gridSize * cellSizePixels;
-  canvas.height = gridSize * cellSizePixels;
+  canvas.width = gridSizePixels;
+  canvas.height = gridSizePixels;
 
   // Render grid
   for (let y = 0; y < gridSize; y++) {

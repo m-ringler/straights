@@ -156,12 +156,16 @@ export class UIController {
     const borderColor = this.$(':root').css(
       '--color-cell-border'
     ) as unknown as string;
-    const trueColor = this.renderer.colors.BG_BLACK;
-    const falseColor = this.renderer.colors.BG_WHITEKNOWN;
+    const cbOptions = {
+      gridSizePixels: 100.0,
+      borderColor: borderColor,
+      trueColor: this.renderer.colors.BG_BLACK,
+      falseColor: this.renderer.colors.BG_WHITEKNOWN,
+    };
 
     for (const entry of historyData) {
       const dump = entry.data.data.data;
-      if (!Object.hasOwn(dump, 'checkerBoard')) {
+      if (!Object.hasOwn(dump, 'checkerboard')) {
         continue;
       }
 
@@ -169,15 +173,8 @@ export class UIController {
       const modified = new Date(entry.data.timestamp);
       const created = new Date(coreData.created);
       const size = coreData.size;
-      const cb64 = coreData.checkerBoard;
+      const cb64 = coreData.checkerboard;
       const code = entry.key;
-      const cbOptions = {
-        gridSize: size,
-        cellSizePixels: 100.0 / size,
-        borderColor: borderColor,
-        trueColor: trueColor,
-        falseColor: falseColor,
-      };
       const entryRendererData: HistoryRendererModule.HistoryRendererData = {
         id: entry.key,
         modified: modified,
