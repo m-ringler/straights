@@ -42,10 +42,7 @@ public partial class SolveCommandTests
                         MaxRecursionDepth = 1,
                     }
                 )
-                .ToLookup(
-                    f => fs.Path.GetFileNameWithoutExtension(f.Name),
-                    f => f
-                );
+                .ToLookup(f => StripExtension(f.FullName), f => f);
             var result =
                 from g in filesByBaseName
                 let textFile = g.FirstOrDefault(IsSolutionFile)
@@ -151,6 +148,12 @@ public partial class SolveCommandTests
 
         dir = fs.Path.Combine(dir, "..", "test");
         return fs.Directory.Exists(dir) ? fs.DirectoryInfo.New(dir) : null;
+    }
+
+    private static string StripExtension(string path)
+    {
+        int lastDot = path.LastIndexOf('.');
+        return (lastDot >= 0) ? path[..lastDot] : path;
     }
 
     public record TestDataItem(
