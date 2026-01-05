@@ -584,7 +584,7 @@ export class UIController {
           }
           break;
         case dialogs.ABOUT:
-          const link = await this._getCurrentLinkAsync();
+          const link = await this.getCurrentLinkAsync();
           this.$('#current-game-link').attr('href', link);
           this.$('#about-dialog').show();
           break;
@@ -688,7 +688,7 @@ export class UIController {
       if (this.game.isSolved) {
         this.undoStack.clear();
         this.$('.container').addClass('finished');
-        await this._onResizeAsync();
+        await this.onResizeAsync();
         clearInterval(this.timer);
       }
     }
@@ -723,7 +723,7 @@ export class UIController {
     field.clear();
   }
 
-  private async _getCurrentLinkAsync() {
+  private async getCurrentLinkAsync() {
     let link = this.win.location.href;
     if (this.game) {
       const stateBase64 = await this.game.dumpStateBase64Async();
@@ -734,7 +734,7 @@ export class UIController {
 
   async copyCurrentLinkAsync() {
     try {
-      const link = await this._getCurrentLinkAsync();
+      const link = await this.getCurrentLinkAsync();
       await this.win.navigator.clipboard.writeText(link);
       const copyBtn = this.$('#copy-link-button');
       copyBtn.text('Link copied!');
@@ -763,7 +763,7 @@ export class UIController {
     }
   }
 
-  private async _onResizeAsync() {
+  private async onResizeAsync() {
     await this.closeHintAsync();
     if (
       this.win.innerWidth / 2 - 45 <
@@ -803,7 +803,7 @@ export class UIController {
   async startAsync() {
     // initial UI setup
     this.createGrid();
-    await this._onResizeAsync();
+    await this.onResizeAsync();
 
     this.renderLayoutCarousel();
     this.loadSettings();
@@ -835,7 +835,7 @@ export class UIController {
       await this.onKeyDownAsync(e);
     });
     this.$(this.win).on('resize', async () => {
-      await this._onResizeAsync();
+      await this.onResizeAsync();
     });
 
     // Controls wired from index.html
