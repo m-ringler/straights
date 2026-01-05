@@ -3,6 +3,8 @@
     "ms-dotnettools.csharp",
     "ms-dotnettools.vscodeintellicode-csharp",
     "ms-dotnettools.csdevkit",
-    "ms-dotnettools.vscode-dotnet-runtime"
+    "ms-dotnettools.vscode-dotnet-runtime",
+    "ms-vscode.vscode-typescript-next",
+    "csharpier.csharpier-vscode"
   ]
 }
