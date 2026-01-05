@@ -198,9 +198,10 @@
     },
     {
       "label": "generate coverage report",
-      "command": "reportgenerator",
+      "command": "dotnet",
       "type": "shell",
       "args": [
+        "reportgenerator",
         "-reports:${workspaceFolder}/coverage/coverage.info",
         "-targetdir:${workspaceFolder}/coverage/covstats"
       ],
