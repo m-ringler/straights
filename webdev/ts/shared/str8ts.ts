@@ -137,8 +137,8 @@ export class UIController {
     this.renderer = new Renderer.JQueryFieldRenderer(this.$ as any, darkMode);
     this.game = new Str8ts.Game(this.renderer);
     this.gameHistory = new GameHistory<Str8ts.DumpedStateRead>(localStorage);
-    this.numberInput = new NumberInput((num: number) =>
-      this.handleNumberInput(num)
+    this.numberInput = new NumberInput(
+      async (num: number) => await this.handleNumberInputAsync(num)
     );
 
     this.historyRenderer = new HistoryRendererModule.HistoryRenderer(
@@ -609,7 +609,7 @@ export class UIController {
     this.win.history.pushState({}, '', url);
   }
 
-  private onKeyDown(e: KeyboardEvent) {
+  private async onKeyDownAsync(e: KeyboardEvent) {
     if (this.game.isSolved) return;
 
     let handled = false;
@@ -617,7 +617,7 @@ export class UIController {
     if (this.handleCursorKey(e)) {
       handled = true;
     } else if (key >= '0' && key <= '9') {
-      handled = this.handleDigitKey(Number(key));
+      handled = await this.handleDigitKeyAsync(Number(key));
     } else if (key == 'n') {
       this.toggleNoteMode();
       handled = true;
@@ -658,16 +658,16 @@ export class UIController {
     return true;
   }
 
-  private handleDigitKey(digit: number) {
+  private async handleDigitKeyAsync(digit: number) {
     const handled = digit <= this.currentGridSize;
     if (handled) {
-      this.numberInput.handleDigit(digit, this.currentGridSize);
+      await this.numberInput.handleDigitAsync(digit, this.currentGridSize);
     }
 
     return handled;
   }
 
-  private handleNumberInput(num: number) {
+  private async handleNumberInputAsync(num: number) {
     if (num < 1 || num > this.currentGridSize) {
       return;
     }
@@ -688,7 +688,7 @@ export class UIController {
       if (this.game.isSolved) {
         this.undoStack.clear();
         this.$('.container').addClass('finished');
-        this._onResizeAsync();
+        await this._onResizeAsync();
         clearInterval(this.timer);
       }
     }
@@ -821,18 +821,18 @@ export class UIController {
     });
 
     const numberButtons = this.$('td[data-button^="bn"]');
-    numberButtons.on('click', (evt: Event) => {
+    numberButtons.on('click', async (evt: Event) => {
       const el = evt.currentTarget as Element;
       const num = Number(this.$(el).text());
-      this.handleNumberInput(num);
+      await this.handleNumberInputAsync(num);
     });
 
     // wire page-level events here so they can call private methods
     this.win.addEventListener('popstate', async () => {
       await this.handleGameLoadAsync();
     });
-    this.$(document).on('keydown', (e: KeyboardEvent) => {
-      this.onKeyDown(e);
+    this.$(document).on('keydown', async (e: KeyboardEvent) => {
+      await this.onKeyDownAsync(e);
     });
     this.$(this.win).on('resize', async () => {
       await this._onResizeAsync();
