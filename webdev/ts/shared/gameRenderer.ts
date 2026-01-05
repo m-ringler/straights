@@ -28,6 +28,9 @@ const chistmasEmojis = [
 ];
 
 export class JQueryFieldRenderer {
+  private emojiSetId = 0;
+  private emojiSet = '';
+
   constructor(
     private $: JQueryStatic,
     private darkMode: boolean
@@ -82,6 +85,27 @@ export class JQueryFieldRenderer {
     BG_HINT: string;
   };
 
+  emojis: string[] = [];
+
+  setEmojis(emojis: string | string[] | null) {
+    if (emojis === null) {
+      this.emojis = [];
+    } else if (typeof emojis === 'string') {
+      const Seg = Intl.Segmenter;
+      if (typeof Seg === 'function') {
+        const seg = new Seg(undefined, { granularity: 'grapheme' });
+        this.emojis = Array.from(seg.segment(emojis), (s) => s.segment);
+      } else {
+        this.emojis = Array.from(emojis);
+      }
+    } else {
+      this.emojis = emojis;
+    }
+
+    this.emojiSetId = this.emojiSetId % 100;
+    this.emojiSet = this.emojiSetId.toString();
+  }
+
   renderField(field: Str8ts.Field) {
     const element = this.getElement(field);
     element.empty();
@@ -114,7 +138,7 @@ export class JQueryFieldRenderer {
     } else if (field.mode === Str8ts.FieldModes.WHITEKNOWN) {
       element.text(field.value!);
     } else if (field.mode === Str8ts.FieldModes.BLACK) {
-      fillBlackField(element);
+      this.fillBlackField(element);
     }
   }
 
@@ -193,12 +217,14 @@ export class JQueryFieldRenderer {
   private static getSelector(field: Str8ts.Field): string {
     return `#ce${field.row}_${field.col}`;
   }
-}
 
-function fillBlackField(element: JQuery<HTMLElement>) {
-  const now = new Date();
-  if (isChristmasTime(now)) {
-    setEmoji(element, chistmasEmojis);
+  private fillBlackField(element: JQuery<HTMLElement>) {
+    const now = new Date();
+    if (this.emojis?.length > 0) {
+      setEmoji(element, this.emojis, this.emojiSet);
+    } else if (isChristmasTime(now)) {
+      setEmoji(element, chistmasEmojis, 'xmas');
+    }
   }
 }
 
@@ -208,15 +234,22 @@ function isChristmasTime(now: Date) {
   return (month === 11 && day >= 20) || (month === 0 && day <= 6);
 }
 
-function setEmoji(element: JQuery<HTMLElement>, emojis: string[]) {
-  let emoji = element.data('festive-emoji') as string | undefined;
-  if (!emoji) {
-    emoji = randomItem(emojis);
-    element.data('festive-emoji', emoji);
-    element.text(emoji);
+function setEmoji(
+  element: JQuery<HTMLElement>,
+  emojis: string[],
+  emojiKey: string
+) {
+  let currentEmojiKey = element.data('emojis') as string | undefined;
+  let currentEmoji = element.data('emoji') as string | undefined;
+  if (currentEmojiKey != emojiKey || !currentEmoji) {
+    currentEmoji = randomItem(emojis);
+    element.data('emojis', emojiKey);
+    element.data('emoji', currentEmoji);
   }
+
+  element.text(currentEmoji);
 }
 
-function randomItem(emojis: string[]) {
+function randomItem(emojis: string[] | string) {
   return emojis[Math.floor(Math.random() * emojis.length)];
 }

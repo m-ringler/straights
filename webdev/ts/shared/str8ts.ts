@@ -448,7 +448,11 @@ export class UIController {
 
   private async startGameCodeAsync(code: string) {
     console.log('Game:', code);
+    const emojis = this.getURLParameter('emojis');
     this.gameUrl = this.win.location.href.split('?')[0] + '?code=' + code;
+    if (emojis != null) {
+      this.gameUrl += '&emojis=' + emojis;
+    }
     this.gameCode = code;
     await this.startGameAsync(true);
   }
@@ -490,6 +494,8 @@ export class UIController {
       this.$('.container').removeClass('finished');
       await this.showDialogAsync(false);
 
+      const emojiString = this.getURLParameter('emojis');
+      this.renderer.setEmojis(emojiString);
       const parsedGame = this.game.parseGame(this.gameCode);
       if (parsedGame) {
         this.game = parsedGame;
