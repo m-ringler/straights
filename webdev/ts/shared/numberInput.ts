@@ -49,8 +49,9 @@ export class NumberInput {
 
     // Set a new timeout to finalize the number if no more digits arrive
     this.digitTimer = setTimeout(async () => {
-      await this.handleNumberAsync(this.currentNumber);
+      const n = this.currentNumber;
       this.currentNumber = 0;
+      await this.handleNumberAsync(n);
     }, this.digitTimeout);
   }
 
