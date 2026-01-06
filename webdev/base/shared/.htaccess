@@ -1,28 +1,18 @@
+AddType application/wasm .wasm
+
 <ifModule mod_deflate.c>
   <filesMatch "\.(css|js|x?html?|wasm)$">
     SetOutputFilter DEFLATE
   </filesMatch>
 </ifModule>
-AddType application/wasm .wasm
 
+# Cache Control
 <IfModule mod_headers.c>
-    Header set Cache-Control "no-cache, no-store, must-revalidate"
-    Header set Pragma "no-cache"
-    Header set Expires 0
-</IfModule>
-
-<FilesMatch "\.(html|js)$">
-    <IfModule mod_expires.c>
-        ExpiresActive Off
-    </IfModule>
-    <IfModule mod_headers.c>
-        FileETag None
-        Header unset ETag
-        Header unset Pragma
-        Header unset Cache-Control
-        Header unset Last-Modified
+    Header set Cache-Control "private, no-cache, proxy-revalidate"
+    Header merge Vary "Accept-Encoding"
+    <FilesMatch "service-worker\.js$">
+        Header set Cache-Control "no-cache, no-store, must-revalidate"
         Header set Pragma "no-cache"
-        Header set Cache-Control "max-age=0, no-cache, no-store, must-revalidate"
-        Header set Expires "Thu, 1 Jan 1970 00:00:00 GMT"
-    </IfModule>
-</FilesMatch>
+        Header set Expires 0
+    </FilesMatch>
+</IfModule>
