@@ -21,6 +21,7 @@ const urlsToCache = [
   './favicon/maskable_icon_x512.png',
   './game.js',
   './gameHistory.js',
+  './gameReader.js',
   './gameRenderer.js',
   './historyRenderer.js',
   './index.html',

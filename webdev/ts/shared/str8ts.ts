@@ -310,17 +310,16 @@ export class UIController {
       const gameField = this.game.get(field.row, field.col);
       gameField.copyFrom(field);
       gameField.wrong = false;
-      this.game.selectCell(field.row, field.col);
-      gameField.render();
+      this.setActiveField(field.row, field.col);
     }
   }
 
-  private selectCell(row: number, col: number) {
-    this.game.selectCell(row, col);
+  private setActiveField(row: number, col: number) {
+    this.game.setActiveField(row, col);
   }
 
   private toggleNoOrAllNotes(row: number, col: number) {
-    this.selectCell(row, col);
+    this.setActiveField(row, col);
     this.pushActiveFieldToUndoStack();
     this.game.get(row, col).toggleNoOrAllNotes();
   }
@@ -496,7 +495,7 @@ export class UIController {
 
       const emojiString = this.getURLParameter('emojis');
       this.renderer.setEmojis(emojiString);
-      const parsedGame = this.game.parseGame(this.gameCode);
+      const parsedGame = this.game.parseGameCode(this.gameCode);
       if (parsedGame) {
         this.game = parsedGame;
         hasGame = true;
@@ -743,8 +742,9 @@ export class UIController {
       const link = await this.getCurrentLinkAsync();
       await this.win.navigator.clipboard.writeText(link);
       const copyBtn = this.$('#copy-link-button');
+      const originalText = copyBtn.text();
       copyBtn.text('Link copied!');
-      setTimeout(() => copyBtn.text('🔗'), 1000);
+      setTimeout(() => copyBtn.text(originalText), 1000);
     } catch (err) {
       console.error('Failed to copy:', err);
     }
@@ -819,7 +819,7 @@ export class UIController {
     const gridCells = this.$('td[id^="ce"]');
     gridCells.on('click', (evt: Event) => {
       const { row, col } = this.getRowAndColumnOfTargetCell(evt);
-      this.selectCell(row, col);
+      this.setActiveField(row, col);
     });
     gridCells.on('dblclick', (evt: Event) => {
       const { row, col } = this.getRowAndColumnOfTargetCell(evt);
