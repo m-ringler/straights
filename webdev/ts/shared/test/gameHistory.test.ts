@@ -46,9 +46,11 @@ interface TestGameState {
 
 class TestGame implements Sut.GameLike<TestGameState> {
   private state: TestGameState;
+  created: number;
 
   constructor(initialState: TestGameState) {
     this.state = initialState;
+    this.created = Date.now();
   }
 
   dumpState(): TestGameState {
@@ -204,5 +206,77 @@ describe('GameHistory', () => {
   it('returns null for non-existent keys', () => {
     expect(history.getLatestGameKey()).toBeNull();
     expect(storage.getItem('history.nonexistent')).toBeNull();
+  });
+
+  it('retrieves all saved games', async () => {
+    // Save multiple game states
+    const dateSpy = vi.spyOn(Date, 'now');
+    const now = 20000000;
+
+    dateSpy.mockReturnValue(now);
+    history.saveGameState('key1', game);
+
+    dateSpy.mockReturnValue(now + 1000);
+    await game.restoreStateAsync({ level: 5, score: 250 });
+    history.saveGameState('key2', game);
+
+    dateSpy.mockReturnValue(now + 2000);
+    await game.restoreStateAsync({ level: 10, score: 500 });
+    history.saveGameState('key3', game);
+
+    // Retrieve all saved games
+    const allGames = history.getAllSavedGames();
+
+    // Verify the correct number of games were retrieved
+    expect(allGames).toHaveLength(3);
+
+    // Verify all games are present with correct data
+    const gamesByKey = new Map(allGames.map((g) => [g.key, g.data]));
+
+    expect(gamesByKey.get('key1')).toEqual({
+      timestamp: now,
+      data: { level: 1, score: 0 },
+    });
+    expect(gamesByKey.get('key2')).toEqual({
+      timestamp: now + 1000,
+      data: { level: 5, score: 250 },
+    });
+    expect(gamesByKey.get('key3')).toEqual({
+      timestamp: now + 2000,
+      data: { level: 10, score: 500 },
+    });
+
+    dateSpy.mockRestore();
+  });
+
+  it('returns empty array when no games are saved', () => {
+    const allGames = history.getAllSavedGames();
+    expect(allGames).toEqual([]);
+  });
+
+  it('skips corrupt game states when retrieving all saved games', () => {
+    // Save valid game states
+    const dateSpy = vi.spyOn(Date, 'now');
+    const now = 20000000;
+
+    dateSpy.mockReturnValue(now);
+    history.saveGameState('key1', game);
+
+    dateSpy.mockReturnValue(now + 1000);
+    history.saveGameState('key2', game);
+
+    // Add a corrupt entry directly to storage
+    storage.setItem('history.corrupt', '{ invalid json');
+    storage.setItem('history.noData', '{ "timestamp": 1234567890 }');
+    storage.setItem('history.noTimestamp', '{ "data": { "level": 1 } }');
+
+    // Retrieve all saved games
+    const allGames = history.getAllSavedGames();
+
+    // Only valid games should be returned
+    expect(allGames).toHaveLength(2);
+    expect(allGames.map((g) => g.key)).toEqual(['key1', 'key2']);
+
+    dateSpy.mockRestore();
   });
 });
