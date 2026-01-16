@@ -122,7 +122,7 @@ export class Field {
     }
   }
 
-  #isSolvedCorrectly() {
+  private isSolvedCorrectly() {
     if (!this.isEditable()) {
       return 1;
     }
@@ -139,11 +139,11 @@ export class Field {
   }
 
   isSolved() {
-    return this.#isSolvedCorrectly() === 1;
+    return this.isSolvedCorrectly() === 1;
   }
 
   checkWrong(checkNotes = false) {
-    const correct = this.#isSolvedCorrectly();
+    const correct = this.isSolvedCorrectly();
     switch (correct) {
       case -1:
         this.wrong = true;
@@ -166,7 +166,7 @@ export class Field {
 
   showSolution() {
     this.isShowingSolution = true;
-    this.wrong = this.#isSolvedCorrectly() === -1;
+    this.wrong = this.isSolvedCorrectly() === -1;
     this.render();
   }
 
@@ -579,17 +579,44 @@ export class Game {
     rowDelta: number,
     colDelta: number
   ) {
-    let newRow = row;
-    let newCol = col;
-    do {
-      newRow = (newRow + rowDelta + this.size) % this.size;
-      newCol = (newCol + colDelta + this.size) % this.size;
-    } while (
-      !this.get(newRow, newCol).isEditable() &&
-      (newRow !== row || newCol != col)
-    );
+    const move = (value: number, delta: number) => {
+      return (value + delta + this.size) % this.size;
+    };
 
-    return { row: newRow, col: newCol };
+    let newRow = move(row, rowDelta);
+    let newCol = move(col, colDelta);
+
+    let success = this.get(newRow, newCol).isEditable();
+
+    if (!success && rowDelta != 0) {
+      // If new field is not editable, try to find the next
+      // editable field in the target column by moving further
+      // in the direction of rowDelta.
+      const one = Math.sign(rowDelta);
+      for (let stepped = 0; stepped < this.size; stepped++) {
+        newRow = move(newRow, one);
+        if (this.get(newRow, newCol).isEditable()) {
+          success = true;
+          break;
+        }
+      }
+    }
+
+    if (!success && colDelta != 0) {
+      // If new field is not editable, try to find the next
+      // editable field in the target row by moving further
+      // in the direction of colDelta.
+      const one = Math.sign(colDelta);
+      for (let stepped = 0; stepped < this.size; stepped++) {
+        newCol = move(newCol, one);
+        if (this.get(newRow, newCol).isEditable()) {
+          success = true;
+          break;
+        }
+      }
+    }
+
+    return success ? { row: newRow, col: newCol } : { row, col };
   }
 
   parseGameCode(base64urlEncodedGameCode: string): Game | null {
