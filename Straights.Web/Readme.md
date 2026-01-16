@@ -22,10 +22,12 @@ WebAssembly is generated using NativeAOT via LLVM and Emscripten. This approach 
 * Download and activate the
 [Emscripten SDK](https://emscripten.org/docs/getting_started/downloads.html#sdk-download-and-install).
 * Install a dotnet SDK that matches the SDK version in [global.json](../global.json).
-* Then run:
+* Then run
 
 ~~~sh
-dotnet publish -r browser-wasm -c Release
+npm ci
+npm run tsc
+dotnet publish -r browser-wasm -c Release -p MSBuildEnableWorkloadResolver=false
 ~~~
 
 ## Running

@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-const CACHE_NAME = 'v0.8.0';
+const CACHE_NAME = 'v0.8.1';
 const urlsToCache = [
   './',
   './.htaccess',
@@ -21,6 +21,7 @@ const urlsToCache = [
   './favicon/maskable_icon_x512.png',
   './game.js',
   './gameHistory.js',
+  './gameReader.js',
   './gameRenderer.js',
   './historyRenderer.js',
   './index.html',

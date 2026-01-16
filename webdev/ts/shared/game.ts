@@ -4,13 +4,9 @@
 
 import { BitmaskEncoder } from './encoder.js';
 import * as EncoderModule from './encoder.js';
+import * as GameReader from './gameReader.js';
 
-export const FieldModes = {
-  USER: 0,
-  WHITEKNOWN: 1,
-  BLACK: 2,
-  BLACKKNOWN: 3,
-} as const;
+export const FieldModes = GameReader.FieldModes;
 
 const MIN_GRID_SIZE_V128 = 4;
 const minCodeSizeV2 = 82;
@@ -331,7 +327,7 @@ export class Game {
   private getPercentSolved(): number {
     let numUserFields = 0;
     let solved = 0;
-    this.#getUserFields().forEach((f) => {
+    this.getUserFields().forEach((f) => {
       numUserFields++;
       if (f.isSolved()) {
         solved += 1;
@@ -396,7 +392,7 @@ export class Game {
     }
   }
 
-  #getEncoder() {
+  private getEncoder() {
     return new BitmaskEncoder({
       compressionThreshold: 48,
       minCompressionRatio: 0.9,
@@ -404,25 +400,25 @@ export class Game {
     });
   }
 
-  #getUserFields() {
+  private getUserFields() {
     return Array.from(this.loopFields(), (x) => x.field).filter(
       (x) => x.mode === FieldModes.USER
     );
   }
 
   private dumpStateBase64(): string {
-    const encoder = this.#getEncoder();
+    const encoder = this.getEncoder();
     var data = this.getState();
     const encoded = encoder.encodeUncompressed(this.size, data);
     return encoded.base64Data;
   }
 
   private getState() {
-    return this.#getUserFields().map((f) => (f.user ? [f.user] : f.notes));
+    return this.getUserFields().map((f) => (f.user ? [f.user] : f.notes));
   }
 
   async dumpStateBase64Async(): Promise<string> {
-    const encoder = this.#getEncoder();
+    const encoder = this.getEncoder();
 
     var data = this.getState();
 
@@ -431,9 +427,9 @@ export class Game {
   }
 
   async restoreStateBase64Async(base64Data: string) {
-    const userFields = this.#getUserFields();
+    const userFields = this.getUserFields();
     const count = userFields.length;
-    const decoded = await this.#getEncoder().decodeAsync(
+    const decoded = await this.getEncoder().decodeAsync(
       { base64Data, count },
       this.size
     );
@@ -441,14 +437,6 @@ export class Game {
     for (let i = 0; i < count; i++) {
       userFields[i].reset(toFieldUserData(decoded[i]));
     }
-  }
-
-  #setValues(row: number, col: number, mode: number, value: number) {
-    const field = new Field(row, col, this);
-    this.data[row][col] = field;
-    this.data[row][col].mode = mode;
-    this.data[row][col].value = value;
-    field.render();
   }
 
   private *loopFields(): IterableIterator<{ field: Field } & FieldIndex> {
@@ -460,7 +448,9 @@ export class Game {
     }
   }
 
-  #forEachField(iteratorFunction: (f: Field, r: number, c: number) => void) {
+  private forEachField(
+    iteratorFunction: (f: Field, r: number, c: number) => void
+  ) {
     for (const { field, row, col } of this.loopFields()) {
       iteratorFunction(field, row, col);
     }
@@ -472,15 +462,15 @@ export class Game {
     }
 
     this.isSolved = true;
-    this.#unselectActiveField();
-    this.#forEachField((field) => {
+    this.unselectActiveField();
+    this.forEachField((field) => {
       field.showSolution();
     });
   }
 
-  #checkWrong(checkNotes = false) {
+  private checkWrong(checkNotes = false) {
     let result = false;
-    this.#forEachField((field) => {
+    this.forEachField((field) => {
       field.checkWrong(checkNotes);
       if (field.wrong) {
         result = true;
@@ -496,7 +486,7 @@ export class Game {
     }
 
     let finished = true;
-    this.#forEachField((field) => {
+    this.forEachField((field) => {
       if (!field.user && field.notes.size == 1) {
         field.user = field.notes.values().next().value;
         field.notes.clear();
@@ -510,7 +500,7 @@ export class Game {
 
     this.isSolved = finished;
     if (this.isSolved) {
-      this.#unselectActiveField();
+      this.unselectActiveField();
     }
   }
 
@@ -527,7 +517,7 @@ export class Game {
     }
 
     this.hint_count++;
-    if (this.#checkWrong(false) || this.#checkWrong(true)) {
+    if (this.checkWrong(false) || this.checkWrong(true)) {
       return getResult(false, true);
     }
 
@@ -541,12 +531,12 @@ export class Game {
     }
 
     this.check_count++;
-    this.#checkWrong();
+    this.checkWrong();
   }
 
   restart() {
     this.isSolved = false;
-    this.#forEachField((field) => field.reset());
+    this.forEachField((field) => field.reset());
   }
 
   getActiveField() {
@@ -555,7 +545,7 @@ export class Game {
       : null;
   }
 
-  #unselectActiveField() {
+  private unselectActiveField() {
     const activeField = this.getActiveField();
     if (activeField) {
       this.activeFieldIndex = null;
@@ -563,10 +553,10 @@ export class Game {
     }
   }
 
-  selectCell(row: number, col: number) {
+  setActiveField(row: number, col: number) {
     if (!this.isSolved && this.get(row, col).isEditable()) {
       // Reset previously selected field
-      this.#unselectActiveField();
+      this.unselectActiveField();
 
       // Change background of just selected field
       this.activeFieldIndex = { row, col };
@@ -579,11 +569,11 @@ export class Game {
       return;
     }
     const { row, col } = this.activeFieldIndex;
-    var newCell = this.#findNextEditableCell(row, col, dy, dx);
-    this.selectCell(newCell.row, newCell.col);
+    var newCell = this.findNextEditableField(row, col, dy, dx);
+    this.setActiveField(newCell.row, newCell.col);
   }
 
-  #findNextEditableCell(
+  private findNextEditableField(
     row: number,
     col: number,
     rowDelta: number,
@@ -602,109 +592,16 @@ export class Game {
     return { row: newRow, col: newCol };
   }
 
-  // Parse game
-  #parseGameV128(binary: string) {
-    const size = parseInt(binary.substring(0, 5), 2);
-    const pos = 5;
-
-    const bitsPerNumber = Math.floor(Math.log2(size - 1)) + 1;
-    const bitsPerField = 2 + bitsPerNumber; // black + known + number
-    const result = new Game(this.renderer, size);
-
-    for (let row = 0; row < size; row++) {
-      for (let col = 0; col < size; col++) {
-        const fieldStart = pos + (row * size + col) * bitsPerField;
-        const isBlack = binary[fieldStart] === '1';
-        const isKnown = binary[fieldStart + 1] === '1';
-
-        const numberBits = binary.substring(
-          fieldStart + 2,
-          fieldStart + 2 + bitsPerNumber
-        );
-        const value = parseInt(numberBits, 2) + 1;
-        if (isNaN(value)) {
-          console.warn(
-            `Cannot parse game: invalid value ${value} at (${row}, ${col}).`
-          );
-          return null; // Invalid data
-        }
-
-        const mode = isBlack
-          ? isKnown
-            ? FieldModes.BLACKKNOWN
-            : FieldModes.BLACK
-          : isKnown
-            ? FieldModes.WHITEKNOWN
-            : FieldModes.USER;
-
-        result.#setValues(row, col, mode, value);
-      }
-    }
-
-    return result;
-  }
-
-  #parseGameV002(binary: string) {
-    const result = new Game(this.renderer, 9);
-    if (binary.length < 6 * 81 || binary.length > 6 * 81 + 8) {
-      return; // Invalid data
-    }
-
-    for (let i = 0; i < 81; i++) {
-      const subBinary = binary.substring(i * 6, (i + 1) * 6);
-      const mode = parseInt(subBinary.substring(0, 2), 2);
-      const value = parseInt(subBinary.substring(2, 6), 2) + 1;
-      result.#setValues(Math.floor(i / 9), i % 9, mode, value);
-    }
-
-    return result;
-  }
-
-  parseGame(code: string) {
-    const decoded = base64GameCodeToBinary(code);
-
-    let result: Game | null | undefined = null;
-    switch (decoded.encodingVersion) {
-      case 1:
-        // not supported any more
-        break;
-      case 128:
-        // 0b10000000: arbitrary size game encoding
-        result = this.#parseGameV128(decoded.binary);
-        break;
-      case 2:
-        result = this.#parseGameV002(decoded.binary);
-        break;
-      default:
-        // Unknown encoding version
-        break;
-    }
-
-    if (!result) {
-      console.warn('Failed to parse game from code: ', code);
-    }
-
-    return result;
+  parseGameCode(base64urlEncodedGameCode: string): Game | null {
+    return GameReader.createGame(
+      base64urlEncodedGameCode,
+      (n) => new GameBuilder(new Game(this.renderer, n))
+    );
   }
 
   toJsonArray() {
     return this.data.map((row) => row.map((field) => field.toJsonArray()));
   }
-}
-
-function base64GameCodeToBinary(gameCode: string) {
-  const base64urlCharacters =
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
-  let binary = '';
-  for (let i = 0; i < gameCode.length; i++) {
-    let b = base64urlCharacters.indexOf(gameCode.charAt(i)).toString(2);
-    while (b.length < 6) b = '0' + b;
-    binary += b;
-  }
-  const encodingVersion = parseInt(binary.substring(0, 8), 2);
-  binary = binary.substring(8);
-
-  return { encodingVersion, binary };
 }
 
 function toFieldUserData(notes: Set<number>) {
@@ -719,4 +616,20 @@ function toFieldUserData(notes: Set<number>) {
 
   const userData = { user, notes };
   return userData;
+}
+
+class GameBuilder {
+  constructor(private game: Game) {}
+
+  setField(row: number, col: number, mode: number, value: number) {
+    const field = new Field(row, col, this.game);
+    field.mode = mode;
+    field.value = value;
+    this.game.data[row][col] = field;
+    field.render();
+  }
+
+  getGame() {
+    return this.game;
+  }
 }

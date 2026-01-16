@@ -137,8 +137,8 @@ export class UIController {
     this.renderer = new Renderer.JQueryFieldRenderer(this.$ as any, darkMode);
     this.game = new Str8ts.Game(this.renderer);
     this.gameHistory = new GameHistory<Str8ts.DumpedStateRead>(localStorage);
-    this.numberInput = new NumberInput((num: number) =>
-      this.handleNumberInput(num)
+    this.numberInput = new NumberInput(
+      async (num: number) => await this.handleNumberInputAsync(num)
     );
 
     this.historyRenderer = new HistoryRendererModule.HistoryRenderer(
@@ -310,17 +310,16 @@ export class UIController {
       const gameField = this.game.get(field.row, field.col);
       gameField.copyFrom(field);
       gameField.wrong = false;
-      this.game.selectCell(field.row, field.col);
-      gameField.render();
+      this.setActiveField(field.row, field.col);
     }
   }
 
-  private selectCell(row: number, col: number) {
-    this.game.selectCell(row, col);
+  private setActiveField(row: number, col: number) {
+    this.game.setActiveField(row, col);
   }
 
   private toggleNoOrAllNotes(row: number, col: number) {
-    this.selectCell(row, col);
+    this.setActiveField(row, col);
     this.pushActiveFieldToUndoStack();
     this.game.get(row, col).toggleNoOrAllNotes();
   }
@@ -448,7 +447,11 @@ export class UIController {
 
   private async startGameCodeAsync(code: string) {
     console.log('Game:', code);
+    const emojis = this.getURLParameter('emojis');
     this.gameUrl = this.win.location.href.split('?')[0] + '?code=' + code;
+    if (emojis != null) {
+      this.gameUrl += '&emojis=' + emojis;
+    }
     this.gameCode = code;
     await this.startGameAsync(true);
   }
@@ -490,7 +493,9 @@ export class UIController {
       this.$('.container').removeClass('finished');
       await this.showDialogAsync(false);
 
-      const parsedGame = this.game.parseGame(this.gameCode);
+      const emojiString = this.getURLParameter('emojis');
+      this.renderer.setEmojis(emojiString);
+      const parsedGame = this.game.parseGameCode(this.gameCode);
       if (parsedGame) {
         this.game = parsedGame;
         hasGame = true;
@@ -584,7 +589,7 @@ export class UIController {
           }
           break;
         case dialogs.ABOUT:
-          const link = await this._getCurrentLinkAsync();
+          const link = await this.getCurrentLinkAsync();
           this.$('#current-game-link').attr('href', link);
           this.$('#about-dialog').show();
           break;
@@ -609,7 +614,7 @@ export class UIController {
     this.win.history.pushState({}, '', url);
   }
 
-  private onKeyDown(e: KeyboardEvent) {
+  private async onKeyDownAsync(e: KeyboardEvent) {
     if (this.game.isSolved) return;
 
     let handled = false;
@@ -617,7 +622,7 @@ export class UIController {
     if (this.handleCursorKey(e)) {
       handled = true;
     } else if (key >= '0' && key <= '9') {
-      handled = this.handleDigitKey(Number(key));
+      handled = await this.handleDigitKeyAsync(Number(key));
     } else if (key == 'n') {
       this.toggleNoteMode();
       handled = true;
@@ -658,16 +663,16 @@ export class UIController {
     return true;
   }
 
-  private handleDigitKey(digit: number) {
+  private async handleDigitKeyAsync(digit: number) {
     const handled = digit <= this.currentGridSize;
     if (handled) {
-      this.numberInput.handleDigit(digit, this.currentGridSize);
+      await this.numberInput.handleDigitAsync(digit, this.currentGridSize);
     }
 
     return handled;
   }
 
-  private handleNumberInput(num: number) {
+  private async handleNumberInputAsync(num: number) {
     if (num < 1 || num > this.currentGridSize) {
       return;
     }
@@ -688,7 +693,7 @@ export class UIController {
       if (this.game.isSolved) {
         this.undoStack.clear();
         this.$('.container').addClass('finished');
-        this._onResizeAsync();
+        await this.onResizeAsync();
         clearInterval(this.timer);
       }
     }
@@ -723,7 +728,7 @@ export class UIController {
     field.clear();
   }
 
-  private async _getCurrentLinkAsync() {
+  private async getCurrentLinkAsync() {
     let link = this.win.location.href;
     if (this.game) {
       const stateBase64 = await this.game.dumpStateBase64Async();
@@ -734,11 +739,12 @@ export class UIController {
 
   async copyCurrentLinkAsync() {
     try {
-      const link = await this._getCurrentLinkAsync();
+      const link = await this.getCurrentLinkAsync();
       await this.win.navigator.clipboard.writeText(link);
       const copyBtn = this.$('#copy-link-button');
+      const originalText = copyBtn.text();
       copyBtn.text('Link copied!');
-      setTimeout(() => copyBtn.text('🔗'), 1000);
+      setTimeout(() => copyBtn.text(originalText), 1000);
     } catch (err) {
       console.error('Failed to copy:', err);
     }
@@ -763,7 +769,7 @@ export class UIController {
     }
   }
 
-  private async _onResizeAsync() {
+  private async onResizeAsync() {
     await this.closeHintAsync();
     if (
       this.win.innerWidth / 2 - 45 <
@@ -803,7 +809,7 @@ export class UIController {
   async startAsync() {
     // initial UI setup
     this.createGrid();
-    await this._onResizeAsync();
+    await this.onResizeAsync();
 
     this.renderLayoutCarousel();
     this.loadSettings();
@@ -813,7 +819,7 @@ export class UIController {
     const gridCells = this.$('td[id^="ce"]');
     gridCells.on('click', (evt: Event) => {
       const { row, col } = this.getRowAndColumnOfTargetCell(evt);
-      this.selectCell(row, col);
+      this.setActiveField(row, col);
     });
     gridCells.on('dblclick', (evt: Event) => {
       const { row, col } = this.getRowAndColumnOfTargetCell(evt);
@@ -821,21 +827,21 @@ export class UIController {
     });
 
     const numberButtons = this.$('td[data-button^="bn"]');
-    numberButtons.on('click', (evt: Event) => {
+    numberButtons.on('click', async (evt: Event) => {
       const el = evt.currentTarget as Element;
       const num = Number(this.$(el).text());
-      this.handleNumberInput(num);
+      await this.handleNumberInputAsync(num);
     });
 
     // wire page-level events here so they can call private methods
     this.win.addEventListener('popstate', async () => {
       await this.handleGameLoadAsync();
     });
-    this.$(document).on('keydown', (e: KeyboardEvent) => {
-      this.onKeyDown(e);
+    this.$(document).on('keydown', async (e: KeyboardEvent) => {
+      await this.onKeyDownAsync(e);
     });
     this.$(this.win).on('resize', async () => {
-      await this._onResizeAsync();
+      await this.onResizeAsync();
     });
 
     // Controls wired from index.html

@@ -21,6 +21,11 @@
       "version": "0.8.0",
       "commands": ["husky"],
       "rollForward": false
+    },
+    "dotnet-reportgenerator-globaltool": {
+      "version": "5.5.1",
+      "commands": ["reportgenerator"],
+      "rollForward": false
     }
   }
 }

@@ -97,10 +97,29 @@ As there is no official OpenCvSharp nuget package for Ubuntu-24, we're using [ou
 
 ## Building
 
-You'll need a dotnet SDK that matches the SDK version in [global.json](./global.json).
+You'll need:
+
+* a dotnet SDK that matches the SDK version in [global.json](./global.json),
+* npm
 
 For Straights.Web, you need to download and activate the
 [Emscripten SDK](https://emscripten.org/docs/getting_started/downloads.html#sdk-download-and-install).
+
+### Straights Command Line App
+
+~~~sh
+npm ci
+npm run tsc
+dotnet publish Straights/Straights.csproj -c Release --use-current-runtime
+~~~
+
+### Straights.Web
+
+~~~sh
+npm ci
+npm run tsc
+dotnet publish Straights.Web/Straights.Web.csproj -r browser-wasm -c Release -p MSBuildEnableWorkloadResolver=false
+~~~
 
 ## Backlog
 
