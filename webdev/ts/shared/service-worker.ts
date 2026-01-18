@@ -36,6 +36,7 @@ const urlsToCache = [
   './LICENSE',
   './numberInput.js',
   './popup.js',
+  './seasonalEmojis.js',
   './site.webmanifest',
   './slick/ajax-loader.gif',
   './slick/fonts/slick.woff',

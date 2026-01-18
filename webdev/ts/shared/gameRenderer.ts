@@ -3,31 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import * as Str8ts from './game.js';
-
-const chistmasEmojis = [
-  '🔔',
-  '🎁',
-  '🕯️',
-  '🎅',
-  '👼',
-  '🎶',
-  '❄️',
-  '☃️',
-  '⛄',
-  '🌟',
-  '🎄',
-  '🍷',
-  '🦌',
-  '🌨️',
-  '🎆',
-  '🎇',
-  '🧦',
-  '🎀',
-  '🧸',
-  '🍀',
-];
-
-const valentineEmojis = ['🧡', '💛', '💚', '💙', '💜', '💖', '💘', '💕'];
+import * as emojisModule from './seasonalEmojis.js';
 
 export class JQueryFieldRenderer {
   private emojiSetId = 0;
@@ -221,27 +197,15 @@ export class JQueryFieldRenderer {
   }
 
   private fillBlackField(element: JQuery<HTMLElement>) {
-    const now = new Date();
     if (this.emojis?.length > 0) {
       setEmoji(element, this.emojis, this.emojiSet);
-    } else if (isChristmasTime(now)) {
-      setEmoji(element, chistmasEmojis, 'xmas');
-    } else if (isValentinesDay(now)) {
-      setEmoji(element, valentineEmojis, 'valentine');
+    }
+
+    const emojisForDate = emojisModule.getEmojis(new Date());
+    if (emojisForDate) {
+      setEmoji(element, emojisForDate.emojis, emojisForDate.key);
     }
   }
-}
-
-function isValentinesDay(now: Date) {
-  const month = now.getMonth(); // 0 = Jan, 11 = Dec
-  const day = now.getDate();
-  return month === 1 && day === 14;
-}
-
-function isChristmasTime(now: Date) {
-  const month = now.getMonth(); // 0 = Jan, 11 = Dec
-  const day = now.getDate();
-  return (month === 11 && day >= 20) || (month === 0 && day <= 6);
 }
 
 function setEmoji(
