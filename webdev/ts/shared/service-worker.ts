@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-const CACHE_NAME = 'v0.8.1';
+const CACHE_NAME = 'v0.8.2';
 const urlsToCache = [
   './',
   './.htaccess',
