@@ -27,6 +27,8 @@ const chistmasEmojis = [
   '🍀',
 ];
 
+const valentineEmojis = ['🧡', '💛', '💚', '💙', '💜', '💖', '💘', '💕'];
+
 export class JQueryFieldRenderer {
   private emojiSetId = 0;
   private emojiSet = '';
@@ -224,8 +226,16 @@ export class JQueryFieldRenderer {
       setEmoji(element, this.emojis, this.emojiSet);
     } else if (isChristmasTime(now)) {
       setEmoji(element, chistmasEmojis, 'xmas');
+    } else if (isValentinesDay(now)) {
+      setEmoji(element, valentineEmojis, 'valentine');
     }
   }
+}
+
+function isValentinesDay(now: Date) {
+  const month = now.getMonth(); // 0 = Jan, 11 = Dec
+  const day = now.getDate();
+  return month === 1 && day === 14;
 }
 
 function isChristmasTime(now: Date) {
