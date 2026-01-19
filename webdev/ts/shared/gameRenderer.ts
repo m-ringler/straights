@@ -5,6 +5,23 @@
 import * as Str8ts from './game.js';
 import * as emojisModule from './seasonalEmojis.js';
 
+export interface RenderableField {
+  row: number;
+  col: number;
+  mode: number;
+  value: number | undefined;
+  user: number | undefined;
+  notes: Set<number>;
+  hint: number | undefined;
+  wrong: boolean;
+  isShowingSolution: boolean;
+  game: {
+    size: number;
+  };
+  isEditable(): boolean;
+  isActive(): boolean;
+}
+
 export class JQueryFieldRenderer {
   private emojiSetId = 0;
   private emojiSet = '';
@@ -84,7 +101,7 @@ export class JQueryFieldRenderer {
     this.emojiSet = this.emojiSetId.toString();
   }
 
-  renderField(field: Str8ts.Field) {
+  renderField(field: RenderableField) {
     const element = this.getElement(field);
     element.empty();
     element.css('background-color', this.getBackgroundColor(field));
@@ -120,7 +137,7 @@ export class JQueryFieldRenderer {
     }
   }
 
-  private getBackgroundColor(field: Str8ts.Field) {
+  private getBackgroundColor(field: RenderableField) {
     const colors = this.colors;
     if (
       field.mode === Str8ts.FieldModes.BLACK ||
@@ -144,7 +161,7 @@ export class JQueryFieldRenderer {
     return field.wrong ? colors.BG_USER_WRONG : colors.BG_USER;
   }
 
-  private getTextColor(field: Str8ts.Field) {
+  private getTextColor(field: RenderableField) {
     const colors = this.colors;
     if (
       field.mode === Str8ts.FieldModes.BLACKKNOWN ||
@@ -175,7 +192,7 @@ export class JQueryFieldRenderer {
    * @returns A jQuery object containing exactly one HTMLElement.
    * @throws {Error} If no element is found or if multiple elements are found.
    */
-  getElement(field: Str8ts.Field): JQuery<HTMLElement> {
+  getElement(field: RenderableField): JQuery<HTMLElement> {
     const result = this.$(JQueryFieldRenderer.getSelector(field));
     if (result.length == 0) {
       throw new Error(
@@ -192,7 +209,7 @@ export class JQueryFieldRenderer {
     return result;
   }
 
-  private static getSelector(field: Str8ts.Field): string {
+  private static getSelector(field: RenderableField): string {
     return `#ce${field.row}_${field.col}`;
   }
 

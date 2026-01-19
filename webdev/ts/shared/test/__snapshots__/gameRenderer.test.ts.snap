@@ -1,0 +1,3 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`JQueryFieldRenderer > Notes table rendering > should render correct table structure with snapshot 1`] = `"<table class="mini" cellspacing="0"><tbody><tr><td>1</td><td class="transparent">2</td><td>3</td></tr><tr><td class="transparent">4</td><td>5</td><td class="transparent">6</td></tr><tr><td>7</td><td class="transparent">8</td><td>9</td></tr></tbody></table>"`;
