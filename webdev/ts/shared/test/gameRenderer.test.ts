@@ -14,40 +14,26 @@ vi.mock('../seasonalEmojis.js', () => ({
 }));
 
 describe('JQueryFieldRenderer', () => {
-  let container: HTMLDivElement;
+  let row: HTMLTableRowElement;
+  let table: HTMLTableElement;
   let renderer: JQueryFieldRenderer;
 
   beforeEach(() => {
     // Set up DOM container
-    container = document.createElement('div');
-    document.body.appendChild(container);
+    table = document.createElement('table');
+    row = document.createElement('tr');
+    table.appendChild(row);
+    document.body.appendChild(table);
 
     // Create renderer with light mode
     renderer = new JQueryFieldRenderer($, false);
   });
 
   afterEach(() => {
-    if (container && container.parentNode) {
-      container.parentNode.removeChild(container);
+    if (table && table.parentNode) {
+      table.parentNode.removeChild(table);
     }
   });
-
-  /**
-   * Helper to extract rendered field properties for assertions
-   */
-  function extractFieldProperties(element: HTMLElement): {
-    backgroundColor: string;
-    textColor: string;
-    textContent: string;
-    html: string;
-  } {
-    return {
-      backgroundColor: element.style.backgroundColor,
-      textColor: element.style.color,
-      textContent: element.textContent || '',
-      html: element.innerHTML,
-    };
-  }
 
   /**
    * Helper to create a mock field and render it
@@ -62,10 +48,10 @@ describe('JQueryFieldRenderer', () => {
     isShowingSolution?: boolean;
     isActive?: boolean;
     gameSize?: number;
+    darkMode?: boolean;
   }): {
     field: RenderableField;
     element: HTMLElement;
-    props: ReturnType<typeof extractFieldProperties>;
   } {
     const gameSize = config.gameSize ?? 9;
     const isActive = config.isActive ?? false;
@@ -86,97 +72,141 @@ describe('JQueryFieldRenderer', () => {
     };
 
     // Create DOM element for the field
-    const fieldElement = document.createElement('div');
+    const fieldElement = document.createElement('td');
     fieldElement.id = `ce${field.row}_${field.col}`;
-    container.appendChild(fieldElement);
+    row.appendChild(fieldElement);
 
     // Render the field
     renderer.renderField(field);
 
-    const props = extractFieldProperties(fieldElement);
-
-    return { field, element: fieldElement, props };
+    return { field, element: fieldElement };
   }
   describe('BLACK field mode', () => {
     it('should render BLACK field as empty with black background', () => {
-      const { props } = createAndRenderField({
+      const { element } = createAndRenderField({
         mode: FieldModes.BLACK,
       });
 
-      expect(props.textContent).toBe('');
-      expect(props.backgroundColor).toBe('rgb(0, 0, 0)');
-      expect(props.textColor).toBe('rgb(170, 170, 170)');
+      expect(element.outerHTML).toMatchInlineSnapshot(
+        `"<td id="ce0_0" style="background-color: rgb(0, 0, 0); color: rgb(255, 255, 255);"></td>"`
+      );
     });
   });
 
   describe('BLACKKNOWN field mode', () => {
     it('should render BLACKKNOWN field with value and black colors', () => {
-      const { props } = createAndRenderField({
+      const { element } = createAndRenderField({
         mode: FieldModes.BLACKKNOWN,
         value: 5,
       });
 
-      expect(props.textContent).toBe('5');
-      expect(props.backgroundColor).toBe('rgb(0, 0, 0)');
-      expect(props.textColor).toBe('rgb(170, 170, 170)');
+      expect(element.outerHTML).toMatchInlineSnapshot(
+        `"<td id="ce0_0" style="background-color: rgb(0, 0, 0); color: rgb(255, 255, 255);">5</td>"`
+      );
     });
   });
 
   describe('WHITEKNOWN field mode', () => {
     it('should render WHITEKNOWN field with value', () => {
-      const { props } = createAndRenderField({
+      const { element } = createAndRenderField({
         mode: FieldModes.WHITEKNOWN,
         value: 7,
       });
 
-      expect(props.textContent).toBe('7');
-      expect(props.backgroundColor).toBe('rgb(255, 255, 255)');
-      expect(props.textColor).toBe('rgb(0, 0, 0)');
+      expect(element.outerHTML).toMatchInlineSnapshot(
+        `"<td id="ce0_0" style="background-color: rgb(255, 255, 255); color: rgb(0, 0, 0);">7</td>"`
+      );
     });
   });
 
   describe('USER (editable) field mode', () => {
     it('should render USER field with no content (empty)', () => {
-      const { props } = createAndRenderField({
+      const { element } = createAndRenderField({
         mode: FieldModes.USER,
+        value: 7,
       });
 
-      expect(props.textContent).toBe('');
-      expect(props.backgroundColor).toBe('rgb(255, 255, 255)');
-      expect(props.textColor).toBe('rgb(0, 51, 120)');
+      expect(element.outerHTML).toMatchInlineSnapshot(
+        `"<td id="ce0_0" style="background-color: rgb(255, 255, 255); color: rgb(0, 51, 120);"></td>"`
+      );
     });
 
-    it('should render USER field showing solution when isShowingSolution is true', () => {
-      const { props } = createAndRenderField({
+    it.each<{
+      name: string;
+      config: any;
+    }>([
+      { name: 'empty', config: {} },
+      { name: 'notes only', config: { notes: [2, 3, 4] } },
+      { name: 'wrong', config: { user: 2, notes: [2, 3, 4] } },
+    ])(
+      'should render USER field showing solution when isShowingSolution is true ($name)',
+      ({ config }) => {
+        const { element } = createAndRenderField({
+          mode: FieldModes.USER,
+          value: 4,
+          isShowingSolution: true,
+          ...config,
+        });
+
+        expect(element.outerHTML).toBe(
+          '<td id="ce0_0" style="background-color: rgb(255, 255, 255); color: rgb(95, 0, 82);">4</td>'
+        );
+      }
+    );
+
+    it('should render USER field showing solution when isShowingSolution is true (correct)', () => {
+      const { element } = createAndRenderField({
         mode: FieldModes.USER,
         value: 4,
+        user: 4,
+        notes: [2, 3, 4],
         isShowingSolution: true,
       });
 
-      expect(props.textContent).toBe('4');
-      expect(props.textColor).toBe('rgb(0, 51, 120)');
+      expect(element.outerHTML).toMatchInlineSnapshot(
+        `"<td id="ce0_0" style="background-color: rgb(255, 255, 255); color: rgb(0, 51, 120);">4</td>"`
+      );
     });
 
-    it('should render USER field with user-entered number', () => {
-      const { props } = createAndRenderField({
+    it('should render USER field with user-entered number (unchecked)', () => {
+      const { element } = createAndRenderField({
         mode: FieldModes.USER,
         user: 3,
+        value: 5,
+        notes: [2, 3, 4],
+        isShowingSolution: false,
+        wrong: false,
       });
 
-      expect(props.textContent).toBe('3');
-      expect(props.backgroundColor).toBe('rgb(255, 255, 255)');
+      expect(element.outerHTML).toMatchInlineSnapshot(
+        `"<td id="ce0_0" style="background-color: rgb(255, 255, 255); color: rgb(0, 51, 120);">3</td>"`
+      );
+    });
+
+    it('should render USER field with user-entered number (wrong)', () => {
+      const { element } = createAndRenderField({
+        mode: FieldModes.USER,
+        user: 3,
+        notes: [2, 3, 4],
+        value: 5,
+        isShowingSolution: false,
+        wrong: true,
+      });
+
+      expect(element.outerHTML).toMatchInlineSnapshot(
+        `"<td id="ce0_0" style="background-color: rgb(255, 199, 199); color: rgb(95, 0, 82);">3</td>"`
+      );
     });
 
     it('should render USER field with multiple notes', () => {
-      const { props, element } = createAndRenderField({
+      const { element } = createAndRenderField({
         mode: FieldModes.USER,
         notes: [1, 2, 5, 7, 8, 9],
       });
 
-      expect(props.textContent).toContain('1');
-      expect(props.textContent).toContain('2');
-      expect(props.textContent).toContain('5');
-      expect(element.querySelector('table')).toBeTruthy();
+      expect(element.outerHTML).toMatchInlineSnapshot(
+        `"<td id="ce0_0" style="background-color: rgb(255, 255, 255); color: rgb(0, 51, 120);"><table class="mini" cellspacing="0"><tbody><tr><td>1</td><td>2</td><td class="transparent">3</td></tr><tr><td class="transparent">4</td><td>5</td><td class="transparent">6</td></tr><tr><td>7</td><td>8</td><td>9</td></tr></tbody></table></td>"`
+      );
     });
 
     it('should render USER field with notes table including hint highlight', () => {
@@ -186,145 +216,172 @@ describe('JQueryFieldRenderer', () => {
         hint: 5,
       });
 
-      const hintCell = element.querySelector('td.hint');
-      expect(hintCell).toBeTruthy();
-      expect(hintCell?.textContent).toBe('5');
+      expect(element.outerHTML).toMatchInlineSnapshot(
+        `"<td id="ce0_0" style="background-color: rgb(255, 255, 153); color: rgb(0, 51, 120);"><table class="mini" cellspacing="0"><tbody><tr><td class="transparent">1</td><td>2</td><td>3</td></tr><tr><td class="transparent">4</td><td class="hint">5</td><td class="transparent">6</td></tr><tr><td class="transparent">7</td><td>8</td><td class="transparent">9</td></tr></tbody></table></td>"`
+      );
     });
 
     it('should render USER field with single note', () => {
-      const { props, element } = createAndRenderField({
+      const { element } = createAndRenderField({
         mode: FieldModes.USER,
         notes: [4],
       });
 
-      expect(props.textContent).toContain('4');
-      expect(element.querySelector('table')).toBeTruthy();
+      expect(element.outerHTML).toMatchInlineSnapshot(
+        `"<td id="ce0_0" style="background-color: rgb(255, 255, 255); color: rgb(0, 51, 120);"><table class="mini" cellspacing="0"><tbody><tr><td class="transparent">1</td><td class="transparent">2</td><td class="transparent">3</td></tr><tr><td>4</td><td class="transparent">5</td><td class="transparent">6</td></tr><tr><td class="transparent">7</td><td class="transparent">8</td><td class="transparent">9</td></tr></tbody></table></td>"`
+      );
     });
   });
 
   describe('Background colors', () => {
     it('should use BG_USER color for editable field with no special state', () => {
-      const { props } = createAndRenderField({
+      const { element } = createAndRenderField({
         mode: FieldModes.USER,
       });
 
-      expect(props.backgroundColor).toBe('rgb(255, 255, 255)');
+      expect(element.outerHTML).toMatchInlineSnapshot(
+        `"<td id="ce0_0" style="background-color: rgb(255, 255, 255); color: rgb(0, 51, 120);"></td>"`
+      );
     });
 
     it('should use BG_USER_ACTIVE color when field is active', () => {
-      const { props } = createAndRenderField({
+      const { element } = createAndRenderField({
         mode: FieldModes.USER,
         isActive: true,
       });
 
-      expect(props.backgroundColor).toBe('rgb(199, 221, 255)');
+      expect(element.outerHTML).toMatchInlineSnapshot(
+        `"<td id="ce0_0" style="background-color: rgb(199, 221, 255); color: rgb(0, 51, 120);"></td>"`
+      );
     });
 
     it('should use BG_USER_WRONG color when field has wrong entry', () => {
-      const { props } = createAndRenderField({
+      const { element } = createAndRenderField({
         mode: FieldModes.USER,
         user: 5,
         wrong: true,
       });
 
-      expect(props.backgroundColor).toBe('rgb(255, 199, 199)');
+      expect(element.outerHTML).toMatchInlineSnapshot(
+        `"<td id="ce0_0" style="background-color: rgb(255, 199, 199); color: rgb(95, 0, 82);">5</td>"`
+      );
     });
 
     it('should use BG_USER_WRONG_ACTIVE when field is active and wrong', () => {
-      const { props } = createAndRenderField({
+      const { element } = createAndRenderField({
         mode: FieldModes.USER,
         user: 6,
         wrong: true,
         isActive: true,
       });
 
-      expect(props.backgroundColor).toBe('rgb(238, 170, 255)');
+      expect(element.outerHTML).toMatchInlineSnapshot(
+        `"<td id="ce0_0" style="background-color: rgb(238, 170, 255); color: rgb(95, 0, 82);">6</td>"`
+      );
     });
 
     it('should use BG_HINT color when hint is set', () => {
-      const { props } = createAndRenderField({
+      const { element } = createAndRenderField({
         mode: FieldModes.USER,
         hint: 3,
       });
 
-      expect(props.backgroundColor).toBe('rgb(255, 255, 153)');
+      expect(element.outerHTML).toMatchInlineSnapshot(
+        `"<td id="ce0_0" style="background-color: rgb(255, 255, 153); color: rgb(0, 51, 120);"></td>"`
+      );
     });
 
     it('should use BG_BLACK color for BLACK fields', () => {
-      const { props } = createAndRenderField({
+      const { element } = createAndRenderField({
         mode: FieldModes.BLACK,
       });
 
-      expect(props.backgroundColor).toBe('rgb(0, 0, 0)');
+      expect(element.outerHTML).toMatchInlineSnapshot(
+        `"<td id="ce0_0" style="background-color: rgb(0, 0, 0); color: rgb(255, 255, 255);"></td>"`
+      );
     });
 
     it('should use BG_WHITEKNOWN color for WHITEKNOWN fields', () => {
-      const { props } = createAndRenderField({
+      const { element } = createAndRenderField({
         mode: FieldModes.WHITEKNOWN,
         value: 2,
       });
 
-      expect(props.backgroundColor).toBe('rgb(255, 255, 255)');
+      expect(element.outerHTML).toMatchInlineSnapshot(
+        `"<td id="ce0_0" style="background-color: rgb(255, 255, 255); color: rgb(0, 0, 0);">2</td>"`
+      );
     });
   });
 
   describe('Text colors', () => {
     it('should use FG_USER color for normal user field', () => {
-      const { props } = createAndRenderField({
+      const { element } = createAndRenderField({
         mode: FieldModes.USER,
         user: 1,
       });
 
-      expect(props.textColor).toBe('rgb(0, 51, 120)');
+      expect(element.outerHTML).toMatchInlineSnapshot(
+        `"<td id="ce0_0" style="background-color: rgb(255, 255, 255); color: rgb(0, 51, 120);">1</td>"`
+      );
     });
 
     it('should use FG_USER_WRONG color for wrong entry', () => {
-      const { props } = createAndRenderField({
+      const { element } = createAndRenderField({
         mode: FieldModes.USER,
         user: 9,
         wrong: true,
       });
 
-      expect(props.textColor).toBe('rgb(95, 0, 82)');
+      expect(element.outerHTML).toMatchInlineSnapshot(
+        `"<td id="ce0_0" style="background-color: rgb(255, 199, 199); color: rgb(95, 0, 82);">9</td>"`
+      );
     });
 
     it('should use FG_SOLUTION color when showing solution that differs from user entry', () => {
-      const { props } = createAndRenderField({
+      const { element } = createAndRenderField({
         mode: FieldModes.USER,
         value: 5,
         user: 3,
         isShowingSolution: true,
       });
 
-      expect(props.textColor).toBe('rgb(95, 0, 82)');
+      expect(element.outerHTML).toMatchInlineSnapshot(
+        `"<td id="ce0_0" style="background-color: rgb(255, 255, 255); color: rgb(95, 0, 82);">5</td>"`
+      );
     });
 
     it('should use FG_USER color when showing correct solution', () => {
-      const { props } = createAndRenderField({
+      const { element } = createAndRenderField({
         mode: FieldModes.USER,
         value: 4,
         user: 4,
         isShowingSolution: true,
       });
 
-      expect(props.textColor).toBe('rgb(0, 51, 120)');
+      expect(element.outerHTML).toMatchInlineSnapshot(
+        `"<td id="ce0_0" style="background-color: rgb(255, 255, 255); color: rgb(0, 51, 120);">4</td>"`
+      );
     });
 
     it('should use FG_BLACK color for BLACK fields', () => {
-      const { props } = createAndRenderField({
+      const { element } = createAndRenderField({
         mode: FieldModes.BLACK,
       });
 
-      expect(props.textColor).toBe('rgb(170, 170, 170)');
+      expect(element.outerHTML).toMatchInlineSnapshot(
+        `"<td id="ce0_0" style="background-color: rgb(0, 0, 0); color: rgb(255, 255, 255);"></td>"`
+      );
     });
 
     it('should use FG_WHITEKNOWN color for WHITEKNOWN fields', () => {
-      const { props } = createAndRenderField({
+      const { element } = createAndRenderField({
         mode: FieldModes.WHITEKNOWN,
         value: 8,
       });
 
-      expect(props.textColor).toBe('rgb(0, 0, 0)');
+      expect(element.outerHTML).toMatchInlineSnapshot(
+        `"<td id="ce0_0" style="background-color: rgb(255, 255, 255); color: rgb(0, 0, 0);">8</td>"`
+      );
     });
   });
 
@@ -349,13 +406,12 @@ describe('JQueryFieldRenderer', () => {
 
       const fieldElement = document.createElement('div');
       fieldElement.id = `ce${field.row}_${field.col}`;
-      container.appendChild(fieldElement);
+      row.appendChild(fieldElement);
 
       darkRenderer.renderField(field);
-      const props = extractFieldProperties(fieldElement);
-
-      expect(props.backgroundColor).toBe('rgb(170, 170, 170)');
-      expect(props.textContent).toBe('2');
+      expect(fieldElement.outerHTML).toMatchInlineSnapshot(
+        `"<div id="ce0_0" style="background-color: rgb(170, 170, 170); color: rgb(0, 51, 120);">2</div>"`
+      );
     });
   });
 
@@ -408,43 +464,51 @@ describe('JQueryFieldRenderer', () => {
     });
 
     it('should render correct table structure with snapshot', () => {
-      const { props } = createAndRenderField({
+      const { element } = createAndRenderField({
         mode: FieldModes.USER,
         notes: [1, 3, 5, 7, 9],
       });
 
-      expect(props.html).toMatchSnapshot();
+      expect(element.outerHTML).toMatchInlineSnapshot(
+        `"<td id="ce0_0" style="background-color: rgb(255, 255, 255); color: rgb(0, 51, 120);"><table class="mini" cellspacing="0"><tbody><tr><td>1</td><td class="transparent">2</td><td>3</td></tr><tr><td class="transparent">4</td><td>5</td><td class="transparent">6</td></tr><tr><td>7</td><td class="transparent">8</td><td>9</td></tr></tbody></table></td>"`
+      );
     });
   });
 
   describe('Color priority (hint > active > wrong)', () => {
     it('hint color takes precedence over active', () => {
-      const { props } = createAndRenderField({
+      const { element } = createAndRenderField({
         mode: FieldModes.USER,
         hint: 5,
         isActive: true,
       });
 
-      expect(props.backgroundColor).toBe('rgb(255, 255, 153)'); // BG_HINT
+      expect(element.outerHTML).toMatchInlineSnapshot(
+        `"<td id="ce0_0" style="background-color: rgb(255, 255, 153); color: rgb(0, 51, 120);"></td>"`
+      );
     });
 
     it('active color takes precedence over wrong when no hint', () => {
-      const { props } = createAndRenderField({
+      const { element } = createAndRenderField({
         mode: FieldModes.USER,
         wrong: true,
         isActive: true,
       });
 
-      expect(props.backgroundColor).toBe('rgb(238, 170, 255)'); // BG_USER_WRONG_ACTIVE
+      expect(element.outerHTML).toMatchInlineSnapshot(
+        `"<td id="ce0_0" style="background-color: rgb(238, 170, 255); color: rgb(95, 0, 82);"></td>"`
+      );
     });
 
     it('wrong color without active state', () => {
-      const { props } = createAndRenderField({
+      const { element } = createAndRenderField({
         mode: FieldModes.USER,
         wrong: true,
       });
 
-      expect(props.backgroundColor).toBe('rgb(255, 199, 199)'); // BG_USER_WRONG
+      expect(element.outerHTML).toMatchInlineSnapshot(
+        `"<td id="ce0_0" style="background-color: rgb(255, 199, 199); color: rgb(95, 0, 82);"></td>"`
+      );
     });
   });
 });
