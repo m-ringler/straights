@@ -19,25 +19,18 @@ const minCodeSizeV128 =
 export const minCodeSize = Math.min(minCodeSizeV2, minCodeSizeV128);
 
 export class Field {
-  row: number;
-  col: number;
-  game: Game;
-  value: number | undefined;
-  mode: number | undefined;
   wrong: boolean;
   hint: undefined | number;
   isShowingSolution: boolean;
   user: undefined | number;
   notes: Set<number>;
-  constructor(row: number, col: number, game: Game) {
-    this.row = row;
-    this.col = col;
-    this.game = game;
-
-    // fixed after initialization
-    this.value = undefined;
-    this.mode = undefined;
-
+  constructor(
+    public readonly row: number,
+    public readonly col: number,
+    public readonly mode: number,
+    public readonly value: number | undefined,
+    public readonly game: Game
+  ) {
     // derived, only used when checking
     this.wrong = false;
     this.hint = undefined;
@@ -68,15 +61,15 @@ export class Field {
     }
   }
 
-  isActive() {
+  isActive(): boolean {
     return (
-      this.game.activeFieldIndex &&
+      this.game.activeFieldIndex !== null &&
       this.game.activeFieldIndex.col === this.col &&
       this.game.activeFieldIndex.row === this.row
     );
   }
 
-  isEditable() {
+  isEditable(): boolean {
     return this.mode === FieldModes.USER;
   }
 
@@ -182,10 +175,13 @@ export class Field {
   }
 
   copy() {
-    const field = new Field(this.row, this.col, this.game);
-
-    field.value = this.value;
-    field.mode = this.mode;
+    const field = new Field(
+      this.row,
+      this.col,
+      this.mode,
+      this.value,
+      this.game
+    );
 
     field.wrong = this.wrong;
     field.isShowingSolution = this.isShowingSolution;
@@ -292,7 +288,8 @@ export class Game {
     for (let r = 0; r < size; r++) {
       this.data.push([]);
       for (let c = 0; c < size; c++) {
-        this.data[r].push(new Field(r, c, this));
+        // initialize all fields as black
+        this.data[r].push(new Field(r, c, FieldModes.BLACK, undefined, this));
       }
     }
 
@@ -649,9 +646,7 @@ class GameBuilder {
   constructor(private game: Game) {}
 
   setField(row: number, col: number, mode: number, value: number) {
-    const field = new Field(row, col, this.game);
-    field.mode = mode;
-    field.value = value;
+    const field = new Field(row, col, mode, value, this.game);
     this.game.data[row][col] = field;
     field.render();
   }
