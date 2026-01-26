@@ -7,6 +7,7 @@ import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { JQueryFieldRenderer, RenderableField } from '../gameRenderer';
 import { FieldModes } from '../gameReader';
 import $ from 'jquery';
+import * as seasonalEmojisModule from '../seasonalEmojis.js';
 
 // Mock the seasonalEmojis module to always return null
 vi.mock('../seasonalEmojis.js', () => ({
@@ -581,6 +582,159 @@ describe('JQueryFieldRenderer', () => {
         <td id="ce0_0" style="background-color: rgb(255, 199, 199); color: rgb(95, 0, 82);"></td>"
       `
       );
+    });
+  });
+
+  describe('setEmojis', () => {
+    it('should set emojis to empty array when passed null', () => {
+      renderer.setEmojis(['😀', '😃', '😄']);
+      renderer.setEmojis(null);
+
+      expect(renderer.emojis).toEqual([]);
+    });
+
+    it('should set emojis from string array', () => {
+      const emojis = ['😀', '😃', '😄'];
+      renderer.setEmojis(emojis);
+
+      expect(renderer.emojis).toEqual(emojis);
+    });
+
+    it('should segment string emojis using Intl.Segmenter when available', () => {
+      // This test assumes Intl.Segmenter is available (it is in modern browsers/Node)
+      const emojiString = '😀😃😄';
+      renderer.setEmojis(emojiString);
+
+      // Should have segmented the string into individual emojis
+      expect(renderer.emojis.length).toBeGreaterThan(0);
+      expect(renderer.emojis[0]).toBe('😀');
+    });
+
+    it('should update emojiSetId using modulo 100', () => {
+      renderer.setEmojis(['😀']);
+      const initialSetId = renderer['emojiSetId'];
+
+      renderer.setEmojis(['😃']);
+      expect(renderer['emojiSetId']).toBe((initialSetId + 1) % 100);
+    });
+
+    it('should reset emojiSetId to 0 after reaching 99', () => {
+      // Set emojiSetId to 99
+      renderer['emojiSetId'] = 99;
+      renderer.setEmojis(['😀']);
+
+      expect(renderer['emojiSetId']).toBe(0);
+    });
+
+    it('should set emojiSet to string representation of emojiSetId after increment', () => {
+      renderer['emojiSetId'] = 42;
+      renderer.setEmojis(['😀']);
+
+      expect(renderer['emojiSet']).toBe('43'); // (42 + 1) % 100 = 43
+    });
+
+    it('should set emojiSet to string representation of incremented emojiSetId', () => {
+      // Start fresh with emojiSetId at 0
+      renderer['emojiSetId'] = 0;
+      renderer.setEmojis(['😀']);
+
+      expect(renderer['emojiSet']).toBe('1'); // (0 + 1) % 100 = 1
+
+      renderer.setEmojis(['😃']);
+      expect(renderer['emojiSet']).toBe('2'); // (1 + 1) % 100 = 2
+    });
+
+    it('should wrap emojiSetId correctly at boundary (99 -> 0)', () => {
+      renderer['emojiSetId'] = 99;
+      renderer.setEmojis(['😀']);
+
+      expect(renderer['emojiSet']).toBe('0'); // (99 + 1) % 100 = 0
+    });
+
+    it('should handle empty array', () => {
+      renderer.setEmojis([]);
+
+      expect(renderer.emojis).toEqual([]);
+    });
+
+    it('should handle string with special emoji sequences', () => {
+      // Test with a complex emoji that might have multiple code points
+      const complexEmoji = '👨‍👩‍👧‍👦'; // Family emoji with ZWJ sequences
+      renderer.setEmojis(complexEmoji);
+
+      // Intl.Segmenter should handle this correctly as a single grapheme
+      expect(renderer.emojis.length).toBe(1);
+    });
+
+    it('should update emojis multiple times independently', () => {
+      const emojis1 = ['😀', '😃'];
+      renderer.setEmojis(emojis1);
+      expect(renderer.emojis).toEqual(emojis1);
+
+      const emojis2 = ['😄', '😁', '😆'];
+      renderer.setEmojis(emojis2);
+      expect(renderer.emojis).toEqual(emojis2);
+
+      renderer.setEmojis(null);
+      expect(renderer.emojis).toEqual([]);
+    });
+
+    it('should render BLACK field with set emoji', () => {
+      renderer.setEmojis(['😀']);
+      const html = createAndRenderFieldToHtml({
+        mode: FieldModes.BLACK,
+      });
+
+      expect(html).toMatchInlineSnapshot(`
+        "
+        <td id="ce0_0" style="background-color: rgb(0, 0, 0); color: rgb(255, 255, 255);">😀</td>"
+      `);
+    });
+
+    it('should render BLACK field with seasonal emoji', () => {
+      // Spy on and mock getEmojis to return a seasonal emoji
+      const spy = vi.spyOn(seasonalEmojisModule, 'getEmojis');
+      spy.mockReturnValue({
+        emojis: ['🎄'],
+        key: 'seasonal-test',
+      });
+
+      const html = createAndRenderFieldToHtml({
+        mode: FieldModes.BLACK,
+      });
+
+      expect(html).toMatchInlineSnapshot(`
+        "
+        <td id="ce0_0" style="background-color: rgb(0, 0, 0); color: rgb(255, 255, 255);">🎄</td>"
+      `);
+
+      // Clean up
+      spy.mockRestore();
+    });
+
+    it('should prioritize setEmojis over seasonal emoji', () => {
+      // Set up both emoji sources
+      const spy = vi.spyOn(seasonalEmojisModule, 'getEmojis');
+      spy.mockReturnValue({
+        emojis: ['🎄'],
+        key: 'seasonal-test',
+      });
+
+      // setEmojis should take precedence
+      renderer.setEmojis(['😀']);
+
+      const html = createAndRenderFieldToHtml({
+        mode: FieldModes.BLACK,
+      });
+
+      // Should render the setEmojis emoji, not the seasonal one
+      expect(html).toMatchInlineSnapshot(`
+        "
+        <td id="ce0_0" style="background-color: rgb(0, 0, 0); color: rgb(255, 255, 255);">😀</td>"
+      `);
+
+      // Clean up
+      spy.mockRestore();
     });
   });
 });

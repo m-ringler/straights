@@ -97,7 +97,7 @@ export class JQueryFieldRenderer {
       this.emojis = emojis;
     }
 
-    this.emojiSetId = this.emojiSetId % 100;
+    this.emojiSetId = (this.emojiSetId + 1) % 100;
     this.emojiSet = this.emojiSetId.toString();
   }
 
@@ -216,6 +216,7 @@ export class JQueryFieldRenderer {
   private fillBlackField(element: JQuery<HTMLElement>) {
     if (this.emojis?.length > 0) {
       setEmoji(element, this.emojis, this.emojiSet);
+      return;
     }
 
     const emojisForDate = emojisModule.getEmojis(new Date());
