@@ -9,7 +9,7 @@ import {
   christmasEmojis,
   valentineEmojis,
   easterEmojis,
-} from '../seasonalEmojis';
+} from '../shared/seasonalEmojis';
 
 describe('getEasterDate', () => {
   it.each([

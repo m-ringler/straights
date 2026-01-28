@@ -4,10 +4,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
-import { JQueryFieldRenderer, RenderableField } from '../gameRenderer';
-import { FieldModes } from '../gameReader';
+import {
+  JQueryFieldRenderer,
+  RenderableField,
+} from '../shared/gameRenderer.js';
+import { FieldModes } from '../shared/gameReader.js';
 import $ from 'jquery';
-import * as seasonalEmojisModule from '../seasonalEmojis.js';
+import * as seasonalEmojisModule from '../shared/seasonalEmojis.js';
 
 // Mock the seasonalEmojis module to always return null
 vi.mock('../seasonalEmojis.js', () => ({
@@ -737,4 +740,74 @@ describe('JQueryFieldRenderer', () => {
       spy.mockRestore();
     });
   });
+
+  describe('createGridInContainer', () => {
+    it('should create grid with correct structure', () => {
+      const container = document.createElement('table');
+      document.body.appendChild(container);
+
+      renderer.createGridInContainer(3, $(container));
+
+      const html = $(container).html();
+      const indentedHtml = formatHtml(html);
+
+      expect(indentedHtml).toMatchSnapshot();
+
+      document.body.removeChild(container);
+    });
+
+    it('should create grid with max size (12x12)', () => {
+      const container = document.createElement('table');
+      document.body.appendChild(container);
+
+      renderer.createGridInContainer(12, $(container));
+
+      const html = $(container).html();
+      const indentedHtml = formatHtml(html);
+
+      expect(indentedHtml).toMatchSnapshot();
+
+      document.body.removeChild(container);
+    });
+
+    it('should create grid with size 1', () => {
+      const container = document.createElement('table');
+      document.body.appendChild(container);
+
+      renderer.createGridInContainer(1, $(container));
+
+      const html = $(container).html();
+      const indentedHtml = formatHtml(html);
+
+      expect(indentedHtml).toMatchSnapshot();
+
+      document.body.removeChild(container);
+    });
+  });
 });
+
+function formatHtml(html: string): string {
+  let indented = '';
+  let indent = 0;
+  const lines = html.split('>');
+
+  for (let i = 0; i < lines.length - 1; i++) {
+    const line = lines[i].trim();
+    if (line === '') continue;
+
+    if (line.startsWith('</')) {
+      indent--;
+    }
+
+    indented += '  '.repeat(Math.max(0, indent)) + line + '>';
+
+    if (!line.startsWith('</') && !line.endsWith('/')) {
+      indent++;
+      indented += '\n';
+    } else {
+      indented += '\n';
+    }
+  }
+
+  return indented.trim();
+}

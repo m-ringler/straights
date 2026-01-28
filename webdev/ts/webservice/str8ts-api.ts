@@ -7,6 +7,17 @@
 
 export type ApiResult = { status: number; message: string };
 
+function isApiResult(data: unknown): data is ApiResult {
+  return (
+    typeof data === 'object' &&
+    data !== null &&
+    'status' in data &&
+    typeof (data as Record<string, unknown>).status === 'number' &&
+    'message' in data &&
+    typeof (data as Record<string, unknown>).message === 'string'
+  );
+}
+
 export async function generate(
   size: number,
   difficulty: number,
@@ -16,7 +27,12 @@ export async function generate(
     `/generate?gridSize=${size}&difficulty=${difficulty - 1}&gridLayout=${gridLayout}`
   );
   const data = await response.json();
-  return data as ApiResult;
+  if (!isApiResult(data)) {
+    throw new Error(
+      `Invalid API response: expected ApiResult with status and message properties`
+    );
+  }
+  return data;
 }
 
 export async function generateHint(
@@ -30,5 +46,10 @@ export async function generateHint(
     body: JSON.stringify(gameAsJson),
   });
   const data = await response.json();
-  return data as ApiResult;
+  if (!isApiResult(data)) {
+    throw new Error(
+      `Invalid API response: expected ApiResult with status and message properties`
+    );
+  }
+  return data;
 }

@@ -213,6 +213,20 @@ export class JQueryFieldRenderer {
     return `#ce${field.row}_${field.col}`;
   }
 
+  createGridInContainer(
+    maxGridSize: number,
+    container: JQuery<HTMLElement> | any
+  ): void {
+    for (let r = 0; r < maxGridSize; r++) {
+      let row = `<tr class="row" id="r${r}" data-row="${r}">`;
+      for (let c = 0; c < maxGridSize; c++) {
+        row += `<td class="cell" id="ce${r}_${c}" data-row="${r}" data-col="${c}"></td>`;
+      }
+      row += '</tr>';
+      container.append(row);
+    }
+  }
+
   private fillBlackField(element: JQuery<HTMLElement>) {
     if (this.emojis?.length > 0) {
       setEmoji(element, this.emojis, this.emojiSet);

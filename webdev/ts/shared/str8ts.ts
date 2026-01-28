@@ -368,14 +368,7 @@ export class UIController {
   }
 
   private createGrid() {
-    for (let r = 0; r < MAX_GRID_SIZE; r++) {
-      let row = `<tr class="row" id="r${r}" data-row="${r}">`;
-      for (let c = 0; c < MAX_GRID_SIZE; c++) {
-        row += `<td class="cell" id="ce${r}_${c}" data-row="${r}" data-col="${c}"></td>`;
-      }
-      row += '</tr>';
-      this.$('.container').append(row);
-    }
+    this.renderer.createGridInContainer(MAX_GRID_SIZE, this.$('.container'));
   }
 
   private restartTimer() {

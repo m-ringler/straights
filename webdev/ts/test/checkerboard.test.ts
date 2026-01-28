@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { describe, it, expect, beforeEach } from 'vitest';
-import { renderCheckerboard } from '../checkerboard';
+import { renderCheckerboard } from '../shared/checkerboard';
 
 interface CanvasDrawingRecord {
   coords: [number, number, number, number];

@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { describe, it, expect, vi } from 'vitest';
-import { UndoStack } from '../undoStack';
+import { UndoStack } from '../shared/undoStack';
 
 describe('UndoStack', () => {
   it('should initialize with empty stack and call handler with length 0', () => {

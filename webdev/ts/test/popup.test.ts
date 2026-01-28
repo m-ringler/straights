@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { getPopupPosition, PopupElement } from '../popup';
+import { getPopupPosition, PopupElement } from '../shared/popup';
 
 describe('getPopupPosition', () => {
   const mockPopup: PopupElement = {

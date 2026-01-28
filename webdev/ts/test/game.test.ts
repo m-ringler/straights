@@ -3,8 +3,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import * as vt from 'vitest';
-import * as Str8ts from '../game';
-import { FieldModes } from '../gameReader';
+import * as Str8ts from '../shared/game';
+import { FieldModes } from '../shared/gameReader';
 import { getActiveResourcesInfo } from 'node:process';
 
 const dummyRenderer = {
