@@ -1,0 +1,196 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`JQueryFieldRenderer > createGridInContainer > should create grid with correct structure 1`] = `
+"<tr class="row" id="r0" data-row="0">
+  <td class="cell" id="ce0_0" data-row="0" data-col="0"></td>
+  <td class="cell" id="ce0_1" data-row="0" data-col="1"></td>
+  <td class="cell" id="ce0_2" data-row="0" data-col="2"></td>
+</tr>
+<tr class="row" id="r1" data-row="1">
+  <td class="cell" id="ce1_0" data-row="1" data-col="0"></td>
+  <td class="cell" id="ce1_1" data-row="1" data-col="1"></td>
+  <td class="cell" id="ce1_2" data-row="1" data-col="2"></td>
+</tr>
+<tr class="row" id="r2" data-row="2">
+  <td class="cell" id="ce2_0" data-row="2" data-col="0"></td>
+  <td class="cell" id="ce2_1" data-row="2" data-col="1"></td>
+  <td class="cell" id="ce2_2" data-row="2" data-col="2"></td>
+</tr>"
+`;
+
+exports[`JQueryFieldRenderer > createGridInContainer > should create grid with max size (12x12) 1`] = `
+"<tr class="row" id="r0" data-row="0">
+  <td class="cell" id="ce0_0" data-row="0" data-col="0"></td>
+  <td class="cell" id="ce0_1" data-row="0" data-col="1"></td>
+  <td class="cell" id="ce0_2" data-row="0" data-col="2"></td>
+  <td class="cell" id="ce0_3" data-row="0" data-col="3"></td>
+  <td class="cell" id="ce0_4" data-row="0" data-col="4"></td>
+  <td class="cell" id="ce0_5" data-row="0" data-col="5"></td>
+  <td class="cell" id="ce0_6" data-row="0" data-col="6"></td>
+  <td class="cell" id="ce0_7" data-row="0" data-col="7"></td>
+  <td class="cell" id="ce0_8" data-row="0" data-col="8"></td>
+  <td class="cell" id="ce0_9" data-row="0" data-col="9"></td>
+  <td class="cell" id="ce0_10" data-row="0" data-col="10"></td>
+  <td class="cell" id="ce0_11" data-row="0" data-col="11"></td>
+</tr>
+<tr class="row" id="r1" data-row="1">
+  <td class="cell" id="ce1_0" data-row="1" data-col="0"></td>
+  <td class="cell" id="ce1_1" data-row="1" data-col="1"></td>
+  <td class="cell" id="ce1_2" data-row="1" data-col="2"></td>
+  <td class="cell" id="ce1_3" data-row="1" data-col="3"></td>
+  <td class="cell" id="ce1_4" data-row="1" data-col="4"></td>
+  <td class="cell" id="ce1_5" data-row="1" data-col="5"></td>
+  <td class="cell" id="ce1_6" data-row="1" data-col="6"></td>
+  <td class="cell" id="ce1_7" data-row="1" data-col="7"></td>
+  <td class="cell" id="ce1_8" data-row="1" data-col="8"></td>
+  <td class="cell" id="ce1_9" data-row="1" data-col="9"></td>
+  <td class="cell" id="ce1_10" data-row="1" data-col="10"></td>
+  <td class="cell" id="ce1_11" data-row="1" data-col="11"></td>
+</tr>
+<tr class="row" id="r2" data-row="2">
+  <td class="cell" id="ce2_0" data-row="2" data-col="0"></td>
+  <td class="cell" id="ce2_1" data-row="2" data-col="1"></td>
+  <td class="cell" id="ce2_2" data-row="2" data-col="2"></td>
+  <td class="cell" id="ce2_3" data-row="2" data-col="3"></td>
+  <td class="cell" id="ce2_4" data-row="2" data-col="4"></td>
+  <td class="cell" id="ce2_5" data-row="2" data-col="5"></td>
+  <td class="cell" id="ce2_6" data-row="2" data-col="6"></td>
+  <td class="cell" id="ce2_7" data-row="2" data-col="7"></td>
+  <td class="cell" id="ce2_8" data-row="2" data-col="8"></td>
+  <td class="cell" id="ce2_9" data-row="2" data-col="9"></td>
+  <td class="cell" id="ce2_10" data-row="2" data-col="10"></td>
+  <td class="cell" id="ce2_11" data-row="2" data-col="11"></td>
+</tr>
+<tr class="row" id="r3" data-row="3">
+  <td class="cell" id="ce3_0" data-row="3" data-col="0"></td>
+  <td class="cell" id="ce3_1" data-row="3" data-col="1"></td>
+  <td class="cell" id="ce3_2" data-row="3" data-col="2"></td>
+  <td class="cell" id="ce3_3" data-row="3" data-col="3"></td>
+  <td class="cell" id="ce3_4" data-row="3" data-col="4"></td>
+  <td class="cell" id="ce3_5" data-row="3" data-col="5"></td>
+  <td class="cell" id="ce3_6" data-row="3" data-col="6"></td>
+  <td class="cell" id="ce3_7" data-row="3" data-col="7"></td>
+  <td class="cell" id="ce3_8" data-row="3" data-col="8"></td>
+  <td class="cell" id="ce3_9" data-row="3" data-col="9"></td>
+  <td class="cell" id="ce3_10" data-row="3" data-col="10"></td>
+  <td class="cell" id="ce3_11" data-row="3" data-col="11"></td>
+</tr>
+<tr class="row" id="r4" data-row="4">
+  <td class="cell" id="ce4_0" data-row="4" data-col="0"></td>
+  <td class="cell" id="ce4_1" data-row="4" data-col="1"></td>
+  <td class="cell" id="ce4_2" data-row="4" data-col="2"></td>
+  <td class="cell" id="ce4_3" data-row="4" data-col="3"></td>
+  <td class="cell" id="ce4_4" data-row="4" data-col="4"></td>
+  <td class="cell" id="ce4_5" data-row="4" data-col="5"></td>
+  <td class="cell" id="ce4_6" data-row="4" data-col="6"></td>
+  <td class="cell" id="ce4_7" data-row="4" data-col="7"></td>
+  <td class="cell" id="ce4_8" data-row="4" data-col="8"></td>
+  <td class="cell" id="ce4_9" data-row="4" data-col="9"></td>
+  <td class="cell" id="ce4_10" data-row="4" data-col="10"></td>
+  <td class="cell" id="ce4_11" data-row="4" data-col="11"></td>
+</tr>
+<tr class="row" id="r5" data-row="5">
+  <td class="cell" id="ce5_0" data-row="5" data-col="0"></td>
+  <td class="cell" id="ce5_1" data-row="5" data-col="1"></td>
+  <td class="cell" id="ce5_2" data-row="5" data-col="2"></td>
+  <td class="cell" id="ce5_3" data-row="5" data-col="3"></td>
+  <td class="cell" id="ce5_4" data-row="5" data-col="4"></td>
+  <td class="cell" id="ce5_5" data-row="5" data-col="5"></td>
+  <td class="cell" id="ce5_6" data-row="5" data-col="6"></td>
+  <td class="cell" id="ce5_7" data-row="5" data-col="7"></td>
+  <td class="cell" id="ce5_8" data-row="5" data-col="8"></td>
+  <td class="cell" id="ce5_9" data-row="5" data-col="9"></td>
+  <td class="cell" id="ce5_10" data-row="5" data-col="10"></td>
+  <td class="cell" id="ce5_11" data-row="5" data-col="11"></td>
+</tr>
+<tr class="row" id="r6" data-row="6">
+  <td class="cell" id="ce6_0" data-row="6" data-col="0"></td>
+  <td class="cell" id="ce6_1" data-row="6" data-col="1"></td>
+  <td class="cell" id="ce6_2" data-row="6" data-col="2"></td>
+  <td class="cell" id="ce6_3" data-row="6" data-col="3"></td>
+  <td class="cell" id="ce6_4" data-row="6" data-col="4"></td>
+  <td class="cell" id="ce6_5" data-row="6" data-col="5"></td>
+  <td class="cell" id="ce6_6" data-row="6" data-col="6"></td>
+  <td class="cell" id="ce6_7" data-row="6" data-col="7"></td>
+  <td class="cell" id="ce6_8" data-row="6" data-col="8"></td>
+  <td class="cell" id="ce6_9" data-row="6" data-col="9"></td>
+  <td class="cell" id="ce6_10" data-row="6" data-col="10"></td>
+  <td class="cell" id="ce6_11" data-row="6" data-col="11"></td>
+</tr>
+<tr class="row" id="r7" data-row="7">
+  <td class="cell" id="ce7_0" data-row="7" data-col="0"></td>
+  <td class="cell" id="ce7_1" data-row="7" data-col="1"></td>
+  <td class="cell" id="ce7_2" data-row="7" data-col="2"></td>
+  <td class="cell" id="ce7_3" data-row="7" data-col="3"></td>
+  <td class="cell" id="ce7_4" data-row="7" data-col="4"></td>
+  <td class="cell" id="ce7_5" data-row="7" data-col="5"></td>
+  <td class="cell" id="ce7_6" data-row="7" data-col="6"></td>
+  <td class="cell" id="ce7_7" data-row="7" data-col="7"></td>
+  <td class="cell" id="ce7_8" data-row="7" data-col="8"></td>
+  <td class="cell" id="ce7_9" data-row="7" data-col="9"></td>
+  <td class="cell" id="ce7_10" data-row="7" data-col="10"></td>
+  <td class="cell" id="ce7_11" data-row="7" data-col="11"></td>
+</tr>
+<tr class="row" id="r8" data-row="8">
+  <td class="cell" id="ce8_0" data-row="8" data-col="0"></td>
+  <td class="cell" id="ce8_1" data-row="8" data-col="1"></td>
+  <td class="cell" id="ce8_2" data-row="8" data-col="2"></td>
+  <td class="cell" id="ce8_3" data-row="8" data-col="3"></td>
+  <td class="cell" id="ce8_4" data-row="8" data-col="4"></td>
+  <td class="cell" id="ce8_5" data-row="8" data-col="5"></td>
+  <td class="cell" id="ce8_6" data-row="8" data-col="6"></td>
+  <td class="cell" id="ce8_7" data-row="8" data-col="7"></td>
+  <td class="cell" id="ce8_8" data-row="8" data-col="8"></td>
+  <td class="cell" id="ce8_9" data-row="8" data-col="9"></td>
+  <td class="cell" id="ce8_10" data-row="8" data-col="10"></td>
+  <td class="cell" id="ce8_11" data-row="8" data-col="11"></td>
+</tr>
+<tr class="row" id="r9" data-row="9">
+  <td class="cell" id="ce9_0" data-row="9" data-col="0"></td>
+  <td class="cell" id="ce9_1" data-row="9" data-col="1"></td>
+  <td class="cell" id="ce9_2" data-row="9" data-col="2"></td>
+  <td class="cell" id="ce9_3" data-row="9" data-col="3"></td>
+  <td class="cell" id="ce9_4" data-row="9" data-col="4"></td>
+  <td class="cell" id="ce9_5" data-row="9" data-col="5"></td>
+  <td class="cell" id="ce9_6" data-row="9" data-col="6"></td>
+  <td class="cell" id="ce9_7" data-row="9" data-col="7"></td>
+  <td class="cell" id="ce9_8" data-row="9" data-col="8"></td>
+  <td class="cell" id="ce9_9" data-row="9" data-col="9"></td>
+  <td class="cell" id="ce9_10" data-row="9" data-col="10"></td>
+  <td class="cell" id="ce9_11" data-row="9" data-col="11"></td>
+</tr>
+<tr class="row" id="r10" data-row="10">
+  <td class="cell" id="ce10_0" data-row="10" data-col="0"></td>
+  <td class="cell" id="ce10_1" data-row="10" data-col="1"></td>
+  <td class="cell" id="ce10_2" data-row="10" data-col="2"></td>
+  <td class="cell" id="ce10_3" data-row="10" data-col="3"></td>
+  <td class="cell" id="ce10_4" data-row="10" data-col="4"></td>
+  <td class="cell" id="ce10_5" data-row="10" data-col="5"></td>
+  <td class="cell" id="ce10_6" data-row="10" data-col="6"></td>
+  <td class="cell" id="ce10_7" data-row="10" data-col="7"></td>
+  <td class="cell" id="ce10_8" data-row="10" data-col="8"></td>
+  <td class="cell" id="ce10_9" data-row="10" data-col="9"></td>
+  <td class="cell" id="ce10_10" data-row="10" data-col="10"></td>
+  <td class="cell" id="ce10_11" data-row="10" data-col="11"></td>
+</tr>
+<tr class="row" id="r11" data-row="11">
+  <td class="cell" id="ce11_0" data-row="11" data-col="0"></td>
+  <td class="cell" id="ce11_1" data-row="11" data-col="1"></td>
+  <td class="cell" id="ce11_2" data-row="11" data-col="2"></td>
+  <td class="cell" id="ce11_3" data-row="11" data-col="3"></td>
+  <td class="cell" id="ce11_4" data-row="11" data-col="4"></td>
+  <td class="cell" id="ce11_5" data-row="11" data-col="5"></td>
+  <td class="cell" id="ce11_6" data-row="11" data-col="6"></td>
+  <td class="cell" id="ce11_7" data-row="11" data-col="7"></td>
+  <td class="cell" id="ce11_8" data-row="11" data-col="8"></td>
+  <td class="cell" id="ce11_9" data-row="11" data-col="9"></td>
+  <td class="cell" id="ce11_10" data-row="11" data-col="10"></td>
+  <td class="cell" id="ce11_11" data-row="11" data-col="11"></td>
+</tr>"
+`;
+
+exports[`JQueryFieldRenderer > createGridInContainer > should create grid with size 1 1`] = `
+"<tr class="row" id="r0" data-row="0">
+  <td class="cell" id="ce0_0" data-row="0" data-col="0"></td>
+</tr>"
+`;

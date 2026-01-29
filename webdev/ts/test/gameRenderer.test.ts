@@ -58,7 +58,7 @@ describe('JQueryFieldRenderer', () => {
 
   function createAndRenderFieldToHtml(config: renderData): string {
     const { element } = createAndRenderField(config);
-    return element.outerHTML.replaceAll('<t', '\n<t');
+    return formatHtml(element.outerHTML);
   }
 
   function createAndRenderField(config: renderData): {
@@ -100,10 +100,7 @@ describe('JQueryFieldRenderer', () => {
       });
 
       expect(html).toMatchInlineSnapshot(
-        `
-        "
-        <td id="ce0_0" style="background-color: rgb(0, 0, 0); color: rgb(255, 255, 255);"></td>"
-      `
+        `"<td id="ce0_0" style="background-color: rgb(0, 0, 0); color: rgb(255, 255, 255);"></td>"`
       );
     });
   });
@@ -116,10 +113,7 @@ describe('JQueryFieldRenderer', () => {
       });
 
       expect(html).toMatchInlineSnapshot(
-        `
-        "
-        <td id="ce0_0" style="background-color: rgb(0, 0, 0); color: rgb(255, 255, 255);">5</td>"
-      `
+        `"<td id="ce0_0" style="background-color: rgb(0, 0, 0); color: rgb(255, 255, 255);">5</td>"`
       );
     });
   });
@@ -132,10 +126,7 @@ describe('JQueryFieldRenderer', () => {
       });
 
       expect(html).toMatchInlineSnapshot(
-        `
-        "
-        <td id="ce0_0" style="background-color: rgb(255, 255, 255); color: rgb(0, 0, 0);">7</td>"
-      `
+        `"<td id="ce0_0" style="background-color: rgb(255, 255, 255); color: rgb(0, 0, 0);">7</td>"`
       );
     });
   });
@@ -148,10 +139,7 @@ describe('JQueryFieldRenderer', () => {
       });
 
       expect(html).toMatchInlineSnapshot(
-        `
-        "
-        <td id="ce0_0" style="background-color: rgb(255, 255, 255); color: rgb(0, 51, 120);"></td>"
-      `
+        `"<td id="ce0_0" style="background-color: rgb(255, 255, 255); color: rgb(0, 51, 120);"></td>"`
       );
     });
 
@@ -173,8 +161,7 @@ describe('JQueryFieldRenderer', () => {
         });
 
         expect(html).toBe(
-          `
-<td id="ce0_0" style="background-color: rgb(255, 255, 255); color: rgb(95, 0, 82);">4</td>`
+          `<td id="ce0_0" style="background-color: rgb(255, 255, 255); color: rgb(95, 0, 82);">4</td>`
         );
       }
     );
@@ -189,10 +176,7 @@ describe('JQueryFieldRenderer', () => {
       });
 
       expect(html).toMatchInlineSnapshot(
-        `
-        "
-        <td id="ce0_0" style="background-color: rgb(255, 255, 255); color: rgb(0, 51, 120);">4</td>"
-      `
+        `"<td id="ce0_0" style="background-color: rgb(255, 255, 255); color: rgb(0, 51, 120);">4</td>"`
       );
     });
 
@@ -207,10 +191,7 @@ describe('JQueryFieldRenderer', () => {
       });
 
       expect(html).toMatchInlineSnapshot(
-        `
-        "
-        <td id="ce0_0" style="background-color: rgb(255, 255, 255); color: rgb(0, 51, 120);">3</td>"
-      `
+        `"<td id="ce0_0" style="background-color: rgb(255, 255, 255); color: rgb(0, 51, 120);">3</td>"`
       );
     });
 
@@ -225,10 +206,7 @@ describe('JQueryFieldRenderer', () => {
       });
 
       expect(html).toMatchInlineSnapshot(
-        `
-        "
-        <td id="ce0_0" style="background-color: rgb(255, 199, 199); color: rgb(95, 0, 82);">3</td>"
-      `
+        `"<td id="ce0_0" style="background-color: rgb(255, 199, 199); color: rgb(95, 0, 82);">3</td>"`
       );
     });
 
@@ -240,22 +218,26 @@ describe('JQueryFieldRenderer', () => {
 
       expect(html).toMatchInlineSnapshot(
         `
-        "
-        <td id="ce0_0" style="background-color: rgb(255, 255, 255); color: rgb(0, 51, 120);">
-        <table class="mini" cellspacing="0">
-        <tbody>
-        <tr>
-        <td>1</td>
-        <td>2</td>
-        <td class="transparent">3</td></tr>
-        <tr>
-        <td class="transparent">4</td>
-        <td>5</td>
-        <td class="transparent">6</td></tr>
-        <tr>
-        <td>7</td>
-        <td>8</td>
-        <td>9</td></tr></tbody></table></td>"
+        "<td id="ce0_0" style="background-color: rgb(255, 255, 255); color: rgb(0, 51, 120);"><table class="mini" cellspacing="0">
+            <tbody>
+              <tr>
+                <td>1</td>
+                    <td>2</td>
+                        <td class="transparent">3</td>
+                          </tr>
+                          <tr>
+                            <td class="transparent">4</td>
+                                <td>5</td>
+                                    <td class="transparent">6</td>
+                                      </tr>
+                                      <tr>
+                                        <td>7</td>
+                                            <td>8</td>
+                                                <td>9</td>
+                                                  </tr>
+                                                </tbody>
+                                              </table>
+                                            </td>"
       `
       );
     });
@@ -269,22 +251,26 @@ describe('JQueryFieldRenderer', () => {
 
       expect(html).toMatchInlineSnapshot(
         `
-        "
-        <td id="ce0_0" style="background-color: rgb(255, 255, 153); color: rgb(0, 51, 120);">
-        <table class="mini" cellspacing="0">
-        <tbody>
-        <tr>
-        <td class="transparent">1</td>
-        <td>2</td>
-        <td>3</td></tr>
-        <tr>
-        <td class="transparent">4</td>
-        <td class="hint">5</td>
-        <td class="transparent">6</td></tr>
-        <tr>
-        <td class="transparent">7</td>
-        <td>8</td>
-        <td class="transparent">9</td></tr></tbody></table></td>"
+        "<td id="ce0_0" style="background-color: rgb(255, 255, 153); color: rgb(0, 51, 120);"><table class="mini" cellspacing="0">
+            <tbody>
+              <tr>
+                <td class="transparent">1</td>
+                    <td>2</td>
+                        <td>3</td>
+                          </tr>
+                          <tr>
+                            <td class="transparent">4</td>
+                                <td class="hint">5</td>
+                                    <td class="transparent">6</td>
+                                      </tr>
+                                      <tr>
+                                        <td class="transparent">7</td>
+                                            <td>8</td>
+                                                <td class="transparent">9</td>
+                                                  </tr>
+                                                </tbody>
+                                              </table>
+                                            </td>"
       `
       );
     });
@@ -297,22 +283,26 @@ describe('JQueryFieldRenderer', () => {
 
       expect(html).toMatchInlineSnapshot(
         `
-        "
-        <td id="ce0_0" style="background-color: rgb(255, 255, 255); color: rgb(0, 51, 120);">
-        <table class="mini" cellspacing="0">
-        <tbody>
-        <tr>
-        <td class="transparent">1</td>
-        <td class="transparent">2</td>
-        <td class="transparent">3</td></tr>
-        <tr>
-        <td>4</td>
-        <td class="transparent">5</td>
-        <td class="transparent">6</td></tr>
-        <tr>
-        <td class="transparent">7</td>
-        <td class="transparent">8</td>
-        <td class="transparent">9</td></tr></tbody></table></td>"
+        "<td id="ce0_0" style="background-color: rgb(255, 255, 255); color: rgb(0, 51, 120);"><table class="mini" cellspacing="0">
+            <tbody>
+              <tr>
+                <td class="transparent">1</td>
+                    <td class="transparent">2</td>
+                        <td class="transparent">3</td>
+                          </tr>
+                          <tr>
+                            <td>4</td>
+                                <td class="transparent">5</td>
+                                    <td class="transparent">6</td>
+                                      </tr>
+                                      <tr>
+                                        <td class="transparent">7</td>
+                                            <td class="transparent">8</td>
+                                                <td class="transparent">9</td>
+                                                  </tr>
+                                                </tbody>
+                                              </table>
+                                            </td>"
       `
       );
     });
@@ -325,10 +315,7 @@ describe('JQueryFieldRenderer', () => {
       });
 
       expect(html).toMatchInlineSnapshot(
-        `
-        "
-        <td id="ce0_0" style="background-color: rgb(255, 255, 255); color: rgb(0, 51, 120);"></td>"
-      `
+        `"<td id="ce0_0" style="background-color: rgb(255, 255, 255); color: rgb(0, 51, 120);"></td>"`
       );
     });
 
@@ -339,10 +326,7 @@ describe('JQueryFieldRenderer', () => {
       });
 
       expect(html).toMatchInlineSnapshot(
-        `
-        "
-        <td id="ce0_0" style="background-color: rgb(199, 221, 255); color: rgb(0, 51, 120);"></td>"
-      `
+        `"<td id="ce0_0" style="background-color: rgb(199, 221, 255); color: rgb(0, 51, 120);"></td>"`
       );
     });
 
@@ -354,10 +338,7 @@ describe('JQueryFieldRenderer', () => {
       });
 
       expect(html).toMatchInlineSnapshot(
-        `
-        "
-        <td id="ce0_0" style="background-color: rgb(255, 199, 199); color: rgb(95, 0, 82);">5</td>"
-      `
+        `"<td id="ce0_0" style="background-color: rgb(255, 199, 199); color: rgb(95, 0, 82);">5</td>"`
       );
     });
 
@@ -370,10 +351,7 @@ describe('JQueryFieldRenderer', () => {
       });
 
       expect(html).toMatchInlineSnapshot(
-        `
-        "
-        <td id="ce0_0" style="background-color: rgb(238, 170, 255); color: rgb(95, 0, 82);">6</td>"
-      `
+        `"<td id="ce0_0" style="background-color: rgb(238, 170, 255); color: rgb(95, 0, 82);">6</td>"`
       );
     });
 
@@ -387,22 +365,26 @@ describe('JQueryFieldRenderer', () => {
 
       expect(html).toMatchInlineSnapshot(
         `
-        "
-        <td id="ce0_0" style="background-color: rgb(255, 255, 153); color: rgb(0, 51, 120);">
-        <table class="mini" cellspacing="0">
-        <tbody>
-        <tr>
-        <td>1</td>
-        <td>2</td>
-        <td class="hint">3</td></tr>
-        <tr>
-        <td class="transparent">4</td>
-        <td class="transparent">5</td>
-        <td class="transparent">6</td></tr>
-        <tr>
-        <td class="transparent">7</td>
-        <td class="transparent">8</td>
-        <td class="transparent">9</td></tr></tbody></table></td>"
+        "<td id="ce0_0" style="background-color: rgb(255, 255, 153); color: rgb(0, 51, 120);"><table class="mini" cellspacing="0">
+            <tbody>
+              <tr>
+                <td>1</td>
+                    <td>2</td>
+                        <td class="hint">3</td>
+                          </tr>
+                          <tr>
+                            <td class="transparent">4</td>
+                                <td class="transparent">5</td>
+                                    <td class="transparent">6</td>
+                                      </tr>
+                                      <tr>
+                                        <td class="transparent">7</td>
+                                            <td class="transparent">8</td>
+                                                <td class="transparent">9</td>
+                                                  </tr>
+                                                </tbody>
+                                              </table>
+                                            </td>"
       `
       );
     });
@@ -413,10 +395,7 @@ describe('JQueryFieldRenderer', () => {
       });
 
       expect(html).toMatchInlineSnapshot(
-        `
-        "
-        <td id="ce0_0" style="background-color: rgb(0, 0, 0); color: rgb(255, 255, 255);"></td>"
-      `
+        `"<td id="ce0_0" style="background-color: rgb(0, 0, 0); color: rgb(255, 255, 255);"></td>"`
       );
     });
 
@@ -427,10 +406,7 @@ describe('JQueryFieldRenderer', () => {
       });
 
       expect(html).toMatchInlineSnapshot(
-        `
-        "
-        <td id="ce0_0" style="background-color: rgb(255, 255, 255); color: rgb(0, 0, 0);">2</td>"
-      `
+        `"<td id="ce0_0" style="background-color: rgb(255, 255, 255); color: rgb(0, 0, 0);">2</td>"`
       );
     });
   });
@@ -443,10 +419,7 @@ describe('JQueryFieldRenderer', () => {
       });
 
       expect(html).toMatchInlineSnapshot(
-        `
-        "
-        <td id="ce0_0" style="background-color: rgb(255, 255, 255); color: rgb(0, 51, 120);">1</td>"
-      `
+        `"<td id="ce0_0" style="background-color: rgb(255, 255, 255); color: rgb(0, 51, 120);">1</td>"`
       );
     });
 
@@ -458,10 +431,7 @@ describe('JQueryFieldRenderer', () => {
       });
 
       expect(html).toMatchInlineSnapshot(
-        `
-        "
-        <td id="ce0_0" style="background-color: rgb(255, 199, 199); color: rgb(95, 0, 82);">9</td>"
-      `
+        `"<td id="ce0_0" style="background-color: rgb(255, 199, 199); color: rgb(95, 0, 82);">9</td>"`
       );
     });
 
@@ -474,10 +444,7 @@ describe('JQueryFieldRenderer', () => {
       });
 
       expect(html).toMatchInlineSnapshot(
-        `
-        "
-        <td id="ce0_0" style="background-color: rgb(255, 255, 255); color: rgb(95, 0, 82);">5</td>"
-      `
+        `"<td id="ce0_0" style="background-color: rgb(255, 255, 255); color: rgb(95, 0, 82);">5</td>"`
       );
     });
 
@@ -490,10 +457,7 @@ describe('JQueryFieldRenderer', () => {
       });
 
       expect(html).toMatchInlineSnapshot(
-        `
-        "
-        <td id="ce0_0" style="background-color: rgb(255, 255, 255); color: rgb(0, 51, 120);">4</td>"
-      `
+        `"<td id="ce0_0" style="background-color: rgb(255, 255, 255); color: rgb(0, 51, 120);">4</td>"`
       );
     });
 
@@ -503,10 +467,7 @@ describe('JQueryFieldRenderer', () => {
       });
 
       expect(html).toMatchInlineSnapshot(
-        `
-        "
-        <td id="ce0_0" style="background-color: rgb(0, 0, 0); color: rgb(255, 255, 255);"></td>"
-      `
+        `"<td id="ce0_0" style="background-color: rgb(0, 0, 0); color: rgb(255, 255, 255);"></td>"`
       );
     });
 
@@ -517,10 +478,7 @@ describe('JQueryFieldRenderer', () => {
       });
 
       expect(html).toMatchInlineSnapshot(
-        `
-        "
-        <td id="ce0_0" style="background-color: rgb(255, 255, 255); color: rgb(0, 0, 0);">8</td>"
-      `
+        `"<td id="ce0_0" style="background-color: rgb(255, 255, 255); color: rgb(0, 0, 0);">8</td>"`
       );
     });
   });
@@ -534,10 +492,7 @@ describe('JQueryFieldRenderer', () => {
       });
 
       expect(html).toMatchInlineSnapshot(
-        `
-        "
-        <td id="ce0_0" style="background-color: rgb(255, 255, 255); color: rgb(0, 51, 120);">2</td>"
-      `
+        `"<td id="ce0_0" style="background-color: rgb(255, 255, 255); color: rgb(0, 51, 120);">2</td>"`
       );
     });
   });
@@ -551,10 +506,7 @@ describe('JQueryFieldRenderer', () => {
       });
 
       expect(html).toMatchInlineSnapshot(
-        `
-        "
-        <td id="ce0_0" style="background-color: rgb(255, 255, 153); color: rgb(0, 51, 120);"></td>"
-      `
+        `"<td id="ce0_0" style="background-color: rgb(255, 255, 153); color: rgb(0, 51, 120);"></td>"`
       );
     });
 
@@ -566,10 +518,7 @@ describe('JQueryFieldRenderer', () => {
       });
 
       expect(html).toMatchInlineSnapshot(
-        `
-        "
-        <td id="ce0_0" style="background-color: rgb(238, 170, 255); color: rgb(95, 0, 82);"></td>"
-      `
+        `"<td id="ce0_0" style="background-color: rgb(238, 170, 255); color: rgb(95, 0, 82);"></td>"`
       );
     });
 
@@ -580,10 +529,7 @@ describe('JQueryFieldRenderer', () => {
       });
 
       expect(html).toMatchInlineSnapshot(
-        `
-        "
-        <td id="ce0_0" style="background-color: rgb(255, 199, 199); color: rgb(95, 0, 82);"></td>"
-      `
+        `"<td id="ce0_0" style="background-color: rgb(255, 199, 199); color: rgb(95, 0, 82);"></td>"`
       );
     });
   });
@@ -688,10 +634,9 @@ describe('JQueryFieldRenderer', () => {
         mode: FieldModes.BLACK,
       });
 
-      expect(html).toMatchInlineSnapshot(`
-        "
-        <td id="ce0_0" style="background-color: rgb(0, 0, 0); color: rgb(255, 255, 255);">😀</td>"
-      `);
+      expect(html).toMatchInlineSnapshot(
+        `"<td id="ce0_0" style="background-color: rgb(0, 0, 0); color: rgb(255, 255, 255);">😀</td>"`
+      );
     });
 
     it('should render BLACK field with seasonal emoji', () => {
@@ -706,10 +651,9 @@ describe('JQueryFieldRenderer', () => {
         mode: FieldModes.BLACK,
       });
 
-      expect(html).toMatchInlineSnapshot(`
-        "
-        <td id="ce0_0" style="background-color: rgb(0, 0, 0); color: rgb(255, 255, 255);">🎄</td>"
-      `);
+      expect(html).toMatchInlineSnapshot(
+        `"<td id="ce0_0" style="background-color: rgb(0, 0, 0); color: rgb(255, 255, 255);">🎄</td>"`
+      );
 
       // Clean up
       spy.mockRestore();
@@ -731,10 +675,9 @@ describe('JQueryFieldRenderer', () => {
       });
 
       // Should render the setEmojis emoji, not the seasonal one
-      expect(html).toMatchInlineSnapshot(`
-        "
-        <td id="ce0_0" style="background-color: rgb(0, 0, 0); color: rgb(255, 255, 255);">😀</td>"
-      `);
+      expect(html).toMatchInlineSnapshot(
+        `"<td id="ce0_0" style="background-color: rgb(0, 0, 0); color: rgb(255, 255, 255);">😀</td>"`
+      );
 
       // Clean up
       spy.mockRestore();
@@ -790,23 +733,31 @@ function formatHtml(html: string): string {
   let indented = '';
   let indent = 0;
   const lines = html.split('>');
+  let inTd = false;
 
   for (let i = 0; i < lines.length - 1; i++) {
-    const line = lines[i].trim();
-    if (line === '') continue;
+    const line = lines[i];
+
+    if (line === '') {
+      indented += '\n';
+      continue;
+    }
 
     if (line.startsWith('</')) {
       indent--;
     }
 
-    indented += '  '.repeat(Math.max(0, indent)) + line + '>';
+    if (!inTd) {
+      indented += '\n' + '  '.repeat(Math.max(0, indent));
+    }
+
+    indented += line + '>';
 
     if (!line.startsWith('</') && !line.endsWith('/')) {
       indent++;
-      indented += '\n';
-    } else {
-      indented += '\n';
     }
+
+    inTd = line.startsWith('<td');
   }
 
   return indented.trim();
