@@ -28,8 +28,9 @@ export class JQueryFieldRenderer {
 
   constructor(
     private $: JQueryStatic,
-    private darkMode: boolean,
-    private maxGridSize: number
+    public readonly darkMode: boolean,
+    public readonly maxGridSize: number,
+    public readonly cellStyle: string = 'cell'
   ) {
     this.colors = this.darkMode
       ? JQueryFieldRenderer.gameColorsDark
@@ -210,6 +211,10 @@ export class JQueryFieldRenderer {
     return result;
   }
 
+  public getAllGridCells() {
+    return this.$('td[id^="ce"]');
+  }
+
   private static getSelector(field: RenderableField): string {
     return `#ce${field.row}_${field.col}`;
   }
@@ -218,7 +223,7 @@ export class JQueryFieldRenderer {
     for (let r = 0; r < this.maxGridSize; r++) {
       let row = `<tr class="row" id="r${r}" data-row="${r}">`;
       for (let c = 0; c < this.maxGridSize; c++) {
-        row += `<td class="cell" id="ce${r}_${c}" data-row="${r}" data-col="${c}"></td>`;
+        row += `<td class="${this.cellStyle}" id="ce${r}_${c}" data-row="${r}" data-col="${c}"></td>`;
       }
       row += '</tr>';
       container.append(row);

@@ -765,7 +765,7 @@ export class UIController {
       // Large screen
       this.$('#buttons-small').hide();
       this.$('#buttons-large').show();
-      this.$('.cell').css({
+      this.$(`.${this.renderer.cellStyle}`).css({
         'font-size': '22pt',
         width: '41px',
         height: '41px',
@@ -782,7 +782,7 @@ export class UIController {
       this.$('#buttons-large').hide();
       this.$('.container').css({ margin: '5px 2px' });
       this.$('.controls').css({ margin: '0px 2px' });
-      this.$('.cell').css({
+      this.$(`.${this.renderer.cellStyle}`).css({
         'font-size': '17pt',
         width: `${cellwidth}px`,
         height: `${cellwidth}px`,
@@ -803,7 +803,7 @@ export class UIController {
     await this.handleGameLoadAsync();
 
     // event handlers for UI elements
-    const gridCells = this.$('td[id^="ce"]');
+    const gridCells = this.renderer.getAllGridCells();
     gridCells.on('click', (evt: Event) => {
       const { row, col } = this.getRowAndColumnOfTargetCell(evt);
       this.setActiveField(row, col);
