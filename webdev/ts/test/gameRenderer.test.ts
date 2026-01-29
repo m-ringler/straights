@@ -30,7 +30,7 @@ describe('JQueryFieldRenderer', () => {
     document.body.appendChild(table);
 
     // Create renderer with light mode
-    renderer = new JQueryFieldRenderer($, false);
+    renderer = new JQueryFieldRenderer($, false, 5);
   });
 
   afterEach(() => {
@@ -684,47 +684,61 @@ describe('JQueryFieldRenderer', () => {
     });
   });
 
-  describe('createGridInContainer', () => {
-    it('should create grid with correct structure', () => {
-      const container = document.createElement('table');
-      document.body.appendChild(container);
+  it('should create grid with max size (5x5)', () => {
+    const container = document.createElement('table');
+    document.body.appendChild(container);
 
-      renderer.createGridInContainer(3, $(container));
+    renderer.createGridInContainer($(container));
 
-      const html = $(container).html();
-      const indentedHtml = formatHtml(html);
+    const html = $(container).html();
+    const indentedHtml = formatHtml(html);
 
-      expect(indentedHtml).toMatchSnapshot();
+    expect(indentedHtml).toMatchSnapshot();
 
-      document.body.removeChild(container);
-    });
+    document.body.removeChild(container);
+  });
 
-    it('should create grid with max size (12x12)', () => {
-      const container = document.createElement('table');
-      document.body.appendChild(container);
+  it('should shrink grid correctly', () => {
+    const container = document.createElement('table');
+    document.body.appendChild(container);
 
-      renderer.createGridInContainer(12, $(container));
+    renderer.createGridInContainer($(container));
+    renderer.setGridSize(3);
 
-      const html = $(container).html();
-      const indentedHtml = formatHtml(html);
+    const html = $(container).html();
+    const indentedHtml = formatHtml(html);
 
-      expect(indentedHtml).toMatchSnapshot();
+    expect(indentedHtml).toMatchSnapshot();
 
-      document.body.removeChild(container);
-    });
+    document.body.removeChild(container);
+  });
 
-    it('should create grid with size 1', () => {
-      const container = document.createElement('table');
-      document.body.appendChild(container);
+  it('should grow grid correctly', () => {
+    const container = document.createElement('table');
+    document.body.appendChild(container);
 
-      renderer.createGridInContainer(1, $(container));
+    renderer.createGridInContainer($(container));
+    renderer.setGridSize(1);
+    renderer.setGridSize(4);
 
-      const html = $(container).html();
-      const indentedHtml = formatHtml(html);
+    const html = $(container).html();
+    const indentedHtml = formatHtml(html);
 
-      expect(indentedHtml).toMatchSnapshot();
+    expect(indentedHtml).toMatchSnapshot();
 
-      document.body.removeChild(container);
+    document.body.removeChild(container);
+  });
+
+  describe('setGridSize guard clause', () => {
+    it.each<{ size: number; description: string }>([
+      { size: 0, description: 'size is zero' },
+      { size: -1, description: 'size is negative' },
+      { size: 6, description: 'size exceeds maxGridSize' },
+      { size: 100, description: 'size is much larger than maxGridSize' },
+    ])('should throw error when $description', ({ size }) => {
+      expect(() => renderer.setGridSize(size)).toThrow(
+        new Error(`Invalid grid size ${size}, must be between 1 and 5`)
+      );
     });
   });
 });

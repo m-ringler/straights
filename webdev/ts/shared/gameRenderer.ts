@@ -28,7 +28,8 @@ export class JQueryFieldRenderer {
 
   constructor(
     private $: JQueryStatic,
-    private darkMode: boolean
+    private darkMode: boolean,
+    private maxGridSize: number
   ) {
     this.colors = this.darkMode
       ? JQueryFieldRenderer.gameColorsDark
@@ -213,17 +214,35 @@ export class JQueryFieldRenderer {
     return `#ce${field.row}_${field.col}`;
   }
 
-  createGridInContainer(
-    maxGridSize: number,
-    container: JQuery<HTMLElement> | any
-  ): void {
-    for (let r = 0; r < maxGridSize; r++) {
+  createGridInContainer(container: JQuery<HTMLElement> | any): void {
+    for (let r = 0; r < this.maxGridSize; r++) {
       let row = `<tr class="row" id="r${r}" data-row="${r}">`;
-      for (let c = 0; c < maxGridSize; c++) {
+      for (let c = 0; c < this.maxGridSize; c++) {
         row += `<td class="cell" id="ce${r}_${c}" data-row="${r}" data-col="${c}"></td>`;
       }
       row += '</tr>';
       container.append(row);
+    }
+  }
+
+  setGridSize(size: number): void {
+    if (size < 1 || size > this.maxGridSize) {
+      throw new Error(
+        `Invalid grid size ${size}, must be between 1 and ${this.maxGridSize}`
+      );
+    }
+
+    for (let r = 0; r < size; r++) {
+      this.$('#r' + r).show();
+      for (let c = 0; c < size; c++) {
+        this.$(`#ce${r}_${c}`).show();
+      }
+      for (let c = size; c < this.maxGridSize; c++) {
+        this.$(`#ce${r}_${c}`).hide();
+      }
+    }
+    for (let r = size; r < this.maxGridSize; r++) {
+      this.$('#r' + r).hide();
     }
   }
 

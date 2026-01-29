@@ -134,7 +134,11 @@ export class UIController {
     this.undoStack = new UndoStack(this.renderUndoButton.bind(this));
     const darkMode = win.matchMedia('(prefers-color-scheme: dark)').matches;
     this.buttonColors = getButtonColors(darkMode);
-    this.renderer = new Renderer.JQueryFieldRenderer(this.$ as any, darkMode);
+    this.renderer = new Renderer.JQueryFieldRenderer(
+      this.$ as any,
+      darkMode,
+      MAX_GRID_SIZE
+    );
     this.game = new Str8ts.Game(this.renderer);
     this.gameHistory = new GameHistory<Str8ts.DumpedStateRead>(localStorage);
     this.numberInput = new NumberInput(
@@ -353,22 +357,12 @@ export class UIController {
     for (let i = this.currentGridSize + 1; i <= MAX_GRID_SIZE; i++) {
       this.$(`td[data-button="bn${i}"]`).hide();
     }
-    for (let r = 0; r < this.currentGridSize; r++) {
-      this.$('#r' + r).show();
-      for (let c = 0; c < this.currentGridSize; c++) {
-        this.$(`#ce${r}_${c}`).show();
-      }
-      for (let c = this.currentGridSize; c < MAX_GRID_SIZE; c++) {
-        this.$(`#ce${r}_${c}`).hide();
-      }
-    }
-    for (let r = this.currentGridSize; r < MAX_GRID_SIZE; r++) {
-      this.$('#r' + r).hide();
-    }
+
+    this.renderer.setGridSize(this.currentGridSize);
   }
 
   private createGrid() {
-    this.renderer.createGridInContainer(MAX_GRID_SIZE, this.$('.container'));
+    this.renderer.createGridInContainer(this.$('.container'));
   }
 
   private restartTimer() {
