@@ -251,6 +251,17 @@ export class JQueryFieldRenderer {
     }
   }
 
+  getRowAndColumnFromSelection(selection: {
+    attr(arg0: string): string | void | undefined | number;
+  }): {
+    row: number;
+    col: number;
+  } {
+    const row = Number(selection.attr('data-row'));
+    const col = Number(selection.attr('data-col'));
+    return { row, col };
+  }
+
   private fillBlackField(element: JQuery<HTMLElement>) {
     if (this.emojis?.length > 0) {
       setEmoji(element, this.emojis, this.emojiSet);

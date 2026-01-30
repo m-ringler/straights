@@ -3,8 +3,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 export interface PopupElement {
-  outerHeight: () => number | null;
-  outerWidth: () => number | null;
+  outerHeight: () => number | null | undefined;
+  outerWidth: () => number | null | undefined;
 }
 
 export function getPopupPosition(

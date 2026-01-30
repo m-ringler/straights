@@ -29,45 +29,6 @@ type HintData = {
 };
 
 // Global Constants
-
-// Lightweight interface that describes the jQuery-like surface used by
-// UIController. We intentionally keep this small and focused so the
-// UIController can be constructed with a thin mock in tests.
-interface JQuerySelection {
-  empty(): unknown;
-  on(event: string, handler?: any): this;
-  css(props: any): this;
-  css(key: string, val: any): this;
-  text(val?: any): this | string;
-  html(val?: any): this;
-  append(val: any): this;
-  addClass(val: string): this;
-  removeClass(val?: string): this;
-  show(): this;
-  hide(): this;
-  val(val?: any): any;
-  attr(key: string, val?: any): any;
-  prop(key: string, val?: any): any;
-  removeAttr(key: string): this;
-  position(): { left: number; top: number } | undefined;
-  outerHeight(): number | null;
-  outerWidth(): number | null;
-  height(): number | undefined;
-  width(): number | undefined;
-  not(selector: string): JQuerySelection;
-
-  // slick carousel methods
-  slick(options: any, arg1?: any): any;
-  on(
-    event: 'afterChange',
-    callback: (event: Event, slick: any, currentSlide: number) => void
-  ): void;
-}
-
-interface JQueryLike {
-  (selector: any, ...args: any[]): JQuerySelection;
-}
-
 const GridLayoutOptions = [
   { id: 'PointSymmetric', caption: 'Point Symmetric', apiValue: 7 },
   { id: 'DiagonallySymmetric', caption: 'Diagonally Symmetric', apiValue: 3 },
@@ -121,14 +82,14 @@ export class UIController {
   private historyRenderer: HistoryRendererModule.HistoryRenderer;
 
   // injected dependencies
-  private $: JQueryLike;
+  private $: JQueryStatic;
   private win: Window;
   private renderer: Renderer.JQueryFieldRenderer;
   private setSelectedLayoutOption:
     | ((selectedOption: string) => void)
     | undefined;
 
-  constructor($: JQueryLike, win: Window) {
+  constructor($: JQueryStatic, win: Window) {
     this.$ = $;
     this.win = win;
     this.undoStack = new UndoStack(this.renderUndoButton.bind(this));
@@ -601,12 +562,16 @@ export class UIController {
     this.win.history.pushState({}, '', url);
   }
 
-  private async onKeyDownAsync(e: KeyboardEvent) {
+  private async onKeyDownAsync(e: JQuery.Event) {
     if (this.game.isSolved) return;
 
     let handled = false;
     const key = e.key;
-    if (this.handleCursorKey(e)) {
+    if (key === undefined) return;
+    const which = e.which;
+    if (typeof which !== 'number') return;
+
+    if (this.handleCursorKey({ which })) {
       handled = true;
     } else if (key >= '0' && key <= '9') {
       handled = await this.handleDigitKeyAsync(Number(key));
@@ -805,12 +770,20 @@ export class UIController {
     // event handlers for UI elements
     const gridCells = this.renderer.getAllGridCells();
     gridCells.on('click', (evt: Event) => {
-      const { row, col } = this.getRowAndColumnOfTargetCell(evt);
-      this.setActiveField(row, col);
+      if (evt.currentTarget) {
+        const { row, col } = this.getRowAndColumnOfTargetCell(
+          evt.currentTarget
+        );
+        this.setActiveField(row, col);
+      }
     });
     gridCells.on('dblclick', (evt: Event) => {
-      const { row, col } = this.getRowAndColumnOfTargetCell(evt);
-      this.toggleNoOrAllNotes(row, col);
+      if (evt.currentTarget) {
+        const { row, col } = this.getRowAndColumnOfTargetCell(
+          evt.currentTarget
+        );
+        this.toggleNoOrAllNotes(row, col);
+      }
     });
 
     const numberButtons = this.$('td[data-button^="bn"]');
@@ -824,7 +797,7 @@ export class UIController {
     this.win.addEventListener('popstate', async () => {
       await this.handleGameLoadAsync();
     });
-    this.$(document).on('keydown', async (e: KeyboardEvent) => {
+    this.$(document).on('keydown', async (e: JQuery.Event) => {
       await this.onKeyDownAsync(e);
     });
     this.$(this.win).on('resize', async () => {
@@ -909,11 +882,9 @@ export class UIController {
       .on('click', async () => await this.showDialogAsync(false));
   }
 
-  private getRowAndColumnOfTargetCell(evt: Event) {
-    const selection = this.$(evt.currentTarget);
-    const row = Number(selection.attr('data-row'));
-    const col = Number(selection.attr('data-col'));
-    return { row, col };
+  private getRowAndColumnOfTargetCell(evtTarget: EventTarget) {
+    const selection = this.$(evtTarget);
+    return this.renderer.getRowAndColumnFromSelection(selection);
   }
 
   private renderLayoutCarousel() {
@@ -977,7 +948,7 @@ function getButtonColors(darkMode: boolean): ButtonColors {
 }
 
 function loadNewGameSettings(
-  $$: JQueryLike,
+  $$: JQueryStatic,
   getStoredValue: (key: string) => string | null
 ): {
   generateGridSize: number;
