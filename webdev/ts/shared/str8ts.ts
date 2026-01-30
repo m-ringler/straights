@@ -275,18 +275,18 @@ export class UIController {
       const gameField = this.game.get(field.row, field.col);
       gameField.copyFrom(field);
       gameField.wrong = false;
-      this.setActiveField(field.row, field.col);
+      this.setActiveField(gameField);
     }
   }
 
-  private setActiveField(row: number, col: number) {
-    this.game.setActiveField(row, col);
+  private setActiveField(idx: Str8ts.FieldIndex) {
+    this.game.setActiveField(idx.row, idx.col);
   }
 
-  private toggleNoOrAllNotes(row: number, col: number) {
-    this.setActiveField(row, col);
+  private toggleNoOrAllNotes(idx: Str8ts.FieldIndex) {
+    this.setActiveField(idx);
     this.pushActiveFieldToUndoStack();
-    this.game.get(row, col).toggleNoOrAllNotes();
+    this.game.getField(idx).toggleNoOrAllNotes();
   }
 
   private renderUndoButton(length: number) {
@@ -769,28 +769,21 @@ export class UIController {
 
     // event handlers for UI elements
     const gridCells = this.renderer.getAllGridCells();
-    gridCells.on('click', (evt: Event) => {
-      if (evt.currentTarget) {
-        const { row, col } = this.getRowAndColumnOfTargetCell(
-          evt.currentTarget
-        );
-        this.setActiveField(row, col);
-      }
+    const self = this;
+    gridCells.on('click', function () {
+      const idx = self.getFieldIndex(this);
+      self.setActiveField(idx);
     });
-    gridCells.on('dblclick', (evt: Event) => {
-      if (evt.currentTarget) {
-        const { row, col } = this.getRowAndColumnOfTargetCell(
-          evt.currentTarget
-        );
-        this.toggleNoOrAllNotes(row, col);
-      }
+    gridCells.on('dblclick', function () {
+      const idx = self.getFieldIndex(this);
+      self.toggleNoOrAllNotes(idx);
     });
 
     const numberButtons = this.$('td[data-button^="bn"]');
-    numberButtons.on('click', async (evt: Event) => {
-      const el = evt.currentTarget as Element;
-      const num = Number(this.$(el).text());
-      await this.handleNumberInputAsync(num);
+    numberButtons.on('click', async function () {
+      const el = self.$(this);
+      const num = Number(el.text());
+      await self.handleNumberInputAsync(num);
     });
 
     // wire page-level events here so they can call private methods
@@ -871,7 +864,7 @@ export class UIController {
 
     // Hint dialog close handlers (close the hint on click)
     this.$('#hint-dialog').on('click', async () => await this.closeHintAsync());
-    this.$('#hint-close').on('click', async (e: Event) => {
+    this.$('#hint-close').on('click', async (e: JQuery.Event) => {
       e.stopPropagation();
       await this.closeHintAsync();
     });
@@ -882,9 +875,8 @@ export class UIController {
       .on('click', async () => await this.showDialogAsync(false));
   }
 
-  private getRowAndColumnOfTargetCell(evtTarget: EventTarget) {
-    const selection = this.$(evtTarget);
-    return this.renderer.getRowAndColumnFromSelection(selection);
+  private getFieldIndex(cell: HTMLTableCellElement): Str8ts.FieldIndex {
+    return this.renderer.getFieldIndex(cell);
   }
 
   private renderLayoutCarousel() {
@@ -911,7 +903,7 @@ export class UIController {
 
     $carousel.on(
       'afterChange',
-      (event: Event, slick: any, currentSlide: number) => {
+      (_event: any, _slick: any, currentSlide: number) => {
         const currentOption = GridLayoutOptions[currentSlide];
         this.changeLayoutOption(currentOption.id);
       }

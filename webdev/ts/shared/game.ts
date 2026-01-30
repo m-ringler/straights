@@ -298,6 +298,10 @@ export class Game {
     this.created = Date.now();
   }
 
+  getField(idx: FieldIndex): Field {
+    return this.get(idx.row, idx.col);
+  }
+
   get(row: number, col: number): Field {
     return this.data[row][col];
   }

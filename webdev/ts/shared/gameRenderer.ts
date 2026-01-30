@@ -211,7 +211,7 @@ export class JQueryFieldRenderer {
     return result;
   }
 
-  public getAllGridCells() {
+  public getAllGridCells(): JQuery<HTMLTableCellElement> {
     return this.$('td[id^="ce"]');
   }
 
@@ -251,12 +251,8 @@ export class JQueryFieldRenderer {
     }
   }
 
-  getRowAndColumnFromSelection(selection: {
-    attr(arg0: string): string | void | undefined | number;
-  }): {
-    row: number;
-    col: number;
-  } {
+  getFieldIndex(cell: HTMLTableCellElement): Str8ts.FieldIndex {
+    const selection = this.$(cell);
     const row = Number(selection.attr('data-row'));
     const col = Number(selection.attr('data-col'));
     return { row, col };
