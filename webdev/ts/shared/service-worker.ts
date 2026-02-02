@@ -50,9 +50,7 @@ const urlsToCache = [
   './Straights.Web.js',
   './Straights.Web.wasm',
   './undoStack.js',
-  'https://fonts.googleapis.com/css2?family=Nunito:wght@400;600&display=swap',
-  'https://fonts.gstatic.com/s/nunito/v31/XRXV3I6Li01BKofINeaB.woff2',
-  'https://fonts.gstatic.com/s/nunito/v31/XRXV3I6Li01BKofINeaBTMnFcQ.woff2',
+  './fonts/XRXV3I6Li01BKofINeaB.woff2',
 ];
 
 const apiEndPoints = new Set(['/generate', '/hint']);
