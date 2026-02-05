@@ -5,12 +5,12 @@
   "devDependencies": {
     "@edge-runtime/vm": "^5.0.0",
     "@types/jquery": "^3.5.33",
-    "@types/node": "^25.0.9",
-    "@types/serviceworker": "^0.0.176",
-    "@vitest/coverage-v8": "^4.0.17",
+    "@types/node": "^25.1.0",
+    "@types/serviceworker": "^0.0.182",
+    "@vitest/coverage-v8": "^4.0.18",
     "@vitest/ui": "^4.0.17",
-    "cheerio": "^1.1.2",
-    "prettier": "^3.8.0",
+    "cheerio": "^1.2.0",
+    "prettier": "^3.8.1",
     "typescript": "^5.9.3",
     "vitest": "^4.0.17"
   },
