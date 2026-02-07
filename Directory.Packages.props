@@ -17,7 +17,7 @@
       Include="Microsoft.DotNet.ILCompiler.LLVM"
       Version="10.0.0-rc.1.26104.2"
     />
-    <PackageVersion Include="Microsoft.ML.OnnxRuntime" Version="1.24.1" />
+    <PackageVersion Include="Microsoft.ML.OnnxRuntime" Version="1.23.2" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.102" />
     <PackageVersion Include="Moq" Version="4.20.72" />
