@@ -6,6 +6,7 @@
     "allowJs": false,
     "checkJs": false,
     "outDir": "webdev/tsc-out",
+    "rootDir": "webdev/ts",
     "rootDirs": ["webdev/ts/shared", "webdev/ts/webservice"],
     "noEmitOnError": false,
     "noImplicitAny": false,

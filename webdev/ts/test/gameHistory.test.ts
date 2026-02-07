@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import * as Sut from '../gameHistory';
+import * as Sut from '../shared/gameHistory';
 
 // --- Mock Storage Provider ---
 class MockStorage implements Sut.StorageProvider {

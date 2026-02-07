@@ -29,45 +29,6 @@ type HintData = {
 };
 
 // Global Constants
-
-// Lightweight interface that describes the jQuery-like surface used by
-// UIController. We intentionally keep this small and focused so the
-// UIController can be constructed with a thin mock in tests.
-interface JQuerySelection {
-  empty(): unknown;
-  on(event: string, handler?: any): this;
-  css(props: any): this;
-  css(key: string, val: any): this;
-  text(val?: any): this | string;
-  html(val?: any): this;
-  append(val: any): this;
-  addClass(val: string): this;
-  removeClass(val?: string): this;
-  show(): this;
-  hide(): this;
-  val(val?: any): any;
-  attr(key: string, val?: any): any;
-  prop(key: string, val?: any): any;
-  removeAttr(key: string): this;
-  position(): { left: number; top: number } | undefined;
-  outerHeight(): number | null;
-  outerWidth(): number | null;
-  height(): number | undefined;
-  width(): number | undefined;
-  not(selector: string): JQuerySelection;
-
-  // slick carousel methods
-  slick(options: any, arg1?: any): any;
-  on(
-    event: 'afterChange',
-    callback: (event: Event, slick: any, currentSlide: number) => void
-  ): void;
-}
-
-interface JQueryLike {
-  (selector: any, ...args: any[]): JQuerySelection;
-}
-
 const GridLayoutOptions = [
   { id: 'PointSymmetric', caption: 'Point Symmetric', apiValue: 7 },
   { id: 'DiagonallySymmetric', caption: 'Diagonally Symmetric', apiValue: 3 },
@@ -121,20 +82,24 @@ export class UIController {
   private historyRenderer: HistoryRendererModule.HistoryRenderer;
 
   // injected dependencies
-  private $: JQueryLike;
+  private $: JQueryStatic;
   private win: Window;
   private renderer: Renderer.JQueryFieldRenderer;
   private setSelectedLayoutOption:
     | ((selectedOption: string) => void)
     | undefined;
 
-  constructor($: JQueryLike, win: Window) {
+  constructor($: JQueryStatic, win: Window) {
     this.$ = $;
     this.win = win;
     this.undoStack = new UndoStack(this.renderUndoButton.bind(this));
     const darkMode = win.matchMedia('(prefers-color-scheme: dark)').matches;
     this.buttonColors = getButtonColors(darkMode);
-    this.renderer = new Renderer.JQueryFieldRenderer(this.$ as any, darkMode);
+    this.renderer = new Renderer.JQueryFieldRenderer(
+      this.$ as any,
+      darkMode,
+      MAX_GRID_SIZE
+    );
     this.game = new Str8ts.Game(this.renderer);
     this.gameHistory = new GameHistory<Str8ts.DumpedStateRead>(localStorage);
     this.numberInput = new NumberInput(
@@ -310,18 +275,18 @@ export class UIController {
       const gameField = this.game.get(field.row, field.col);
       gameField.copyFrom(field);
       gameField.wrong = false;
-      this.setActiveField(field.row, field.col);
+      this.setActiveField(gameField);
     }
   }
 
-  private setActiveField(row: number, col: number) {
-    this.game.setActiveField(row, col);
+  private setActiveField(idx: Str8ts.FieldIndex) {
+    this.game.setActiveField(idx.row, idx.col);
   }
 
-  private toggleNoOrAllNotes(row: number, col: number) {
-    this.setActiveField(row, col);
+  private toggleNoOrAllNotes(idx: Str8ts.FieldIndex) {
+    this.setActiveField(idx);
     this.pushActiveFieldToUndoStack();
-    this.game.get(row, col).toggleNoOrAllNotes();
+    this.game.getField(idx).toggleNoOrAllNotes();
   }
 
   private renderUndoButton(length: number) {
@@ -353,29 +318,12 @@ export class UIController {
     for (let i = this.currentGridSize + 1; i <= MAX_GRID_SIZE; i++) {
       this.$(`td[data-button="bn${i}"]`).hide();
     }
-    for (let r = 0; r < this.currentGridSize; r++) {
-      this.$('#r' + r).show();
-      for (let c = 0; c < this.currentGridSize; c++) {
-        this.$(`#ce${r}_${c}`).show();
-      }
-      for (let c = this.currentGridSize; c < MAX_GRID_SIZE; c++) {
-        this.$(`#ce${r}_${c}`).hide();
-      }
-    }
-    for (let r = this.currentGridSize; r < MAX_GRID_SIZE; r++) {
-      this.$('#r' + r).hide();
-    }
+
+    this.renderer.setGridSize(this.currentGridSize);
   }
 
   private createGrid() {
-    for (let r = 0; r < MAX_GRID_SIZE; r++) {
-      let row = `<tr class="row" id="r${r}" data-row="${r}">`;
-      for (let c = 0; c < MAX_GRID_SIZE; c++) {
-        row += `<td class="cell" id="ce${r}_${c}" data-row="${r}" data-col="${c}"></td>`;
-      }
-      row += '</tr>';
-      this.$('.container').append(row);
-    }
+    this.renderer.createGridInContainer(this.$('.container'));
   }
 
   private restartTimer() {
@@ -614,12 +562,16 @@ export class UIController {
     this.win.history.pushState({}, '', url);
   }
 
-  private async onKeyDownAsync(e: KeyboardEvent) {
+  private async onKeyDownAsync(e: JQuery.Event) {
     if (this.game.isSolved) return;
 
     let handled = false;
     const key = e.key;
-    if (this.handleCursorKey(e)) {
+    if (key === undefined) return;
+    const which = e.which;
+    if (typeof which !== 'number') return;
+
+    if (this.handleCursorKey({ which })) {
       handled = true;
     } else if (key >= '0' && key <= '9') {
       handled = await this.handleDigitKeyAsync(Number(key));
@@ -778,7 +730,7 @@ export class UIController {
       // Large screen
       this.$('#buttons-small').hide();
       this.$('#buttons-large').show();
-      this.$('.cell').css({
+      this.$(`.${this.renderer.cellStyle}`).css({
         'font-size': '22pt',
         width: '41px',
         height: '41px',
@@ -795,7 +747,7 @@ export class UIController {
       this.$('#buttons-large').hide();
       this.$('.container').css({ margin: '5px 2px' });
       this.$('.controls').css({ margin: '0px 2px' });
-      this.$('.cell').css({
+      this.$(`.${this.renderer.cellStyle}`).css({
         'font-size': '17pt',
         width: `${cellwidth}px`,
         height: `${cellwidth}px`,
@@ -816,28 +768,29 @@ export class UIController {
     await this.handleGameLoadAsync();
 
     // event handlers for UI elements
-    const gridCells = this.$('td[id^="ce"]');
-    gridCells.on('click', (evt: Event) => {
-      const { row, col } = this.getRowAndColumnOfTargetCell(evt);
-      this.setActiveField(row, col);
+    const gridCells = this.renderer.getAllGridCells();
+    const self = this;
+    gridCells.on('click', function () {
+      const idx = self.getFieldIndex(this);
+      self.setActiveField(idx);
     });
-    gridCells.on('dblclick', (evt: Event) => {
-      const { row, col } = this.getRowAndColumnOfTargetCell(evt);
-      this.toggleNoOrAllNotes(row, col);
+    gridCells.on('dblclick', function () {
+      const idx = self.getFieldIndex(this);
+      self.toggleNoOrAllNotes(idx);
     });
 
     const numberButtons = this.$('td[data-button^="bn"]');
-    numberButtons.on('click', async (evt: Event) => {
-      const el = evt.currentTarget as Element;
-      const num = Number(this.$(el).text());
-      await this.handleNumberInputAsync(num);
+    numberButtons.on('click', async function () {
+      const el = self.$(this);
+      const num = Number(el.text());
+      await self.handleNumberInputAsync(num);
     });
 
     // wire page-level events here so they can call private methods
     this.win.addEventListener('popstate', async () => {
       await this.handleGameLoadAsync();
     });
-    this.$(document).on('keydown', async (e: KeyboardEvent) => {
+    this.$(document).on('keydown', async (e: JQuery.Event) => {
       await this.onKeyDownAsync(e);
     });
     this.$(this.win).on('resize', async () => {
@@ -911,7 +864,7 @@ export class UIController {
 
     // Hint dialog close handlers (close the hint on click)
     this.$('#hint-dialog').on('click', async () => await this.closeHintAsync());
-    this.$('#hint-close').on('click', async (e: Event) => {
+    this.$('#hint-close').on('click', async (e: JQuery.Event) => {
       e.stopPropagation();
       await this.closeHintAsync();
     });
@@ -922,11 +875,8 @@ export class UIController {
       .on('click', async () => await this.showDialogAsync(false));
   }
 
-  private getRowAndColumnOfTargetCell(evt: Event) {
-    const selection = this.$(evt.currentTarget);
-    const row = Number(selection.attr('data-row'));
-    const col = Number(selection.attr('data-col'));
-    return { row, col };
+  private getFieldIndex(cell: HTMLTableCellElement): Str8ts.FieldIndex {
+    return this.renderer.getFieldIndex(cell);
   }
 
   private renderLayoutCarousel() {
@@ -953,7 +903,7 @@ export class UIController {
 
     $carousel.on(
       'afterChange',
-      (event: Event, slick: any, currentSlide: number) => {
+      (_event: any, _slick: any, currentSlide: number) => {
         const currentOption = GridLayoutOptions[currentSlide];
         this.changeLayoutOption(currentOption.id);
       }
@@ -990,7 +940,7 @@ function getButtonColors(darkMode: boolean): ButtonColors {
 }
 
 function loadNewGameSettings(
-  $$: JQueryLike,
+  $$: JQueryStatic,
   getStoredValue: (key: string) => string | null
 ): {
   generateGridSize: number;

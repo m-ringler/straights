@@ -1,0 +1,57 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`renderCheckerboard > should render a 2x2 checkerboard with custom colors 1`] = `
+[
+  "[0,0,50,50] fill:#FF0000",
+  "[0,0,50,50] stroke:#0000FF",
+  "[50,0,50,50] fill:#00FF00",
+  "[50,0,50,50] stroke:#0000FF",
+  "[0,50,50,50] fill:#00FF00",
+  "[0,50,50,50] stroke:#0000FF",
+  "[50,50,50,50] fill:#FF0000",
+  "[50,50,50,50] stroke:#0000FF",
+]
+`;
+
+exports[`renderCheckerboard > should render a 3x3 checkerboard 1`] = `
+[
+  "[0,0,100,100] fill:#333",
+  "[0,0,100,100] stroke:#133",
+  "[100,0,100,100] fill:white",
+  "[100,0,100,100] stroke:#133",
+  "[200,0,100,100] fill:#333",
+  "[200,0,100,100] stroke:#133",
+  "[0,100,100,100] fill:white",
+  "[0,100,100,100] stroke:#133",
+  "[100,100,100,100] fill:#333",
+  "[100,100,100,100] stroke:#133",
+  "[200,100,100,100] fill:white",
+  "[200,100,100,100] stroke:#133",
+  "[0,200,100,100] fill:#333",
+  "[0,200,100,100] stroke:#133",
+  "[100,200,100,100] fill:white",
+  "[100,200,100,100] stroke:#133",
+  "[200,200,100,100] fill:#333",
+  "[200,200,100,100] stroke:#133",
+]
+`;
+
+exports[`renderCheckerboard > should render a simple 2x2 checkerboard with default options 1`] = `
+[
+  "[0,0,50,50] fill:#333",
+  "[0,0,50,50] stroke:#133",
+  "[50,0,50,50] fill:white",
+  "[50,0,50,50] stroke:#133",
+  "[0,50,50,50] fill:white",
+  "[0,50,50,50] stroke:#133",
+  "[50,50,50,50] fill:#333",
+  "[50,50,50,50] stroke:#133",
+]
+`;
+
+exports[`renderCheckerboard > should render a single cell checkerboard 1`] = `
+[
+  "[0,0,50,50] fill:#333",
+  "[0,0,50,50] stroke:#133",
+]
+`;

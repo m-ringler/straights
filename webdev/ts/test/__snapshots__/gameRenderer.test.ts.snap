@@ -1,0 +1,115 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`JQueryFieldRenderer > should create grid with max size (5x5) 1`] = `
+"<tr class="row" id="r0" data-row="0">
+  <td class="cell" id="ce0_0" data-row="0" data-col="0"></td>
+  <td class="cell" id="ce0_1" data-row="0" data-col="1"></td>
+  <td class="cell" id="ce0_2" data-row="0" data-col="2"></td>
+  <td class="cell" id="ce0_3" data-row="0" data-col="3"></td>
+  <td class="cell" id="ce0_4" data-row="0" data-col="4"></td>
+</tr>
+<tr class="row" id="r1" data-row="1">
+  <td class="cell" id="ce1_0" data-row="1" data-col="0"></td>
+  <td class="cell" id="ce1_1" data-row="1" data-col="1"></td>
+  <td class="cell" id="ce1_2" data-row="1" data-col="2"></td>
+  <td class="cell" id="ce1_3" data-row="1" data-col="3"></td>
+  <td class="cell" id="ce1_4" data-row="1" data-col="4"></td>
+</tr>
+<tr class="row" id="r2" data-row="2">
+  <td class="cell" id="ce2_0" data-row="2" data-col="0"></td>
+  <td class="cell" id="ce2_1" data-row="2" data-col="1"></td>
+  <td class="cell" id="ce2_2" data-row="2" data-col="2"></td>
+  <td class="cell" id="ce2_3" data-row="2" data-col="3"></td>
+  <td class="cell" id="ce2_4" data-row="2" data-col="4"></td>
+</tr>
+<tr class="row" id="r3" data-row="3">
+  <td class="cell" id="ce3_0" data-row="3" data-col="0"></td>
+  <td class="cell" id="ce3_1" data-row="3" data-col="1"></td>
+  <td class="cell" id="ce3_2" data-row="3" data-col="2"></td>
+  <td class="cell" id="ce3_3" data-row="3" data-col="3"></td>
+  <td class="cell" id="ce3_4" data-row="3" data-col="4"></td>
+</tr>
+<tr class="row" id="r4" data-row="4">
+  <td class="cell" id="ce4_0" data-row="4" data-col="0"></td>
+  <td class="cell" id="ce4_1" data-row="4" data-col="1"></td>
+  <td class="cell" id="ce4_2" data-row="4" data-col="2"></td>
+  <td class="cell" id="ce4_3" data-row="4" data-col="3"></td>
+  <td class="cell" id="ce4_4" data-row="4" data-col="4"></td>
+</tr>"
+`;
+
+exports[`JQueryFieldRenderer > should grow grid correctly 1`] = `
+"<tr class="row" id="r0" data-row="0">
+  <td class="cell" id="ce0_0" data-row="0" data-col="0"></td>
+  <td class="cell" id="ce0_1" data-row="0" data-col="1" style=""></td>
+  <td class="cell" id="ce0_2" data-row="0" data-col="2" style=""></td>
+  <td class="cell" id="ce0_3" data-row="0" data-col="3" style=""></td>
+  <td class="cell" id="ce0_4" data-row="0" data-col="4" style="display: none;"></td>
+</tr>
+<tr class="row" id="r1" data-row="1" style="">
+  <td class="cell" id="ce1_0" data-row="1" data-col="0"></td>
+  <td class="cell" id="ce1_1" data-row="1" data-col="1"></td>
+  <td class="cell" id="ce1_2" data-row="1" data-col="2"></td>
+  <td class="cell" id="ce1_3" data-row="1" data-col="3"></td>
+  <td class="cell" id="ce1_4" data-row="1" data-col="4" style="display: none;"></td>
+</tr>
+<tr class="row" id="r2" data-row="2" style="">
+  <td class="cell" id="ce2_0" data-row="2" data-col="0"></td>
+  <td class="cell" id="ce2_1" data-row="2" data-col="1"></td>
+  <td class="cell" id="ce2_2" data-row="2" data-col="2"></td>
+  <td class="cell" id="ce2_3" data-row="2" data-col="3"></td>
+  <td class="cell" id="ce2_4" data-row="2" data-col="4" style="display: none;"></td>
+</tr>
+<tr class="row" id="r3" data-row="3" style="">
+  <td class="cell" id="ce3_0" data-row="3" data-col="0"></td>
+  <td class="cell" id="ce3_1" data-row="3" data-col="1"></td>
+  <td class="cell" id="ce3_2" data-row="3" data-col="2"></td>
+  <td class="cell" id="ce3_3" data-row="3" data-col="3"></td>
+  <td class="cell" id="ce3_4" data-row="3" data-col="4" style="display: none;"></td>
+</tr>
+<tr class="row" id="r4" data-row="4" style="display: none;">
+  <td class="cell" id="ce4_0" data-row="4" data-col="0"></td>
+  <td class="cell" id="ce4_1" data-row="4" data-col="1"></td>
+  <td class="cell" id="ce4_2" data-row="4" data-col="2"></td>
+  <td class="cell" id="ce4_3" data-row="4" data-col="3"></td>
+  <td class="cell" id="ce4_4" data-row="4" data-col="4"></td>
+</tr>"
+`;
+
+exports[`JQueryFieldRenderer > should shrink grid correctly 1`] = `
+"<tr class="row" id="r0" data-row="0">
+  <td class="cell" id="ce0_0" data-row="0" data-col="0"></td>
+  <td class="cell" id="ce0_1" data-row="0" data-col="1"></td>
+  <td class="cell" id="ce0_2" data-row="0" data-col="2"></td>
+  <td class="cell" id="ce0_3" data-row="0" data-col="3" style="display: none;"></td>
+  <td class="cell" id="ce0_4" data-row="0" data-col="4" style="display: none;"></td>
+</tr>
+<tr class="row" id="r1" data-row="1">
+  <td class="cell" id="ce1_0" data-row="1" data-col="0"></td>
+  <td class="cell" id="ce1_1" data-row="1" data-col="1"></td>
+  <td class="cell" id="ce1_2" data-row="1" data-col="2"></td>
+  <td class="cell" id="ce1_3" data-row="1" data-col="3" style="display: none;"></td>
+  <td class="cell" id="ce1_4" data-row="1" data-col="4" style="display: none;"></td>
+</tr>
+<tr class="row" id="r2" data-row="2">
+  <td class="cell" id="ce2_0" data-row="2" data-col="0"></td>
+  <td class="cell" id="ce2_1" data-row="2" data-col="1"></td>
+  <td class="cell" id="ce2_2" data-row="2" data-col="2"></td>
+  <td class="cell" id="ce2_3" data-row="2" data-col="3" style="display: none;"></td>
+  <td class="cell" id="ce2_4" data-row="2" data-col="4" style="display: none;"></td>
+</tr>
+<tr class="row" id="r3" data-row="3" style="display: none;">
+  <td class="cell" id="ce3_0" data-row="3" data-col="0"></td>
+  <td class="cell" id="ce3_1" data-row="3" data-col="1"></td>
+  <td class="cell" id="ce3_2" data-row="3" data-col="2"></td>
+  <td class="cell" id="ce3_3" data-row="3" data-col="3"></td>
+  <td class="cell" id="ce3_4" data-row="3" data-col="4"></td>
+</tr>
+<tr class="row" id="r4" data-row="4" style="display: none;">
+  <td class="cell" id="ce4_0" data-row="4" data-col="0"></td>
+  <td class="cell" id="ce4_1" data-row="4" data-col="1"></td>
+  <td class="cell" id="ce4_2" data-row="4" data-col="2"></td>
+  <td class="cell" id="ce4_3" data-row="4" data-col="3"></td>
+  <td class="cell" id="ce4_4" data-row="4" data-col="4"></td>
+</tr>"
+`;

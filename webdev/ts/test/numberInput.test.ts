@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { NumberInput } from '../numberInput';
+import { NumberInput } from '../shared/numberInput';
 
 describe('NumberInput', () => {
   let handleNumberAsync: (num: number) => Promise<void>;

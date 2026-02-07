@@ -12,8 +12,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Resolve paths relative to the test file
-const htmlPath = path.resolve(__dirname, '../../../base/shared/index.html');
-const tsPath = path.resolve(__dirname, '../str8ts.ts');
+const htmlPath = path.resolve(__dirname, '../../base/shared/index.html');
+const tsPath = path.resolve(__dirname, '../shared/str8ts.ts');
 
 describe('ID matching between HTML and TypeScript', () => {
   it('should have all jQuery IDs present in the HTML', () => {
