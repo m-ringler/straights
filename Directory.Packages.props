@@ -1,9 +1,34 @@
 <Project>
+  <PropertyGroup>
+    <IlCompilerLLVMVersion>10.0.0-preview.2.25214.1</IlCompilerLLVMVersion>
+  </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="coverlet.collector" Version="6.0.4" />
-    <PackageVersion Include="coverlet.msbuild" Version="6.0.4" />
+    <PackageVersion
+      Include="Microsoft.DotNet.ILCompiler.LLVM"
+      Version="$(IlCompilerLLVMVersion)"
+    />
+    <PackageVersion
+      Include="runtime.browser-wasm.Microsoft.DotNet.ILCompiler.LLVM"
+      Version="$(IlCompilerLLVMVersion)"
+    />
+    <PackageVersion
+      Include="runtime.$(NETCoreSdkPortableRuntimeIdentifier).Microsoft.DotNet.ILCompiler.LLVM"
+      Version="$(IlCompilerLLVMVersion)"
+    />
+  </ItemGroup>
+  <ItemGroup>
     <PackageVersion Include="AwesomeAssertions" Version="9.3.0" />
     <PackageVersion Include="AwesomeAssertions.Analyzers" Version="9.0.8" />
+    <PackageVersion Include="coverlet.collector" Version="6.0.4" />
+    <PackageVersion Include="coverlet.msbuild" Version="6.0.4" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
+    <PackageVersion Include="Moq" Version="4.20.72" />
+    <PackageVersion Include="Verify" Version="29.3.1" />
+    <PackageVersion Include="Verify.XunitV3" Version="31.11.0" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.5" />
+    <PackageVersion Include="xunit.v3" Version="3.2.2" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageVersion
       Include="m-ringler.OpenCvSharp4.ubuntu24.runtime.linux-x64"
       Version="4.10.0.20250917"
@@ -13,14 +38,8 @@
       Include="Microsoft.AspNetCore.StaticFiles"
       Version="2.3.0"
     />
-    <PackageVersion
-      Include="Microsoft.DotNet.ILCompiler.LLVM"
-      Version="10.0.0-rc.1.26104.2"
-    />
-    <PackageVersion Include="Microsoft.ML.OnnxRuntime" Version="1.24.1" />
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
+    <PackageVersion Include="Microsoft.ML.OnnxRuntime" Version="1.23.2" />
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.102" />
-    <PackageVersion Include="Moq" Version="4.20.72" />
     <PackageVersion
       Include="OpenCvSharp4.official.runtime.linux-x64"
       Version="4.11.0.20250507"
@@ -31,14 +50,6 @@
     />
     <PackageVersion Include="OpenCvSharp4" Version="4.11.0.20250507" />
     <PackageVersion Include="RandN" Version="0.5.0" />
-    <PackageVersion
-      Include="runtime.browser-wasm.Microsoft.DotNet.ILCompiler.LLVM"
-      Version="10.0.0-preview.2.25214.1"
-    />
-    <PackageVersion
-      Include="runtime.$(NETCoreSdkPortableRuntimeIdentifier).Microsoft.DotNet.ILCompiler.LLVM"
-      Version="10.0.0-preview.2.25214.1"
-    />
     <PackageVersion Include="StyleCop.Analyzers.Unstable" Version="1.2.0.556" />
     <PackageVersion Include="System.CommandLine" Version="2.0.2" />
     <PackageVersion Include="System.IO.Abstractions" Version="22.1.0" />
@@ -51,10 +62,6 @@
       Include="TestableIO.System.IO.Abstractions.Analyzers"
       Version="2022.0.0"
     />
-    <PackageVersion Include="Verify" Version="29.3.1" />
-    <PackageVersion Include="Verify.XunitV3" Version="31.11.0" />
-    <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.5" />
-    <PackageVersion Include="xunit.v3" Version="3.2.2" />
   </ItemGroup>
   <ItemGroup Condition="'$(UseStraightsNugetPackagesVersion)' != ''">
     <PackageVersion

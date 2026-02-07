@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-const CACHE_NAME = 'v0.8.1';
+const CACHE_NAME = 'v0.8.2';
 const urlsToCache = [
   './',
   './.htaccess',
@@ -36,6 +36,7 @@ const urlsToCache = [
   './LICENSE',
   './numberInput.js',
   './popup.js',
+  './seasonalEmojis.js',
   './site.webmanifest',
   './slick/ajax-loader.gif',
   './slick/fonts/slick.woff',
@@ -49,9 +50,7 @@ const urlsToCache = [
   './Straights.Web.js',
   './Straights.Web.wasm',
   './undoStack.js',
-  'https://fonts.googleapis.com/css2?family=Nunito:wght@400;600&display=swap',
-  'https://fonts.gstatic.com/s/nunito/v31/XRXV3I6Li01BKofINeaB.woff2',
-  'https://fonts.gstatic.com/s/nunito/v31/XRXV3I6Li01BKofINeaBTMnFcQ.woff2',
+  './fonts/XRXV3I6Li01BKofINeaB.woff2',
 ];
 
 const apiEndPoints = new Set(['/generate', '/hint']);

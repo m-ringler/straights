@@ -3,29 +3,24 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import * as Str8ts from './game.js';
+import * as emojisModule from './seasonalEmojis.js';
 
-const chistmasEmojis = [
-  '🔔',
-  '🎁',
-  '🕯️',
-  '🎅',
-  '👼',
-  '🎶',
-  '❄️',
-  '☃️',
-  '⛄',
-  '🌟',
-  '🎄',
-  '🍷',
-  '🦌',
-  '🌨️',
-  '🎆',
-  '🎇',
-  '🧦',
-  '🎀',
-  '🧸',
-  '🍀',
-];
+export interface RenderableField {
+  row: number;
+  col: number;
+  mode: number;
+  value: number | undefined;
+  user: number | undefined;
+  notes: Set<number>;
+  hint: number | undefined;
+  wrong: boolean;
+  isShowingSolution: boolean;
+  game: {
+    size: number;
+  };
+  isEditable(): boolean;
+  isActive(): boolean;
+}
 
 export class JQueryFieldRenderer {
   private emojiSetId = 0;
@@ -33,7 +28,9 @@ export class JQueryFieldRenderer {
 
   constructor(
     private $: JQueryStatic,
-    private darkMode: boolean
+    public readonly darkMode: boolean,
+    public readonly maxGridSize: number,
+    public readonly cellStyle: string = 'cell'
   ) {
     this.colors = this.darkMode
       ? JQueryFieldRenderer.gameColorsDark
@@ -102,11 +99,11 @@ export class JQueryFieldRenderer {
       this.emojis = emojis;
     }
 
-    this.emojiSetId = this.emojiSetId % 100;
+    this.emojiSetId = (this.emojiSetId + 1) % 100;
     this.emojiSet = this.emojiSetId.toString();
   }
 
-  renderField(field: Str8ts.Field) {
+  renderField(field: RenderableField) {
     const element = this.getElement(field);
     element.empty();
     element.css('background-color', this.getBackgroundColor(field));
@@ -142,7 +139,7 @@ export class JQueryFieldRenderer {
     }
   }
 
-  private getBackgroundColor(field: Str8ts.Field) {
+  private getBackgroundColor(field: RenderableField) {
     const colors = this.colors;
     if (
       field.mode === Str8ts.FieldModes.BLACK ||
@@ -166,7 +163,7 @@ export class JQueryFieldRenderer {
     return field.wrong ? colors.BG_USER_WRONG : colors.BG_USER;
   }
 
-  private getTextColor(field: Str8ts.Field) {
+  private getTextColor(field: RenderableField) {
     const colors = this.colors;
     if (
       field.mode === Str8ts.FieldModes.BLACKKNOWN ||
@@ -197,7 +194,7 @@ export class JQueryFieldRenderer {
    * @returns A jQuery object containing exactly one HTMLElement.
    * @throws {Error} If no element is found or if multiple elements are found.
    */
-  getElement(field: Str8ts.Field): JQuery<HTMLElement> {
+  getElement(field: RenderableField): JQuery<HTMLElement> {
     const result = this.$(JQueryFieldRenderer.getSelector(field));
     if (result.length == 0) {
       throw new Error(
@@ -214,24 +211,64 @@ export class JQueryFieldRenderer {
     return result;
   }
 
-  private static getSelector(field: Str8ts.Field): string {
+  public getAllGridCells(): JQuery<HTMLTableCellElement> {
+    return this.$('td[id^="ce"]');
+  }
+
+  private static getSelector(field: RenderableField): string {
     return `#ce${field.row}_${field.col}`;
   }
 
-  private fillBlackField(element: JQuery<HTMLElement>) {
-    const now = new Date();
-    if (this.emojis?.length > 0) {
-      setEmoji(element, this.emojis, this.emojiSet);
-    } else if (isChristmasTime(now)) {
-      setEmoji(element, chistmasEmojis, 'xmas');
+  createGridInContainer(container: JQuery<HTMLElement> | any): void {
+    for (let r = 0; r < this.maxGridSize; r++) {
+      let row = `<tr class="row" id="r${r}" data-row="${r}">`;
+      for (let c = 0; c < this.maxGridSize; c++) {
+        row += `<td class="${this.cellStyle}" id="ce${r}_${c}" data-row="${r}" data-col="${c}"></td>`;
+      }
+      row += '</tr>';
+      container.append(row);
     }
   }
-}
 
-function isChristmasTime(now: Date) {
-  const month = now.getMonth(); // 0 = Jan, 11 = Dec
-  const day = now.getDate();
-  return (month === 11 && day >= 20) || (month === 0 && day <= 6);
+  setGridSize(size: number): void {
+    if (size < 1 || size > this.maxGridSize) {
+      throw new Error(
+        `Invalid grid size ${size}, must be between 1 and ${this.maxGridSize}`
+      );
+    }
+
+    for (let r = 0; r < size; r++) {
+      this.$('#r' + r).show();
+      for (let c = 0; c < size; c++) {
+        this.$(`#ce${r}_${c}`).show();
+      }
+      for (let c = size; c < this.maxGridSize; c++) {
+        this.$(`#ce${r}_${c}`).hide();
+      }
+    }
+    for (let r = size; r < this.maxGridSize; r++) {
+      this.$('#r' + r).hide();
+    }
+  }
+
+  getFieldIndex(cell: HTMLTableCellElement): Str8ts.FieldIndex {
+    const selection = this.$(cell);
+    const row = Number(selection.attr('data-row'));
+    const col = Number(selection.attr('data-col'));
+    return { row, col };
+  }
+
+  private fillBlackField(element: JQuery<HTMLElement>) {
+    if (this.emojis?.length > 0) {
+      setEmoji(element, this.emojis, this.emojiSet);
+      return;
+    }
+
+    const emojisForDate = emojisModule.getEmojis(new Date());
+    if (emojisForDate) {
+      setEmoji(element, emojisForDate.emojis, emojisForDate.key);
+    }
+  }
 }
 
 function setEmoji(
