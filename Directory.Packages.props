@@ -31,7 +31,7 @@
   <ItemGroup>
     <PackageVersion
       Include="m-ringler.OpenCvSharp4.ubuntu24.runtime.linux-x64"
-      Version="4.10.0.20250917"
+      Version="4.10.0.20260207"
     />
     <PackageVersion Include="Microsoft.AspNetCore" Version="2.3.0" />
     <PackageVersion
