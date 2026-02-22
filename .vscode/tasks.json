@@ -2,35 +2,56 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "npm ci",
+      "label": "web: npm ci",
       "type": "shell",
       "command": "npm",
       "args": ["ci"],
       "problemMatcher": []
     },
     {
-      "label": "npm install",
+      "label": "web: npm install",
       "type": "shell",
       "command": "npm",
       "args": ["install"],
       "problemMatcher": []
     },
     {
-      "label": "npm upgrade",
+      "label": "web: npm upgrade",
       "type": "shell",
       "command": "npx",
       "args": ["npm-check-updates", "-u"],
       "problemMatcher": []
     },
     {
-      "label": "nupu",
+      "label": "nuget: upgrade",
       "type": "shell",
       "command": "dotnet",
       "args": ["nupu"],
       "problemMatcher": []
     },
     {
-      "label": "test ts",
+      "label": "nuget: list outdated (prerelease)",
+      "type": "shell",
+      "command": "dotnet",
+      "args": [
+        "list",
+        "package",
+        "--outdated",
+        "--include-prerelease",
+        "--format",
+        "json"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "nuget: list outdated (no-prerelease)",
+      "type": "shell",
+      "command": "dotnet",
+      "args": ["list", "package", "--outdated", "--format", "json"],
+      "problemMatcher": []
+    },
+    {
+      "label": "web: test",
       "type": "shell",
       "command": "npm",
       "args": ["run", "test:run"],
@@ -45,17 +66,17 @@
       }
     },
     {
-      "label": "tsc",
+      "label": "web: tsc",
       "type": "shell",
       "command": "npm",
       "args": ["run", "tsc"],
-      "dependsOn": "npm ci",
+      "dependsOn": "web: npm ci",
       "problemMatcher": []
     },
     {
-      "label": "build (no-restore)",
+      "label": "straights: build (no-restore, no-tsc)",
       "command": "dotnet",
-      "type": "process",
+      "type": "shell",
       "args": [
         "build",
         "--no-restore",
@@ -63,26 +84,25 @@
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary"
       ],
-      "dependsOn": "tsc",
       "problemMatcher": "$msCompile"
     },
     {
-      "label": "build",
+      "label": "straights: build",
       "command": "dotnet",
-      "type": "process",
+      "type": "shell",
       "args": [
         "build",
         "${workspaceFolder}/straights-commandline.slnf",
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary"
       ],
-      "dependsOn": "tsc",
+      "dependsOn": "web: tsc",
       "problemMatcher": "$msCompile"
     },
     {
-      "label": "pack",
+      "label": "straights: pack",
       "command": "dotnet",
-      "type": "process",
+      "type": "shell",
       "args": [
         "pack",
         "${workspaceFolder}/straights-nuget.slnf",
@@ -90,13 +110,12 @@
         "${workspaceFolder}/publish/NuGetPackages",
         "-p:VersionSuffix=beta${input:betaVersionNumber}"
       ],
-      "dependsOn": "tsc",
       "problemMatcher": "$msCompile"
     },
     {
-      "label": "publish straights",
+      "label": "straights: publish",
       "command": "dotnet",
-      "type": "process",
+      "type": "shell",
       "args": [
         "publish",
         "${workspaceFolder}/Straights/Straights.csproj",
@@ -104,13 +123,13 @@
         "Release",
         "--use-current-runtime"
       ],
-      "dependsOn": "tsc",
+      "dependsOn": "web: tsc",
       "problemMatcher": "$msCompile"
     },
     {
-      "label": "publish Straights.Web",
+      "label": "web: publish",
       "command": "dotnet",
-      "type": "process",
+      "type": "shell",
       "args": [
         "publish",
         "${workspaceFolder}/Straights.Web/Straights.Web.csproj",
@@ -121,20 +140,23 @@
         "-p",
         "MSBuildEnableWorkloadResolver=false"
       ],
-      "dependsOn": "tsc",
+      "dependsOn": "web: tsc",
       "problemMatcher": "$msCompile"
     },
     {
-      "label": "run Straights.Web",
+      "label": "web: publish and run",
       "command": "emrun",
+      "group": "build",
       "type": "shell",
       "args": ["${workspaceFolder}/publish/Straights.Web/index.html"],
-      "dependsOn": "publish Straights.Web",
+      "dependsOn": "web: publish",
       "problemMatcher": []
     },
     {
-      "label": "publish Straights.Web content",
+      "label": "web: publish content files",
       "command": "dotnet",
+      "type": "shell",
+      "group": "build",
       "args": [
         "build",
         "Straights.Web/Straights.Web.csproj",
@@ -145,23 +167,25 @@
       "problemMatcher": "$msCompile"
     },
     {
-      "label": "emrun",
+      "label": "web: run",
       "command": "emrun",
       "type": "shell",
+      "group": "test",
       "args": ["${workspaceFolder}/publish/Straights.Web/index.html"],
       "problemMatcher": []
     },
     {
-      "label": "test",
+      "label": "straights: test",
       "command": "dotnet",
-      "type": "process",
+      "type": "shell",
+      "group": "test",
       "args": ["test"],
       "problemMatcher": "$msCompile"
     },
     {
-      "label": "test nugets",
+      "label": "straights: test nugets",
       "command": "dotnet",
-      "type": "process",
+      "type": "shell",
       "args": [
         "test",
         "-p:UseStraightsNugetPackagesVersion=${input:nugetVersion}"
@@ -169,16 +193,16 @@
       "problemMatcher": "$msCompile"
     },
     {
-      "label": "test (no-build)",
+      "label": "straights: test (no-build)",
       "command": "dotnet",
-      "type": "process",
+      "type": "shell",
       "args": ["test", "--no-build"],
       "problemMatcher": "$msCompile"
     },
     {
-      "label": "test (coverage)",
+      "label": "straights: test coverage",
       "command": "dotnet",
-      "type": "process",
+      "type": "shell",
       "args": [
         "test",
         "/p:CollectCoverage=true",
@@ -190,14 +214,14 @@
       "problemMatcher": "$msCompile"
     },
     {
-      "label": "verify accept",
+      "label": "verify: accept",
       "type": "shell",
       "command": "dotnet",
       "args": ["verify", "accept", "-y"],
       "problemMatcher": []
     },
     {
-      "label": "generate coverage report",
+      "label": "straights: test coverage report",
       "command": "dotnet",
       "type": "shell",
       "args": [
