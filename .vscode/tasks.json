@@ -26,7 +26,14 @@
       "label": "nuget: upgrade",
       "type": "shell",
       "command": "dotnet",
-      "args": ["nupu"],
+      "args": ["update-cpm"],
+      "problemMatcher": []
+    },
+    {
+      "label": "nuget: upgrade (prerelease)",
+      "type": "shell",
+      "command": "dotnet",
+      "args": ["update-cpm", "--include-prerelease"],
       "problemMatcher": []
     },
     {
