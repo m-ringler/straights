@@ -16,7 +16,7 @@
 
     <!-- Nuget Properties -->
     <Authors>m-ringler</Authors>
-    <Copyright>2025, M. Ringler</Copyright>
+    <Copyright>2025-2026, M. Ringler</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryType>git</RepositoryType>
     <PackageProjectUrl>https://github.com/m-ringler/straights</PackageProjectUrl>
