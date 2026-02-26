@@ -54,7 +54,7 @@
       Condition="'$(STRAIGHTS_TARGET_OS)' != 'ubuntu-22.04'"
     />
     <PackageReference
-      Include="OpenCvSharp4.official.runtime.ubuntu.22.04-x64.slim"
+      Include="OpenCvSharp4.official.runtime.linux-x64.slim"
       Condition="'$(STRAIGHTS_TARGET_OS)' == 'ubuntu-22.04'"
     />
   </ItemGroup>
