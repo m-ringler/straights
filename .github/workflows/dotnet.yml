@@ -82,7 +82,7 @@ jobs:
         run: dotnet build --no-restore -c ${{ matrix.build }} straights-commandline.slnf
 
       - name: Install Dependencies
-        if: matrix.config.os == 'ubuntu-22.04' || matrix.config.os == 'ubuntu-24.04'
+        if: matrix.config.osfamily == 'linux'
         run: |
           sudo apt-get update -y
           sudo apt-get install -y --no-install-recommends \
@@ -99,6 +99,10 @@ jobs:
             libtiff-dev \
             libopenjp2-7-dev \
             zlib1g-dev
+          find -iname libOpenCvSharpExtern.so
+          find -iname libOpenCvSharpExtern.so -exec ldd {} \; \
+              | tee /dev/stderr \
+              | grep -q "not found" && exit 1  # fail step if any missing libs are reported
 
       - name: Test
         run: >
