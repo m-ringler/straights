@@ -30,8 +30,12 @@
   </ItemGroup>
   <ItemGroup>
     <PackageVersion
-      Include="m-ringler.OpenCvSharp4.ubuntu24.runtime.linux-x64"
-      Version="4.10.0.20260222"
+      Include="OpenCvSharp4.official.runtime.ubuntu.24.04-x64"
+      Version="4.13.0.20260226"
+    />
+    <PackageVersion
+      Include="OpenCvSharp4.official.runtime.ubuntu.22.04-x64"
+      Version="4.13.0.20260226"
     />
     <PackageVersion Include="Microsoft.AspNetCore" Version="2.3.0" />
     <PackageVersion

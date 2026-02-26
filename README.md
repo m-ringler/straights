@@ -93,8 +93,6 @@ If Straights.Image fails with an "Unable to load shared library 'OpenCvSharpExte
 
 If you are neither on Ubuntu-22 nor on Ubuntu 24, you may have to build your own OpenCvSharpExtern.so and replace the one shipped with straights.
 
-As there is no official OpenCvSharp nuget package for Ubuntu-24, we're using [our own nuget](https://www.nuget.org/packages/m-ringler.OpenCvSharp4.ubuntu24.runtime.linux-x64/) built from [a fork of the OpenCvSharp repo](https://github.com/m-ringler/opencvsharp/) for the Ubuntu-24 build of the straights command line app.
-
 ## Building
 
 You'll need:

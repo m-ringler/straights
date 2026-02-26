@@ -12,8 +12,8 @@ For Linux, there is no single runtime library because the runtime library depend
 
 | Distribution | Runtime library |
 |-|-|
-| Ubuntu 22.04 | [OpenCvSharp4.official.runtime.linux-x64](https://www.nuget.org/packages/OpenCvSharp4.official.runtime.linux-x64) |
-| Ubuntu 24.04 | [m-ringler.OpenCvSharp4.ubuntu24.runtime.linux-x64](https://www.nuget.org/packages/m-ringler.OpenCvSharp4.ubuntu24.runtime.linux-x64) |
+| Ubuntu 22.04 | [OpenCvSharp4.official.runtime.ubuntu.22.04-x64](https://www.nuget.org/packages/OpenCvSharp4.official.runtime.ubuntu.22.04-x64) |
+| Ubuntu 24.04 | [OpenCvSharp4.official.runtime.ubuntu.24.04-x64](https://www.nuget.org/packages/OpenCvSharp4.official.runtime.ubuntu.24.04-x64) |
 | Other distros | [Search nuget.org](https://www.nuget.org/packages?page=2&q=OpenCvSharp4) or build the runtime yourself |
 
 Users may have to install distribution packages that the runtime library depends on.
