@@ -27,16 +27,6 @@
     <PackageReference Include="System.IO.Abstractions" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference
-      Include="OpenCvSharp4.official.runtime.ubuntu.24.04-x64.slim"
-      Condition="'$(STRAIGHTS_TARGET_OS)' != 'ubuntu-22.04'"
-    />
-    <PackageReference
-      Include="OpenCvSharp4.official.runtime.linux-x64.slim"
-      Condition="'$(STRAIGHTS_TARGET_OS)' == 'ubuntu-22.04'"
-    />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="..\webdev\base\shared\**\*.*;..\webdev\tsc-out\shared\*.*">
       <LinkBase>Play/html/</LinkBase>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

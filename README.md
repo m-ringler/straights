@@ -91,7 +91,7 @@ However, the Linux native runtimes of OpenCvSharp used by Straights.Image depend
 
 If Straights.Image fails with an "Unable to load shared library 'OpenCvSharpExtern' or one of its dependencies." error, you can [check which dependencies are missing](https://github.com/shimat/opencvsharp/issues/1618#issuecomment-1846537140), and install them. Alternatively, you can simply [install all the libraries used to build it](https://github.com/shimat/opencvsharp/blob/ecd814da8fa508f32490251751f607c666263abb/.github/workflows/ubuntu-slim.yml#L33C1-L47C23).
 
-If you are neither on Ubuntu-22 nor on Ubuntu 24, you may have to build your own OpenCvSharpExtern.so and replace the one shipped with straights.
+If you are neither on Ubuntu-22 nor on Ubuntu 24, you may have to build your own OpenCvSharpExtern.so and put it where straights will find it.
 
 ## Building
 
