@@ -81,7 +81,7 @@ jobs:
       - name: Build
         run: dotnet build --no-restore -c ${{ matrix.build }} straights-commandline.slnf
 
-      - name: Install Dependencies
+      - name: Install OpenCvSharp Dependencies
         if: matrix.config.osfamily == 'linux'
         run: |
           sudo apt-get update -y
@@ -99,10 +99,16 @@ jobs:
             libtiff-dev \
             libopenjp2-7-dev \
             zlib1g-dev
+
+      - name: Verify OpenCvSharp Libraries
+        if: matrix.config.osfamily == 'linux'
+        run: |
           find -iname libOpenCvSharpExtern.so
-          find -iname libOpenCvSharpExtern.so -exec ldd {} \; \
-              | tee /dev/stderr \
-              | grep -q "not found" && exit 1  # fail step if any missing libs are reported
+          if find -iname libOpenCvSharpExtern.so -exec ldd {} \; \
+                | grep "not found"; then
+            echo "unresolved dependencies detected"
+            exit 1
+          fi
 
       - name: Test
         run: >
