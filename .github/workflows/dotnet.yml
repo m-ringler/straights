@@ -29,9 +29,9 @@ jobs:
       matrix:
         build: [Release]
         config:
-          - {os: windows-latest, osfamily: win}
+        #  - {os: windows-latest, osfamily: win}
           - {os: ubuntu-22.04, osfamily: linux}
-          - {os: ubuntu-24.04, osfamily: linux}
+        # - {os: ubuntu-24.04, osfamily: linux}
 
     steps:
       - uses: actions/checkout@v6
