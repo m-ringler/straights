@@ -84,21 +84,29 @@ jobs:
       - name: Install OpenCvSharp Dependencies
         if: matrix.config.osfamily == 'linux'
         run: |
-          sudo apt-get update -y
-          sudo apt-get install -y --no-install-recommends \
+           sudo apt-get install -y  --no-install-recommends \
             apt-transport-https \
             software-properties-common \
             ca-certificates \
             g++ \
             make \
             cmake \
-            libtbb \
-            libatlas-base \
-            libjpeg \
-            libpng \
-            libtiff \
-            libopenjp2-7 \
-            zlib1g
+            libtbb-dev \
+            libatlas-base-dev \
+            libgtk2.0-dev \
+            libavcodec-dev \
+            libavformat-dev \
+            libswscale-dev \
+            libdc1394-dev \
+            libxine2-dev \
+            libv4l-dev \
+            libtheora-dev \
+            libvorbis-dev \
+            libxvidcore-dev \
+            libopencore-amrnb-dev \
+            libopencore-amrwb-dev \
+            x264 \
+            libtesseract-dev
 
       - name: Verify OpenCvSharp Libraries
         if: matrix.config.osfamily == 'linux'
