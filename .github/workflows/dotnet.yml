@@ -29,9 +29,9 @@ jobs:
       matrix:
         build: [Release]
         config:
-        #  - {os: windows-latest, osfamily: win}
+          - {os: windows-latest, osfamily: win}
           - {os: ubuntu-22.04, osfamily: linux}
-        # - {os: ubuntu-24.04, osfamily: linux}
+          - {os: ubuntu-24.04, osfamily: linux}
 
     steps:
       - uses: actions/checkout@v6
@@ -64,14 +64,6 @@ jobs:
       - name: Restore dependencies
         run: |
           dotnet restore
-
-          # rename any ubuntu.24.04-x64 or ubuntu.22.04-x64 subdirectories
-          find . -type d -path '*/runtimes/ubuntu.2?.04-x64' -print0 \
-            | while IFS= read -r -d '' dir; do
-                dest=$(dirname "$dir")/linux-x64
-                echo "renaming $dir -> $dest"
-                mv "$dir" "$dest"
-              done || true
 
       - name: Setup Node.js
         uses: actions/setup-node@v6
@@ -116,14 +108,6 @@ jobs:
             libopencore-amrwb-dev \
             x264 \
             libtesseract-dev
-
-      - name: Verify OpenCvSharp Libraries
-        if: matrix.config.osfamily == 'linux'
-        run: |
-          find Straights.Image.Tests -iname libOpenCvSharpExtern.so
-          find Straights.Image.Tests -iname libOpenCvSharpExtern.so -exec ldd {} \; \
-              | tee /dev/stderr \
-              | grep -q "found" || true
 
       - name: Test
         run: >
@@ -206,15 +190,6 @@ jobs:
           # Now restore using the normal configuration (NuGet.config references packages_local)
           dotnet restore straights-commandline.slnf \
             -p:UseStraightsNugetPackagesVersion=${{ steps.get-set-version.outputs.version }}
-
-          # rename any ubuntu.24.04-x64 or ubuntu.22.04-x64 subdirectories
-          find . -type d -path '*/runtimes/ubuntu.2?.04-x64' -print0 \
-            | while IFS= read -r -d '' dir; do
-                dest=$(dirname "$dir")/linux-x64
-                echo "renaming $dir -> $dest"
-                mv "$dir" "$dest"
-              done || true
-              
 
       - name: Test (using freshly created NuGet packages)
         if: ${{ (matrix.config.os == 'ubuntu-22.04' && github.event_name != 'pull_request') && (matrix.build == 'Release') }}
