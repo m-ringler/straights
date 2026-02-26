@@ -85,7 +85,7 @@ jobs:
       - name: Install OpenCvSharp Dependencies
         if: matrix.config.osfamily == 'linux'
         run: |
-           sudo apt-get install -y  --no-install-recommends \
+           sudo apt-get install -y  --no-install-recommends --fix-missing \
             apt-transport-https \
             software-properties-common \
             ca-certificates \
@@ -188,6 +188,7 @@ jobs:
           echo "packages_local contains:" && ls -la packages_local || true
 
           # Now restore using the normal configuration (NuGet.config references packages_local)
+          dotnet nuget locals all --clear
           dotnet restore straights-commandline.slnf \
             -p:UseStraightsNugetPackagesVersion=${{ steps.get-set-version.outputs.version }}
 
