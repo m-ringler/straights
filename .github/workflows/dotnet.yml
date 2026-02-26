@@ -85,7 +85,7 @@ jobs:
         if: matrix.config.os == 'ubuntu-22.04' || matrix.config.os == 'ubuntu-24.04'
         run: |
           sudo apt-get update -y
-          sudo apt-get install  -y  --no-install-recommends \
+          sudo apt-get install -y --no-install-recommends \
             apt-transport-https \
             software-properties-common \
             ca-certificates \
@@ -94,20 +94,11 @@ jobs:
             cmake \
             libtbb-dev \
             libatlas-base-dev \
-            libgtk2.0-dev \
-            libavcodec-dev \
-            libavformat-dev \
-            libswscale-dev \
-            libdc1394-dev \
-            libxine2-dev \
-            libv4l-dev \
-            libtheora-dev \
-            libvorbis-dev \
-            libxvidcore-dev \
-            libopencore-amrnb-dev \
-            libopencore-amrwb-dev \
-            x264 \
-            libtesseract-dev
+            libjpeg-dev \
+            libpng-dev \
+            libtiff-dev \
+            libopenjp2-7-dev \
+            zlib1g-dev
 
       - name: Test
         run: >

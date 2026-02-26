@@ -28,11 +28,11 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference
-      Include="OpenCvSharp4.official.runtime.ubuntu.24.04-x64"
+      Include="OpenCvSharp4.official.runtime.ubuntu.24.04-x64.slim"
       Condition="'$(STRAIGHTS_TARGET_OS)' != 'ubuntu-22.04'"
     />
     <PackageReference
-      Include="OpenCvSharp4.official.runtime.ubuntu.22.04-x64"
+      Include="OpenCvSharp4.official.runtime.ubuntu.22.04-x64.slim"
       Condition="'$(STRAIGHTS_TARGET_OS)' == 'ubuntu-22.04'"
     />
   </ItemGroup>

@@ -30,11 +30,11 @@
   </ItemGroup>
   <ItemGroup>
     <PackageVersion
-      Include="OpenCvSharp4.official.runtime.ubuntu.24.04-x64"
+      Include="OpenCvSharp4.official.runtime.ubuntu.24.04-x64.slim"
       Version="4.13.0.20260226"
     />
     <PackageVersion
-      Include="OpenCvSharp4.official.runtime.ubuntu.22.04-x64"
+      Include="OpenCvSharp4.official.runtime.ubuntu.22.04-x64.slim"
       Version="4.13.0.20260226"
     />
     <PackageVersion Include="Microsoft.AspNetCore" Version="2.3.0" />
@@ -45,8 +45,8 @@
     <PackageVersion Include="Microsoft.ML.OnnxRuntime" Version="1.24.2" />
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.103" />
     <PackageVersion
-      Include="OpenCvSharp4.runtime.win"
-      Version="4.13.0.20260222"
+      Include="OpenCvSharp4.runtime.win.slim"
+      Version="4.13.0.20260226"
     />
     <PackageVersion Include="OpenCvSharp4" Version="4.13.0.20260226" />
     <PackageVersion Include="RandN" Version="0.5.0" />
