@@ -78,7 +78,7 @@ public static class NativeLibraryLoader
             // or be on a different Linux distro.
         }
 
-        // Load the .so file from the NuGet package's runtime directory
+        // Local build (e.g. dotnet run)
         string nativeLibPath = Path.Combine(
             AppContext.BaseDirectory,
             "runtimes",
@@ -87,12 +87,21 @@ public static class NativeLibraryLoader
             soFileName
         );
 
-        if (!File.Exists(nativeLibPath))
+        if (File.Exists(nativeLibPath))
         {
-            return null;
+            return nativeLibPath;
         }
 
-        return nativeLibPath;
+        // Published
+        nativeLibPath = Path.Combine(AppContext.BaseDirectory, soFileName);
+
+        if (File.Exists(nativeLibPath))
+        {
+            return nativeLibPath;
+        }
+
+        // Not found, let the default resolver look for it.
+        return soFileName;
     }
 
     private static string? GetUbuntuVersion()
