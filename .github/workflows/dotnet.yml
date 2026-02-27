@@ -62,8 +62,7 @@ jobs:
             ${{ runner.os }}-nuget-
 
       - name: Restore dependencies
-        run: |
-          dotnet restore
+        run: dotnet restore
 
       - name: Setup Node.js
         uses: actions/setup-node@v6
@@ -85,8 +84,8 @@ jobs:
       - name: Install OpenCvSharp Dependencies
         if: matrix.config.osfamily == 'linux'
         run: |
-           sudo apt-get update -y
-           sudo apt-get install -y --no-install-recommends \
+          sudo apt-get update -y
+          sudo apt-get install -y --no-install-recommends \
             apt-transport-https \
             software-properties-common \
             ca-certificates \
