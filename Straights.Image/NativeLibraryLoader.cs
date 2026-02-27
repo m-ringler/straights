@@ -107,7 +107,21 @@ public static class NativeLibraryLoader
     private static string? GetUbuntuVersion()
     {
         // Read /etc/os-release to detect Ubuntu version
-        string[] lines = File.ReadAllLines("/etc/os-release");
+        if (!File.Exists("/etc/os-release"))
+        {
+            return null;
+        }
+
+        string[] lines;
+        try
+        {
+            lines = File.ReadAllLines("/etc/os-release");
+        }
+        catch (IOException)
+        {
+            return null;
+        }
+
         var info =
             from line in lines
             let parts = line.Split('=', 2)
@@ -120,7 +134,7 @@ public static class NativeLibraryLoader
 
         if (
             infoDict.TryGetValue("NAME", out var name)
-            && name == "Ubuntu"
+            && "Ubuntu".Equals(name, StringComparison.OrdinalIgnoreCase)
             && infoDict.TryGetValue("VERSION_ID", out var version)
         )
         {
