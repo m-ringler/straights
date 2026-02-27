@@ -113,8 +113,7 @@ jobs:
           -p:CoverletOutputFormat=cobertura
           -p:CoverletOutput=${{ github.workspace }}/TestResults/coverage.cobertura.xml
           -p:ExcludeByAttribute=GeneratedCodeAttribute%2cObsoleteAttribute
-          -p:ExcludeByFile=**/*.axaml%2c**/*.g.cs
-          -p:Exclude='[netczicompress]netczicompress.Views.*'
+          -p:ExcludeByFile=**/*.g.cs
 
       - name: Upload dotnet test results
         uses: actions/upload-artifact@v6
