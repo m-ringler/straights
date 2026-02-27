@@ -8,12 +8,19 @@ using Straights.Image.DigitReader;
 
 public class GridReaderFactory
 {
-    public int DigitPadding { get; set; } = 4;
+    public int DigitPadding { get; init; } = 4;
 
-    public string ModelName { get; set; } = "bekhzod-olimov-printed-digits";
+    public string ModelName { get; init; } = "bekhzod-olimov-printed-digits";
+
+    public bool UseCustomizedOpenCvSharpExternSoLoader { get; init; } = true;
 
     public IBlackAndWhiteGridReader CreateGridReader(string? debugFolder = null)
     {
+        if (this.UseCustomizedOpenCvSharpExternSoLoader)
+        {
+            NativeLibraryLoader.EnsureInitialized();
+        }
+
         // Relying on finalizer to clean up the InferenceSession.
         var digitClassifier = new DigitClassifierOnnx(this.ModelName);
 

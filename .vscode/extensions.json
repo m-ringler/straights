@@ -5,6 +5,8 @@
     "ms-dotnettools.csdevkit",
     "ms-dotnettools.vscode-dotnet-runtime",
     "csharpier.csharpier-vscode",
-    "vitest.explorer"
+    "vitest.explorer",
+    "github.vscode-github-actions",
+    "iulian-radu-at.vscode-tasks-sidebar"
   ]
 }

@@ -48,14 +48,4 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup>
-    <PackageReference
-      Include="m-ringler.OpenCvSharp4.ubuntu24.runtime.linux-x64"
-      Condition="'$(STRAIGHTS_TARGET_OS)' != 'ubuntu-22.04'"
-    />
-    <PackageReference
-      Include="OpenCvSharp4.official.runtime.linux-x64"
-      Condition="'$(STRAIGHTS_TARGET_OS)' == 'ubuntu-22.04'"
-    />
-  </ItemGroup>
 </Project>
