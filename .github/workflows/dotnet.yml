@@ -145,7 +145,7 @@ jobs:
       - name: Test published command line app
         if: matrix.build == 'Release'
         run: >
-          ./publish/straights solve test/persp9.png
+          ./publish/straights/straights solve test/persp9.png
 
       - name: List files
         if: ${{ matrix.config.osfamily == 'linux' }}
