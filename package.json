@@ -1,7 +1,7 @@
 {
   "name": "straights",
   "private": true,
-  "version": "0.8.3",
+  "version": "0.8.4",
   "devDependencies": {
     "@edge-runtime/vm": "^5.0.0",
     "@types/jquery": "^4.0.0",
