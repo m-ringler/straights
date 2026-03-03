@@ -97,8 +97,8 @@ jobs:
             libjpeg-dev \
             libpng-dev \
             libtiff-dev \
-            libopenjp2-7-dev \
-            zlib1g-dev
+            libopenjp2-7 \
+            zlib1g
 
       - name: Test
         run: >
