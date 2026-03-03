@@ -37,6 +37,13 @@
       "problemMatcher": []
     },
     {
+      "label": "nuget: upgrade tools",
+      "type": "shell",
+      "command": "dotnet",
+      "args": ["tool", "update", "--all"],
+      "problemMatcher": []
+    },
+    {
       "label": "nuget: list outdated (prerelease)",
       "type": "shell",
       "command": "dotnet",
