@@ -70,7 +70,7 @@ jobs:
           find . -type f
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: Straights.Web_${{ steps.get-set-version.outputs.version }}
           path: ${{ github.workspace }}/publish/Straights.Web

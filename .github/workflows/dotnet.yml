@@ -115,7 +115,7 @@ jobs:
           -p:ExcludeByFile=**/*.g.cs
 
       - name: Upload dotnet test results
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: test-results-${{ matrix.config.os }}-${{ matrix.build }}
           path: TestResults
@@ -124,7 +124,7 @@ jobs:
 
       - name: Upload Verify Received Files
         if: failure()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: verify-test-results-${{ matrix.config.os }}-${{ matrix.build }}
           path: |
@@ -152,7 +152,7 @@ jobs:
           find "${{ github.workspace }}/publish" -type f
 
       - name: Upload published binaries
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         if: ${{ (github.event_name != 'pull_request') && (matrix.build == 'Release') }}
         with:
           name: Straights_${{ steps.get-set-version.outputs.version }}_${{ matrix.config.pub}}-x64
@@ -203,7 +203,7 @@ jobs:
           ls -la "${{ github.workspace }}/nuget"
 
       - name: Upload nuget artifacts
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         if: ${{ (matrix.config.os == 'ubuntu-24.04' && github.event_name != 'pull_request') && (matrix.build == 'Release') }}
         with:
           name: Straights_${{ steps.get-set-version.outputs.version }}_Nugets
