@@ -115,18 +115,38 @@ export class JQueryFieldRenderer {
         if (field.user) {
           element.text(field.user);
         } else if (field.notes.size > 0) {
-          let notes = '<table class="mini" cellspacing="0">';
+          let row = '';
+          let rows: { row: string; isEmpty: boolean }[] = [];
+          let isEmpty = true;
           for (let i = 1; i <= field.game.size; i++) {
-            if ((i - 1) % 3 === 0) notes += '<tr>';
+            if ((i - 1) % 3 === 0) {
+              row = '<tr>';
+              isEmpty = true;
+            }
             if (field.notes.has(i)) {
               const class_attribute = field.hint === i ? ' class="hint"' : '';
-              notes += `<td${class_attribute}>${i}</td>`;
+              row += `<td${class_attribute}>${i}</td>`;
+              isEmpty = false;
             } else {
-              notes += `<td class="transparent">${i}</td>`;
+              row += `<td class="transparent">${i}</td>`;
             }
-            if (i % 3 === 0) notes += '</tr>';
+            if (i % 3 === 0 || i === field.game.size) {
+              row += '</tr>';
+              rows.push({ row, isEmpty });
+            }
           }
-          notes += '</table>';
+
+          // Remove trailing empty rows beyond row 3.
+          // Row 4 does not usually fit into the square cell and makes the
+          // cell rectangular, therefore we only add it when we have to.
+          // As a consequence, 3-row and 4-row cells are not aligned, but in order
+          // to fix that we would have to look beyond one cell, which adds too
+          // much complexity for a minor visual improvement.
+          while (rows.length > 3 && rows[rows.length - 1].isEmpty) {
+            rows.pop();
+          }
+
+          let notes = `<table class="mini" cellspacing="0">\n${rows.map((r) => r.row).join('\n')}\n</table>`;
           element.append(notes);
         }
       }
