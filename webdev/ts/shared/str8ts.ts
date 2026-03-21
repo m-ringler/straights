@@ -730,12 +730,10 @@ export class UIController {
       // Large screen
       this.$('#buttons-small').hide();
       this.$('#buttons-large').show();
-      this.$(`.${this.renderer.cellStyle}`).css({
-        'font-size': '22pt',
-        width: '41px',
-        height: '41px',
-      });
-      this.$('.mini').css('font-size', '9pt');
+      $('body').css('--cell-width', '48px');
+      $('body').css('--cell-height', '48px');
+      $('body').css('--cell-font-size', '22pt');
+      $('body').css('--mini-font-size', '9pt');
       this.$('#hint-dialog').css('width', '235px');
     } else {
       // Small screen
@@ -747,12 +745,10 @@ export class UIController {
       this.$('#buttons-large').hide();
       this.$('.container').css({ margin: '5px 2px' });
       this.$('.controls').css({ margin: '0px 2px' });
-      this.$(`.${this.renderer.cellStyle}`).css({
-        'font-size': '17pt',
-        width: `${cellwidth}px`,
-        height: `${cellwidth}px`,
-      });
-      this.$('.mini').css('font-size', '8pt');
+      $('body').css('--cell-width', `${cellwidth}px`);
+      $('body').css('--cell-height', `${cellwidth}px`);
+      $('body').css('--cell-font-size', '17pt');
+      $('body').css('--mini-font-size', '8pt');
       this.$('#hint-dialog').css('width', '150px');
     }
   }

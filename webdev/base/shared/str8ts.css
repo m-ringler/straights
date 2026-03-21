@@ -19,6 +19,10 @@
   --color-mini: black;
   --color-link: #00e;
   --color-visited-link: #551a8b;
+  --mini-font-size: 8pt;
+  --cell-font-size: 17pt;
+  --cell-width: 41px;
+  --cell-height: 41px;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -105,13 +109,15 @@ html {
 }
 
 .cell {
-  height: 41px;
-  width: 41px;
+  height: var(--cell-height);
+  width: var(--cell-width);
   border: 1px solid var(--color-cell-border);
   margin: 0;
   padding: 2px;
   text-align: center;
+  vertical-align: middle;
   font-weight: 600;
+  font-size: var(--cell-font-size);
 }
 
 .controls {
@@ -193,7 +199,7 @@ html {
   text-align: center;
   margin: -2px 0;
   width: 100%;
-  font-size: 8pt;
+  font-size: var(--mini-font-size);
   font-weight: 600;
   color: var(--color-mini);
   pointer-events: none;

@@ -13,12 +13,12 @@
       "rollForward": false
     },
     "husky": {
-      "version": "0.8.0",
+      "version": "0.9.1",
       "commands": ["husky"],
       "rollForward": false
     },
     "dotnet-reportgenerator-globaltool": {
-      "version": "5.5.3",
+      "version": "5.5.4",
       "commands": ["reportgenerator"],
       "rollForward": false
     },
