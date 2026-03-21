@@ -136,14 +136,13 @@ export class JQueryFieldRenderer {
             }
           }
 
-          // Remove trailing empty rows beyond row 3.
           // Row 4 does not usually fit into the square cell and makes the
           // cell rectangular, therefore we only add it when we have to.
-          // As a consequence, 3-row and 4-row cells are not aligned, but in order
-          // to fix that we would have to look beyond one cell, which adds too
-          // much complexity for a minor visual improvement.
           while (rows.length > 3 && rows[rows.length - 1].isEmpty) {
             rows.pop();
+          }
+          while (rows.length > 3 && rows[0].isEmpty) {
+            rows.shift();
           }
 
           let notes = `<table class="mini" cellspacing="0">${rows.map((r) => r.row).join('')}</table>`;
