@@ -146,7 +146,7 @@ export class JQueryFieldRenderer {
             rows.pop();
           }
 
-          let notes = `<table class="mini" cellspacing="0">\n${rows.map((r) => r.row).join('\n')}\n</table>`;
+          let notes = `<table class="mini" cellspacing="0">${rows.map((r) => r.row).join('')}</table>`;
           element.append(notes);
         }
       }
