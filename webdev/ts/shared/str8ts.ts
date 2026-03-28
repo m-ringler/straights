@@ -587,6 +587,11 @@ export class UIController {
     } else if (key === 'Backspace' || key === 'Delete') {
       this.handleDelete();
       handled = true;
+    } else if (key === 'Escape') {
+      if (!this.$('#generating-new-game-dialog').is(':visible')) {
+        handled = true;
+        this.showDialogAsync(false);
+      }
     }
 
     if (handled) {
