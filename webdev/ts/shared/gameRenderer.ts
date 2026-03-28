@@ -144,6 +144,11 @@ export class JQueryFieldRenderer {
           while (rows.length > 3 && rows[0].isEmpty) {
             rows.shift();
           }
+          for (let i = rows.length - 2; rows.length > 3 && i > 0; i--) {
+            if (rows[i].isEmpty) {
+              rows.splice(i, 1);
+            }
+          }
 
           let notes = `<table class="mini" cellspacing="0">${rows.map((r) => r.row).join('')}</table>`;
           element.append(notes);
