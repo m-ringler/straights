@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+/// <reference types="jquery" />
+
 import * as Str8ts from './game.js';
 import * as emojisModule from './seasonalEmojis.js';
 

@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+/// <reference lib="webworker" />
+
 const CACHE_NAME = 'v0.8.6';
 const urlsToCache = [
   './',
@@ -90,9 +92,11 @@ async function _fetch(request: Request): Promise<Response> {
   return await fetch(request);
 }
 
-self.addEventListener('install', (event) => {
+const serviceWorkerSelf = self as unknown as ServiceWorkerGlobalScope;
+
+serviceWorkerSelf.addEventListener('install', (event) => {
   console.info('Installing service worker', CACHE_NAME);
-  self.skipWaiting();
+  serviceWorkerSelf.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       return Promise.all(
@@ -125,8 +129,8 @@ self.addEventListener('activate', (event) => {
           }
         })
       );
-      await self.clients.claim();
-      const clients = await self.clients.matchAll();
+      await serviceWorkerSelf.clients.claim();
+      const clients = await serviceWorkerSelf.clients.matchAll();
       clients.forEach((client) => client.postMessage('reload'));
     })()
   );

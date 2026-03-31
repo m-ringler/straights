@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2020 Luis Walter, 2025-2026 Moritz Ringler
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
-
+/// <reference types="jquery" />
 // module imports
 import * as Str8ts from './game.js';
 import * as Renderer from './gameRenderer.js';
@@ -96,7 +96,7 @@ export class UIController {
     const darkMode = win.matchMedia('(prefers-color-scheme: dark)').matches;
     this.buttonColors = getButtonColors(darkMode);
     this.renderer = new Renderer.JQueryFieldRenderer(
-      this.$ as any,
+      this.$,
       darkMode,
       MAX_GRID_SIZE
     );
@@ -107,8 +107,8 @@ export class UIController {
     );
 
     this.historyRenderer = new HistoryRendererModule.HistoryRenderer(
-      this.$ as any,
-      this.$('#history-div') as any,
+      this.$,
+      this.$('#history-div'),
       async () => await this.getHistoryRendererDataAsync()
     );
   }

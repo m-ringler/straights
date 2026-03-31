@@ -319,7 +319,7 @@ SPDX-License-Identifier: GPL-3.0-or-later
       import { UIController } from './str8ts.js';
 
       const ui = new UIController($, window);
-      $(async () => ui.startAsync());
+      $(async () => await ui.startAsync());
     </script>
 
     <!-- Register the Service Worker -->
