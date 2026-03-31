@@ -122,6 +122,7 @@ dotnet publish Straights.Web/Straights.Web.csproj -r browser-wasm -c Release -p 
 ## Backlog
 
 * Add more tests for the javascript code
+* Use a bundler for the JS code
 * Add more XML doc (use Copilot?)
 * Microsoft.CodeAnalysis.PublicApiAnalyzers
 * See if we can find a better solution for the Linux OpenCvSharp runtime
