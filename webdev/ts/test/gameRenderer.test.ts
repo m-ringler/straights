@@ -13,7 +13,7 @@ import $ from 'jquery';
 import * as seasonalEmojisModule from '../shared/seasonalEmojis.js';
 
 // Mock the seasonalEmojis module to always return null
-vi.mock('../seasonalEmojis.js', () => ({
+vi.mock('../shared/seasonalEmojis.js', () => ({
   getEmojis: () => null,
 }));
 
