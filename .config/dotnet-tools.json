@@ -18,12 +18,12 @@
       "rollForward": false
     },
     "dotnet-reportgenerator-globaltool": {
-      "version": "5.5.4",
+      "version": "5.5.7",
       "commands": ["reportgenerator"],
       "rollForward": false
     },
     "m-ringler.cpmupdatetool": {
-      "version": "0.1.1",
+      "version": "0.1.2",
       "commands": ["update-cpm"],
       "rollForward": false
     }
