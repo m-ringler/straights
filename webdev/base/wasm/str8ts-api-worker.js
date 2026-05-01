@@ -2,10 +2,11 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-importScripts('Straights.Web.js');
+import createWasmModule from './Straights.Web.js';
 
 const ModulePromise = createWasmModule();
 
+let Module;
 self.onmessage = async (e) => {
   Module = await ModulePromise;
 

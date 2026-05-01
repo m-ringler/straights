@@ -37,6 +37,7 @@
     <LinkerArg Include="-sEXPORTED_RUNTIME_METHODS=['stringToUTF8','UTF8ToString','HEAPU8','HEAP32','HEAP16']" />
     <LinkerArg Include="-sMODULARIZE" />
     <LinkerArg Include="-sEXPORT_NAME=createWasmModule" />
+    <LinkerArg Include="-sEXPORT_ES6=1" />
   </ItemGroup>
 
   <ItemGroup>

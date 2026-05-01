@@ -1,20 +1,20 @@
 {
   "name": "straights",
   "private": true,
-  "version": "0.8.6",
+  "version": "0.8.7",
   "devDependencies": {
     "@edge-runtime/vm": "^5.0.0",
     "@types/jquery": "^4.0.0",
-    "@types/node": "^25.5.2",
-    "@types/serviceworker": "^0.0.194",
-    "@vitest/coverage-v8": "^4.1.2",
-    "@vitest/ui": "^4.1.2",
+    "@types/node": "^25.6.0",
+    "@types/serviceworker": "^0.0.196",
+    "@vitest/coverage-v8": "^4.1.5",
+    "@vitest/ui": "^4.1.5",
     "cheerio": "^1.2.0",
     "jquery": "^4.0.0",
-    "jsdom": "^29.0.1",
-    "prettier": "^3.8.1",
-    "typescript": "^6.0.2",
-    "vitest": "^4.1.2"
+    "jsdom": "^29.1.1",
+    "prettier": "^3.8.3",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.5"
   },
   "prettier": {
     "singleQuote": true,
