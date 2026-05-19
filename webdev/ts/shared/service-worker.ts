@@ -58,6 +58,14 @@ const urlsToCache = [
 
 const apiEndPoints = new Set(['/generate', '/hint']);
 
+function unavailableResponse() {
+  return new Response('Service temporarily unavailable because offline', {
+    status: 503,
+    statusText: 'Service Unavailable',
+    headers: { 'Content-Type': 'text/plain' },
+  });
+}
+
 async function fetchFresh(url: Request | string) {
   console.debug('Fetching ', url);
   let result = await fetch(url, { cache: 'no-store' });
@@ -67,9 +75,15 @@ async function fetchFresh(url: Request | string) {
 
 async function _fetch(request: Request): Promise<Response> {
   const requestUrl = new URL(request.url);
+  const isOffline = serviceWorkerSelf.navigator
+    ? !serviceWorkerSelf.navigator.onLine
+    : false;
 
   if (apiEndPoints.has(requestUrl.pathname)) {
-    // Always fetch from network for local API endpoints
+    // Always fetch from network for local API endpoints when online
+    if (isOffline) {
+      return unavailableResponse();
+    }
     return await fetch(request);
   }
 
@@ -78,6 +92,11 @@ async function _fetch(request: Request): Promise<Response> {
   if (cachedResponse) {
     // Return cached response if found
     return cachedResponse;
+  }
+
+  if (isOffline) {
+    // Do not emit a network fetch when offline for resources that are not cached.
+    return unavailableResponse();
   }
 
   // HTTP(S) requests: fetch and cache
