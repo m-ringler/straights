@@ -5,9 +5,9 @@
   "devDependencies": {
     "@edge-runtime/vm": "^5.0.0",
     "@types/jquery": "^4.0.0",
-    "@types/node": "^25.6.0",
-    "@types/serviceworker": "^0.0.196",
-    "@vitest/coverage-v8": "^4.1.5",
+    "@types/node": "^25.9.1",
+    "@types/serviceworker": "^0.0.197",
+    "@vitest/coverage-v8": "^4.1.8",
     "@vitest/ui": "^4.1.5",
     "cheerio": "^1.2.0",
     "jquery": "^4.0.0",
