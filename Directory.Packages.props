@@ -1,6 +1,6 @@
 ﻿<Project>
   <PropertyGroup>
-    <IlCompilerLLVMVersion>10.0.0-rc.1.26117.1</IlCompilerLLVMVersion>
+    <IlCompilerLLVMVersion>10.0.0-rc.1.26357.1</IlCompilerLLVMVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion
