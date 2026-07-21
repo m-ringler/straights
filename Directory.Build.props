@@ -12,7 +12,7 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
 
     <!-- Version -->
-    <VersionPrefix>0.8.8</VersionPrefix>
+    <VersionPrefix>0.8.9</VersionPrefix>
 
     <!-- Nuget Properties -->
     <Authors>m-ringler</Authors>
@@ -31,7 +31,6 @@
 
     <!-- Deterministic builds -->
     <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'"
-      >true</ContinuousIntegrationBuild
-    >
+      >true</ContinuousIntegrationBuild>
   </PropertyGroup>
 </Project>
