@@ -23,3 +23,6 @@ webdev/tsc-out/
 .venv/*
 
 /imagedev
+
+# VsCode
+*.lscache

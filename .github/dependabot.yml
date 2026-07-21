@@ -13,6 +13,8 @@ updates:
         applies-to: version-updates
         patterns:
           - "*"
+    cooldown:
+      default-days: 7
 
   - package-ecosystem: "nuget"
     directory: "/"
@@ -23,6 +25,8 @@ updates:
         applies-to: version-updates
         patterns:
           - "*"
+    cooldown:
+      default-days: 7
 
   - package-ecosystem: "github-actions"
     directory: "/"
@@ -33,3 +37,5 @@ updates:
         applies-to: version-updates
         patterns:
           - "*"
+    cooldown:
+      default-days: 7
