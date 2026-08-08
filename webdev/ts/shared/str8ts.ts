@@ -86,8 +86,7 @@ export class UIController {
   private win: Window;
   private renderer: Renderer.JQueryFieldRenderer;
   private setSelectedLayoutOption:
-    | ((selectedOption: string) => void)
-    | undefined;
+    ((selectedOption: string) => void) | undefined;
 
   constructor($: JQueryStatic, win: Window) {
     this.$ = $;
