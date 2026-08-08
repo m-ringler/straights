@@ -807,9 +807,9 @@ vt.describe('Game', () => {
       'should automatically fill single note as user value when enabled',
       () => {
         const game = new Str8ts.Game(dummyRenderer, 9).parseGameCode(
-          'gEg4DCiJMBj3jLkXiaggDCkD3p3gIsD3jCghhCCqX3r3g3pDkYAjChCBiBihXkXjjXhBiXj4DCgYiJhDDisA'
+          'gEg4DCiJMBj3jLkXiaggDCkD3p3gIsD3jCghhCCqX3r3g3pDkYAjChCBiBihXkXjjXhBiXj4DCgYiJhDDisA',
+          true
         )!;
-        game.autoFillSingleNote = true;
 
         const field = game.get(0, 2);
         field.setNote(1);

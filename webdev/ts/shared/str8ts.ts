@@ -347,6 +347,11 @@ export class UIController {
     return urlParams.get(name);
   }
 
+  private getURLBooleanParameter(name: string) {
+    const value = this.getURLParameter(name);
+    return value === 'true' || value === '1';
+  }
+
   private removeURLParameter(paramKey: string): void {
     // Get the current URL and its search part
     const url: URL = new URL(this.win.location.href);
@@ -395,9 +400,14 @@ export class UIController {
   private async startGameCodeAsync(code: string) {
     console.log('Game:', code);
     const emojis = this.getURLParameter('emojis');
+    const autoFillSingleNote =
+      this.getURLBooleanParameter('autoFillSingleNote');
     this.gameUrl = this.win.location.href.split('?')[0] + '?code=' + code;
     if (emojis != null) {
       this.gameUrl += '&emojis=' + emojis;
+    }
+    if (autoFillSingleNote) {
+      this.gameUrl += '&autoFillSingleNote=true';
     }
     this.gameCode = code;
     await this.startGameAsync(true);
@@ -441,8 +451,13 @@ export class UIController {
       await this.showDialogAsync(false);
 
       const emojiString = this.getURLParameter('emojis');
+      const autoFillSingleNote =
+        this.getURLBooleanParameter('autoFillSingleNote');
       this.renderer.setEmojis(emojiString);
-      const parsedGame = this.game.parseGameCode(this.gameCode);
+      const parsedGame = this.game.parseGameCode(
+        this.gameCode,
+        autoFillSingleNote
+      );
       if (parsedGame) {
         this.game = parsedGame;
         hasGame = true;

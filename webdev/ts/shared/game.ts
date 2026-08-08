@@ -623,10 +623,13 @@ export class Game {
     return success ? { row: newRow, col: newCol } : { row, col };
   }
 
-  parseGameCode(base64urlEncodedGameCode: string): Game | null {
+  parseGameCode(
+    base64urlEncodedGameCode: string,
+    autoFillSingleNote = false
+  ): Game | null {
     return GameReader.createGame(
       base64urlEncodedGameCode,
-      (n) => new GameBuilder(new Game(this.renderer, n))
+      (n) => new GameBuilder(new Game(this.renderer, n, autoFillSingleNote))
     );
   }
 
