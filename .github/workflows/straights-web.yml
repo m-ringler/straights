@@ -43,7 +43,7 @@ jobs:
           git clone https://github.com/emscripten-core/emsdk.git
           cd emsdk
           git pull
-          ./emsdk install latest
+          ./emsdk install 5.0.7
 
       - name: Setup .NET
         uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
@@ -52,7 +52,7 @@ jobs:
 
       - name: Publish Straights.Web
         run: |
-          ./emsdk/emsdk activate latest
+          ./emsdk/emsdk activate 5.0.7
           source ./emsdk/emsdk_env.sh
           dotnet publish "${{ github.workspace }}/Straights.Web/Straights.Web.csproj" \
           -c Release \

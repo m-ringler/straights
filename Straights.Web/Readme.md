@@ -19,8 +19,9 @@ WebAssembly is generated using NativeAOT via LLVM and Emscripten. This approach 
 
 ## Compiling
 
-* Download and activate the
-[Emscripten SDK](https://emscripten.org/docs/getting_started/downloads.html#sdk-download-and-install).
+* Download and activate the latest
+[Emscripten 5 SDK](https://emscripten.org/docs/getting_started/downloads.html#sdk-download-and-install):
+
 * Install a dotnet SDK that matches the SDK version in [global.json](../global.json).
 * Then run
 
