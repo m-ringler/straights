@@ -100,8 +100,8 @@ You'll need:
 * a dotnet SDK that matches the SDK version in [global.json](./global.json),
 * npm
 
-For Straights.Web, you need to download and activate the
-[Emscripten SDK](https://emscripten.org/docs/getting_started/downloads.html#sdk-download-and-install).
+For Straights.Web, you need to download and activate an
+[Emscripten 5 SDK](https://emscripten.org/docs/getting_started/downloads.html#sdk-download-and-install).
 
 ### Straights Command Line App
 

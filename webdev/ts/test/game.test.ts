@@ -789,7 +789,7 @@ vt.describe('Game', () => {
       vt.expect(game.hint_count).toBe(1);
     });
 
-    vt.it('should automatically fill single note as user value', () => {
+    vt.it('should not automatically fill single note by default', () => {
       const game = new Str8ts.Game(dummyRenderer, 9).parseGameCode(
         'gEg4DCiJMBj3jLkXiaggDCkD3p3gIsD3jCghhCCqX3r3g3pDkYAjChCBiBihXkXjjXhBiXj4DCgYiJhDDisA'
       )!;
@@ -799,10 +799,27 @@ vt.describe('Game', () => {
       vt.expect(field.notes.size).toBe(1);
 
       game.checkSolved();
-      // Single note should become user value
-      vt.expect(field.user).toBe(1);
-      vt.expect(field.notes.size).toBe(0);
+      vt.expect(field.user).toBeUndefined();
+      vt.expect(field.notes.size).toBe(1);
     });
+
+    vt.it(
+      'should automatically fill single note as user value when enabled',
+      () => {
+        const game = new Str8ts.Game(dummyRenderer, 9).parseGameCode(
+          'gEg4DCiJMBj3jLkXiaggDCkD3p3gIsD3jCghhCCqX3r3g3pDkYAjChCBiBihXkXjjXhBiXj4DCgYiJhDDisA',
+          true
+        )!;
+
+        const field = game.get(0, 2);
+        field.setNote(1);
+        vt.expect(field.notes.size).toBe(1);
+
+        game.checkSolved();
+        vt.expect(field.user).toBe(1);
+        vt.expect(field.notes.size).toBe(0);
+      }
+    );
   });
 
   vt.describe('Game state and serialization', () => {

@@ -47,11 +47,11 @@ export class Field {
       this.hint = undefined;
       if (this.user === input) {
         this.user = undefined;
-        if (this.notes.size === 1) {
-          // When we only have a single note we automatically
-          // set the user value to that note. But here, we want
-          // to switch to note mode. Therefore, we need to remove
-          // the single note.
+        if (this.game.autoFillSingleNote && this.notes.size === 1) {
+          // When auto-fill of a single note is enabled, a single note is
+          // treated as a solved field. If the user wants to switch to note
+          // mode by toggling the existing value off, we must remove the
+          // single note to avoid immediately re-converting back to a user value.
           this.notes.clear();
         }
       } else {
@@ -275,16 +275,19 @@ export class Game {
   check_count: number;
   hint_count: number;
   created: number;
+  autoFillSingleNote: boolean;
   private checkerboardDump: string | null = null;
 
   constructor(
     public renderer: FieldRenderer,
-    size: number = 0
+    size: number = 0,
+    autoFillSingleNote = false
   ) {
     this.size = size;
     this.data = [];
     this.activeFieldIndex = null;
     this.isSolved = false;
+    this.autoFillSingleNote = autoFillSingleNote;
     for (let r = 0; r < size; r++) {
       this.data.push([]);
       for (let c = 0; c < size; c++) {
@@ -436,7 +439,7 @@ export class Game {
     );
 
     for (let i = 0; i < count; i++) {
-      userFields[i].reset(toFieldUserData(decoded[i]));
+      userFields[i].reset(toFieldUserData(decoded[i], this.autoFillSingleNote));
     }
   }
 
@@ -488,7 +491,7 @@ export class Game {
 
     let finished = true;
     this.forEachField((field) => {
-      if (!field.user && field.notes.size == 1) {
+      if (this.autoFillSingleNote && !field.user && field.notes.size == 1) {
         field.user = field.notes.values().next().value;
         field.notes.clear();
         field.render();
@@ -620,10 +623,13 @@ export class Game {
     return success ? { row: newRow, col: newCol } : { row, col };
   }
 
-  parseGameCode(base64urlEncodedGameCode: string): Game | null {
+  parseGameCode(
+    base64urlEncodedGameCode: string,
+    autoFillSingleNote = false
+  ): Game | null {
     return GameReader.createGame(
       base64urlEncodedGameCode,
-      (n) => new GameBuilder(new Game(this.renderer, n))
+      (n) => new GameBuilder(new Game(this.renderer, n, autoFillSingleNote))
     );
   }
 
@@ -632,11 +638,11 @@ export class Game {
   }
 }
 
-function toFieldUserData(notes: Set<number>) {
+function toFieldUserData(notes: Set<number>, autoFillSingleNote = false) {
   let user: number | undefined = undefined;
 
-  // Single note is solved field.
-  if (notes.size == 1) {
+  // Single note is solved field only when the game option is active.
+  if (autoFillSingleNote && notes.size == 1) {
     for (let v of notes) {
       user = v;
     }

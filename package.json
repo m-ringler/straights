@@ -1,17 +1,17 @@
 {
   "name": "straights",
   "private": true,
-  "version": "0.8.9",
+  "version": "0.8.10",
   "devDependencies": {
     "@edge-runtime/vm": "^5.0.0",
     "@types/jquery": "^4.0.1",
-    "@types/node": "^26.1.1",
+    "@types/node": "^26.2.0",
     "@types/serviceworker": "^0.0.200",
     "@vitest/coverage-v8": "^4.1.10",
     "@vitest/ui": "^4.1.10",
     "cheerio": "^1.2.0",
     "jquery": "^4.0.0",
-    "jsdom": "^29.1.1",
+    "jsdom": "^30.0.1",
     "prettier": "^3.9.6",
     "typescript": "^7.0.2",
     "vitest": "^4.1.10"
