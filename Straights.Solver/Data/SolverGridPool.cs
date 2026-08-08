@@ -4,19 +4,24 @@
 
 namespace Straights.Solver.Data;
 
+using System.Diagnostics;
+
 public sealed class SolverGridPool
 {
     private readonly Stack<SolverGrid> grids = new();
+    private readonly Lock syncObj = new();
 
     public SolverGrid GetCopyOf(SolverGrid template)
     {
         ArgumentNullException.ThrowIfNull(template);
 
-        if (this.grids.Count > 0)
+        lock (this.syncObj)
         {
-            var result = this.grids.Pop();
-            result.ResetFrom(template);
-            return result;
+            if (this.grids.TryPop(out var result))
+            {
+                result.ResetFrom(template);
+                return result;
+            }
         }
 
         return template.CreateCopy();
@@ -25,6 +30,17 @@ public sealed class SolverGridPool
     public void Release(SolverGrid grid)
     {
         ArgumentNullException.ThrowIfNull(grid);
-        this.grids.Push(grid);
+
+        lock (this.syncObj)
+        {
+            if (this.grids.Contains(grid))
+            {
+                throw new InvalidOperationException(
+                    "Cannot release a grid that is already in the pool."
+                );
+            }
+
+            this.grids.Push(grid);
+        }
     }
 }

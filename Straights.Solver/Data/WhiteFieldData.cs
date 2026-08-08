@@ -5,6 +5,7 @@
 namespace Straights.Solver.Data;
 
 using System.Collections;
+using System.Diagnostics;
 using System.Globalization;
 using System.Numerics;
 
@@ -31,12 +32,20 @@ public sealed class WhiteFieldData
         }
 
         this.Size = size;
+        Debug.Assert(
+            this.bitField != 0,
+            "bitField should not be zero after initialization"
+        );
     }
 
     private WhiteFieldData(WhiteFieldData template)
     {
         this.bitField = template.bitField;
         this.Size = template.Size;
+        Debug.Assert(
+            this.bitField != 0,
+            "bitField should not be zero after initialization"
+        );
     }
 
     public int Size { get; }
@@ -94,7 +103,7 @@ public sealed class WhiteFieldData
         bool result = (this.bitField & bitmask) == bitmask;
         this.bitField &= ~bitmask;
 
-        if (this.Count == 0)
+        if (this.Count == 0 || this.bitField == 0)
         {
             throw new NotSolvableException($"Last value {n} cannot be removed");
         }
@@ -108,11 +117,20 @@ public sealed class WhiteFieldData
         {
             _ = this.Remove(n);
         }
+
+        Debug.Assert(
+            this.bitField != 0,
+            "bitField should not be zero after Remove"
+        );
     }
 
     public void Solve(int n)
     {
         this.bitField = GetBitMask(n);
+        Debug.Assert(
+            this.bitField != 0,
+            "bitField should not be zero after Solve"
+        );
     }
 
     public WhiteFieldData Clone()
@@ -147,6 +165,14 @@ public sealed class WhiteFieldData
 
         var result = this.Clone();
         result.bitField |= other.bitField;
+        Debug.Assert(
+            result.bitField != 0,
+            "bitField should not be zero after Union"
+        );
+        Debug.Assert(
+            other.bitField != 0,
+            "bitField should not be zero after Union"
+        );
         return result;
     }
 
@@ -226,6 +252,10 @@ public sealed class WhiteFieldData
     public IEnumerator<int> GetEnumerator()
     {
         ulong shifted = this.bitField;
+        Debug.Assert(
+            this.bitField != 0,
+            "bitField should not be zero when enumerating"
+        );
         for (int i = 1; i <= this.Size; i++)
         {
             if ((shifted & 1UL) == 1UL)
@@ -253,7 +283,22 @@ public sealed class WhiteFieldData
             );
         }
 
+        if (other.bitField == 0)
+        {
+            throw new NotSolvableException(
+                "Cannot reset to an empty field data"
+            );
+        }
+
         this.bitField = other.bitField;
+        Debug.Assert(
+            this.bitField != 0,
+            "bitField should not be zero after ResetFrom"
+        );
+        Debug.Assert(
+            other.bitField != 0,
+            "bitField should not be zero after ResetFrom"
+        );
     }
 
     private static ulong GetBitMask(int n)

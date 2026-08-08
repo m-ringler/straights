@@ -75,6 +75,7 @@ public sealed class RecursiveTrialAndErrorSolver(
     )
     {
         var pool = new SolverGridPool();
+
         SolverGrid workingData = pool.GetCopyOf(data);
         try
         {
@@ -181,7 +182,7 @@ public sealed class RecursiveTrialAndErrorSolver(
                 // The current guess has resulted in an unsolvable grid.
             }
 
-            ////pool.Release(trialData);
+            pool.Release(trialData);
 
             try
             {
@@ -203,7 +204,7 @@ public sealed class RecursiveTrialAndErrorSolver(
             }
         }
 
-        ////pool.Release(data);
+        pool.Release(data);
 
         // We failed to solve the grid. Return the unsolved grid.
         return dataIn;
