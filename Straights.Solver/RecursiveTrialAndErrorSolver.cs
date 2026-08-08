@@ -74,7 +74,8 @@ public sealed class RecursiveTrialAndErrorSolver(
         CancellationToken cancellationToken
     )
     {
-        SolverGrid workingData = data.CreateCopy();
+        var pool = new SolverGridPool();
+        SolverGrid workingData = pool.GetCopyOf(data);
         try
         {
             this.GridSimplifier.Simplify(workingData);
@@ -90,6 +91,7 @@ public sealed class RecursiveTrialAndErrorSolver(
         {
             return this.GuessAndSimplify(
                 workingData,
+                pool,
                 cancellationToken,
                 ref remainingRecursions
             );
@@ -121,6 +123,7 @@ public sealed class RecursiveTrialAndErrorSolver(
 
     private SolverGrid GuessAndSimplify(
         SolverGrid dataIn,
+        SolverGridPool pool,
         CancellationToken cancellationToken,
         ref int remainingNumRecurse
     )
@@ -142,13 +145,13 @@ public sealed class RecursiveTrialAndErrorSolver(
         int i = this.RandomNumberGenerator.NextInt32(0, n);
         var fieldIndex = unsolvedIndices[i];
 
-        var data = dataIn.CreateCopy();
+        var data = pool.GetCopyOf(dataIn);
         var guessValues = GetField(data, fieldIndex).ToArray();
         this.RandomNumberGenerator.Shuffle(guessValues);
 
         for (int iguess = 0; iguess < guessValues.Length; iguess++)
         {
-            var trialData = data.CreateCopy();
+            var trialData = pool.GetCopyOf(data);
 
             var trialGuess = guessValues[iguess];
             GetField(trialData, fieldIndex).Solve(trialGuess);
@@ -163,6 +166,7 @@ public sealed class RecursiveTrialAndErrorSolver(
 
                 var result = this.GuessAndSimplify(
                     trialData,
+                    pool,
                     cancellationToken,
                     ref remainingNumRecurse
                 );
@@ -176,6 +180,8 @@ public sealed class RecursiveTrialAndErrorSolver(
             {
                 // The current guess has resulted in an unsolvable grid.
             }
+
+            ////pool.Release(trialData);
 
             try
             {
@@ -196,6 +202,8 @@ public sealed class RecursiveTrialAndErrorSolver(
                 return data;
             }
         }
+
+        ////pool.Release(data);
 
         // We failed to solve the grid. Return the unsolved grid.
         return dataIn;

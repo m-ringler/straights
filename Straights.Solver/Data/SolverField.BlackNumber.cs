@@ -46,15 +46,6 @@ public partial class SolverField
                     nameof(other)
                 );
             }
-
-            if (other.data is null)
-            {
-                this.data = null;
-            }
-            else
-            {
-                this.data = other.data.Clone();
-            }
         }
 
         private WhiteFieldData CreateWhiteFieldData()
