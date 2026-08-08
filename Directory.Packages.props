@@ -31,7 +31,7 @@
   <ItemGroup>
     <PackageVersion
       Include="Straights.OpenCvSharp.Runtime.Linux"
-      Version="4.13.0.20260602"
+      Version="4.13.0.20260627"
     />
     <PackageVersion Include="Microsoft.AspNetCore" Version="2.3.0" />
     <PackageVersion
