@@ -1,0 +1,17 @@
+# Generated with straights v0.8.10
+# straights generate --size 13 --attempts 20 --failure-threshold 50 --layout DiagonallySymmetric --black-numbers 5 --black-blanks 40
+# Seed: Pcg32-f24f896fd5e78ae7-d335dbb7a5f1c25b
+13
+b,_,w5,_,_,b11,b,_,b,_,b,_,_
+_,_,_,b,_,b,_,_,_,w12,_,w9,_
+_,w2,b,_,w7,b13,b,_,b,_,_,_,_
+_,b,_,_,b,_,_,_,b,_,_,_,w10
+_,_,_,b,w1,b,b,b13,_,_,w10,_,_
+b,b,b,_,b,_,_,_,_,b,b,w3,_
+b,_,b,_,b,w10,_,b1,_,b,b,_,_
+_,_,_,_,b,_,b,_,_,_,_,_,_
+b,w13,b,b,w10,_,_,_,_,_,w3,w5,_
+w10,_,_,_,_,b1,b,w6,_,_,_,_,b
+b,_,_,w12,_,b,b,_,_,w4,_,w7,b
+_,_,_,_,_,_,w3,_,w5,_,_,b,_
+_,_,_,_,_,_,_,_,_,b,b,_,w13

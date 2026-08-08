@@ -242,6 +242,20 @@ public sealed class WhiteFieldData
         return this.GetEnumerator();
     }
 
+    internal void ResetFrom(WhiteFieldData other)
+    {
+        ArgumentNullException.ThrowIfNull(other);
+        if (this.Size != other.Size)
+        {
+            throw new ArgumentException(
+                "Cannot reset field data from a value with a different size.",
+                nameof(other)
+            );
+        }
+
+        this.bitField = other.bitField;
+    }
+
     private static ulong GetBitMask(int n)
     {
         return 1UL << (n - 1);

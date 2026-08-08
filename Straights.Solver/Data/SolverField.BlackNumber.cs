@@ -24,6 +24,39 @@ public partial class SolverField
             return new BlackNumber(this.Number, this.Size);
         }
 
+        internal override void ResetFrom(SolverField other)
+        {
+            if (other is not BlackNumber sourceNumber)
+            {
+                throw new ArgumentException(
+                    "Cannot reset a black number field from a different field type.",
+                    nameof(other)
+                );
+            }
+
+            this.ResetFrom(sourceNumber);
+        }
+
+        private void ResetFrom(BlackNumber other)
+        {
+            if (other.Number != this.Number || other.Size != this.Size)
+            {
+                throw new ArgumentException(
+                    "Cannot change black number fields in ResetFrom.",
+                    nameof(other)
+                );
+            }
+
+            if (other.data is null)
+            {
+                this.data = null;
+            }
+            else
+            {
+                this.data = other.data.Clone();
+            }
+        }
+
         private WhiteFieldData CreateWhiteFieldData()
         {
             // Generator.

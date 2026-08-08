@@ -28,5 +28,23 @@ public partial class SolverField
         {
             return this.Data;
         }
+
+        internal override void ResetFrom(SolverField other)
+        {
+            if (other is not WhiteField sourceWhite)
+            {
+                throw new ArgumentException(
+                    "Cannot reset a white field from a different field type.",
+                    nameof(other)
+                );
+            }
+
+            this.ResetFrom(sourceWhite);
+        }
+
+        private void ResetFrom(WhiteField other)
+        {
+            this.Data.ResetFrom(other.Data);
+        }
     }
 }

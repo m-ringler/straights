@@ -18,4 +18,6 @@ public abstract partial class SolverField
     public abstract WhiteFieldData? GetWhiteFieldData();
 
     public abstract SolverField Clone();
+
+    internal abstract void ResetFrom(SolverField other);
 }

@@ -51,4 +51,23 @@ public record class SolverGrid : ISolverGrid
             Rows = rows,
         };
     }
+
+    internal void ResetFrom(SolverGrid other)
+    {
+        ArgumentNullException.ThrowIfNull(other);
+        if (this.Grid.Size != other.Grid.Size)
+        {
+            throw new ArgumentException(
+                "Cannot reset a solver grid from another grid with a different size.",
+                nameof(other)
+            );
+        }
+
+        foreach (var fieldIndex in this.Grid.AllFieldIndices())
+        {
+            SolverField targetField = this.Grid.GetField(fieldIndex);
+            SolverField sourceField = other.Grid.GetField(fieldIndex);
+            targetField.ResetFrom(sourceField);
+        }
+    }
 }
