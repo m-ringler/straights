@@ -789,9 +789,10 @@ vt.describe('Game', () => {
       vt.expect(game.hint_count).toBe(1);
     });
 
-    vt.it('should not automatically fill single note by default', () => {
+    vt.it('should not automatically fill single when disabled', () => {
       const game = new Str8ts.Game(dummyRenderer, 9).parseGameCode(
-        'gEg4DCiJMBj3jLkXiaggDCkD3p3gIsD3jCghhCCqX3r3g3pDkYAjChCBiBihXkXjjXhBiXj4DCgYiJhDDisA'
+        'gEg4DCiJMBj3jLkXiaggDCkD3p3gIsD3jCghhCCqX3r3g3pDkYAjChCBiBihXkXjjXhBiXj4DCgYiJhDDisA',
+        false
       )!;
 
       const field = game.get(0, 2);
