@@ -5,7 +5,6 @@
 namespace Straights.Solver.Data;
 
 using System.Collections;
-using System.Diagnostics;
 using System.Globalization;
 using System.Numerics;
 
@@ -32,14 +31,12 @@ public sealed class WhiteFieldData
         }
 
         this.Size = size;
-        this.CheckBitFieldIsNotZero();
     }
 
     private WhiteFieldData(WhiteFieldData template)
     {
         this.bitField = template.bitField;
         this.Size = template.Size;
-        this.CheckBitFieldIsNotZero();
     }
 
     public int Size { get; }
@@ -58,7 +55,6 @@ public sealed class WhiteFieldData
             {
                 if ((shifted & LeftmostBit) == LeftmostBit)
                 {
-                    this.CheckBitFieldIsNotZero();
                     return result;
                 }
 
@@ -75,7 +71,6 @@ public sealed class WhiteFieldData
     {
         var result = new WhiteFieldData(size);
         result.Solve(n);
-        result.CheckBitFieldIsNotZero();
         return result;
     }
 
@@ -88,7 +83,6 @@ public sealed class WhiteFieldData
 
         ulong bitmask = GetBitMask(n);
         bool result = (this.bitField & bitmask) == bitmask;
-        this.CheckBitFieldIsNotZero();
         return result;
     }
 
@@ -105,7 +99,6 @@ public sealed class WhiteFieldData
             throw new NotSolvableException($"Last value {n} cannot be removed");
         }
 
-        this.CheckBitFieldIsNotZero();
         return result;
     }
 
@@ -115,23 +108,16 @@ public sealed class WhiteFieldData
         {
             _ = this.Remove(n);
         }
-
-        this.CheckBitFieldIsNotZero();
     }
 
     public void Solve(int n)
     {
         this.bitField = GetBitMask(n);
-
-        this.CheckBitFieldIsNotZero();
     }
 
     public WhiteFieldData Clone()
     {
         var result = new WhiteFieldData(this);
-
-        this.CheckBitFieldIsNotZero();
-        result.CheckBitFieldIsNotZero();
         return result;
     }
 
@@ -162,9 +148,6 @@ public sealed class WhiteFieldData
 
         var result = this.Clone();
         result.bitField |= other.bitField;
-        this.CheckBitFieldIsNotZero();
-        result.CheckBitFieldIsNotZero();
-        other.CheckBitFieldIsNotZero();
         return result;
     }
 
@@ -244,7 +227,6 @@ public sealed class WhiteFieldData
     public IEnumerator<int> GetEnumerator()
     {
         ulong shifted = this.bitField;
-        this.CheckBitFieldIsNotZero();
         for (int i = 1; i <= this.Size; i++)
         {
             if ((shifted & 1UL) == 1UL)
@@ -272,24 +254,11 @@ public sealed class WhiteFieldData
             );
         }
 
-        other.CheckBitFieldIsNotZero();
-
         this.bitField = other.bitField;
-        this.CheckBitFieldIsNotZero();
-        other.CheckBitFieldIsNotZero();
     }
 
     private static ulong GetBitMask(int n)
     {
         return 1UL << (n - 1);
-    }
-
-    [Conditional("DEBUG")]
-    private void CheckBitFieldIsNotZero()
-    {
-        if (this.bitField == 0)
-        {
-            throw new InvalidOperationException("bitField should not be zero");
-        }
     }
 }
