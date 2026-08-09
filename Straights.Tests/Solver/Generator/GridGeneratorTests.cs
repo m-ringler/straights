@@ -39,21 +39,21 @@ public class GridGeneratorTests
 
         // ASSERT
         _ = result.Should().NotBeNull();
-        _ = result!
+        _ = result
             .ToString()
             .Should()
             .Be(
                 """
 9
-b8,w6,w5,w7,w1,w4,w3,w2,b
-b,w7,w6,w8,b,b3,w2,w1,b
-w9,w8,w7,b,w5,w6,b1,w4,w3
-b,b9,w8,w6,w7,w5,w4,w3,w2
-b,w4,b,w2,w3,b,w6,b5,b
-w4,w3,w1,w5,w2,b,w7,w8,w6
-w6,w2,w3,w4,w8,w1,w5,w7,w9
-w3,w5,w4,w1,w6,w2,b,w9,w8
-w5,w1,w2,w3,w4,b,w8,w6,w7
+b2,w6,w5,w7,w9,w8,w3,w4,b
+b,w7,w6,w8,b,b3,w4,w5,b
+w9,w8,w7,b,w5,w6,b1,w3,w4
+b,b9,w8,w3,w4,w7,w6,w2,w5
+b,w4,b,w6,w7,b,w5,b1,b
+w4,w2,w1,w5,w3,b,w8,w7,w6
+w5,w3,w2,w1,w8,w4,w7,w6,w9
+w6,w1,w3,w4,w2,w5,b,w9,w8
+w3,w5,w4,w2,w6,b,w9,w8,w7
 
 """
             );
@@ -93,21 +93,21 @@ w5,w1,w2,w3,w4,b,w8,w6,w7
 
         // ASSERT
         _ = result.Should().NotBeNull();
-        _ = result!
+        _ = result
             .ToString()
             .Should()
             .Be(
                 """
 9
-b8,_,_,_,_,_,_,_,b
+b2,_,_,_,_,_,_,_,b
 b,_,_,_,b,b3,_,_,b
-_,_,_,b,_,_,b1,_,w3
+_,_,_,b,_,_,b1,_,_
 b,b9,_,_,_,_,_,_,_
-b,_,b,_,_,b,_,b5,b
-_,_,_,w5,w2,b,_,w8,_
-_,w2,w3,_,_,_,_,_,_
-w3,_,_,_,_,w2,b,_,_
-_,_,_,_,_,b,_,_,w7
+b,_,b,_,_,b,_,b1,b
+_,w2,_,_,_,b,_,_,w6
+_,_,_,_,_,w4,_,_,_
+_,w1,_,_,_,_,b,_,_
+w3,_,_,_,_,b,_,_,_
 
 """
             );

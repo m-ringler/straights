@@ -16,12 +16,16 @@ public partial class SolverField
 
         public override WhiteFieldData GetWhiteFieldData()
         {
-            return this.data ??= this.CreateWhiteFieldData();
+            var result = this.data ??= this.CreateWhiteFieldData();
+            return result;
         }
 
         public override SolverField Clone()
         {
-            return new BlackNumber(this.Number, this.Size);
+            return new BlackNumber(this.Number, this.Size)
+            {
+                data = this.data?.Clone(),
+            };
         }
 
         internal override void ResetFrom(SolverField other)
@@ -46,6 +50,8 @@ public partial class SolverField
                     nameof(other)
                 );
             }
+
+            this.data?.ResetFrom(other.GetWhiteFieldData());
         }
 
         private WhiteFieldData CreateWhiteFieldData()

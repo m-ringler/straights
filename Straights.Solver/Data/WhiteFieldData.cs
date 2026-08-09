@@ -32,20 +32,14 @@ public sealed class WhiteFieldData
         }
 
         this.Size = size;
-        Debug.Assert(
-            this.bitField != 0,
-            "bitField should not be zero after initialization"
-        );
+        this.CheckBitFieldIsNotZero();
     }
 
     private WhiteFieldData(WhiteFieldData template)
     {
         this.bitField = template.bitField;
         this.Size = template.Size;
-        Debug.Assert(
-            this.bitField != 0,
-            "bitField should not be zero after initialization"
-        );
+        this.CheckBitFieldIsNotZero();
     }
 
     public int Size { get; }
@@ -64,6 +58,7 @@ public sealed class WhiteFieldData
             {
                 if ((shifted & LeftmostBit) == LeftmostBit)
                 {
+                    this.CheckBitFieldIsNotZero();
                     return result;
                 }
 
@@ -80,6 +75,7 @@ public sealed class WhiteFieldData
     {
         var result = new WhiteFieldData(size);
         result.Solve(n);
+        result.CheckBitFieldIsNotZero();
         return result;
     }
 
@@ -92,6 +88,7 @@ public sealed class WhiteFieldData
 
         ulong bitmask = GetBitMask(n);
         bool result = (this.bitField & bitmask) == bitmask;
+        this.CheckBitFieldIsNotZero();
         return result;
     }
 
@@ -108,6 +105,7 @@ public sealed class WhiteFieldData
             throw new NotSolvableException($"Last value {n} cannot be removed");
         }
 
+        this.CheckBitFieldIsNotZero();
         return result;
     }
 
@@ -118,24 +116,23 @@ public sealed class WhiteFieldData
             _ = this.Remove(n);
         }
 
-        Debug.Assert(
-            this.bitField != 0,
-            "bitField should not be zero after Remove"
-        );
+        this.CheckBitFieldIsNotZero();
     }
 
     public void Solve(int n)
     {
         this.bitField = GetBitMask(n);
-        Debug.Assert(
-            this.bitField != 0,
-            "bitField should not be zero after Solve"
-        );
+
+        this.CheckBitFieldIsNotZero();
     }
 
     public WhiteFieldData Clone()
     {
-        return new WhiteFieldData(this);
+        var result = new WhiteFieldData(this);
+
+        this.CheckBitFieldIsNotZero();
+        result.CheckBitFieldIsNotZero();
+        return result;
     }
 
 #if UNUSED
@@ -165,14 +162,9 @@ public sealed class WhiteFieldData
 
         var result = this.Clone();
         result.bitField |= other.bitField;
-        Debug.Assert(
-            result.bitField != 0,
-            "bitField should not be zero after Union"
-        );
-        Debug.Assert(
-            other.bitField != 0,
-            "bitField should not be zero after Union"
-        );
+        this.CheckBitFieldIsNotZero();
+        result.CheckBitFieldIsNotZero();
+        other.CheckBitFieldIsNotZero();
         return result;
     }
 
@@ -252,10 +244,7 @@ public sealed class WhiteFieldData
     public IEnumerator<int> GetEnumerator()
     {
         ulong shifted = this.bitField;
-        Debug.Assert(
-            this.bitField != 0,
-            "bitField should not be zero when enumerating"
-        );
+        this.CheckBitFieldIsNotZero();
         for (int i = 1; i <= this.Size; i++)
         {
             if ((shifted & 1UL) == 1UL)
@@ -283,26 +272,24 @@ public sealed class WhiteFieldData
             );
         }
 
-        if (other.bitField == 0)
-        {
-            throw new NotSolvableException(
-                "Cannot reset to an empty field data"
-            );
-        }
+        other.CheckBitFieldIsNotZero();
 
         this.bitField = other.bitField;
-        Debug.Assert(
-            this.bitField != 0,
-            "bitField should not be zero after ResetFrom"
-        );
-        Debug.Assert(
-            other.bitField != 0,
-            "bitField should not be zero after ResetFrom"
-        );
+        this.CheckBitFieldIsNotZero();
+        other.CheckBitFieldIsNotZero();
     }
 
     private static ulong GetBitMask(int n)
     {
         return 1UL << (n - 1);
+    }
+
+    [Conditional("DEBUG")]
+    private void CheckBitFieldIsNotZero()
+    {
+        if (this.bitField == 0)
+        {
+            throw new InvalidOperationException("bitField should not be zero");
+        }
     }
 }

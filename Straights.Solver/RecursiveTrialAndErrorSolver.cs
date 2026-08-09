@@ -107,9 +107,9 @@ public sealed class RecursiveTrialAndErrorSolver(
         }
     }
 
-    private static WhiteFieldData GetField(SolverGrid grid, FieldIndex index)
+    private static WhiteFieldData? GetField(SolverGrid grid, FieldIndex index)
     {
-        return grid.Grid.GetField(index).GetWhiteFieldData()!;
+        return grid.Grid.GetField(index).GetWhiteFieldData();
     }
 
     private static List<FieldIndex> GetUnsolvedIndices(SolverGrid data)
@@ -147,7 +147,23 @@ public sealed class RecursiveTrialAndErrorSolver(
         var fieldIndex = unsolvedIndices[i];
 
         var data = pool.GetCopyOf(dataIn);
-        var guessValues = GetField(data, fieldIndex).ToArray();
+
+        var fieldData = GetField(data, fieldIndex);
+        if (fieldData is null)
+        {
+            var msg = $"""
+                The field at index {fieldIndex} is
+                unsolved in {nameof(
+                    dataIn
+                )}, so we expect it to be a white field.
+                However, it is not a white field in the {nameof(data)} copy:
+                dataIn: {dataIn.Grid.GetField(fieldIndex)}.
+                data: {data.Grid.GetField(fieldIndex)}.
+                """;
+            throw new InvalidOperationException(msg);
+        }
+
+        var guessValues = fieldData.ToArray();
         this.RandomNumberGenerator.Shuffle(guessValues);
 
         for (int iguess = 0; iguess < guessValues.Length; iguess++)
@@ -155,7 +171,22 @@ public sealed class RecursiveTrialAndErrorSolver(
             var trialData = pool.GetCopyOf(data);
 
             var trialGuess = guessValues[iguess];
-            GetField(trialData, fieldIndex).Solve(trialGuess);
+            var trialFieldData = GetField(trialData, fieldIndex);
+            if (trialFieldData is null)
+            {
+                var msg = $"""
+                    The field at index {fieldIndex} is
+                    unsolved in {nameof(
+                        dataIn
+                    )}, so we expect it to be a white field.
+                    However, it is not a white field in the {nameof(trialData)} copy:
+                    dataIn: {dataIn.Grid.GetField(fieldIndex)}.
+                    trialData: {trialData.Grid.GetField(fieldIndex)}.
+                    """;
+                throw new InvalidOperationException(msg);
+            }
+
+            trialFieldData.Solve(trialGuess);
 
             try
             {
@@ -188,7 +219,22 @@ public sealed class RecursiveTrialAndErrorSolver(
             {
                 // The current guess has resulted in an unsolvable grid.
                 // Remove the value from the field and simplify.
-                _ = GetField(data, fieldIndex).Remove(trialGuess);
+                var fieldData1 = GetField(data, fieldIndex);
+                if (fieldData1 is null)
+                {
+                    var msg = $"""
+                The field at index {fieldIndex} is
+                unsolved in {nameof(
+                    dataIn
+                )}, so we expect it to be a white field.
+                However, it is not a white field in the {nameof(data)} copy:
+                dataIn: {dataIn.Grid.GetField(fieldIndex)}.
+                data: {data.Grid.GetField(fieldIndex)}.
+                """;
+                    throw new InvalidOperationException(msg);
+                }
+
+                _ = fieldData1.Remove(trialGuess);
                 this.GridSimplifier.Simplify(data);
             }
             catch (NotSolvableException)

@@ -35,6 +35,7 @@ public partial class SolverField
         private void ResetFrom(BlackBlank other)
         {
             // No internal state to reset for BlackBlank.
+            _ = other;
         }
     }
 }
