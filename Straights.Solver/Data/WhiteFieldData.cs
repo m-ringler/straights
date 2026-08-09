@@ -94,7 +94,7 @@ public sealed class WhiteFieldData
         bool result = (this.bitField & bitmask) == bitmask;
         this.bitField &= ~bitmask;
 
-        if (this.Count == 0)
+        if (this.Count == 0 || this.bitField == 0)
         {
             throw new NotSolvableException($"Last value {n} cannot be removed");
         }
@@ -117,7 +117,8 @@ public sealed class WhiteFieldData
 
     public WhiteFieldData Clone()
     {
-        return new WhiteFieldData(this);
+        var result = new WhiteFieldData(this);
+        return result;
     }
 
 #if UNUSED
@@ -240,6 +241,20 @@ public sealed class WhiteFieldData
     IEnumerator IEnumerable.GetEnumerator()
     {
         return this.GetEnumerator();
+    }
+
+    internal void ResetFrom(WhiteFieldData other)
+    {
+        ArgumentNullException.ThrowIfNull(other);
+        if (this.Size != other.Size)
+        {
+            throw new ArgumentException(
+                "Cannot reset field data from a value with a different size.",
+                nameof(other)
+            );
+        }
+
+        this.bitField = other.bitField;
     }
 
     private static ulong GetBitMask(int n)

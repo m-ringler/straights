@@ -4,6 +4,7 @@
 
 namespace Straights.Solver.Data;
 
+using System.Diagnostics;
 using Straights.Solver.Simplification;
 
 public partial class SolverField
@@ -12,7 +13,13 @@ public partial class SolverField
         : SolverField,
             IGetSnapshot<int>
     {
-        public WhiteFieldData Data { get; } = data;
+        public WhiteFieldData Data { get; } =
+            data.Count > 0
+                ? data
+                : throw new ArgumentException(
+                    "WhiteFieldData must not be empty",
+                    nameof(data)
+                );
 
         public override SolverField Clone()
         {
@@ -27,6 +34,28 @@ public partial class SolverField
         public override WhiteFieldData? GetWhiteFieldData()
         {
             return this.Data;
+        }
+
+        internal override void ResetFrom(SolverField other)
+        {
+            if (other is not WhiteField sourceWhite)
+            {
+                throw new ArgumentException(
+                    "Cannot reset a white field from a different field type.",
+                    nameof(other)
+                );
+            }
+
+            this.ResetFrom(sourceWhite);
+        }
+
+        private void ResetFrom(WhiteField other)
+        {
+            this.Data.ResetFrom(other.Data);
+            Debug.Assert(
+                this.Data.Count > 0,
+                "WhiteFieldData should not be empty after ResetFrom"
+            );
         }
     }
 }

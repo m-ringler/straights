@@ -18,5 +18,24 @@ public partial class SolverField
         {
             return null;
         }
+
+        internal override void ResetFrom(SolverField other)
+        {
+            if (other is not BlackBlank sourceBlank)
+            {
+                throw new ArgumentException(
+                    "Cannot reset a black blank field from a different field type.",
+                    nameof(other)
+                );
+            }
+
+            this.ResetFrom(sourceBlank);
+        }
+
+        private void ResetFrom(BlackBlank other)
+        {
+            // No internal state to reset for BlackBlank.
+            _ = other;
+        }
     }
 }
