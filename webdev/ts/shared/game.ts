@@ -281,7 +281,7 @@ export class Game {
   constructor(
     public renderer: FieldRenderer,
     size: number = 0,
-    autoFillSingleNote = false
+    autoFillSingleNote = true
   ) {
     this.size = size;
     this.data = [];
@@ -625,7 +625,7 @@ export class Game {
 
   parseGameCode(
     base64urlEncodedGameCode: string,
-    autoFillSingleNote = false
+    autoFillSingleNote = true
   ): Game | null {
     return GameReader.createGame(
       base64urlEncodedGameCode,
@@ -638,7 +638,7 @@ export class Game {
   }
 }
 
-function toFieldUserData(notes: Set<number>, autoFillSingleNote = false) {
+function toFieldUserData(notes: Set<number>, autoFillSingleNote = true) {
   let user: number | undefined = undefined;
 
   // Single note is solved field only when the game option is active.

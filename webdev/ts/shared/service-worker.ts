@@ -4,7 +4,7 @@
 
 /// <reference lib="webworker" />
 
-const CACHE_NAME = 'v0.9.0';
+const CACHE_NAME = 'v0.9.1';
 const urlsToCache = [
   './',
   './.htaccess',
