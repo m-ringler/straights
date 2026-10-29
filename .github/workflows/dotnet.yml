@@ -66,7 +66,7 @@ jobs:
         run: dotnet restore
 
       - name: Setup Node.js
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: '24'
 
@@ -116,7 +116,7 @@ jobs:
           -p:ExcludeByFile=**/*.g.cs
 
       - name: Upload dotnet test results
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: test-results-${{ matrix.config.os }}-${{ matrix.build }}
           path: TestResults
@@ -125,7 +125,7 @@ jobs:
 
       - name: Upload Verify Received Files
         if: failure()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: verify-test-results-${{ matrix.config.os }}-${{ matrix.build }}
           path: |
@@ -153,7 +153,7 @@ jobs:
           find "${{ github.workspace }}/publish" -type f
 
       - name: Upload published binaries
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: ${{ (github.event_name != 'pull_request') && (matrix.build == 'Release') }}
         with:
           name: Straights_${{ steps.get-set-version.outputs.version }}_${{ matrix.config.pub}}-x64
@@ -205,7 +205,7 @@ jobs:
           ls -la "${{ github.workspace }}/nuget"
 
       - name: Upload nuget artifacts
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: ${{ (matrix.config.os == 'ubuntu-24.04' && github.event_name != 'pull_request') && (matrix.build == 'Release') }}
         with:
           name: Straights_${{ steps.get-set-version.outputs.version }}_Nugets
