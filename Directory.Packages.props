@@ -8,6 +8,10 @@
       Version="$(IlCompilerLLVMVersion)"
     />
     <PackageVersion
+      Include="Microsoft.Testing.Extensions.TrxReport"
+      Version="2.5.2"
+    />
+    <PackageVersion
       Include="runtime.browser-wasm.Microsoft.DotNet.ILCompiler.LLVM"
       Version="$(IlCompilerLLVMVersion)"
     />

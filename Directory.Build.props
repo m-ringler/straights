@@ -30,7 +30,6 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
 
     <!-- Tests -->
-    <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
     <Verify_SponsorshipExemption>OpenSource</Verify_SponsorshipExemption>
     <Verify_SponsorshipExemptionUntil>2027-10</Verify_SponsorshipExemptionUntil>
 

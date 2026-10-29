@@ -107,7 +107,7 @@ jobs:
           -c ${{ matrix.build }}
           --no-build
           --verbosity normal
-          --logger trx
+          --report-trx
           --results-directory "TestResults"
           -p:CollectCoverage=true
           -p:CoverletOutputFormat=cobertura
@@ -194,7 +194,7 @@ jobs:
           --no-restore
           -c ${{ matrix.build }}
           --verbosity normal
-          --logger trx
+          --report-trx
           --results-directory "TestResults.Nuget"
           -p:UseStraightsNugetPackagesVersion=${{ steps.get-set-version.outputs.version }}
 
