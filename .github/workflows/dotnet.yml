@@ -190,7 +190,8 @@ jobs:
       - name: Test (using freshly created NuGet packages)
         if: ${{ (matrix.config.os == 'ubuntu-24.04' && github.event_name != 'pull_request') && (matrix.build == 'Release') }}
         run: >
-          dotnet test straights-commandline.slnf
+          dotnet test 
+          --solution straights-commandline.slnf
           --no-restore
           -c ${{ matrix.build }}
           --verbosity normal
