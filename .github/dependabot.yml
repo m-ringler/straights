@@ -4,38 +4,38 @@
 
 version: 2
 updates:
-  - package-ecosystem: 'npm'
-    directory: '/'
+  - package-ecosystem: "npm"
+    directory: "/"
     schedule:
-      interval: 'monthly'
+      interval: "monthly"
     groups:
       typescript:
         applies-to: version-updates
         patterns:
-          - '*'
+          - "*"
     cooldown:
       default-days: 7
 
-  - package-ecosystem: 'nuget'
-    directory: '/'
+  - package-ecosystem: "nuget"
+    directory: "/"
     schedule:
-      interval: 'monthly'
+      interval: "monthly"
     groups:
       csharp:
         applies-to: version-updates
         patterns:
-          - '*'
+          - "*"
     cooldown:
       default-days: 7
 
-  - package-ecosystem: 'github-actions'
-    directory: '/'
+  - package-ecosystem: "github-actions"
+    directory: "/"
     schedule:
-      interval: 'monthly'
+      interval: "monthly"
     groups:
       github-actions:
         applies-to: version-updates
         patterns:
-          - '*'
+          - "*"
     cooldown:
       default-days: 7

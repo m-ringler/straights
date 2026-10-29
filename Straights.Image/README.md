@@ -1,6 +1,6 @@
 # Straights.Image
 
-[![NuGet Version](https://img.shields.io/nuget/v/Straights.Image)](https://www.nuget.org/packages/Straights.Image/) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+ [![NuGet Version](https://img.shields.io/nuget/v/Straights.Image)](https://www.nuget.org/packages/Straights.Image/) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Straights.Image is a dotnet library that reads single square Str8ts and Sudoku grids from screenshot images. The maximum supported grid size is 9x9.
 
@@ -10,16 +10,16 @@ The [windows runtime library](https://www.nuget.org/packages/OpenCvSharp4.runtim
 
 For Linux, there is no single runtime library because the runtime library depends on other DLLs that are provided by the linux distribution. You will need to pick a suitable runtime library for the particular distribution that you build for. This runtime library must be added as a package reference to the application or test project that uses Straights.Image.
 
-| Distribution  | Runtime library                                                                                            |
-| ------------- | ---------------------------------------------------------------------------------------------------------- |
-| Ubuntu 22.04  | [ Straights.OpenCvSharp.Runtime.Linux](https://www.nuget.org/packages/Straights.OpenCvSharp.Runtime.Linux) |
-| Ubuntu 24.04  | [Straights.OpenCvSharp.Runtime.Linux](https://www.nuget.org/packages/Straights.OpenCvSharp.Runtime.Linux)  |
-| Other distros | [Search nuget.org](https://www.nuget.org/packages?page=2&q=OpenCvSharp4) or build the runtime yourself     |
+| Distribution | Runtime library |
+|-|-|
+| Ubuntu 22.04 | [ Straights.OpenCvSharp.Runtime.Linux](https://www.nuget.org/packages/Straights.OpenCvSharp.Runtime.Linux) |
+| Ubuntu 24.04 | [Straights.OpenCvSharp.Runtime.Linux](https://www.nuget.org/packages/Straights.OpenCvSharp.Runtime.Linux) |
+| Other distros | [Search nuget.org](https://www.nuget.org/packages?page=2&q=OpenCvSharp4) or build the runtime yourself |
 
 Users may have to install distribution packages that the runtime library depends on.
 See also
 
-- <https://github.com/m-ringler/straights/blob/main/README.md#linux>
+* <https://github.com/m-ringler/straights/blob/main/README.md#linux>
 
 ## Usage
 
