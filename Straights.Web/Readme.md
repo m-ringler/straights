@@ -14,34 +14,34 @@ When served via HTTPS, Straights.Web is a [progressive web app](https://en.wikip
 
 WebAssembly is generated using NativeAOT via LLVM and Emscripten. This approach is documented at the dotnet runtimelab's github project site:
 
-* [NativeAot-LLVM Sample](https://github.com/dotnet/runtimelab/tree/feature/NativeAOT-LLVM/samples/NativeLibrary)
-* [Compiling webassembly](https://github.com/dotnet/runtimelab/blob/ce43f371e1761fe6335f8c63d344e605b892ebe9/docs/using-nativeaot/compiling.md#webassembly)
+- [NativeAot-LLVM Sample](https://github.com/dotnet/runtimelab/tree/feature/NativeAOT-LLVM/samples/NativeLibrary)
+- [Compiling webassembly](https://github.com/dotnet/runtimelab/blob/ce43f371e1761fe6335f8c63d344e605b892ebe9/docs/using-nativeaot/compiling.md#webassembly)
 
 ## Compiling
 
-* Download and activate the latest
-[Emscripten 5 SDK](https://emscripten.org/docs/getting_started/downloads.html#sdk-download-and-install):
+- Download and activate the latest
+  [Emscripten 5 SDK](https://emscripten.org/docs/getting_started/downloads.html#sdk-download-and-install):
 
-* Install a dotnet SDK that matches the SDK version in [global.json](../global.json).
-* Then run
+- Install a dotnet SDK that matches the SDK version in [global.json](../global.json).
+- Then run
 
-~~~sh
+```sh
 npm ci
 npm run tsc
 dotnet publish -r browser-wasm -c Release -p MSBuildEnableWorkloadResolver=false
-~~~
+```
 
 ## Running
 
-~~~sh
+```sh
 emrun publish/index.html
-~~~
+```
 
 ## Deploying to a web server
 
 Copy the contents of the publish folder to a subdirectory of the htdocs / wwwroot of your web server. Configure the web server so that it
 
-* serves `.wasm` files as mime type `application/wasm`,
-* uses gzip content-encoding for `.wasm` and `js` files.
+- serves `.wasm` files as mime type `application/wasm`,
+- uses gzip content-encoding for `.wasm` and `js` files.
 
 [.htaccess](.htaccess) contains corresponding directives for Apache web servers.
