@@ -8,7 +8,7 @@ outputs:
     value: ${{ steps.getversion.outputs.version }}
 
 runs:
-  using: "composite"
+  using: 'composite'
   steps:
     - name: Get Version from Directory.Build.props
       id: getversion

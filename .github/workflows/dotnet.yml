@@ -32,9 +32,9 @@ jobs:
       matrix:
         build: [Release]
         config:
-          - {os: windows-latest, osfamily: win, pub: 'win'}
-          - {os: ubuntu-22.04, osfamily: linux, pub: 'ubuntu-22.04'}
-          - {os: ubuntu-24.04, osfamily: linux, pub: 'linux'}
+          - { os: windows-latest, osfamily: win, pub: 'win' }
+          - { os: ubuntu-22.04, osfamily: linux, pub: 'ubuntu-22.04' }
+          - { os: ubuntu-24.04, osfamily: linux, pub: 'linux' }
 
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
