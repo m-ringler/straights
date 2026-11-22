@@ -63,30 +63,13 @@ With Straights.Web, you can generate up to 10 x 10 grids, and play up to 12 x 12
 
 Straights.Web is a [progressive web app](https://en.wikipedia.org/wiki/Progressive_web_app) that can be installed on users' devices (Add to home sceen), and that is fully functional when offline.
 
-## Status
-
-The code works but is still pre-1.0,
-which means that breaking changes in the APIs can happen in every release.
-In particular:
-
-- Different releases of the command line app may produce different grids for the same arguments even if you pass an explicit random seed.
-- The library APIs are not stable, and may change in every release.
-- The data formats used by the webapp may still change.
-
 ## Installation
 
-### Windows
+Download the Windows or Linux binaries of a release of the straights commandline app. Unpack and run the straights(.exe) executable in a terminal window.
 
-Everything should work out of the box.
-To use the command line app put it somewhere on your $env:Path. And type `straights` at the command prompt.
+Download the WebApp, unzip and deploy it to your webspace.
 
 The libraries Straights.Image and Straights.Solver are available on nuget.org, and you can use them by adding a package reference to your project.
-
-### Linux
-
-Essentially the same as for windows.
-
-Straights.Image includes the official OpenCvSharp5 Linux x64 slim runtime, built for manylinux 2.28. It supports Ubuntu 20.04 and newer, Debian 10 and newer, and RHEL/AlmaLinux 8 and newer. No distribution-specific OpenCvSharp runtime is required. Linux ARM64 is not currently included.
 
 ## Building
 
@@ -117,7 +100,6 @@ dotnet publish Straights.Web/Straights.Web.csproj -r browser-wasm -c Release -p 
 ## Backlog
 
 - Add more tests for the javascript code
-- Use a bundler for the JS code
 - Add more XML doc (use Copilot?)
 - Microsoft.CodeAnalysis.PublicApiAnalyzers
 

@@ -18,4 +18,4 @@ See also
 
 ## Usage
 
-<https://github.com/m-ringler/straights/blob/17de5c3811c085044720280c893b5c0ccb642e7d/Straights.Image.Tests/GridReader/BlackAndWhiteGridReaderTests.cs#L111-L112>
+<https://github.com/m-ringler/straights/blob/9e2cc25fb00b267d35a6ba8cc59163bd8f25d34a/Straights.Image.Tests/GridReader/BlackAndWhiteGridReaderTests.cs#L113-L115>
