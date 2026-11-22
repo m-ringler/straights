@@ -78,7 +78,10 @@ public sealed class DigitClassifierOnnx(string modelName)
         grayImage.ConvertTo(convertedImage, MatType.CV_32FC1, 1.0 / 255.0);
         var resizeImage = convertedImage;
 
-        using Mat src28 = resizeImage.Resize(
+        using Mat src28 = new();
+        Cv2.Resize(
+            resizeImage,
+            src28,
             new Size(dimensions[^2], dimensions[^1])
         );
 

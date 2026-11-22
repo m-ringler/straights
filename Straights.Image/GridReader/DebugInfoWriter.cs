@@ -29,7 +29,8 @@ public class DebugInfoWriter(string folder) : IDebugInfoWriter
 
     public void Save(Mat img, LineSegmentPolar[] lines, string fileName)
     {
-        using var linesImage = img.CvtColor(ColorConversionCodes.GRAY2BGR);
+        using var linesImage = new Mat();
+        Cv2.CvtColor(img, linesImage, ColorConversionCodes.GRAY2BGR);
         foreach (var line in lines)
         {
             Draw(linesImage, line);

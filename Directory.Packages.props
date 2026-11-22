@@ -33,9 +33,14 @@
     <PackageVersion Include="xunit.v3" Version="4.0.2" />
   </ItemGroup>
   <ItemGroup>
+    <PackageVersion Include="OpenCvSharp5" Version="5.1.0.20261115" />
     <PackageVersion
-      Include="Straights.OpenCvSharp.Runtime.Linux"
-      Version="4.13.0.20260627"
+      Include="OpenCvSharp5.official.runtime.linux-x64.slim"
+      Version="5.1.0.20261115"
+    />
+    <PackageVersion
+      Include="OpenCvSharp5.runtime.win.slim"
+      Version="5.1.0.20261115"
     />
     <PackageVersion Include="Microsoft.AspNetCore" Version="2.3.0" />
     <PackageVersion
@@ -44,11 +49,6 @@
     />
     <PackageVersion Include="Microsoft.ML.OnnxRuntime" Version="1.31.1" />
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.403" />
-    <PackageVersion
-      Include="OpenCvSharp4.runtime.win.slim"
-      Version="4.13.0.20260627"
-    />
-    <PackageVersion Include="OpenCvSharp4" Version="4.13.0.20260627" />
     <PackageVersion Include="RandN" Version="0.5.0" />
     <PackageVersion Include="StyleCop.Analyzers.Unstable" Version="1.2.0.556" />
     <PackageVersion Include="System.CommandLine" Version="2.0.14" />

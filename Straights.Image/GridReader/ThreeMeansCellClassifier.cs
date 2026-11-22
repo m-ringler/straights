@@ -79,7 +79,7 @@ public sealed class ThreeMeansCellClassifier : ICellClassifier
         for (int ix = 0; ix < 3; ix++)
         {
             using Mat subcellMat = new(img, new Rect(xx[ix], h, ww[ix], h));
-            result[i++] = subcellMat.Mean().Val0;
+            result[i++] = Cv2.Mean(subcellMat).Val0;
         }
 
         return result;
