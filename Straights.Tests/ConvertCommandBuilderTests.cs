@@ -94,7 +94,9 @@ public class ConvertCommandBuilderTests
         errorOutput
             .Trim()
             .Should()
-            .Be("Required argument missing for command: 'convert'.");
+            .Be(
+                "Required argument 'imageOrTextFile' missing for command: 'convert'."
+            );
     }
 
     [Fact]
