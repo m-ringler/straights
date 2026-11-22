@@ -4,19 +4,14 @@
 
 Straights.Image is a dotnet library that reads single square Str8ts and Sudoku grids from screenshot images. The maximum supported grid size is 9x9.
 
-This package depends on [OpenCvSharp](https://github.com/shimat/opencvsharp) and a working native OpenCvSharpExtern runtime library.
+This package depends on [OpenCvSharp5](https://github.com/shimat/opencvsharp) and includes platform-specific native runtime packages as dependencies.
 
-The [windows runtime library](https://www.nuget.org/packages/OpenCvSharp4.runtime.win) is a dependency of this package, so you don't need to add an explicit package reference.
+| Platform | Runtime library |
+| -------- | --------------- |
+| Windows x64 | [OpenCvSharp5.runtime.win.slim](https://www.nuget.org/packages/OpenCvSharp5.runtime.win.slim) |
+| Linux x64 | [OpenCvSharp5.official.runtime.linux-x64.slim](https://www.nuget.org/packages/OpenCvSharp5.official.runtime.linux-x64.slim) |
 
-For Linux, there is no single runtime library because the runtime library depends on other DLLs that are provided by the linux distribution. You will need to pick a suitable runtime library for the particular distribution that you build for. This runtime library must be added as a package reference to the application or test project that uses Straights.Image.
-
-| Distribution  | Runtime library                                                                                            |
-| ------------- | ---------------------------------------------------------------------------------------------------------- |
-| Ubuntu 22.04  | [ Straights.OpenCvSharp.Runtime.Linux](https://www.nuget.org/packages/Straights.OpenCvSharp.Runtime.Linux) |
-| Ubuntu 24.04  | [Straights.OpenCvSharp.Runtime.Linux](https://www.nuget.org/packages/Straights.OpenCvSharp.Runtime.Linux)  |
-| Other distros | [Search nuget.org](https://www.nuget.org/packages?page=2&q=OpenCvSharp4) or build the runtime yourself     |
-
-Users may have to install distribution packages that the runtime library depends on.
+The Linux x64 runtime is built for manylinux 2.28 and supports Ubuntu 20.04+, Debian 10+, and RHEL/AlmaLinux 8+. The slim profile has no GUI dependencies. These runtime packages are transitive dependencies of Straights.Image; consumers do not need to add them explicitly. Linux ARM64 is not currently included.
 See also
 
 - <https://github.com/m-ringler/straights/blob/main/README.md#linux>

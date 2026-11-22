@@ -48,8 +48,7 @@ Straights.Solver theoretically supports grid sizes up to 64 x 64, but generating
 [Straights.Image](./Straights.Image/README.md) is a library that reads screenshots of Straights and Sudoku grids.
 It has no dependency on Straights.Solver or the Straights command line application (it is used by the latter).
 
-It uses [OpenCvSharp](https://github.com/shimat/opencvsharp) to detect the grids, and - on Linux - you may have to build
-an appropriate OpenCvSharpExtern.so runtime. See 'Installation' below.
+It uses [OpenCvSharp5](https://github.com/shimat/opencvsharp) to detect the grids. The Linux x64 native runtime is included and supports Ubuntu 20.04 and newer among others.
 
 Straights.Image supports grid sizes up to 9 x 9.
 
@@ -87,11 +86,7 @@ The libraries Straights.Image and Straights.Solver are available on nuget.org, a
 
 Essentially the same as for windows.
 
-However, the Linux native runtimes of OpenCvSharp used by Straights.Image depend on libraries that need to be installed on the system. These libraries are different for different distributions, e. g. for ubuntu-22.04 and ubuntu-24-04.
-
-If Straights.Image fails with an "Unable to load shared library 'OpenCvSharpExtern' or one of its dependencies." error, you can [check which dependencies are missing](https://github.com/shimat/opencvsharp/issues/1618#issuecomment-1846537140), and install them. Alternatively, you can simply [install all the libraries used to build it](https://github.com/shimat/opencvsharp/blob/ecd814da8fa508f32490251751f607c666263abb/.github/workflows/ubuntu-slim.yml#L33C1-L47C23).
-
-If you are neither on Ubuntu-22 nor on Ubuntu 24, you may have to build your own OpenCvSharpExtern.so and put it where straights will find it.
+Straights.Image includes the official OpenCvSharp5 Linux x64 slim runtime, built for manylinux 2.28. It supports Ubuntu 20.04 and newer, Debian 10 and newer, and RHEL/AlmaLinux 8 and newer. No distribution-specific OpenCvSharp runtime is required. Linux ARM64 is not currently included.
 
 ## Building
 
@@ -125,7 +120,6 @@ dotnet publish Straights.Web/Straights.Web.csproj -r browser-wasm -c Release -p 
 - Use a bundler for the JS code
 - Add more XML doc (use Copilot?)
 - Microsoft.CodeAnalysis.PublicApiAnalyzers
-- See if we can find a better solution for the Linux OpenCvSharp runtime
 
 - Issues/Bugs
   - Digit recognition sometimes fails on 3/5
