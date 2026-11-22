@@ -25,7 +25,6 @@ public class GridFinderTests
     public void FindGrid(string fileName, bool skewed = false)
     {
         // ARRANGE
-        NativeLibraryLoader.EnsureInitialized();
         var png = TestData.GetPath(fileName);
 
         // ACT

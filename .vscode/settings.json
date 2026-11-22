@@ -1,5 +1,5 @@
 {
-  "dotnet.defaultSolution": "straights.slnx",
+  "dotnet.defaultSolution": "straights-commandline.slnf",
   "python-envs.defaultEnvManager": "ms-python.python:system",
   "python-envs.pythonProjects": [],
   "typescript.tsdk": "node_modules/typescript/lib",

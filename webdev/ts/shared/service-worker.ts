@@ -4,7 +4,7 @@
 
 /// <reference lib="webworker" />
 
-const CACHE_NAME = 'v0.9.2';
+const CACHE_NAME = 'v1.0.0';
 const urlsToCache = [
   './',
   './.htaccess',
@@ -27,7 +27,8 @@ const urlsToCache = [
   './gameRenderer.js',
   './historyRenderer.js',
   './index.html',
-  './jquery-4.0.0.slim.min.js',
+  './jquery-LICENSE.txt',
+  './jquery-4.1.0.slim.min.js',
   './layout-img/g_DiagonallySymmetric.png',
   './layout-img/g_HorizontallyAndVerticallySymmetric.png',
   './layout-img/g_HorizontallySymmetric.png',
@@ -40,7 +41,10 @@ const urlsToCache = [
   './popup.js',
   './seasonalEmojis.js',
   './site.webmanifest',
+  './slick/LICENSE',
   './slick/ajax-loader.gif',
+  './slick/fonts/slick.eot',
+  './slick/fonts/slick.ttf',
   './slick/fonts/slick.woff',
   './slick/fonts/slick.woff2',
   './slick/slick-theme.min.css',

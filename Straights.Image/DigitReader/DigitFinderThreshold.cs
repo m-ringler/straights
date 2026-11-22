@@ -8,10 +8,11 @@ public class DigitFinderThreshold(int padding) : IDigitFinder
 {
     public Mat? FindDigit(Mat gridCell)
     {
-        using var binary = gridCell.Threshold(128, 255, ThresholdTypes.Binary);
-        var binaryNormalized = binary;
+        using var binary = new Mat();
+        _ = Cv2.Threshold(gridCell, binary, 128, 255, ThresholdTypes.Binary);
 
-        var contours = binaryNormalized.FindContoursAsArray(
+        var contours = Cv2.FindContoursAsArray(
+            binary,
             RetrievalModes.External,
             ContourApproximationModes.ApproxSimple
         );

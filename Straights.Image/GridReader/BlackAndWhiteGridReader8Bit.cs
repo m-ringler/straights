@@ -32,7 +32,7 @@ public class BlackAndWhiteGridReader8Bit(
         var imgFloat = new Mat();
         try
         {
-            img.MinMaxLoc(out double minVal, out double maxVal);
+            Cv2.MinMaxLoc(img, out double minVal, out double maxVal);
             img.ConvertTo(
                 imgFloat,
                 MatType.CV_8UC1,
@@ -62,8 +62,8 @@ public class BlackAndWhiteGridReader8Bit(
 
     private Cell GetBlackOnWhiteNumber(Mat cellMat)
     {
-        using var mat1 = Mat.Ones(cellMat.Size(), cellMat.Type()) * 255;
-        using var blackMat = mat1 - cellMat;
+        using Mat mat1 = Mat.Ones(cellMat.Size(), cellMat.Type()) * 255;
+        using Mat blackMat = mat1 - cellMat;
         int? result = digitReader.TryReadDigit(blackMat);
         return result == null
             ? this.whiteBlank

@@ -9,7 +9,7 @@ internal static class ImUtils
     public static void Close(this Mat edges, int kernelsize)
     {
         using var tmp = new Mat();
-        using var kernel = Mat.Ones(
+        using Mat kernel = Mat.Ones(
             (MatType)MatType.CV_8U,
             kernelsize,
             kernelsize

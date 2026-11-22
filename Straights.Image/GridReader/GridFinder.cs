@@ -142,9 +142,10 @@ public class GridFinder(IDebugInfoWriter debug)
 
     private Mat FindEdges(Mat img)
     {
-        Mat edges = img.Canny(90, 150);
+        Mat edges = new();
         try
         {
+            Cv2.Canny(img, edges, 90, 150);
             debug.Save(edges, "canny.png");
 
             const int closeKernelSize = 2;

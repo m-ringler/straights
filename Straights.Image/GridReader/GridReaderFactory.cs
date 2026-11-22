@@ -12,15 +12,8 @@ public class GridReaderFactory
 
     public string ModelName { get; init; } = "bekhzod-olimov-printed-digits";
 
-    public bool UseCustomizedOpenCvSharpExternSoLoader { get; init; } = true;
-
     public IBlackAndWhiteGridReader CreateGridReader(string? debugFolder = null)
     {
-        if (this.UseCustomizedOpenCvSharpExternSoLoader)
-        {
-            NativeLibraryLoader.EnsureInitialized();
-        }
-
         // Relying on finalizer to clean up the InferenceSession.
         var digitClassifier = new DigitClassifierOnnx(this.ModelName);
 
